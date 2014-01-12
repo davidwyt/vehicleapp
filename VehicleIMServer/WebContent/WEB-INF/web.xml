@@ -13,15 +13,20 @@
    <servlet>
         <servlet-name>VehicleAppServlet</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-	    <load-on-startup>1</load-on-startup>
+		<init-param>
+		    <param-name>jersey.config.server.provider.packages</param-name>
+    		<param-value>
+        		com.vehicle.imserver.restful
+    		</param-value>
+		</init-param>
+		<init-param>
+    		<param-name>jersey.config.server.provider.scanning.recursive</param-name>
+    		<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>VehicleAppServlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-  
-  <context-param>
-      <param-name>javax.ws.rs.core.Application</param-name>
-      <param-value>com.vehicle.imserver.restful.RestApplication</param-value>
-  </context-param>
 </web-app>
