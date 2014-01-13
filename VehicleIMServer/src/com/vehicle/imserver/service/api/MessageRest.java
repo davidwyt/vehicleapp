@@ -10,6 +10,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.vehicle.imserver.service.bean.MessageACKRequest;
+import com.vehicle.imserver.service.bean.MessageACKResponse;
 import com.vehicle.imserver.service.bean.MessageSendingRequest;
 import com.vehicle.imserver.service.bean.MessageSendingResponse;
 import com.vehicle.imserver.service.handler.MessageServiceHandler;
@@ -33,6 +35,27 @@ public class MessageRest {
 		try {
 			MessageSendingResponse msgResp = MessageServiceHandler
 					.SendMessage(msgRequest);
+			return Response.status(Status.OK).entity(msgResp).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@POST
+	@Path("ack")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response MessageReceived(@Context HttpServletRequest request, MessageACKRequest msgReceivedReq)
+	{
+		if(null == msgReceivedReq || StringUtil.isEmptyOrNull(msgReceivedReq.getMsgId()))
+		{
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		
+		try {
+			MessageACKResponse msgResp = MessageServiceHandler
+					.MessageReceived(msgReceivedReq);
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (Exception e) {
 			e.printStackTrace();

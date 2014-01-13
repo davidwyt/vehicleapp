@@ -1,5 +1,6 @@
 package com.vehicle.imserver.persistence.handler;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -7,6 +8,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import com.vehicle.imserver.persistence.dao.Message;
+import com.vehicle.imserver.persistence.dao.MessageStatus;
+import com.vehicle.imserver.service.exception.MessageNotFoundException;
 
 public class MessageDaoHandler {
 	private static Configuration configuration = null;
@@ -38,9 +41,24 @@ public class MessageDaoHandler {
 		session.close();
 	}
 	
-	public void UpdateMessage(Message msg)
+	public void UpdateMessageStatus(String msgId, MessageStatus status) throws MessageNotFoundException
 	{
+		Session session = sessionFactory.openSession();
 		
+		session.beginTransaction();
+		Message message = (Message)session.get(Message.class, msgId);
+		
+		if(null == message)
+		{
+			session.getTransaction().commit();
+			session.close();
+			throw new MessageNotFoundException(String.format("message %s not found", msgId));
+		}
+		
+		message.setStatus(status);
+		session.update(message);
+		session.getTransaction().commit();
+		session.close();
 	}
 	
 }

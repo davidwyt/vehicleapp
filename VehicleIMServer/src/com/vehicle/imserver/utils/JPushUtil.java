@@ -1,5 +1,6 @@
 package com.vehicle.imserver.utils;
 
+import com.vehicle.imserver.persistence.dao.Message;
 import com.vehicle.imserver.service.bean.MessageSendingRequest;
 
 import cn.jpush.api.ErrorCodeEnum;
@@ -23,12 +24,13 @@ public class JPushUtil {
 		return instance;
 	}
 
-	public void SendCustomMessage(MessageSendingRequest req) {
+	public void SendCustomMessage(Message msg) {
 		int sendNo = getRandomSendNo();
 		String msgTitle = "+;//jpush\"\"";
-
+		
+		String msgContent = MessageUtil.FormatSendingMsg(msg.getId(), msg.getContent());
 		MessageResult msgResult = jpush.sendCustomMessageWithAppKey(sendNo,
-				msgTitle, req.getContent());
+				msgTitle, msgContent);
 
 		if (null != msgResult) {
 			System.out.println(String.format("from jpush server: %s",
