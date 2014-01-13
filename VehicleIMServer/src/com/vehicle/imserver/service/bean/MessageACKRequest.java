@@ -1,6 +1,6 @@
 package com.vehicle.imserver.service.bean;
 
-public class MessageACKRequest {
+public class MessageACKRequest implements IRequest{
 	
 	private String msgId;
 	
