@@ -2,16 +2,13 @@ package com.vehicle.imserver.service.bean;
 
 public class MessageSendingResponse {
 	private String msgId;
-	private MessageSendingStatus status;
+	
+	private int errorCode;
+	private String errorMsg;
 	
 	public void setMsgId(String id)
 	{
 		msgId = id;
-	}
-	
-	public void setStatus(MessageSendingStatus status)
-	{
-		this.status = status;
 	}
 	
 	public String getMsgId()
@@ -19,8 +16,22 @@ public class MessageSendingResponse {
 		return this.msgId;
 	}
 	
-	public MessageSendingStatus getStatus()
+	public int getErrorCode()
 	{
-		return this.status;
+		return this.errorCode;
 	}
+	public void setErrorCode(int errorCode)
+	{
+		this.errorCode = errorCode;
+	}
+	
+	public String getErrorMsg()
+	{
+		return this.errorMsg;
+	}
+	public void setErrorMsg(String errMsg)
+	{
+		this.errorMsg = errMsg;
+	}
+	
 }

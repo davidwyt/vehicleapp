@@ -2,7 +2,6 @@ package com.vehicle.imserver.service.bean;
 
 public class MessageACKResponse {
 	private String msgId;
-	private MessageACKStatus status;
 	
 	private int errorCode;
 	private String errorMsg;
@@ -16,15 +15,6 @@ public class MessageACKResponse {
 		msgId = id;
 	}
 	
-	public MessageACKStatus getStatus()
-	{
-		return this.status;
-	}
-	public void setStatus(MessageACKStatus status)
-	{
-		this.status = status;
-	}
-
 	public int getErrorCode()
 	{
 		return this.errorCode;

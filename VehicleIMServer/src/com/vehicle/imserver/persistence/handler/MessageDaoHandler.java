@@ -1,6 +1,5 @@
 package com.vehicle.imserver.persistence.handler;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;

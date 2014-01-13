@@ -1,5 +1,5 @@
 package com.vehicle.imserver.service.bean;
 
-public enum MessageACKStatus {
+public enum MessageSendingResult {
 	SUCCESS, FAILED
 }
