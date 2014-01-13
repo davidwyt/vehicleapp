@@ -25,7 +25,6 @@ import com.vehicle.imserver.utils.StringUtil;
 public class MessageRest {
 
 	@POST
-	@Path("send")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response SendMessage(@Context HttpServletRequest request,
@@ -85,6 +84,7 @@ public class MessageRest {
 		if (null == msgACKReq || StringUtil.isEmptyOrNull(msgACKReq.getMsgId())) {
 			msgResp.setErrorCode(ErrorCodes.MESSAGEID_NULL_ERRCODE);
 			msgResp.setErrorMsg(ErrorCodes.MESSAGEID_NULL_ERRMSG);
+			
 			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
 		}
 
@@ -92,6 +92,7 @@ public class MessageRest {
 
 		try {
 			MessageServiceHandler.MessageReceived(msgACKReq);
+			
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (MessageNotFoundException e) {
 			e.printStackTrace();
@@ -99,13 +100,24 @@ public class MessageRest {
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_NOT_FOUND_ERRCODE);
 			msgResp.setErrorMsg(String.format(
 					ErrorCodes.MESSAGE_NOT_FOUND_ERRMSG, msgACKReq.getMsgId()));
+			
 			return Response.status(Status.NOT_FOUND).entity(msgResp).build();
+		}catch (PersistenceException e) {
+			e.printStackTrace();
+			
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			msgResp.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					msgACKReq.toString()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
 		} catch (Exception e) {
 			e.printStackTrace();
 
 			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
 			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
 					e.getMessage()));
+			
 			return Response.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(msgResp).build();
 		}

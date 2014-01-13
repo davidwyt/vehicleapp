@@ -12,6 +12,11 @@ import com.vehicle.imserver.utils.JPushUtil;
 
 public class MessageServiceHandler {
 
+	private MessageServiceHandler()
+	{
+		
+	}
+	
 	public static String SendMessage(
 			MessageSendingRequest msgReq) throws JPushException,
 			PersistenceException {
@@ -21,7 +26,7 @@ public class MessageServiceHandler {
 		Message msg = msgReq.toRawMessage();
 
 		try {
-			MessageDaoHandler.getInstance().InsertMessage(msg);
+			MessageDaoHandler.InsertMessage(msg);
 		} catch (Exception e) {
 			throw new PersistenceException(e.getMessage(), e);
 		}
@@ -36,18 +41,18 @@ public class MessageServiceHandler {
 	}
 
 	public static void MessageReceived(MessageACKRequest msgACKReq)
-			throws MessageNotFoundException {
+			throws MessageNotFoundException, PersistenceException {
 
 		System.out.println(msgACKReq.toString());
 
 		try {
-			MessageDaoHandler.getInstance().UpdateMessageStatus(
+			MessageDaoHandler.UpdateMessageStatus(
 					msgACKReq.getMsgId(), MessageStatus.RECEIVED);
 
 		} catch (MessageNotFoundException msgNotFoundException) {
 			throw msgNotFoundException;
 		} catch (Exception e) {
-			throw e;
+			throw new PersistenceException(e.getMessage(), e);
 		}
 	}
 }

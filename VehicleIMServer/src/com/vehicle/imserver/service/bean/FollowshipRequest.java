@@ -1,5 +1,7 @@
 package com.vehicle.imserver.service.bean;
 
+import com.vehicle.imserver.persistence.dao.Followship;
+
 public class FollowshipRequest implements IRequest{
 	
 	private String follower;
@@ -23,5 +25,13 @@ public class FollowshipRequest implements IRequest{
 	public void setFollowee(String followee)
 	{
 		this.followee = followee;
+	}
+	
+	public Followship toRawFollowship()
+	{
+		Followship ship = new Followship();
+		ship.setFollower(follower);
+		ship.setFollowee(followee);
+		return ship;
 	}
 }
