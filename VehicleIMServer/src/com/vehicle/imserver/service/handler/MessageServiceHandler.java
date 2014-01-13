@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.vehicle.imserver.persistence.dao.Message;
 import com.vehicle.imserver.persistence.handler.MessageDaoHandler;
+import com.vehicle.imserver.service.bean.MessageReceivedRequest;
 import com.vehicle.imserver.service.bean.MessageSendingRequest;
 import com.vehicle.imserver.service.bean.MessageSendingResponse;
 import com.vehicle.imserver.service.bean.MessageSendingStatus;
@@ -27,5 +28,10 @@ public class MessageServiceHandler {
 		resp.setStatus(MessageSendingStatus.SUCCESS);
 
 		return resp;
+	}
+	
+	public static void MessageReceived(MessageReceivedRequest msgReceivedReq)
+	{
+		
 	}
 }

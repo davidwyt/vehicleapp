@@ -33,6 +33,7 @@ public class MessageDaoHandler {
 		
 		session.beginTransaction();
 		session.save(msg);
+		
 		session.getTransaction().commit();
 		session.close();
 	}
@@ -41,4 +42,5 @@ public class MessageDaoHandler {
 	{
 		
 	}
+	
 }
