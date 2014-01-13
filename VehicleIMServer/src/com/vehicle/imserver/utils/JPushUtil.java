@@ -1,6 +1,6 @@
 package com.vehicle.imserver.utils;
 
-import com.vehicle.imserver.bean.MessageSendingRequest;
+import com.vehicle.imserver.service.bean.MessageSendingRequest;
 
 import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.JPushClient;
