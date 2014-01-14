@@ -6,7 +6,7 @@ import com.vehicle.imserver.persistence.dao.Message;
 import com.vehicle.imserver.persistence.dao.MessageStatus;
 import com.vehicle.imserver.utils.GUIDUtil;
 
-public class MessageSendingRequest implements IRequest{
+public class One2OneMessageRequest implements IRequest{
 	private String source;
 	private String target;
 	private String content;

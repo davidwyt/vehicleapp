@@ -12,8 +12,12 @@ import javax.ws.rs.core.Response.Status;
 
 import com.vehicle.imserver.service.bean.MessageACKRequest;
 import com.vehicle.imserver.service.bean.MessageACKResponse;
-import com.vehicle.imserver.service.bean.MessageSendingRequest;
-import com.vehicle.imserver.service.bean.MessageSendingResponse;
+import com.vehicle.imserver.service.bean.One2FolloweesMessageRequest;
+import com.vehicle.imserver.service.bean.One2FolloweesMessageResponse;
+import com.vehicle.imserver.service.bean.One2FollowersMessageRequest;
+import com.vehicle.imserver.service.bean.One2FollowersMessageResponse;
+import com.vehicle.imserver.service.bean.One2OneMessageRequest;
+import com.vehicle.imserver.service.bean.One2OneMessageResponse;
 import com.vehicle.imserver.service.exception.JPushException;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
@@ -25,12 +29,13 @@ import com.vehicle.imserver.utils.StringUtil;
 public class MessageRest {
 
 	@POST
+	@Path("one2one")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response SendMessage(@Context HttpServletRequest request,
-			MessageSendingRequest msgRequest) {
+			One2OneMessageRequest msgRequest) {
 
-		MessageSendingResponse msgResp = new MessageSendingResponse();
+		One2OneMessageResponse msgResp = new One2OneMessageResponse();
 
 		if (null == msgRequest
 				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
@@ -120,6 +125,104 @@ public class MessageRest {
 			
 			return Response.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(msgResp).build();
+		}
+	}
+	
+	@POST
+	@Path("one2followees")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response SendMessage2Followees(@Context HttpServletRequest request, One2FolloweesMessageRequest msgRequest)
+	{
+		One2FolloweesMessageResponse msgResp = new One2FolloweesMessageResponse();
+		
+		if(null == msgRequest || StringUtil.isEmptyOrNull(msgRequest.getSource()) || StringUtil.isEmptyOrNull(msgRequest.getContent()))
+		{
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
+			msgResp.setErrorMsg(String
+					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
+			
+			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
+		}
+		
+		try {
+			MessageServiceHandler.SendMessage2Followees(msgRequest);
+			return Response.status(Status.OK).entity(msgResp).build();
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+			
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			msgResp.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					msgRequest.toString()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+		} catch (JPushException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
+			msgResp.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
+					e.getMessage(), msgRequest.toString()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			
+			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+		}
+	}
+	
+	@POST
+	@Path("one2followers")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response SendMessage2Followers(@Context HttpServletRequest request, One2FollowersMessageRequest msgRequest)
+	{
+		One2FollowersMessageResponse msgResp = new One2FollowersMessageResponse();
+		
+		if(null == msgRequest || StringUtil.isEmptyOrNull(msgRequest.getSource()) || StringUtil.isEmptyOrNull(msgRequest.getContent()))
+		{
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
+			msgResp.setErrorMsg(String
+					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
+			
+			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
+		}
+		
+		try {
+			MessageServiceHandler.SendMessage2Followers(msgRequest);
+			return Response.status(Status.OK).entity(msgResp).build();
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+			
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			msgResp.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					msgRequest.toString()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+		} catch (JPushException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
+			msgResp.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
+					e.getMessage(), msgRequest.toString()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			
+			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package com.vehicle.imserver.service.bean;
 
-public class MessageSendingResponse extends BaseResponse{
+public class One2OneMessageResponse extends BaseResponse{
 	private String msgId;
 	
 	public void setMsgId(String id)
@@ -12,5 +12,4 @@ public class MessageSendingResponse extends BaseResponse{
 	{
 		return this.msgId;
 	}
-	
 }
