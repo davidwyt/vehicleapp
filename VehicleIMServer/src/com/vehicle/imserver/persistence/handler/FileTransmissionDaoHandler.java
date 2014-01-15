@@ -24,4 +24,30 @@ public class FileTransmissionDaoHandler {
 		
 		session.close();
 	}
+	
+	public static FileTransmission GetFileTranmission(String token)
+	{
+		Session session = HibernateUtil.getInstance().OpenSession();
+		session.beginTransaction();
+		
+		FileTransmission fileTran = (FileTransmission)session.get(FileTransmission.class, token);
+		
+		session.getTransaction().commit();
+		session.close();
+		
+		return fileTran;
+	}
+	
+	public static void UpdateFileTranmission(FileTransmission fileTransmission)
+	{
+		Session session = HibernateUtil.getInstance().OpenSession();
+		
+		session.beginTransaction();
+		
+		session.update(fileTransmission);
+		
+		session.getTransaction().commit();
+		
+		session.close();
+	}
 }

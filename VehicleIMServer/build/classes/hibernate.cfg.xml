@@ -35,6 +35,7 @@
     
     <mapping class="com.vehicle.imserver.persistence.dao.Message" />
     <mapping class="com.vehicle.imserver.persistence.dao.Followship" />
-    
+     <mapping class="com.vehicle.imserver.persistence.dao.FileTransmission" />
+     
   </session-factory>
 </hibernate-configuration>

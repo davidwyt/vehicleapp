@@ -1,6 +1,7 @@
 package com.vehicle.imserver.utils;
 
 import com.vehicle.imserver.persistence.dao.Message;
+import com.vehicle.imserver.service.bean.INotification;
 
 import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.JPushClient;
@@ -48,10 +49,16 @@ public class JPushUtil {
 		}
 	}
 
+	public MessageResult SendNotification(INotification notification)
+	{
+		return jpush.sendNotificationWithAlias(getRandomSendNo(), notification.getTarget(), notification.getTitle(), notification.getContent(), 0, notification.getExtras());
+	}
+	
 	private static final int MAX = Integer.MAX_VALUE;
 	private static final int MIN = (int) MAX / 2;
 
 	private static int getRandomSendNo() {
 		return (int) (MIN + Math.random() * (MAX - MIN));
 	}
+	
 }

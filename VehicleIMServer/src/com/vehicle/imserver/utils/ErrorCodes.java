@@ -15,6 +15,12 @@ public class ErrorCodes {
 	public static final int FOLLOWSHIP_FOLLOWEENULL_ERRCODE   = 0x0000000A;
 	public static final int FILETRAN_INVALID_ERRCODE          = 0x0000000B;
 	public static final int FILETRAN_FILESAVE_ERRCODE         = 0x0000000C;
+	public static final int NOTIFICATION_PUSHFAILED_ERRCODE   = 0x0000000D;
+	public static final int FILEFETCH_TOKENNULL_ERRCODE       = 0x0000000E;
+	public static final int FILEFETCH_TOKENINVALID_ERRCODE    = 0x0000000F;
+	public static final int FILEFETCH_NOTFOUND_ERRCODE        = 0x00000010;
+	
+	
 	
 	public static final String UNKNOWN_ERROR_ERRMSG             = "unknown error in the server: %s";
 	public static final String MESSAGE_NOT_FOUND_ERRMSG         = "message %s not found in server";
@@ -29,4 +35,8 @@ public class ErrorCodes {
 	public static final String FOLLOWSHIP_FOLLOWEENULL_ERRMSG   = "invalid followers request, please check if the followee is null";
 	public static final String FILETRAN_INVALID_ERRMSG          = "invalid file transmission request, please check if source/target/fileName is null";
 	public static final String FILETRAN_FILESAVE_ERRMSG         = "error when save file: %s";
+	public static final String NOTIFICATION_PUSHFAILED_ERRMSG   = "push %s notification failed with message: %s";
+	public static final String FILEFETCH_TOKENNULL_ERRMSG       = "invalid file fetch request, please check if the token is null";
+	public static final String FILEFETCH_TOKENINVALID_ERRMSG    = "invalid file fetch request with token : %s";
+	public static final String FILEFETCH_NOTFOUND_ERRMSG        = "your request file: %s not found";
 }
