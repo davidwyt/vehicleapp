@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "FOLLOWSHIP" )
+@Table(name = "FOLLOWSHIP")
 public class Followship implements Serializable{
 	
 	/**

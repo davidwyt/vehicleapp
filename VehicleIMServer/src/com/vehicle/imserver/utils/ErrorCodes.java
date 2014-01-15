@@ -13,7 +13,8 @@ public class ErrorCodes {
 	public static final int FOLLOWSHIP_NULL_ERRCODE           = 0x00000008;
 	public static final int FOLLOWSHIP_FOLLOWERNULL_ERRCODE   = 0x00000009;
 	public static final int FOLLOWSHIP_FOLLOWEENULL_ERRCODE   = 0x0000000A;
-	
+	public static final int FILETRAN_INVALID_ERRCODE          = 0x0000000B;
+	public static final int FILETRAN_FILESAVE_ERRCODE         = 0x0000000C;
 	
 	public static final String UNKNOWN_ERROR_ERRMSG             = "unknown error in the server: %s";
 	public static final String MESSAGE_NOT_FOUND_ERRMSG         = "message %s not found in server";
@@ -26,4 +27,6 @@ public class ErrorCodes {
 	public static final String FOLLOWSHIP_NULL_ERRMSG           = "invalid followship request, please check if the follower/followee is null";
 	public static final String FOLLOWSHIP_FOLLOWERNULL_ERRMSG   = "invalid followees request, please check if the follower is null";
 	public static final String FOLLOWSHIP_FOLLOWEENULL_ERRMSG   = "invalid followers request, please check if the followee is null";
+	public static final String FILETRAN_INVALID_ERRMSG          = "invalid file transmission request, please check if source/target/fileName is null";
+	public static final String FILETRAN_FILESAVE_ERRMSG         = "error when save file: %s";
 }
