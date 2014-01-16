@@ -18,14 +18,14 @@ public class FileUtil {
 	public static String AppendPath(String part1, String part2)
 	{
 		String path = part1;
-		if(!path.endsWith(File.separator))
+		if(!path.isEmpty() && !path.endsWith(File.separator))
 		{
 			path += File.separator;
 		}
 		
 		path += part2;
 		
-		return part1;
+		return path;
 	}
 	
 	public static void SaveFile(String path, InputStream input) throws IOException

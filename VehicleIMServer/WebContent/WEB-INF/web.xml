@@ -16,7 +16,7 @@
 		<init-param>
 		    <param-name>jersey.config.server.provider.packages</param-name>
     		<param-value>
-        		com.vehicle.imserver.restful
+        		com.vehicle.imserver.service.api
     		</param-value>
 		</init-param>
 		<init-param>

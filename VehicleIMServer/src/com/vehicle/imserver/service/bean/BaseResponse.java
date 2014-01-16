@@ -28,5 +28,11 @@ public class BaseResponse implements IResponse{
 	{
 		this.errorMsg = errMsg;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("errorcode:%s errormsg:%s", this.errorCode, this.errorMsg);
+	}
 
 }

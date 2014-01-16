@@ -1,6 +1,5 @@
 package com.vehicle.imserver.service.handler;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,8 +27,7 @@ public class FileTransmissionServiceHandler {
 	public static void SendFile(FileTransmissionRequest request,
 			InputStream input) throws IOException,
 			PushNotificationFailedException, PersistenceException {
-		String filePath = FileUtil.GenPathForFileTransmission(Class.class
-				.getResource(File.separator).getPath(), request.getFileName());
+		String filePath = FileUtil.GenPathForFileTransmission("", request.getFileName());
 
 		try {
 			FileUtil.SaveFile(filePath, input);

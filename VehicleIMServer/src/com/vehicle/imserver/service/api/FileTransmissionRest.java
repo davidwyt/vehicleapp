@@ -32,15 +32,15 @@ import com.vehicle.imserver.utils.StringUtil;
 public class FileTransmissionRest {
 
 	@POST
-	@Path("send?source={source}&&target={target}&&fileName={fileName}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Path("/send/source={source}&&target={target}&&fileName={fileName}")
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response TransmitFile(@Context HttpServletRequest request,
 			InputStream input, @PathParam("source") String source,
 			@PathParam("target") String target,
 			@PathParam("fileName") String fileName) {
 		FileTransmissionResponse resp = new FileTransmissionResponse();
-
+		
 		if (StringUtil.isEmptyOrNull(source)
 				|| StringUtil.isEmptyOrNull(target)
 				|| StringUtil.isEmptyOrNull(fileName) || null == input) {
@@ -52,11 +52,13 @@ public class FileTransmissionRest {
 
 		FileTransmissionRequest fileRequest = new FileTransmissionRequest();
 		fileRequest.setSource(source);
-		fileRequest.setTarget(fileName);
+		fileRequest.setTarget(target);
 		fileRequest.setFileName(fileName);
 
 		try {
 			FileTransmissionServiceHandler.SendFile(fileRequest, input);
+			
+			return Response.status(Status.OK).entity(resp).build();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,7 +67,7 @@ public class FileTransmissionRest {
 			resp.setErrorMsg(String.format(ErrorCodes.FILETRAN_FILESAVE_ERRMSG,
 					fileName));
 
-			Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp).build();
 		} catch (PushNotificationFailedException e) {
 			e.printStackTrace();
 
@@ -96,13 +98,11 @@ public class FileTransmissionRest {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
 					.build();
 		}
-
-		return Response.status(Status.OK).entity(resp).build();
 	}
 
 	@GET
-	@Path("fetch?token={token}")
-	@Produces("image/*")
+	@Path("/fetch/{token}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response FetchFile(@Context HttpServletRequest request,
 			@PathParam("token") String token) {
 		FileFetchResponse resp = new FileFetchResponse();
@@ -113,7 +113,7 @@ public class FileTransmissionRest {
 
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
-
+		
 		FileFetchRequest fileReq = new FileFetchRequest();
 		fileReq.setToken(token);
 

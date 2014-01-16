@@ -41,15 +41,18 @@ public class MessageRest {
 				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
 				|| StringUtil.isEmptyOrNull(msgRequest.getTarget())
 				|| StringUtil.isEmptyOrNull(msgRequest.getContent())) {
+			
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
 			msgResp.setErrorMsg(String
 					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
+			
 			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
 		}
 
 		try {
 			String msgId = MessageServiceHandler.SendMessage(msgRequest);
 			msgResp.setMsgId(msgId);
+			
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
 			e.printStackTrace();
@@ -58,6 +61,7 @@ public class MessageRest {
 			msgResp.setErrorMsg(String.format(
 					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
 					msgRequest.toString()));
+			
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
 		} catch (JPushException e) {
 			// TODO Auto-generated catch block
@@ -66,6 +70,7 @@ public class MessageRest {
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
 			msgResp.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
 					e.getMessage(), msgRequest.toString()));
+			
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
 		}catch(Exception e)
 		{
@@ -73,6 +78,7 @@ public class MessageRest {
 			
 			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
 			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
+			
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
 		}
 	}
