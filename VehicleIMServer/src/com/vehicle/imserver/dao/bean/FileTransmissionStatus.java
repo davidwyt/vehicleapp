@@ -1,4 +1,4 @@
-package com.vehicle.imserver.persistence.dao;
+package com.vehicle.imserver.dao.bean;
 
 public enum FileTransmissionStatus {
 	SENT, RECEIVED

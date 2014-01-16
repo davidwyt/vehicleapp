@@ -1,6 +1,6 @@
 package com.vehicle.imserver.utils;
 
-import com.vehicle.imserver.persistence.dao.Message;
+import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.service.bean.INotification;
 
 import cn.jpush.api.ErrorCodeEnum;

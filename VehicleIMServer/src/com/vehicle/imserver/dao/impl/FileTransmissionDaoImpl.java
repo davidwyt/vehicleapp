@@ -1,18 +1,14 @@
-package com.vehicle.imserver.persistence.handler;
+package com.vehicle.imserver.dao.impl;
 
 import org.hibernate.Session;
 
-import com.vehicle.imserver.persistence.dao.FileTransmission;
+import com.vehicle.imserver.dao.bean.FileTransmission;
+import com.vehicle.imserver.dao.interfaces.FileTransmissionDao;
 import com.vehicle.imserver.utils.HibernateUtil;
 
-public class FileTransmissionDaoHandler {
+public class FileTransmissionDaoImpl extends BaseDaoImpl<FileTransmission> implements FileTransmissionDao {
 	
-	private FileTransmissionDaoHandler()
-	{
-		
-	}
-	
-	public static void AddFileTranmission(FileTransmission fileTransmission)
+	public void AddFileTranmission(FileTransmission fileTransmission)
 	{
 		Session session = HibernateUtil.getInstance().OpenSession();
 		
@@ -25,7 +21,7 @@ public class FileTransmissionDaoHandler {
 		session.close();
 	}
 	
-	public static FileTransmission GetFileTranmission(String token)
+	public FileTransmission GetFileTranmission(String token)
 	{
 		Session session = HibernateUtil.getInstance().OpenSession();
 		session.beginTransaction();
@@ -38,7 +34,7 @@ public class FileTransmissionDaoHandler {
 		return fileTran;
 	}
 	
-	public static void UpdateFileTranmission(FileTransmission fileTransmission)
+	public void UpdateFileTranmission(FileTransmission fileTransmission)
 	{
 		Session session = HibernateUtil.getInstance().OpenSession();
 		

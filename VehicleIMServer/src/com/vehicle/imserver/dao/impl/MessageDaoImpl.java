@@ -1,19 +1,17 @@
-package com.vehicle.imserver.persistence.handler;
+package com.vehicle.imserver.dao.impl;
 
 import org.hibernate.Session;
 
-import com.vehicle.imserver.persistence.dao.Message;
-import com.vehicle.imserver.persistence.dao.MessageStatus;
+import com.vehicle.imserver.dao.bean.FileTransmission;
+import com.vehicle.imserver.dao.bean.Message;
+import com.vehicle.imserver.dao.bean.MessageStatus;
+import com.vehicle.imserver.dao.interfaces.MessageDao;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.utils.HibernateUtil;
 
-public class MessageDaoHandler {
+public class MessageDaoImpl extends BaseDaoImpl<Message> implements MessageDao{
 	
-	private MessageDaoHandler()
-	{
-	}
-	
-	public static void InsertMessage(Message msg)
+	public void InsertMessage(Message msg)
 	{
 		Session session = HibernateUtil.getInstance().OpenSession();
 		
@@ -24,7 +22,7 @@ public class MessageDaoHandler {
 		session.close();
 	}
 	
-	public static void UpdateMessageStatus(String msgId, MessageStatus status) throws MessageNotFoundException
+	public void UpdateMessageStatus(String msgId, MessageStatus status) throws MessageNotFoundException
 	{
 		Session session = HibernateUtil.getInstance().OpenSession();
 		

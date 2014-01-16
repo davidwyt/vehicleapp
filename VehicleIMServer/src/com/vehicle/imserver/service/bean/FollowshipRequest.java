@@ -1,6 +1,6 @@
 package com.vehicle.imserver.service.bean;
 
-import com.vehicle.imserver.persistence.dao.Followship;
+import com.vehicle.imserver.dao.bean.Followship;
 
 public class FollowshipRequest implements IRequest{
 	

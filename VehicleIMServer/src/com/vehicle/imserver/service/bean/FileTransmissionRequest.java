@@ -3,8 +3,8 @@ package com.vehicle.imserver.service.bean;
 import java.util.Date;
 import java.util.UUID;
 
-import com.vehicle.imserver.persistence.dao.FileTransmission;
-import com.vehicle.imserver.persistence.dao.FileTransmissionStatus;
+import com.vehicle.imserver.dao.bean.FileTransmission;
+import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 
 public class FileTransmissionRequest implements IRequest{
 	private String source;

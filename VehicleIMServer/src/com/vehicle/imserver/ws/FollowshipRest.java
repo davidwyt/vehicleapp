@@ -1,4 +1,4 @@
-package com.vehicle.imserver.service.api;
+package com.vehicle.imserver.ws;
 
 import java.util.List;
 
@@ -14,6 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vehicle.imserver.service.bean.FolloweesRequest;
 import com.vehicle.imserver.service.bean.FolloweesResponse;
 import com.vehicle.imserver.service.bean.FollowersRequest;
@@ -23,12 +25,22 @@ import com.vehicle.imserver.service.bean.FollowshipResponse;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
 import com.vehicle.imserver.service.exception.PersistenceException;
-import com.vehicle.imserver.service.handler.FollowshipServiceHandler;
+import com.vehicle.imserver.service.interfaces.FollowshipService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
 
 @Path("followship")
 public class FollowshipRest {
+	
+	private FollowshipService followshipService;
+	
+	public FollowshipService getFollowshipService(){
+		return this.followshipService;
+	}
+	
+	public void setFollowshipService(FollowshipService followshipService){
+		this.followshipService=followshipService;
+	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -46,7 +58,7 @@ public class FollowshipRest {
 		}
 
 		try {
-			FollowshipServiceHandler.AddFollowship(followshipReq);
+			followshipService.AddFollowship(followshipReq);
 
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (FollowshipAlreadyExistException e) {
@@ -98,7 +110,7 @@ public class FollowshipRest {
 		}
 
 		try {
-			FollowshipServiceHandler.DropFollowship(followshipReq);
+			followshipService.DropFollowship(followshipReq);
 
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (FollowshipNotExistException e) {
@@ -156,7 +168,7 @@ public class FollowshipRest {
 		resp.setFollower(followeesReq.getFollower());
 
 		try {
-			List<String> followees = FollowshipServiceHandler
+			List<String> followees = followshipService
 					.GetFollowees(followeesReq);
 			resp.setFollowees(followees);
 			return Response.status(Status.OK).entity(resp).build();
@@ -204,7 +216,7 @@ public class FollowshipRest {
 		resp.setFollowee(followersReq.getFollowee());
 
 		try {
-			List<String> followers = FollowshipServiceHandler
+			List<String> followers = followshipService
 					.GetFollowers(followersReq);
 			resp.setFollowers(followers);
 			return Response.status(Status.OK).entity(resp).build();

@@ -1,4 +1,4 @@
-package com.vehicle.imserver.service.api;
+package com.vehicle.imserver.ws;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -9,6 +9,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vehicle.imserver.service.bean.MessageACKRequest;
 import com.vehicle.imserver.service.bean.MessageACKResponse;
@@ -21,13 +23,24 @@ import com.vehicle.imserver.service.bean.One2OneMessageResponse;
 import com.vehicle.imserver.service.exception.JPushException;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
-import com.vehicle.imserver.service.handler.MessageServiceHandler;
+import com.vehicle.imserver.service.interfaces.FollowshipService;
+import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
 
 @Path("message")
 public class MessageRest {
 
+	MessageService messageService;
+	
+	public MessageService getMessageService(){
+		return this.messageService;
+	}
+	
+	public void setMessageService(MessageService messageService){
+		this.messageService=messageService;
+	}
+	
 	@POST
 	@Path("one2one")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -50,7 +63,7 @@ public class MessageRest {
 		}
 
 		try {
-			String msgId = MessageServiceHandler.SendMessage(msgRequest);
+			String msgId = messageService.SendMessage(msgRequest);
 			msgResp.setMsgId(msgId);
 			
 			return Response.status(Status.OK).entity(msgResp).build();
@@ -102,7 +115,7 @@ public class MessageRest {
 		msgResp.setMsgId(msgACKReq.getMsgId());
 
 		try {
-			MessageServiceHandler.MessageReceived(msgACKReq);
+			messageService.MessageReceived(msgACKReq);
 			
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (MessageNotFoundException e) {
@@ -152,7 +165,7 @@ public class MessageRest {
 		}
 		
 		try {
-			MessageServiceHandler.SendMessage2Followees(msgRequest);
+			messageService.SendMessage2Followees(msgRequest);
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
 			e.printStackTrace();
@@ -201,7 +214,7 @@ public class MessageRest {
 		}
 		
 		try {
-			MessageServiceHandler.SendMessage2Followers(msgRequest);
+			messageService.SendMessage2Followers(msgRequest);
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
 			e.printStackTrace();

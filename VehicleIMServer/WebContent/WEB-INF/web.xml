@@ -12,11 +12,11 @@
   
    <servlet>
         <servlet-name>VehicleAppServlet</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
 		<init-param>
-		    <param-name>jersey.config.server.provider.packages</param-name>
+		    <param-name>com.sun.jersey.config.property.packages</param-name>
     		<param-value>
-        		com.vehicle.imserver.service.api
+        		com.vehicle.imserver.ws
     		</param-value>
 		</init-param>
 		<init-param>
@@ -29,4 +29,16 @@
         <servlet-name>VehicleAppServlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+    <listener>
+		<listener-class> 
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+    <context-param>
+     	<param-name>contextConfigLocation</param-name>
+     	<param-value>
+     		classpath*:applicationContext-*.xml,
+     	</param-value>
+   	</context-param>
+   	
 </web-app>

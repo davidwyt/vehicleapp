@@ -1,14 +1,16 @@
-package com.vehicle.imserver.service.handler;
+package com.vehicle.imserver.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.MessageResult;
 
-import com.vehicle.imserver.persistence.dao.FileTransmission;
-import com.vehicle.imserver.persistence.dao.FileTransmissionStatus;
-import com.vehicle.imserver.persistence.handler.FileTransmissionDaoHandler;
+import com.vehicle.imserver.dao.bean.FileTransmission;
+import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
+import com.vehicle.imserver.dao.interfaces.FileTransmissionDao;
 import com.vehicle.imserver.service.bean.FileFetchRequest;
 import com.vehicle.imserver.service.bean.FileTransmissionRequest;
 import com.vehicle.imserver.service.bean.INotification;
@@ -16,15 +18,23 @@ import com.vehicle.imserver.service.bean.NewFileNotification;
 import com.vehicle.imserver.service.exception.FileTransmissionNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
+import com.vehicle.imserver.service.interfaces.FileTransmissionService;
 import com.vehicle.imserver.utils.FileUtil;
 import com.vehicle.imserver.utils.JPushUtil;
 
-public class FileTransmissionServiceHandler {
-	private FileTransmissionServiceHandler() {
-
+public class FileTransmissionServiceImpl implements FileTransmissionService {
+	
+	FileTransmissionDao fileTransmissionDao;
+	
+	public FileTransmissionDao getFileTransmissionDao(){
+		return this.fileTransmissionDao;
+	}
+	
+	public void setFileTransmissionDao(FileTransmissionDao fileTransmissionDao){
+		this.fileTransmissionDao=fileTransmissionDao;
 	}
 
-	public static void SendFile(FileTransmissionRequest request,
+	public void SendFile(FileTransmissionRequest request,
 			InputStream input) throws IOException,
 			PushNotificationFailedException, PersistenceException {
 		String filePath = FileUtil.GenPathForFileTransmission("", request.getFileName());
@@ -37,7 +47,7 @@ public class FileTransmissionServiceHandler {
 
 		FileTransmission fileTran = request.toRawDao(filePath);
 		try{
-		FileTransmissionDaoHandler.AddFileTranmission(fileTran);
+		fileTransmissionDao.AddFileTranmission(fileTran);
 		}catch(Exception e)
 		{
 			throw new PersistenceException(e.getMessage(), e);
@@ -64,10 +74,10 @@ public class FileTransmissionServiceHandler {
 		}
 	}
 	
-	public static String FetchFile(FileFetchRequest request) throws FileTransmissionNotFoundException, PersistenceException
+	public String FetchFile(FileFetchRequest request) throws FileTransmissionNotFoundException, PersistenceException
 	{
 		String token = request.getToken();
-		FileTransmission fileTran = FileTransmissionDaoHandler.GetFileTranmission(token);
+		FileTransmission fileTran = fileTransmissionDao.GetFileTranmission(token);
 		
 		if(null == fileTran)
 		{
@@ -78,7 +88,7 @@ public class FileTransmissionServiceHandler {
 		
 		fileTran.setStatus(FileTransmissionStatus.RECEIVED);
 		try{
-		FileTransmissionDaoHandler.UpdateFileTranmission(fileTran);
+		fileTransmissionDao.UpdateFileTranmission(fileTran);
 		}catch(Exception e)
 		{
 			throw new PersistenceException(e.getMessage(), e);

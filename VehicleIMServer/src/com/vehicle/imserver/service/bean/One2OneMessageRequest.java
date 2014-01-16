@@ -2,8 +2,8 @@ package com.vehicle.imserver.service.bean;
 
 import java.util.Date;
 
-import com.vehicle.imserver.persistence.dao.Message;
-import com.vehicle.imserver.persistence.dao.MessageStatus;
+import com.vehicle.imserver.dao.bean.Message;
+import com.vehicle.imserver.dao.bean.MessageStatus;
 import com.vehicle.imserver.utils.GUIDUtil;
 
 public class One2OneMessageRequest implements IRequest{

@@ -1,26 +1,34 @@
-package com.vehicle.imserver.service.handler;
+package com.vehicle.imserver.service.impl;
 
 import java.util.List;
 
-import com.vehicle.imserver.persistence.handler.FollowshipDaoHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.service.bean.FolloweesRequest;
 import com.vehicle.imserver.service.bean.FollowersRequest;
 import com.vehicle.imserver.service.bean.FollowshipRequest;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
 import com.vehicle.imserver.service.exception.PersistenceException;
+import com.vehicle.imserver.service.interfaces.FollowshipService;
 
-public class FollowshipServiceHandler {
+public class FollowshipServiceImpl implements FollowshipService {
 	
-	private FollowshipServiceHandler()
-	{
-		
+	FollowshipDao followshipDao;
+	
+	public FollowshipDao getFollowshipDao(){
+		return this.followshipDao;
 	}
 	
-	public static void AddFollowship(FollowshipRequest followshipReq) throws FollowshipAlreadyExistException, PersistenceException
+	public void setFollowshipDao(FollowshipDao followshipDao){
+		this.followshipDao=followshipDao;
+	}
+	
+	public void AddFollowship(FollowshipRequest followshipReq) throws FollowshipAlreadyExistException, PersistenceException
 	{
 		try {
-			FollowshipDaoHandler.AddFollowship(followshipReq.toRawFollowship());
+			followshipDao.AddFollowship(followshipReq.toRawFollowship());
 		} catch (FollowshipAlreadyExistException e) {
 			// TODO Auto-generated catch block
 			throw e;
@@ -29,10 +37,10 @@ public class FollowshipServiceHandler {
 		}
 	}
 	
-	public static void DropFollowship(FollowshipRequest followshipReq) throws FollowshipNotExistException, PersistenceException
+	public void DropFollowship(FollowshipRequest followshipReq) throws FollowshipNotExistException, PersistenceException
 	{
 		try {
-			FollowshipDaoHandler.DropFollowship(followshipReq.toRawFollowship());
+			followshipDao.DropFollowship(followshipReq.toRawFollowship());
 		} catch (FollowshipNotExistException e) {
 			// TODO Auto-generated catch block
 			throw e;
@@ -41,20 +49,20 @@ public class FollowshipServiceHandler {
 		}
 	}
 	
-	public static List<String> GetFollowers(FollowersRequest followersReq) throws PersistenceException
+	public List<String> GetFollowers(FollowersRequest followersReq) throws PersistenceException
 	{
 		try{
-			return FollowshipDaoHandler.GetFollowers(followersReq.getFollowee());
+			return followshipDao.GetFollowers(followersReq.getFollowee());
 		}catch(Exception e)
 		{
 			throw new PersistenceException(e.getMessage(), e);
 		}
 	}
 	
-	public static List<String> GetFollowees(FolloweesRequest followeesReq) throws PersistenceException
+	public List<String> GetFollowees(FolloweesRequest followeesReq) throws PersistenceException
 	{
 		try{
-			return FollowshipDaoHandler.GetFollowees(followeesReq.getFollower());
+			return followshipDao.GetFollowees(followeesReq.getFollower());
 		}catch(Exception e)
 		{
 			throw new PersistenceException(e.getMessage(), e);

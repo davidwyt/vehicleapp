@@ -1,4 +1,4 @@
-package com.vehicle.imserver.persistence.dao;
+package com.vehicle.imserver.dao.bean;
 
 import java.util.Date;
 
