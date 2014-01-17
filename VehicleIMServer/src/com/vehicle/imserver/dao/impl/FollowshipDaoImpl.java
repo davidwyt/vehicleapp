@@ -1,95 +1,64 @@
 package com.vehicle.imserver.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 
-import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.dao.bean.Followship;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
-import com.vehicle.imserver.utils.Contants;
-import com.vehicle.imserver.utils.HibernateUtil;
 
 public class FollowshipDaoImpl extends BaseDaoImpl<Followship> implements FollowshipDao {
 	
 	public void AddFollowship(Followship followship) throws FollowshipAlreadyExistException
 	{
-		Session session = HibernateUtil.getInstance().OpenSession();
 		
-		session.beginTransaction();
-		
-		Followship oldship = (Followship)session.get(Followship.class, followship);
+		Followship oldship = this.get(followship);
 		
 		if(null != oldship)
 		{
-			session.getTransaction().commit();
-			session.close();
-			
 			throw new FollowshipAlreadyExistException(); 
+		} else {
+			this.save(followship);
 		}
-		
-		session.save(followship);
-		
-		session.getTransaction().commit();
-		session.close();
 	}
 	
 	public void DropFollowship(Followship followship) throws FollowshipNotExistException
 	{
-		Session session = HibernateUtil.getInstance().OpenSession();
-		
-		session.beginTransaction();
-		
-		Followship oldship = (Followship)session.get(Followship.class, followship);
+		Followship oldship = this.get(followship);
 		
 		if(null == oldship)
 		{
-			session.getTransaction().commit();
-			session.close();
-			
 			throw new FollowshipNotExistException(); 
+		} else {
+			this.delete(followship);
 		}
-		
-		session.delete(followship);
-		
-		session.getTransaction().commit();
-		session.close();
 	}
 	
 	public List<String> GetFollowees(String follower)
 	{
-		Session session = HibernateUtil.getInstance().OpenSession();
-		
-		session.beginTransaction();
-		
-		Query query = session.createQuery(Contants.HQL_SELECT_FOLLOWEES);
-		query.setString("follower", follower);
-		
-		List<String> followees = query.list();
-		
-		session.getTransaction().commit();
-		session.close();
-		
+		DetachedCriteria detachedCriteria=DetachedCriteria.forClass(Followship.class);
+		detachedCriteria.add(Restrictions.eq("follower",follower));
+		List<Followship> list=this.findByCriteria(detachedCriteria);
+		List<String> followees =new ArrayList<String>();
+		for(int i=0;i<list.size();i++){
+			followees.add(list.get(i).getFollowee());
+		}
 		return followees;
 	}
 	
 	public List<String> GetFollowers(String followee)
 	{
-		Session session = HibernateUtil.getInstance().OpenSession();
-		
-		session.beginTransaction();
-		
-		Query query = session.createQuery(Contants.HQL_SELECT_FOLLOWERS);
-		query.setString("followee", followee);
-		
-		List<String> followers = query.list();
-		
-		session.getTransaction().commit();
-		session.close();
-		
+		DetachedCriteria detachedCriteria=DetachedCriteria.forClass(Followship.class);
+		detachedCriteria.add(Restrictions.eq("followee",followee));
+		List<Followship> list=this.findByCriteria(detachedCriteria);
+		List<String> followers =new ArrayList<String>();
+		for(int i=0;i<list.size();i++){
+			followers.add(list.get(i).getFollower());
+		}
 		return followers;
 	}
 }

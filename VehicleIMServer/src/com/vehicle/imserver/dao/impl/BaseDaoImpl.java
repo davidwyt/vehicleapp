@@ -1,5 +1,6 @@
 package com.vehicle.imserver.dao.impl;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +23,17 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 	protected Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass()
 			.getGenericSuperclass()).getActualTypeArguments()[0];
 
-	public void delete(Long id) {
+	public void delete(Serializable id) {
 		T obj = this.load(id);
 		getHibernateTemplate().delete(obj);
 	}
 
-	public T get(Long id) {
+	public T get(Serializable id) {
 		return (T) getHibernateTemplate().get(entityClass, id);
 	}
 
-	public Long save(T obj) {
-		return (Long) getHibernateTemplate().save(obj);
+	public Serializable save(T obj) {
+		return getHibernateTemplate().save(obj);
 	}
 
 	public void saveOrUpdate(T obj) {
@@ -51,7 +52,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 		getHibernateTemplate().merge(obj);
 	}
 
-	public T load(Long id) {
+	public T load(Serializable id) {
 		return (T) getHibernateTemplate().load(entityClass, id);
 	}
 
@@ -130,7 +131,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
 	}
 
 	@Override
-	public int updateColumns(Long id, String[] columns, Object[] params) {
+	public int updateColumns(Serializable id, String[] columns, Object[] params) {
 		List<Integer> abandonList = new ArrayList<Integer>();
 		String property;
 		int escape=0;

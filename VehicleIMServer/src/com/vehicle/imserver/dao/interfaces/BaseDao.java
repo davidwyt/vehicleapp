@@ -1,5 +1,6 @@
 package com.vehicle.imserver.dao.interfaces;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,7 +15,7 @@ public interface BaseDao<T> {
 	 *            to be saved bean
 	 * @return Long identity id
 	 */
-	public Long save(T obj);
+	public Serializable save(T obj);
 	
 	/**
 	 * Description: Save the bean to database. If this record exists, update it.
@@ -32,7 +33,7 @@ public interface BaseDao<T> {
 	 *            identity id
 	 * @return Bean
 	 */
-	public T get(Long id);
+	public T get(Serializable id);
 
 	/**
 	 * Description: Load the bean by its identity id.
@@ -41,7 +42,7 @@ public interface BaseDao<T> {
 	 *            identity id
 	 * @return Bean
 	 */
-	public T load(Long id);
+	public T load(Serializable id);
 
 	/**
 	 * Description: Update the bean.
@@ -65,7 +66,7 @@ public interface BaseDao<T> {
 	 * @param id
 	 *            identity id
 	 */
-	public void delete(Long id);
+	public void delete(Serializable id);
 
 	/**
 	 * Description: Delete the bean.
@@ -138,7 +139,7 @@ public interface BaseDao<T> {
 	 * @return
 	 * 
 	 */
-	public int updateColumns(Long id, String[] columns, Object[] params);
+	public int updateColumns(Serializable id, String[] columns, Object[] params);
 	
 	/**
 	 * Description: count all the entries according to query criteria.
