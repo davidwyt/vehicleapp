@@ -1,9 +1,14 @@
 package com.vehicle.imserver.service.bean;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class FollowersRequest implements IRequest{
 	
 	private String followee;
 	
+	@XmlElement
 	public String getFollowee()
 	{
 		return this.followee;

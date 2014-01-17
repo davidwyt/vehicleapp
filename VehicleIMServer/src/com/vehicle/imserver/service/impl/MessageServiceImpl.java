@@ -12,9 +12,9 @@ import com.vehicle.imserver.dao.impl.FollowshipDaoImpl;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.dao.interfaces.MessageDao;
 import com.vehicle.imserver.service.bean.MessageACKRequest;
-import com.vehicle.imserver.service.bean.One2FolloweesMessageRequest;
-import com.vehicle.imserver.service.bean.One2FollowersMessageRequest;
-import com.vehicle.imserver.service.bean.One2OneMessageRequest;
+import com.vehicle.imserver.service.bean.MessageOne2FolloweesRequest;
+import com.vehicle.imserver.service.bean.MessageOne2FollowersRequest;
+import com.vehicle.imserver.service.bean.MessageOne2OneRequest;
 import com.vehicle.imserver.service.exception.JPushException;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
@@ -58,7 +58,7 @@ public class MessageServiceImpl implements MessageService{
 	}
 	
 	public String SendMessage(
-			One2OneMessageRequest msgReq) throws JPushException,
+			MessageOne2OneRequest msgReq) throws JPushException,
 			PersistenceException {
 
 		System.out.println(msgReq.toString());
@@ -74,7 +74,7 @@ public class MessageServiceImpl implements MessageService{
 			throws MessageNotFoundException, PersistenceException {
 
 		System.out.println(msgACKReq.toString());
-
+		
 		try {
 			messageDao.UpdateMessageStatus(
 					msgACKReq.getMsgId(), MessageStatus.RECEIVED);
@@ -103,7 +103,7 @@ public class MessageServiceImpl implements MessageService{
 		}
 	}
 	
-	public void SendMessage2Followees(One2FolloweesMessageRequest msgRequest) throws PersistenceException, JPushException
+	public void SendMessage2Followees(MessageOne2FolloweesRequest msgRequest) throws PersistenceException, JPushException
 	{
 		System.out.println(msgRequest.toString());
 		
@@ -113,7 +113,7 @@ public class MessageServiceImpl implements MessageService{
 		PersistentAndSendMessageList(source, followees, msgRequest.getContent());
 	}
 	
-	public void SendMessage2Followers(One2FollowersMessageRequest msgRequest) throws PersistenceException, JPushException
+	public void SendMessage2Followers(MessageOne2FollowersRequest msgRequest) throws PersistenceException, JPushException
 	{
 		System.out.println(msgRequest.toString());
 		

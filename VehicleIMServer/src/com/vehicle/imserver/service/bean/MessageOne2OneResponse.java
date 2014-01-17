@@ -4,16 +4,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class MessageACKResponse extends BaseResponse{
+public class MessageOne2OneResponse extends BaseResponse{
+	
 	private String msgId;
 	
-	@XmlElement	
-	public String getMsgId()
-	{
-		return this.msgId;
-	}
 	public void setMsgId(String id)
 	{
 		msgId = id;
+	}
+	
+	@XmlElement
+	public String getMsgId()
+	{
+		return this.msgId;
 	}
 }

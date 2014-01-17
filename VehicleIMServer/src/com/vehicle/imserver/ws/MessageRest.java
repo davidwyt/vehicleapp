@@ -12,12 +12,12 @@ import javax.ws.rs.core.Response.Status;
 
 import com.vehicle.imserver.service.bean.MessageACKRequest;
 import com.vehicle.imserver.service.bean.MessageACKResponse;
-import com.vehicle.imserver.service.bean.One2FolloweesMessageRequest;
-import com.vehicle.imserver.service.bean.One2FolloweesMessageResponse;
-import com.vehicle.imserver.service.bean.One2FollowersMessageRequest;
-import com.vehicle.imserver.service.bean.One2FollowersMessageResponse;
-import com.vehicle.imserver.service.bean.One2OneMessageRequest;
-import com.vehicle.imserver.service.bean.One2OneMessageResponse;
+import com.vehicle.imserver.service.bean.MessageOne2FolloweesRequest;
+import com.vehicle.imserver.service.bean.MessageOne2FolloweesResponse;
+import com.vehicle.imserver.service.bean.MessageOne2FollowersRequest;
+import com.vehicle.imserver.service.bean.MessageOne2FollowersResponse;
+import com.vehicle.imserver.service.bean.MessageOne2OneRequest;
+import com.vehicle.imserver.service.bean.MessageOne2OneResponse;
 import com.vehicle.imserver.service.exception.JPushException;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
@@ -43,9 +43,9 @@ public class MessageRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response SendMessage(@Context HttpServletRequest request,
-			One2OneMessageRequest msgRequest) {
+			MessageOne2OneRequest msgRequest) {
 
-		One2OneMessageResponse msgResp = new One2OneMessageResponse();
+		MessageOne2OneResponse msgResp = new MessageOne2OneResponse();
 
 		if (null == msgRequest
 				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
@@ -91,6 +91,7 @@ public class MessageRest {
 			
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
 		}
+		
 	}
 
 	@POST
@@ -148,9 +149,9 @@ public class MessageRest {
 	@Path("one2followees")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response SendMessage2Followees(@Context HttpServletRequest request, One2FolloweesMessageRequest msgRequest)
+	public Response SendMessage2Followees(@Context HttpServletRequest request, MessageOne2FolloweesRequest msgRequest)
 	{
-		One2FolloweesMessageResponse msgResp = new One2FolloweesMessageResponse();
+		MessageOne2FolloweesResponse msgResp = new MessageOne2FolloweesResponse();
 		
 		if(null == msgRequest || StringUtil.isEmptyOrNull(msgRequest.getSource()) || StringUtil.isEmptyOrNull(msgRequest.getContent()))
 		{
@@ -197,9 +198,9 @@ public class MessageRest {
 	@Path("one2followers")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response SendMessage2Followers(@Context HttpServletRequest request, One2FollowersMessageRequest msgRequest)
+	public Response SendMessage2Followers(@Context HttpServletRequest request, MessageOne2FollowersRequest msgRequest)
 	{
-		One2FollowersMessageResponse msgResp = new One2FollowersMessageResponse();
+		MessageOne2FollowersResponse msgResp = new MessageOne2FollowersResponse();
 		
 		if(null == msgRequest || StringUtil.isEmptyOrNull(msgRequest.getSource()) || StringUtil.isEmptyOrNull(msgRequest.getContent()))
 		{

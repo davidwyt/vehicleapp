@@ -1,9 +1,14 @@
 package com.vehicle.imserver.service.bean;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class MessageACKRequest implements IRequest{
 	
 	private String msgId;
 	
+	@XmlElement
 	public String getMsgId()
 	{
 		return this.msgId;

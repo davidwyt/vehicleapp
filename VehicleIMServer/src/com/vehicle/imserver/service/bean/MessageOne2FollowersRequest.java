@@ -1,10 +1,15 @@
 package com.vehicle.imserver.service.bean;
 
-public class One2FolloweesMessageRequest implements IRequest{
-	
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class MessageOne2FollowersRequest implements IRequest{
+
 	private String source;
 	private String content;
 	
+	@XmlElement
 	public String getSource()
 	{
 		return this.source;
@@ -15,6 +20,7 @@ public class One2FolloweesMessageRequest implements IRequest{
 		this.source = source;
 	}
 	
+	@XmlElement
 	public String getContent()
 	{
 		return this.content;
@@ -28,6 +34,6 @@ public class One2FolloweesMessageRequest implements IRequest{
 	@Override
 	public String toString()
 	{
-		return String.format("%s send message:%s to his/her fellowees", this.source, this.content);
+		return String.format("%s send message:%s to his/her fellowers", this.source, this.content);
 	}
 }

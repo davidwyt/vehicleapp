@@ -3,15 +3,20 @@ package com.vehicle.imserver.service.bean;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 
+@XmlRootElement
 public class FileTransmissionRequest implements IRequest{
 	private String source;
 	private String target;
 	
 	private String fileName;
 	
+	@XmlElement
 	public String getSource()
 	{
 		return this.source;
@@ -22,6 +27,7 @@ public class FileTransmissionRequest implements IRequest{
 		this.source = source;
 	}
 	
+	@XmlElement
 	public String getTarget()
 	{
 		return this.target;
@@ -32,6 +38,7 @@ public class FileTransmissionRequest implements IRequest{
 		this.target = target;
 	}
 	
+	@XmlElement
 	public String getFileName()
 	{
 		return this.fileName;

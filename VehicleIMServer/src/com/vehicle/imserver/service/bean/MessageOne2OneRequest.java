@@ -2,11 +2,15 @@ package com.vehicle.imserver.service.bean;
 
 import java.util.Date;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.dao.bean.MessageStatus;
 import com.vehicle.imserver.utils.GUIDUtil;
 
-public class One2OneMessageRequest implements IRequest{
+@XmlRootElement
+public class MessageOne2OneRequest implements IRequest{
 	private String source;
 	private String target;
 	private String content;
@@ -23,14 +27,17 @@ public class One2OneMessageRequest implements IRequest{
 		this.content = content;
 	}
 
+	@XmlElement
 	public String getSource() {
 		return this.source;
 	}
 
+	@XmlElement
 	public String getTarget() {
 		return this.target;
 	}
 
+	@XmlElement
 	public String getContent() {
 		return this.content;
 	}
