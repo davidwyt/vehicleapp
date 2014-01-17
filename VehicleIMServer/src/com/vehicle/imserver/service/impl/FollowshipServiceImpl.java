@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vehicle.imserver.dao.bean.Followship;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.service.bean.FolloweesRequest;
 import com.vehicle.imserver.service.bean.FollowersRequest;
@@ -59,14 +60,10 @@ public class FollowshipServiceImpl implements FollowshipService {
 		}
 	}
 	
-	public List<String> GetFollowees(FolloweesRequest followeesReq) throws PersistenceException
+	public List<String> GetFollowees(FolloweesRequest followeesReq) throws PersistenceException, FollowshipAlreadyExistException
 	{
-		try{
 			return followshipDao.GetFollowees(followeesReq.getFollower());
-		}catch(Exception e)
-		{
-			throw new PersistenceException(e.getMessage(), e);
-		}
+		
 	}
 	
 }

@@ -3,6 +3,8 @@ package com.vehicle.imserver.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
@@ -10,6 +12,7 @@ import com.vehicle.imserver.dao.bean.Followship;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
+import com.vehicle.imserver.utils.Contants;
 
 public class FollowshipDaoImpl extends BaseDaoImpl<Followship> implements FollowshipDao {
 	
@@ -40,25 +43,26 @@ public class FollowshipDaoImpl extends BaseDaoImpl<Followship> implements Follow
 	
 	public List<String> GetFollowees(String follower)
 	{
-		DetachedCriteria detachedCriteria=DetachedCriteria.forClass(Followship.class);
-		detachedCriteria.add(Restrictions.eq("follower",follower));
-		List<Followship> list=this.findByCriteria(detachedCriteria);
-		List<String> followees =new ArrayList<String>();
-		for(int i=0;i<list.size();i++){
-			followees.add(list.get(i).getFollowee());
-		}
+		Session session = this.getSession();
+		
+		
+		Query query = session.createQuery(Contants.HQL_SELECT_FOLLOWEES);
+		query.setString("follower", follower);
+		
+		List<String> followees = query.list();
+		
 		return followees;
 	}
 	
 	public List<String> GetFollowers(String followee)
 	{
-		DetachedCriteria detachedCriteria=DetachedCriteria.forClass(Followship.class);
-		detachedCriteria.add(Restrictions.eq("followee",followee));
-		List<Followship> list=this.findByCriteria(detachedCriteria);
-		List<String> followers =new ArrayList<String>();
-		for(int i=0;i<list.size();i++){
-			followers.add(list.get(i).getFollower());
-		}
+		Session session = this.getSession();
+		
+		Query query = session.createQuery(Contants.HQL_SELECT_FOLLOWERS);
+		query.setString("followee", followee);
+		
+		List<String> followers = query.list();
+		
 		return followers;
 	}
 }

@@ -14,6 +14,6 @@ public interface FollowshipService {
 	public void AddFollowship(FollowshipRequest followshipReq) throws FollowshipAlreadyExistException, PersistenceException;
 	public void DropFollowship(FollowshipRequest followshipReq) throws FollowshipNotExistException, PersistenceException;
 	public List<String> GetFollowers(FollowersRequest followersReq) throws PersistenceException;
-	public List<String> GetFollowees(FolloweesRequest followeesReq) throws PersistenceException;
+	public List<String> GetFollowees(FolloweesRequest followeesReq) throws PersistenceException, FollowshipAlreadyExistException;
 
 }

@@ -25,6 +25,7 @@
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
 			</props>
 		</property>	
 		<property name="packagesToScan">
@@ -34,6 +35,7 @@
 		</property>
 	</bean>
 
+    
 	<!-- 事务
 	<aop:config>
 		<aop:pointcut id="serviceMethods" expression="execution(* com.zoutaotech.dao.*.*(..))" />
@@ -63,11 +65,12 @@
 		<tx:attributes>
 			<tx:method name="get*" read-only="true" propagation="REQUIRED"/>
 			<tx:method name="query*" read-only="true" propagation="REQUIRED"/>
+			<tx:method name="*" propagation="REQUIRED"/>
 		</tx:attributes>
 	</tx:advice>
 	
 	<aop:config>
-		<aop:pointcut expression="execution(* service.impl.*Impl.*(..))" id="tp"/>
+		<aop:pointcut expression="execution(* com.vehicle.imserver.service.impl.*Impl.*(..))" id="tp"/>
 		<aop:advisor advice-ref="tm" id="ta" pointcut-ref="tp"/>
 	</aop:config>
 	
