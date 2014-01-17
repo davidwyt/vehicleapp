@@ -10,8 +10,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vehicle.imserver.service.bean.MessageACKRequest;
 import com.vehicle.imserver.service.bean.MessageACKResponse;
 import com.vehicle.imserver.service.bean.One2FolloweesMessageRequest;
@@ -23,7 +21,6 @@ import com.vehicle.imserver.service.bean.One2OneMessageResponse;
 import com.vehicle.imserver.service.exception.JPushException;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
-import com.vehicle.imserver.service.interfaces.FollowshipService;
 import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;

@@ -14,8 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vehicle.imserver.service.bean.FolloweesRequest;
 import com.vehicle.imserver.service.bean.FolloweesResponse;
 import com.vehicle.imserver.service.bean.FollowersRequest;

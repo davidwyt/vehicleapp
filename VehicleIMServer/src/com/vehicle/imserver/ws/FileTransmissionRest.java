@@ -17,8 +17,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vehicle.imserver.service.bean.FileFetchRequest;
 import com.vehicle.imserver.service.bean.FileFetchResponse;
 import com.vehicle.imserver.service.bean.FileTransmissionRequest;
@@ -26,9 +24,7 @@ import com.vehicle.imserver.service.bean.FileTransmissionResponse;
 import com.vehicle.imserver.service.exception.FileTransmissionNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
-import com.vehicle.imserver.service.impl.FileTransmissionServiceImpl;
 import com.vehicle.imserver.service.interfaces.FileTransmissionService;
-import com.vehicle.imserver.service.interfaces.FollowshipService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
 
