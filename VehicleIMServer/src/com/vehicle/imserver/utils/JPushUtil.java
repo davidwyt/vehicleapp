@@ -29,8 +29,9 @@ public class JPushUtil {
 		String msgTitle = "+;//jpush\"\"";
 		
 		String msgContent = MessageUtil.FormatSendingMsg(msg.getId(), msg.getContent());
-		MessageResult msgResult = jpush.sendCustomMessageWithAppKey(sendNo,
-				msgTitle, msgContent);
+//		MessageResult msgResult = jpush.sendCustomMessageWithAppKey(sendNo,
+//				msgTitle, msgContent);
+		MessageResult msgResult=jpush.sendCustomMessageWithAlias(sendNo, msg.getTarget(), msgTitle, msgContent);
 
 		if (null != msgResult) {
 			System.out.println(String.format("from jpush server: %s",
