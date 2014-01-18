@@ -42,7 +42,7 @@ public class FileTransmissionRest {
 	}
 
 	@POST
-	@Path("/send/source={source}&&target={target}&&fileName={fileName}")
+	@Path("send/source={source}&&target={target}&&fileName={fileName}")
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response TransmitFile(@Context HttpServletRequest request,
@@ -111,7 +111,7 @@ public class FileTransmissionRest {
 	}
 
 	@GET
-	@Path("/fetch/{token}")
+	@Path("fetch/{token}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response FetchFile(@Context HttpServletRequest request,
 			@PathParam("token") String token) {
