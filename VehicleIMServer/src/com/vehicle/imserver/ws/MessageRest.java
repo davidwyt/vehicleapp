@@ -18,9 +18,9 @@ import com.vehicle.imserver.service.bean.MessageOne2FollowersRequest;
 import com.vehicle.imserver.service.bean.MessageOne2FollowersResponse;
 import com.vehicle.imserver.service.bean.MessageOne2OneRequest;
 import com.vehicle.imserver.service.bean.MessageOne2OneResponse;
-import com.vehicle.imserver.service.exception.JPushException;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
+import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
@@ -73,7 +73,7 @@ public class MessageRest {
 					msgRequest.toString()));
 			
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
-		} catch (JPushException e) {
+		} catch (PushMessageFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
@@ -174,7 +174,7 @@ public class MessageRest {
 					msgRequest.toString()));
 			
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
-		} catch (JPushException e) {
+		} catch (PushMessageFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
@@ -223,7 +223,7 @@ public class MessageRest {
 					msgRequest.toString()));
 			
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
-		} catch (JPushException e) {
+		} catch (PushMessageFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			

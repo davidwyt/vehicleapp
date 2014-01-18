@@ -3,8 +3,6 @@ package com.vehicle.imserver.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.MessageResult;
 
@@ -21,23 +19,25 @@ import com.vehicle.imserver.service.exception.PushNotificationFailedException;
 import com.vehicle.imserver.service.interfaces.FileTransmissionService;
 import com.vehicle.imserver.utils.FileUtil;
 import com.vehicle.imserver.utils.JPushUtil;
+import com.vehicle.imserver.utils.RequestDaoUtil;
 
 public class FileTransmissionServiceImpl implements FileTransmissionService {
-	
+
 	FileTransmissionDao fileTransmissionDao;
-	
-	public FileTransmissionDao getFileTransmissionDao(){
+
+	public FileTransmissionDao getFileTransmissionDao() {
 		return this.fileTransmissionDao;
 	}
-	
-	public void setFileTransmissionDao(FileTransmissionDao fileTransmissionDao){
-		this.fileTransmissionDao=fileTransmissionDao;
+
+	public void setFileTransmissionDao(FileTransmissionDao fileTransmissionDao) {
+		this.fileTransmissionDao = fileTransmissionDao;
 	}
 
-	public void SendFile(FileTransmissionRequest request,
-			InputStream input) throws IOException,
-			PushNotificationFailedException, PersistenceException {
-		String filePath = FileUtil.GenPathForFileTransmission("", request.getFileName());
+	public void SendFile(FileTransmissionRequest request, InputStream input)
+			throws IOException, PushNotificationFailedException,
+			PersistenceException {
+		String filePath = FileUtil.GenPathForFileTransmission("",
+				request.getFileName());
 
 		try {
 			FileUtil.SaveFile(filePath, input);
@@ -45,20 +45,24 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			throw e;
 		}
 
-		FileTransmission fileTran = request.toRawDao(filePath);
-		try{
-		fileTransmissionDao.AddFileTranmission(fileTran);
-		}catch(Exception e)
-		{
+		FileTransmission fileTran = RequestDaoUtil.toFileTransmission(request,
+				filePath);
+		try {
+			fileTransmissionDao.AddFileTranmission(fileTran);
+		} catch (Exception e) {
 			throw new PersistenceException(e.getMessage(), e);
 		}
-		
+
 		INotification notification = new NewFileNotification(
 				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken());
 
 		MessageResult msgResult = null;
 		try {
-			msgResult = JPushUtil.getInstance().SendNotification(notification);
+
+			msgResult = JPushUtil.getInstance().SendNotification(
+					notification.getTarget(), notification.getTitle(),
+					notification.getContent(), notification.getExtras());
+
 		} catch (Exception e) {
 			throw new PushNotificationFailedException(e);
 		}
@@ -73,27 +77,27 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			throw new PushNotificationFailedException("no push result");
 		}
 	}
-	
-	public String FetchFile(FileFetchRequest request) throws FileTransmissionNotFoundException, PersistenceException
-	{
+
+	public String FetchFile(FileFetchRequest request)
+			throws FileTransmissionNotFoundException, PersistenceException {
 		String token = request.getToken();
-		FileTransmission fileTran = fileTransmissionDao.GetFileTranmission(token);
-		
-		if(null == fileTran)
-		{
-			throw new FileTransmissionNotFoundException(String.format("file transmission with token %s not found", token));
+		FileTransmission fileTran = fileTransmissionDao
+				.GetFileTranmission(token);
+
+		if (null == fileTran) {
+			throw new FileTransmissionNotFoundException(String.format(
+					"file transmission with token %s not found", token));
 		}
-		
+
 		String path = fileTran.getPath();
-		
+
 		fileTran.setStatus(FileTransmissionStatus.RECEIVED);
-		try{
-		fileTransmissionDao.UpdateFileTranmission(fileTran);
-		}catch(Exception e)
-		{
+		try {
+			fileTransmissionDao.UpdateFileTranmission(fileTran);
+		} catch (Exception e) {
 			throw new PersistenceException(e.getMessage(), e);
 		}
-		
+
 		return path;
 	}
 }

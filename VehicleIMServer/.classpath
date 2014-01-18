@@ -57,5 +57,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/hibernate-core-4.2.2.Final.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/gson-2.2.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/VehicleCommon"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

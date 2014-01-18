@@ -2,9 +2,6 @@ package com.vehicle.imserver.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.vehicle.imserver.dao.bean.Followship;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.service.bean.FolloweesRequest;
 import com.vehicle.imserver.service.bean.FollowersRequest;
@@ -13,6 +10,7 @@ import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.interfaces.FollowshipService;
+import com.vehicle.imserver.utils.RequestDaoUtil;
 
 public class FollowshipServiceImpl implements FollowshipService {
 	
@@ -29,7 +27,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 	public void AddFollowship(FollowshipRequest followshipReq) throws FollowshipAlreadyExistException, PersistenceException
 	{
 		try {
-			followshipDao.AddFollowship(followshipReq.toRawFollowship());
+			followshipDao.AddFollowship(RequestDaoUtil.toRawFollowship(followshipReq));
 		} catch (FollowshipAlreadyExistException e) {
 			// TODO Auto-generated catch block
 			throw e;
@@ -41,7 +39,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 	public void DropFollowship(FollowshipRequest followshipReq) throws FollowshipNotExistException, PersistenceException
 	{
 		try {
-			followshipDao.DropFollowship(followshipReq.toRawFollowship());
+			followshipDao.DropFollowship(RequestDaoUtil.toRawFollowship(followshipReq));
 		} catch (FollowshipNotExistException e) {
 			// TODO Auto-generated catch block
 			throw e;

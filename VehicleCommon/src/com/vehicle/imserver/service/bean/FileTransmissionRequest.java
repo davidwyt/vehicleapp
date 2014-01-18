@@ -1,13 +1,7 @@
 package com.vehicle.imserver.service.bean;
 
-import java.util.Date;
-import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.vehicle.imserver.dao.bean.FileTransmission;
-import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 
 @XmlRootElement
 public class FileTransmissionRequest implements IRequest{
@@ -53,18 +47,5 @@ public class FileTransmissionRequest implements IRequest{
 	public String toString()
 	{
 		return String.format("% send file: % to %", source, fileName, target);
-	}
-	
-	public FileTransmission toRawDao(String filePath)
-	{
-		FileTransmission fileTran = new FileTransmission();
-		fileTran.setSource(source);
-		fileTran.setTarget(target);
-		fileTran.setStatus(FileTransmissionStatus.SENT);
-		fileTran.setToken(UUID.randomUUID().toString());
-		fileTran.setTransmissionTime(new Date());
-		fileTran.setPath(filePath);
-		
-		return fileTran;
 	}
 }

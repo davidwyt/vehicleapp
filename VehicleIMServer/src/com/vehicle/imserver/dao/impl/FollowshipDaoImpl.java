@@ -1,12 +1,9 @@
 package com.vehicle.imserver.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
 
 import com.vehicle.imserver.dao.bean.Followship;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;

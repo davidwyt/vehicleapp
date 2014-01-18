@@ -1,9 +1,10 @@
 package com.vehicle.imserver.utils;
 
+import java.util.Map;
+
 import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.service.bean.INotification;
 
-import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.MessageResult;
 
@@ -24,35 +25,19 @@ public class JPushUtil {
 		return instance;
 	}
 
-	public void SendCustomMessage(Message msg) {
-		int sendNo = getRandomSendNo();
-		String msgTitle = "+;//jpush\"\"";
-		
-		String msgContent = MessageUtil.FormatSendingMsg(msg.getId(), msg.getContent());
-//		MessageResult msgResult = jpush.sendCustomMessageWithAppKey(sendNo,
-//				msgTitle, msgContent);
-		MessageResult msgResult=jpush.sendCustomMessageWithAlias(sendNo, msg.getTarget(), msgTitle, msgContent);
-
-		if (null != msgResult) {
-			System.out.println(String.format("from jpush server: %s",
-					msgResult.toString()));
-			if (msgResult.getErrcode() == ErrorCodeEnum.NOERROR.value()) {
-				System.out.println(String.format(
-						"send success， sendNo= %s,messageId= %s",
-						msgResult.getSendno(), msgResult.getMsg_id()));
-			} else {
-				System.out.println(String.format(
-						"send failed， errorcode=%s, errormsg=%s",
-						msgResult.getErrcode(), msgResult.getErrmsg()));
-			}
-		} else {
-			System.out.println("can't retrieve msg");
-		}
-	}
-
-	public MessageResult SendNotification(INotification notification)
+	public MessageResult SendCustomMessage(String target, String title, String content)
 	{
-		return jpush.sendNotificationWithAlias(getRandomSendNo(), notification.getTarget(), notification.getTitle(), notification.getContent(), 0, notification.getExtras());
+		return jpush.sendCustomMessageWithAlias(getRandomSendNo(), target, title, content);
+	}
+	
+	public MessageResult SendNotification(String target, String title, String content)
+	{
+		return jpush.sendNotificationWithAlias(getRandomSendNo(), target, title, content);
+	}
+	
+	public MessageResult SendNotification(String target, String title, String content, Map<String, Object> extras)
+	{
+		return jpush.sendNotificationWithAlias(getRandomSendNo(), target, title, content, 0, extras);
 	}
 	
 	private static final int MAX = Integer.MAX_VALUE;

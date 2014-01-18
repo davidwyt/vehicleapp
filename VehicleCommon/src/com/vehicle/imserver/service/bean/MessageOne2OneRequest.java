@@ -1,13 +1,7 @@
 package com.vehicle.imserver.service.bean;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.vehicle.imserver.dao.bean.Message;
-import com.vehicle.imserver.dao.bean.MessageStatus;
-import com.vehicle.imserver.utils.GUIDUtil;
 
 @XmlRootElement
 public class MessageOne2OneRequest implements IRequest{
@@ -46,17 +40,5 @@ public class MessageOne2OneRequest implements IRequest{
 	public String toString() {
 		return String.format("Message#### %s, source:%s, target:%s", content,
 				source, target);
-	}
-
-	public Message toRawMessage() {
-		Message msg = new Message();
-		msg.setId(GUIDUtil.genNewGuid());
-		msg.setSource(this.source);
-		msg.setTarget(this.target);
-		msg.setContent(this.content);
-		msg.setSentDate(new Date());
-		msg.setStatus(MessageStatus.SENT);
-
-		return msg;
 	}
 }

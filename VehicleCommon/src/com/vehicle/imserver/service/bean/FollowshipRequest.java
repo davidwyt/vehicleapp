@@ -3,8 +3,6 @@ package com.vehicle.imserver.service.bean;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.vehicle.imserver.dao.bean.Followship;
-
 @XmlRootElement
 public class FollowshipRequest implements IRequest{
 	
@@ -33,11 +31,4 @@ public class FollowshipRequest implements IRequest{
 		this.followee = followee;
 	}
 	
-	public Followship toRawFollowship()
-	{
-		Followship ship = new Followship();
-		ship.setFollower(follower);
-		ship.setFollowee(followee);
-		return ship;
-	}
 }

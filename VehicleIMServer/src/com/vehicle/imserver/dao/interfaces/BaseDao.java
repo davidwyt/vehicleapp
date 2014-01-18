@@ -1,10 +1,6 @@
 package com.vehicle.imserver.dao.interfaces;
 
 import java.io.Serializable;
-import java.util.List;
-
-import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 
 public interface BaseDao<T> {
 

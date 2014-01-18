@@ -3,8 +3,6 @@ package com.vehicle.imserver.service.bean;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vehicle.imserver.utils.Contants;
-
 public class NewFileNotification implements INotification{
 
 	private String token;
@@ -21,15 +19,15 @@ public class NewFileNotification implements INotification{
 	@Override
 	public String getTitle() {
 		// TODO Auto-generated method stub
-		return Contants.NOTIFICATION_NEWFILE_TITLE;
+		return "New File Comes";
 	}
 	
 	@Override
 	public String getContent() {
 		// TODO Auto-generated method stub
-		return String.format(Contants.NOTIFICATION_NEWFILE_CONTENT, source);
+		return String.format("%s sent you a file", source);
 	}
-
+	
 	@Override
 	public String getSource() {
 		// TODO Auto-generated method stub
