@@ -2,12 +2,12 @@ package com.vehicle.imserver.service.interfaces;
 
 import java.util.List;
 
-import com.vehicle.imserver.service.bean.FolloweesRequest;
-import com.vehicle.imserver.service.bean.FollowersRequest;
-import com.vehicle.imserver.service.bean.FollowshipRequest;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
 import com.vehicle.imserver.service.exception.PersistenceException;
+import com.vehicle.service.bean.FolloweesRequest;
+import com.vehicle.service.bean.FollowersRequest;
+import com.vehicle.service.bean.FollowshipRequest;
 
 public interface FollowshipService {
 	

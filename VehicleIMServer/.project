@@ -3,6 +3,7 @@
 	<name>VehicleIMServer</name>
 	<comment></comment>
 	<projects>
+		<project>VehicleCommon</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

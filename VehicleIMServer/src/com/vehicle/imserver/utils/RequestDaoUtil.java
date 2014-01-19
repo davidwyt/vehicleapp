@@ -8,9 +8,9 @@ import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 import com.vehicle.imserver.dao.bean.Followship;
 import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.dao.bean.MessageStatus;
-import com.vehicle.imserver.service.bean.FileTransmissionRequest;
-import com.vehicle.imserver.service.bean.FollowshipRequest;
-import com.vehicle.imserver.service.bean.MessageOne2OneRequest;
+import com.vehicle.service.bean.FileTransmissionRequest;
+import com.vehicle.service.bean.FollowshipRequest;
+import com.vehicle.service.bean.MessageOne2OneRequest;
 
 public class RequestDaoUtil {
 	

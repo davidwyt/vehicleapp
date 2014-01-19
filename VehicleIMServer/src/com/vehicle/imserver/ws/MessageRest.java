@@ -10,20 +10,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.vehicle.imserver.service.bean.MessageACKRequest;
-import com.vehicle.imserver.service.bean.MessageACKResponse;
-import com.vehicle.imserver.service.bean.MessageOne2FolloweesRequest;
-import com.vehicle.imserver.service.bean.MessageOne2FolloweesResponse;
-import com.vehicle.imserver.service.bean.MessageOne2FollowersRequest;
-import com.vehicle.imserver.service.bean.MessageOne2FollowersResponse;
-import com.vehicle.imserver.service.bean.MessageOne2OneRequest;
-import com.vehicle.imserver.service.bean.MessageOne2OneResponse;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
+import com.vehicle.service.bean.MessageACKRequest;
+import com.vehicle.service.bean.MessageACKResponse;
+import com.vehicle.service.bean.MessageOne2FolloweesRequest;
+import com.vehicle.service.bean.MessageOne2FolloweesResponse;
+import com.vehicle.service.bean.MessageOne2FollowersRequest;
+import com.vehicle.service.bean.MessageOne2FollowersResponse;
+import com.vehicle.service.bean.MessageOne2OneRequest;
+import com.vehicle.service.bean.MessageOne2OneResponse;
 
 @Path("message")
 public class MessageRest {

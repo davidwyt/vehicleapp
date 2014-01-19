@@ -1,12 +1,12 @@
 package com.vehicle.imserver.service.interfaces;
 
-import com.vehicle.imserver.service.bean.MessageACKRequest;
-import com.vehicle.imserver.service.bean.MessageOne2FolloweesRequest;
-import com.vehicle.imserver.service.bean.MessageOne2FollowersRequest;
-import com.vehicle.imserver.service.bean.MessageOne2OneRequest;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
+import com.vehicle.service.bean.MessageACKRequest;
+import com.vehicle.service.bean.MessageOne2FolloweesRequest;
+import com.vehicle.service.bean.MessageOne2FollowersRequest;
+import com.vehicle.service.bean.MessageOne2OneRequest;
 
 public interface MessageService {
 

@@ -9,10 +9,6 @@ import cn.jpush.api.MessageResult;
 import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 import com.vehicle.imserver.dao.interfaces.FileTransmissionDao;
-import com.vehicle.imserver.service.bean.FileFetchRequest;
-import com.vehicle.imserver.service.bean.FileTransmissionRequest;
-import com.vehicle.imserver.service.bean.INotification;
-import com.vehicle.imserver.service.bean.NewFileNotification;
 import com.vehicle.imserver.service.exception.FileTransmissionNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
@@ -20,6 +16,10 @@ import com.vehicle.imserver.service.interfaces.FileTransmissionService;
 import com.vehicle.imserver.utils.FileUtil;
 import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
+import com.vehicle.service.bean.FileFetchRequest;
+import com.vehicle.service.bean.FileTransmissionRequest;
+import com.vehicle.service.bean.INotification;
+import com.vehicle.service.bean.NewFileNotification;
 
 public class FileTransmissionServiceImpl implements FileTransmissionService {
 

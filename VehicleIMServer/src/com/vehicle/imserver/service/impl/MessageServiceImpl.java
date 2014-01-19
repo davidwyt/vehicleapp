@@ -11,10 +11,6 @@ import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.dao.bean.MessageStatus;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.dao.interfaces.MessageDao;
-import com.vehicle.imserver.service.bean.MessageACKRequest;
-import com.vehicle.imserver.service.bean.MessageOne2FolloweesRequest;
-import com.vehicle.imserver.service.bean.MessageOne2FollowersRequest;
-import com.vehicle.imserver.service.bean.MessageOne2OneRequest;
 import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
@@ -22,6 +18,10 @@ import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
+import com.vehicle.service.bean.MessageACKRequest;
+import com.vehicle.service.bean.MessageOne2FolloweesRequest;
+import com.vehicle.service.bean.MessageOne2FollowersRequest;
+import com.vehicle.service.bean.MessageOne2OneRequest;
 
 public class MessageServiceImpl implements MessageService {
 

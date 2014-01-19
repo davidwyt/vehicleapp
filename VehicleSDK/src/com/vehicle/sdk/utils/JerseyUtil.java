@@ -15,12 +15,16 @@ import org.apache.commons.io.IOUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.vehicle.imserver.service.bean.IResponse;
+import com.vehicle.service.bean.IResponse;
 
 public class JerseyUtil {
 
-	public static IResponse HttpGet(String url) {
+	public static <T> T HttpGet(String url, Class<T> t) {
+
 		Client client = Client.create();
+
+		// ServiceFinder.setIteratorProvider(new
+		// VehicleServiceIteratorProvider());
 
 		WebResource webResource = client.resource(url);
 
@@ -32,30 +36,34 @@ public class JerseyUtil {
 					+ response.getStatus());
 		}
 
-		return response.getEntity(IResponse.class);
+		return (T) response.getEntity(t);
 	}
 
-	public static IResponse HttpPost(String url, Object entity) {
+	public static <T> T HttpPost(String url, Object entity, Class<T> t) {
+
+		// ServiceFinder.setIteratorProvider(new
+		// VehicleServiceIteratorProvider());
+
 		Client client = Client.create();
 
 		WebResource webResource = client.resource(url);
 
-		ClientResponse response = webResource
-				.accept(MediaType.APPLICATION_JSON).post(ClientResponse.class,
-						entity);
+		ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class, entity);
 
 		if (response.getStatus() != 200) {
 			throw new RuntimeException("Failed : HTTP error code : "
 					+ response.getStatus());
 		}
 
-		return response.getEntity(IResponse.class);
+		return response.getEntity(t);
+
 	}
 
 	public static IResponse UploadFile(String url, String filePath) {
-		
+
 		File file = new File(filePath);
-		
+
 		InputStream fileInStream = null;
 		try {
 			fileInStream = new FileInputStream(file);
@@ -66,7 +74,11 @@ public class JerseyUtil {
 
 		String sContentDisposition = "attachment; filename=\"" + file.getName()
 				+ "\"";
+
 		Client client = Client.create();
+		// ServiceFinder.setIteratorProvider(new
+		// VehicleServiceIteratorProvider());
+
 		WebResource webResource = client.resource(url);
 
 		ClientResponse response = webResource
@@ -83,9 +95,12 @@ public class JerseyUtil {
 	}
 
 	public static void DownloadFile(String url, String filePath) {
-		
+
 		Client client = Client.create();
-		
+
+		// ServiceFinder.setIteratorProvider(new
+		// VehicleServiceIteratorProvider());
+
 		WebResource webResource = client.resource(url);
 
 		ClientResponse response = webResource.type(
@@ -100,18 +115,18 @@ public class JerseyUtil {
 
 		OutputStream outStream = null;
 		try {
-			
+
 			outStream = new FileOutputStream(filePath);
-		
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		try {
-			
+
 			IOUtils.copy(input, outStream);
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
