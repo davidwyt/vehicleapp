@@ -38,10 +38,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private Button mBtnSend;
 	private Button mBtnBack;
+	private Button mBtnSetting;
 	private EditText mEditTextContent;
 	private ChatMsgViewAdapter mAdapter;
 	private ListView mListView;
 
+	private BroadcastReceiver messageReceiver;
 	private List<Message> mDataArrays = new ArrayList<Message>();
 
 	@Override
@@ -51,7 +53,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_chat);
 		initView();
 		initData();
-		registerMessageReceiver();
+		//registerMessageReceiver();
 	}
 
 	private void initView() {
@@ -61,18 +63,37 @@ public class ChatActivity extends Activity implements OnClickListener {
 		mBtnSend = (Button) findViewById(R.id.btn_send);
 		mBtnSend.setOnClickListener(this);
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
-
+		mBtnSetting = (Button) findViewById(R.id.btn_setting);
+		mBtnSetting.setOnClickListener(this);
+		
 		mEditTextContent.setCursorVisible(true);
 		mListView.setFastScrollEnabled(true);
 		mListView.setFastScrollAlwaysVisible(true);
 	}
-
+	
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		registerMessageReceiver();
+	}
+	
 	private void registerMessageReceiver() {
-		MessageReceiver messageReceiver = new MessageReceiver();
+		//this.unregisterReceiver(messageReceiver);
+		
+		messageReceiver = new MessageReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
 		filter.addAction(Constants.ACTION_MESSAGE_RECEIVED);
 		registerReceiver(messageReceiver, filter);
+	}
+	
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+	    unregisterReceiver(messageReceiver);
+	    
 	}
 
 	private String[] msgArray = new String[] {
@@ -128,7 +149,16 @@ public class ChatActivity extends Activity implements OnClickListener {
 		case R.id.btn_send:
 			send();
 			break;
+		case R.id.btn_setting:
+			setting();
+			break;
 		}
+	}
+	
+	private void setting()
+	{
+		Intent intent = new Intent(this, SettingActivity.class);
+		startActivity(intent);
 	}
 
 	private void send() {
@@ -153,11 +183,10 @@ public class ChatActivity extends Activity implements OnClickListener {
 				protected Void doInBackground(String... params) {
 					// TODO Auto-generated method stub
 					String content = params[0];
-					VehicleClient client = new VehicleClient(Constants.SELFID);
+					VehicleClient client = new VehicleClient(Constants.SERVERURL, Constants.SELFID);
 					client.SendMessage(Constants.HERID, content);
 					return null;
 				}
-
 			};
 			
 			sendAsync.execute(content);

@@ -19,7 +19,7 @@ public class NewFileNotification implements INotification{
 	@Override
 	public String getTitle() {
 		// TODO Auto-generated method stub
-		return "New File Comes";
+		return Notifications.NewFile.toString();
 	}
 	
 	@Override

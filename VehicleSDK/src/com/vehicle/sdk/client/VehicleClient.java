@@ -25,7 +25,7 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
-	private static final String URL_SERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
+	private static final String URL_DEFAULTSERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -43,10 +43,16 @@ public class VehicleClient {
 	private static final String URL_FOLLOWSHIP_FOLLOWEES = "followees/%s";
 	private static final String URL_FOLLOWSHIP_FOLLOWERS = "followers/%s";
 
+	private String URL_SERVERROOT;
 	private String source;
 
-	public VehicleClient(String source) {
+	public VehicleClient(String serverUrl, String source) {
+		this.URL_SERVERROOT = serverUrl;
 		this.source = source;
+	}
+
+	public VehicleClient(String source) {
+		this(URL_DEFAULTSERVERROOT, source);
 	}
 
 	public void SendMessage(String target, String content) {

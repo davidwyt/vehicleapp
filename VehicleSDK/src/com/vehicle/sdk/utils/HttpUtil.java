@@ -3,148 +3,233 @@ package com.vehicle.sdk.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 public class HttpUtil {
 
 	public static <T> T PostJson(String url, Object entity, Class<T> t) {
-		StringRequestEntity requestEntity = null;
-		try {
-			requestEntity = new StringRequestEntity(
-					JsonUtil.toJsonString(entity), "application/json", "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		PostMethod postMethod = new PostMethod(url);
-		postMethod.setRequestEntity(requestEntity);
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setRetryHandler(new HttpRequestRetryPolicy()).build();
 
-		HttpClient httpClient = new HttpClient();
-		int statusCode = 0;
 		String resp = "";
+		CloseableHttpResponse response = null;
 
 		try {
-			statusCode = httpClient.executeMethod(postMethod);
+			HttpPost httppost = new HttpPost(url);
 
-			if (statusCode != HttpStatus.SC_OK) {
-				System.out.println(String.format(
-						"http post failed, url: %s, entity: %s!!!", url,
-						JsonUtil.toJsonString(entity)));
+			StringEntity strBody = new StringEntity(
+					JsonUtil.toJsonString(entity), ContentType.create(
+							"application/json", "UTF-8"));
+
+			httppost.setEntity(strBody);
+
+			System.out
+					.println("executing request " + httppost.getRequestLine());
+
+			response = httpclient.execute(httppost);
+
+			System.out.println("----------------------------------------");
+			System.out.println(response.getStatusLine());
+			HttpEntity resEntity = response.getEntity();
+			if (resEntity != null) {
+				System.out.println("Response content length: "
+						+ resEntity.getContentLength());
+				resp = EntityUtils.toString(resEntity, "UTF-8");
+				// EntityUtils.consume(resEntity);
 			}
-
-			System.out.println(" status code:" + statusCode);
-
-			resp = postMethod.getResponseBodyAsString();
-		} catch (HttpException e) {
+		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			postMethod.releaseConnection();
+
+			try {
+				httpclient.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (null != response) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 
+		System.out.println(resp);
 		return JsonUtil.fromJson(resp, t);
 	}
 
 	public static <T> T GetJson(String url, Class<T> t) {
 
-		GetMethod getMethod = new GetMethod(url);
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setRetryHandler(new HttpRequestRetryPolicy()).build();
 
-		HttpClient httpClient = new HttpClient();
-		int statusCode = 0;
 		String resp = "";
+		CloseableHttpResponse response = null;
 
 		try {
-			statusCode = httpClient.executeMethod(getMethod);
+			HttpGet httpget = new HttpGet(url);
 
-			if (statusCode != HttpStatus.SC_OK) {
-				System.out.println(String.format("http get failed, url: %s!!!",
-						url));
+			System.out.println("executing request " + httpget.getRequestLine());
+
+			response = httpclient.execute(httpget);
+
+			System.out.println("----------------------------------------");
+			System.out.println(response.getStatusLine());
+			HttpEntity resEntity = response.getEntity();
+			if (resEntity != null) {
+				System.out.println("Response content length: "
+						+ resEntity.getContentLength());
+				resp = EntityUtils.toString(resEntity, "UTF-8");
+				// EntityUtils.consume(resEntity);
 			}
-
-			resp = getMethod.getResponseBodyAsString();
-		} catch (HttpException e) {
+		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			getMethod.releaseConnection();
+
+			try {
+				httpclient.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (null != response) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 
 		return JsonUtil.fromJson(resp, t);
 	}
 
 	public static <T> T UploadFile(String url, String filePath, Class<T> t) {
-		HttpClient httpClient = new HttpClient();
-		PostMethod postMethod = new PostMethod(url);
+
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setRetryHandler(new HttpRequestRetryPolicy()).build();
 
 		String resp = "";
+		CloseableHttpResponse response = null;
 
 		try {
-			File file = new File(filePath);
-			Part[] parts = new Part[1];
-			parts[0] = new FilePart(file.getName(), file);
+			HttpPost httppost = new HttpPost(url);
 
-			postMethod.setRequestEntity(new MultipartRequestEntity(parts,
-					postMethod.getParams()));
+			FileEntity fileBody = new FileEntity(new File(filePath),
+					ContentType.APPLICATION_OCTET_STREAM);
 
-			int statusCode = httpClient.executeMethod(postMethod);
+			httppost.setEntity(fileBody);
 
-			if (statusCode != HttpStatus.SC_OK) {
-				System.out.println(String.format(
-						"http upload file failed, url: %s!!!", url));
+			System.out
+					.println("executing request " + httppost.getRequestLine());
+
+			response = httpclient.execute(httppost);
+
+			System.out.println("----------------------------------------");
+			System.out.println(response.getStatusLine());
+			HttpEntity resEntity = response.getEntity();
+			if (resEntity != null) {
+				System.out.println("Response content length: "
+						+ resEntity.getContentLength());
+				resp = EntityUtils.toString(resEntity, "UTF-8");
+				// EntityUtils.consume(resEntity);
 			}
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
 
 			try {
-				resp = postMethod.getResponseBodyAsString();
+				httpclient.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			postMethod.releaseConnection();
 
+			if (null != response) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 
 		return JsonUtil.fromJson(resp, t);
 	}
 
 	public static InputStream DownloadFile(String url) {
-		InputStream input = null;
-		HttpClient client = new HttpClient();
-		GetMethod getMethod = new GetMethod(url);
-		try {
-			int statusCode = client.executeMethod(getMethod);
 
-			if (statusCode != HttpStatus.SC_OK) {
-				System.out.println(String.format(
-						"http upload file failed, url: %s!!!", url));
-			} else {
-				input = getMethod.getResponseBodyAsStream();
-			}
-		} catch (HttpException e) {
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setRetryHandler(new HttpRequestRetryPolicy()).build();
+
+		InputStream input = null;
+
+		CloseableHttpResponse response = null;
+
+		try {
+			HttpGet httpget = new HttpGet(url);
+
+			System.out.println("executing request " + httpget.getRequestLine());
+
+			response = httpclient.execute(httpget);
+
+			System.out.println("----------------------------------------");
+			System.out.println(response.getStatusLine());
+			input = response.getEntity().getContent();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			getMethod.releaseConnection();
+
+			try {
+				httpclient.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (null != response) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 
 		return input;
