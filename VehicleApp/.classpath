@@ -8,8 +8,9 @@
 	<classpathentry kind="lib" path="libs/jackson-jaxrs-1.8.8.jar"/>
 	<classpathentry kind="lib" path="libs/jpush-sdk-release1.5.6.jar"/>
 	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>
-	<classpathentry kind="lib" path="libs/VehicleSDK.jar"/>
+	<classpathentry kind="lib" path="libs/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="libs/fluent-hc-4.3.2.jar"/>
 	<classpathentry excluding="META-INF/|META-INF/" kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>

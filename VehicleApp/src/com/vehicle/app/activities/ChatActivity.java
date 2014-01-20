@@ -53,7 +53,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_chat);
 		initView();
 		initData();
-		//registerMessageReceiver();
 	}
 
 	private void initView() {
@@ -65,21 +64,25 @@ public class ChatActivity extends Activity implements OnClickListener {
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		mBtnSetting = (Button) findViewById(R.id.btn_setting);
 		mBtnSetting.setOnClickListener(this);
-		
+
 		mEditTextContent.setCursorVisible(true);
 		mListView.setFastScrollEnabled(true);
 		mListView.setFastScrollAlwaysVisible(true);
 	}
-	
+
 	@Override
-	protected void onStart()
-	{
+	protected void onStart() {
 		super.onStart();
 		registerMessageReceiver();
 	}
-	
+
 	private void registerMessageReceiver() {
-		//this.unregisterReceiver(messageReceiver);
+		// this.unregisterReceiver(messageReceiver);
+		try {
+			unregisterReceiver(messageReceiver);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		messageReceiver = new MessageReceiver();
 		IntentFilter filter = new IntentFilter();
@@ -87,13 +90,15 @@ public class ChatActivity extends Activity implements OnClickListener {
 		filter.addAction(Constants.ACTION_MESSAGE_RECEIVED);
 		registerReceiver(messageReceiver, filter);
 	}
-	
+
 	@Override
-	protected void onStop()
-	{
+	protected void onStop() {
 		super.onStop();
-	    unregisterReceiver(messageReceiver);
-	    
+		try {
+			unregisterReceiver(messageReceiver);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private String[] msgArray = new String[] {
@@ -154,9 +159,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
-	
-	private void setting()
-	{
+
+	private void setting() {
 		Intent intent = new Intent(this, SettingActivity.class);
 		startActivity(intent);
 	}
@@ -183,12 +187,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 				protected Void doInBackground(String... params) {
 					// TODO Auto-generated method stub
 					String content = params[0];
-					VehicleClient client = new VehicleClient(Constants.SERVERURL, Constants.SELFID);
+					VehicleClient client = new VehicleClient(
+							Constants.SERVERURL, Constants.SELFID);
 					client.SendMessage(Constants.HERID, content);
 					return null;
 				}
 			};
-			
+
 			sendAsync.execute(content);
 
 		}

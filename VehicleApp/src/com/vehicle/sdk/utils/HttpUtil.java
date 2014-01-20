@@ -5,35 +5,32 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 public class HttpUtil {
 
 	public static <T> T PostJson(String url, Object entity, Class<T> t) {
 
-		CloseableHttpClient httpclient = HttpClients.custom()
-				.setRetryHandler(new HttpRequestRetryPolicy()).build();
-
+		HttpClient httpclient = new DefaultHttpClient();
+		
 		String resp = "";
-		CloseableHttpResponse response = null;
+		HttpResponse response = null;
 
 		try {
 			HttpPost httppost = new HttpPost(url);
 
 			StringEntity strBody = new StringEntity(
-					JsonUtil.toJsonString(entity));
-
+					JsonUtil.toJsonString(entity), "UTF-8");
 			strBody.setContentType("application/json");
-			strBody.setContentEncoding("UTF-8");
-
+			
 			httppost.setEntity(strBody);
 
 			System.out
@@ -56,24 +53,7 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-
-			try {
-				httpclient.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			if (null != response) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		} 
 
 		System.out.println(resp);
 		return JsonUtil.fromJson(resp, t);
@@ -81,11 +61,10 @@ public class HttpUtil {
 
 	public static <T> T GetJson(String url, Class<T> t) {
 
-		CloseableHttpClient httpclient = HttpClients.custom()
-				.setRetryHandler(new HttpRequestRetryPolicy()).build();
+		HttpClient httpclient = new DefaultHttpClient();
 
 		String resp = "";
-		CloseableHttpResponse response = null;
+		HttpResponse response = null;
 
 		try {
 			HttpGet httpget = new HttpGet(url);
@@ -109,42 +88,23 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-
-			try {
-				httpclient.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			if (null != response) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
+		} 
+		
 		return JsonUtil.fromJson(resp, t);
 	}
 
 	public static <T> T UploadFile(String url, String filePath, Class<T> t) {
 
-		CloseableHttpClient httpclient = HttpClients.custom()
-				.setRetryHandler(new HttpRequestRetryPolicy()).build();
+		HttpClient httpclient = new DefaultHttpClient();
 
 		String resp = "";
-		CloseableHttpResponse response = null;
+		HttpResponse response = null;
 
 		try {
 			HttpPost httppost = new HttpPost(url);
 
-			FileEntity fileBody = new FileEntity(new File(filePath));
-
-			fileBody.setContentType("application/octet-stream");
+			FileEntity fileBody = new FileEntity(new File(filePath),
+					"application/octet-stream");
 
 			httppost.setEntity(fileBody);
 
@@ -168,36 +128,18 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-
-			try {
-				httpclient.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			if (null != response) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		} 
 
 		return JsonUtil.fromJson(resp, t);
 	}
 
 	public static InputStream DownloadFile(String url) {
 
-		CloseableHttpClient httpclient = HttpClients.custom()
-				.setRetryHandler(new HttpRequestRetryPolicy()).build();
+		HttpClient httpclient = new DefaultHttpClient();
 
 		InputStream input = null;
 
-		CloseableHttpResponse response = null;
+		HttpResponse response = null;
 
 		try {
 			HttpGet httpget = new HttpGet(url);
@@ -215,24 +157,7 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-
-			try {
-				httpclient.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			if (null != response) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		} 
 
 		return input;
 	}
