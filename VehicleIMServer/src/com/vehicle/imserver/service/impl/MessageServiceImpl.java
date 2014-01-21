@@ -53,20 +53,24 @@ public class MessageServiceImpl implements MessageService {
 			throw new PersistenceException(e.getMessage(), e);
 		}
 
-		MessageResult msgResult = null;
+		MessageResult androidMsgResult = null;
+		MessageResult iosMsgResult=null;
 		try {
-			msgResult = JPushUtil.getInstance().SendCustomMessage(
+			androidMsgResult = JPushUtil.getInstance().SendAndroidMessage(
 					msg.getTarget(), "", JsonUtil.toJsonString(msg));
-
+			iosMsgResult=JPushUtil.getInstance().SendIOSMessage(msg.getTarget(), "chat", JsonUtil.toJsonString(msg));
 		} catch (Exception e) {
 			throw new PushMessageFailedException(e);
 		}
 
-		if (null != msgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
+		if (null != androidMsgResult&&null!=iosMsgResult) {
+			if (ErrorCodeEnum.NOERROR.value() == androidMsgResult.getErrcode()||ErrorCodeEnum.NOERROR.value() == iosMsgResult.getErrcode()) {
 
 			} else {
-				throw new PushMessageFailedException(msgResult.getErrmsg());
+				if (ErrorCodeEnum.NOERROR.value() != androidMsgResult.getErrcode())
+					throw new PushMessageFailedException(androidMsgResult.getErrmsg());
+				if (ErrorCodeEnum.NOERROR.value() != iosMsgResult.getErrcode())
+					throw new PushMessageFailedException(iosMsgResult.getErrmsg());
 			}
 		} else {
 			throw new PushMessageFailedException("no push result");
