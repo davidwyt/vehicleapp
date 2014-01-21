@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+        <LinearLayout
+        android:id="@+id/layout_bottombar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" >
+
+        <Button
+            android:id="@+id/bar_btn_message"
+            style="@drawable/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:background="@drawable/common_signin_btn_icon_pressed_dark"
+            android:gravity="fill" />
+
+        <Button
+            android:id="@+id/bar_btn_vendor"
+            style="@drawable/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:background="@drawable/common_signin_btn_icon_pressed_dark"
+            android:gravity="fill" />
+
+        <Button
+            android:id="@+id/bar_btn_setting"
+            style="@drawable/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:background="@drawable/common_signin_btn_icon_pressed_dark"
+            android:gravity="fill" />
+    </LinearLayout>
+
+</merge>

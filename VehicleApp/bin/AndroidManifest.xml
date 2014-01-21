@@ -49,6 +49,10 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.SettingActivity" >
         </activity>
+        <activity android:name="com.vehicle.app.activities.RegisterActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.UserListActivity" >
+        </activity>
 
         <!-- Required SDK核心功能 -->
         <activity
@@ -88,7 +92,7 @@
             android:enabled="true" >
             <intent-filter android:priority="1000" >
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
- <!-- Required  显示通知栏 -->
+                <!-- Required  显示通知栏 -->
                 <category android:name="cn.edu.sjtu.vehicleapp" />
             </intent-filter>
             <intent-filter>
@@ -113,16 +117,16 @@
             android:enabled="true" >
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" />
- <!-- Required  用户注册SDK的intent -->
+                <!-- Required  用户注册SDK的intent -->
                 <action android:name="cn.jpush.android.intent.UNREGISTRATION" />
                 <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
- <!-- Required  用户接收SDK消息的intent -->
+                <!-- Required  用户接收SDK消息的intent -->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
- <!-- Required  用户接收SDK通知栏信息的intent -->
+                <!-- Required  用户接收SDK通知栏信息的intent -->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
- <!-- Required  用户打开自定义通知栏的intent -->
+                <!-- Required  用户打开自定义通知栏的intent -->
                 <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK" />
- <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
+                <!-- Optional 用户接受Rich Push Javascript 回调函数的intent -->
                 <category android:name="cn.edu.sjtu.vehicleapp" />
             </intent-filter>
         </receiver>
@@ -134,7 +138,7 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="ee54a39cda5f4cf0ed4e2617" />
- <!-- </>值来自开发者平台取得的AppKey -->
+        <!-- </>值来自开发者平台取得的AppKey -->
         <activity
             android:name="cn.edu.sjtu.vehicleapp.SettingsActivity"
             android:label="@string/title_activity_settings" >

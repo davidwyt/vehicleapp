@@ -2,9 +2,6 @@ package com.vehicle.imserver.utils;
 
 import java.util.Map;
 
-import com.vehicle.imserver.dao.bean.Message;
-import com.vehicle.service.bean.INotification;
-
 import cn.jpush.api.DeviceEnum;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.MessageResult;

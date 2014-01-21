@@ -56,7 +56,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	}
 
 	private void initView() {
-		mListView = (ListView) findViewById(R.id.listview);
+		mListView = (ListView) findViewById(R.id.list_users);
 		mBtnBack = (Button) findViewById(R.id.btn_back);
 		mBtnBack.setOnClickListener(this);
 		mBtnSend = (Button) findViewById(R.id.btn_send);

@@ -6,5 +6,9 @@ public class StringUtil {
 	{
 		return null == str || str.isEmpty();
 	}
-
+	
+	public static boolean IsEmail(String str)
+	{
+		return str.matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+");
+	}
 }

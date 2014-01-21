@@ -1,5 +1,6 @@
 package com.vehicle.app.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 	public synchronized void addMsg(Message msg) {
 		this.data.add(msg);
-		
 	}
 
 	public int getCount() {
@@ -43,6 +43,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		return position;
 	}
 
+	@SuppressLint("SimpleDateFormat")
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		Message entity = data.get(position);

@@ -102,7 +102,7 @@ public class LoginActivity extends Activity {
 							//JPushInterface.setAlias(getApplicationContext(), Constants.SELFID, arg2);
 							JPushInterface.setAliasAndTags(getApplicationContext(), Constants.SELFID, null);
 							
-							Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+							Intent intent = new Intent(LoginActivity.this, UserListActivity.class);
 							startActivity(intent);
 						}
 						
