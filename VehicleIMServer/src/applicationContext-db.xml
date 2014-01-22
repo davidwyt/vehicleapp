@@ -10,11 +10,11 @@
             http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
             http://www.springframework.org/schema/tx
             http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<property name="user" value="root"></property>
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="username" value="root"></property>
 		<property name="password" value="root"></property>
-		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
-		<property name="jdbcUrl" value="jdbc:mysql://192.168.1.105:3306/VEHICLEIMSERVER"></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://192.168.1.105:3306/VEHICLEIMSERVER"></property>
 	</bean>
 	
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">

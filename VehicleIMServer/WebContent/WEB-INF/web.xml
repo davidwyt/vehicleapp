@@ -9,7 +9,17 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  
+  <listener>
+		<listener-class> 
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+    <context-param>
+     	<param-name>contextConfigLocation</param-name>
+     	<param-value>
+     		classpath*:applicationContext-*.xml
+     	</param-value>
+   	</context-param>
    <servlet>
         <servlet-name>VehicleAppServlet</servlet-name>
         <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
@@ -29,16 +39,6 @@
         <servlet-name>VehicleAppServlet</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-    <listener>
-		<listener-class> 
-			org.springframework.web.context.ContextLoaderListener
-		</listener-class>
-	</listener>
-    <context-param>
-     	<param-name>contextConfigLocation</param-name>
-     	<param-value>
-     		classpath*:applicationContext-*.xml,
-     	</param-value>
-   	</context-param>
+    
    	
 </web-app>

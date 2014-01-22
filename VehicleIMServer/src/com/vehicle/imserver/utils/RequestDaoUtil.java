@@ -7,7 +7,6 @@ import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 import com.vehicle.imserver.dao.bean.Followship;
 import com.vehicle.imserver.dao.bean.Message;
-import com.vehicle.imserver.dao.bean.MessageStatus;
 import com.vehicle.service.bean.FileTransmissionRequest;
 import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.MessageOne2OneRequest;
@@ -34,7 +33,6 @@ public class RequestDaoUtil {
 		msg.setTarget(request.getTarget());
 		msg.setContent(request.getContent());
 		msg.setSentDate(new Date());
-		msg.setStatus(MessageStatus.SENT);
 
 		return msg;
 	}

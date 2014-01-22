@@ -23,4 +23,9 @@
 			<ref bean="sessionFactory" />
 		</property>
 	</bean>  
+	<bean id="offlineMessageDao" class="com.vehicle.imserver.dao.impl.OfflineMessageDaoImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>  
     </beans>

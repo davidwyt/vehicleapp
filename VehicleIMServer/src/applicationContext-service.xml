@@ -22,6 +22,9 @@
 		<property name="messageDao">
 			<ref bean="messageDao" />
 		</property>
+		<property name="offlineMessageDao">
+			<ref bean="offlineMessageDao" />
+		</property>
 		<property name="followshipDao">
 			<ref bean="followshipDao" />
 		</property>

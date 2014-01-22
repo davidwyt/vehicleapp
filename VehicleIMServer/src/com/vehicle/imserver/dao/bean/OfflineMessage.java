@@ -10,8 +10,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "MESSAGE")
-public class Message {
+@Table(name = "OFFLINEMESSAGE")
+public class OfflineMessage {
 	
 	private String id;
 	private String source;
@@ -19,9 +19,9 @@ public class Message {
 	private Date sentTime;
 	private String content;
 	
-	public Message(){}
+	public OfflineMessage(){}
 	
-	public Message(OfflineMessage om){
+	public OfflineMessage(Message om){
 		this.id=om.getId();
 		this.source=om.getSource();
 		this.target=om.getTarget();

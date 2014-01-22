@@ -1,29 +1,34 @@
 package com.vehicle.imserver.ws;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.vehicle.imserver.service.exception.MessageNotFoundException;
+import com.vehicle.imserver.dao.bean.OfflineMessage;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
-import com.vehicle.service.bean.MessageACKRequest;
-import com.vehicle.service.bean.MessageACKResponse;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FolloweesResponse;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
 import com.vehicle.service.bean.MessageOne2FollowersResponse;
 import com.vehicle.service.bean.MessageOne2OneRequest;
 import com.vehicle.service.bean.MessageOne2OneResponse;
+import com.vehicle.service.bean.OfflineMessageRequest;
+import com.vehicle.service.bean.OfflineMessageResponse;
 
 @Path("message")
 public class MessageRest {
@@ -36,6 +41,45 @@ public class MessageRest {
 	
 	public void setMessageService(MessageService messageService){
 		this.messageService=messageService;
+	}
+	
+	@POST
+	@Path("offline")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response SendOfflineMsg(@Context HttpServletRequest request,
+			OfflineMessageRequest omReq) {
+		OfflineMessageResponse omr=new OfflineMessageResponse();
+		if(null==omReq||StringUtil.isEmptyOrNull(omReq.getTarget())){
+			omr.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
+			omr.setErrorMsg(String
+					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
+			
+			return Response.status(Status.BAD_REQUEST).entity(omr).build();
+		}
+		try {
+			this.messageService.sendOfflineMsgs(omReq);
+			return Response.status(Status.OK).entity(omr).build();
+		} catch (PushMessageFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			omr.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
+			omr.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
+					e.getMessage(), omReq.toString()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(omr).build();
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			omr.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			omr.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					omReq.toString()));
+			
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(omr).build();
+		}
+		
+		
 	}
 	
 	@POST
@@ -92,57 +136,6 @@ public class MessageRest {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
 		}
 		
-	}
-
-	@POST
-	@Path("ack")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response MessageReceived(@Context HttpServletRequest request,
-			MessageACKRequest msgACKReq) {
-
-		MessageACKResponse msgResp = new MessageACKResponse();
-
-		if (null == msgACKReq || StringUtil.isEmptyOrNull(msgACKReq.getMsgId())) {
-			msgResp.setErrorCode(ErrorCodes.MESSAGEID_NULL_ERRCODE);
-			msgResp.setErrorMsg(ErrorCodes.MESSAGEID_NULL_ERRMSG);
-			
-			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
-		}
-
-		msgResp.setMsgId(msgACKReq.getMsgId());
-
-		try {
-			messageService.MessageReceived(msgACKReq);
-			
-			return Response.status(Status.OK).entity(msgResp).build();
-		} catch (MessageNotFoundException e) {
-			e.printStackTrace();
-
-			msgResp.setErrorCode(ErrorCodes.MESSAGE_NOT_FOUND_ERRCODE);
-			msgResp.setErrorMsg(String.format(
-					ErrorCodes.MESSAGE_NOT_FOUND_ERRMSG, msgACKReq.getMsgId()));
-			
-			return Response.status(Status.NOT_FOUND).entity(msgResp).build();
-		}catch (PersistenceException e) {
-			e.printStackTrace();
-			
-			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
-			msgResp.setErrorMsg(String.format(
-					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
-					msgACKReq.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
-			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
-					e.getMessage()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(msgResp).build();
-		}
 	}
 	
 	@POST
