@@ -29,59 +29,38 @@ import com.vehicle.service.bean.MessageOne2OneRequest;
 import com.vehicle.service.bean.MessageOne2OneResponse;
 import com.vehicle.service.bean.OfflineMessageRequest;
 import com.vehicle.service.bean.OfflineMessageResponse;
+import com.vehicle.service.bean.RespMessage;
 
 @Path("message")
 public class MessageRest {
 
 	MessageService messageService;
-	
-	public MessageService getMessageService(){
+
+	public MessageService getMessageService() {
 		return this.messageService;
 	}
-	
-	public void setMessageService(MessageService messageService){
-		this.messageService=messageService;
+
+	public void setMessageService(MessageService messageService) {
+		this.messageService = messageService;
 	}
-	
+
 	@POST
 	@Path("offline")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response SendOfflineMsg(@Context HttpServletRequest request,
 			OfflineMessageRequest omReq) {
-		OfflineMessageResponse omr=new OfflineMessageResponse();
-		if(null==omReq||StringUtil.isEmptyOrNull(omReq.getTarget())){
+		OfflineMessageResponse omr = new OfflineMessageResponse();
+		if (null == omReq || StringUtil.isEmptyOrNull(omReq.getTarget())) {
 			omr.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
-			omr.setErrorMsg(String
-					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
-			
+			omr.setErrorMsg(String.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
 			return Response.status(Status.BAD_REQUEST).entity(omr).build();
 		}
-		try {
-			this.messageService.sendOfflineMsgs(omReq);
-			return Response.status(Status.OK).entity(omr).build();
-		} catch (PushMessageFailedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			omr.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
-			omr.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
-					e.getMessage(), omReq.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(omr).build();
-		} catch (PersistenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			omr.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
-			omr.setErrorMsg(String.format(
-					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
-					omReq.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(omr).build();
-		}
-		
-		
+		List<RespMessage> list=this.messageService.sendOfflineMsgs(omReq);
+		omr.setMessages(list);
+		return Response.status(Status.OK).entity(omr).build();
 	}
-	
+
 	@POST
 	@Path("one2one")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -95,144 +74,155 @@ public class MessageRest {
 				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
 				|| StringUtil.isEmptyOrNull(msgRequest.getTarget())
 				|| StringUtil.isEmptyOrNull(msgRequest.getContent())) {
-			
+
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
 			msgResp.setErrorMsg(String
 					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
-			
+
 			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
 		}
 
 		try {
 			String msgId = messageService.SendMessage(msgRequest);
 			msgResp.setMsgId(msgId);
-			
+
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
 			msgResp.setErrorMsg(String.format(
 					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
 					msgRequest.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
 		} catch (PushMessageFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
 			msgResp.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
 					e.getMessage(), msgRequest.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
-		}catch(Exception e)
-		{
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
+		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
-			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
 		}
-		
+
 	}
-	
+
 	@POST
 	@Path("one2followees")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response SendMessage2Followees(@Context HttpServletRequest request, MessageOne2FolloweesRequest msgRequest)
-	{
+	public Response SendMessage2Followees(@Context HttpServletRequest request,
+			MessageOne2FolloweesRequest msgRequest) {
 		MessageOne2FolloweesResponse msgResp = new MessageOne2FolloweesResponse();
-		
-		if(null == msgRequest || StringUtil.isEmptyOrNull(msgRequest.getSource()) || StringUtil.isEmptyOrNull(msgRequest.getContent()))
-		{
+
+		if (null == msgRequest
+				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
+				|| StringUtil.isEmptyOrNull(msgRequest.getContent())) {
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
 			msgResp.setErrorMsg(String
 					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
-			
+
 			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
 		}
-		
+
 		try {
 			messageService.SendMessage2Followees(msgRequest);
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
 			msgResp.setErrorMsg(String.format(
 					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
 					msgRequest.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
 		} catch (PushMessageFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
 			msgResp.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
 					e.getMessage(), msgRequest.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
-		}catch(Exception e)
-		{
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
+		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
-			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
 		}
 	}
-	
+
 	@POST
 	@Path("one2followers")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response SendMessage2Followers(@Context HttpServletRequest request, MessageOne2FollowersRequest msgRequest)
-	{
+	public Response SendMessage2Followers(@Context HttpServletRequest request,
+			MessageOne2FollowersRequest msgRequest) {
 		MessageOne2FollowersResponse msgResp = new MessageOne2FollowersResponse();
-		
-		if(null == msgRequest || StringUtil.isEmptyOrNull(msgRequest.getSource()) || StringUtil.isEmptyOrNull(msgRequest.getContent()))
-		{
+
+		if (null == msgRequest
+				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
+				|| StringUtil.isEmptyOrNull(msgRequest.getContent())) {
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
 			msgResp.setErrorMsg(String
 					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
-			
+
 			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
 		}
-		
+
 		try {
 			messageService.SendMessage2Followers(msgRequest);
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
 			msgResp.setErrorMsg(String.format(
 					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
 					msgRequest.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
 		} catch (PushMessageFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
 			msgResp.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
 					e.getMessage(), msgRequest.toString()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
-		}catch(Exception e)
-		{
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
+		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
-			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
-			
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msgResp).build();
+			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
 		}
 	}
 }

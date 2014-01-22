@@ -1,7 +1,6 @@
 package com.vehicle.imserver.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -14,18 +13,17 @@ import com.vehicle.imserver.dao.bean.OfflineMessage;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.dao.interfaces.MessageDao;
 import com.vehicle.imserver.dao.interfaces.OfflineMessageDao;
-import com.vehicle.imserver.service.exception.MessageNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
-import com.vehicle.service.bean.MessageACKRequest;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
 import com.vehicle.service.bean.MessageOne2OneRequest;
 import com.vehicle.service.bean.OfflineMessageRequest;
+import com.vehicle.service.bean.RespMessage;
 
 public class MessageServiceImpl implements MessageService {
 
@@ -141,40 +139,20 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public void sendOfflineMsgs(OfflineMessageRequest omReq) throws PushMessageFailedException, PersistenceException {
+	public List<RespMessage> sendOfflineMsgs(OfflineMessageRequest omReq){
 		// TODO Auto-generated method stub
 		List<OfflineMessage> list=this.getOfflineMessageDao().getOffline(omReq.getTarget(), new Date(omReq.getSince()));
-		MessageResult androidMsgResult = null;
-		MessageResult iosMsgResult=null;
-		try {
-			androidMsgResult = JPushUtil.getInstance().SendAndroidMessage(
-					omReq.getTarget(), "", JsonUtil.toJsonString(list));
-			iosMsgResult=JPushUtil.getInstance().SendIOSMessage(omReq.getTarget(), "offline", JsonUtil.toJsonString(list));
-		} catch (Exception e) {
-			throw new PushMessageFailedException(e);
+		List<RespMessage> ret=new ArrayList<RespMessage>();
+		for(int i=0;i<list.size();i++){
+			RespMessage r=new RespMessage();
+			r.setContent(list.get(i).getContent());
+			r.setId(list.get(i).getId());
+			r.setSentTime(list.get(i).getSentDate());
+			r.setSource(list.get(i).getSource());
+			r.setTarget(list.get(i).getTarget());
+			ret.add(r);
 		}
-
-		if (null != androidMsgResult&&null!=iosMsgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == androidMsgResult.getErrcode()||ErrorCodeEnum.NOERROR.value() == iosMsgResult.getErrcode()) {
-				try {
-					for(int i=0;i<list.size();i++){
-						this.getMessageDao().save(new Message(list.get(i)));
-					}
-					for(int i=0;i<list.size();i++){
-						this.getOfflineMessageDao().delete(list.get(i));
-					}
-				} catch (Exception e) {
-					throw new PersistenceException(e.getMessage(), e);
-				}
-			} else {
-				if (ErrorCodeEnum.NOERROR.value() != androidMsgResult.getErrcode())
-					throw new PushMessageFailedException(androidMsgResult.getErrmsg());
-				if (ErrorCodeEnum.NOERROR.value() != iosMsgResult.getErrcode())
-					throw new PushMessageFailedException(iosMsgResult.getErrmsg());
-			}
-		} else {
-			throw new PushMessageFailedException("no push result");
-		}
+		return ret;
 	}
 
 }
