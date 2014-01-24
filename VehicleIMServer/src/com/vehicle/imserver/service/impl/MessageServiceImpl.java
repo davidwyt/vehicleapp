@@ -22,6 +22,7 @@ import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
 import com.vehicle.service.bean.MessageOne2OneRequest;
+import com.vehicle.service.bean.OfflineAckRequest;
 import com.vehicle.service.bean.OfflineMessageRequest;
 import com.vehicle.service.bean.RespMessage;
 
@@ -139,7 +140,7 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public List<RespMessage> sendOfflineMsgs(OfflineMessageRequest omReq){
+	public List<RespMessage> sendOfflineMsgs(OfflineMessageRequest omReq)throws PersistenceException{
 		// TODO Auto-generated method stub
 		List<OfflineMessage> list=this.getOfflineMessageDao().getOffline(omReq.getTarget(), new Date(omReq.getSince()));
 		List<RespMessage> ret=new ArrayList<RespMessage>();
@@ -153,6 +154,13 @@ public class MessageServiceImpl implements MessageService {
 			ret.add(r);
 		}
 		return ret;
+	}
+
+	@Override
+	public void offlineAck(OfflineAckRequest req) throws PersistenceException  {
+		// TODO Auto-generated method stub
+		String target=req.getId();
+		this.getOfflineMessageDao().deleteOffline(target);
 	}
 
 }

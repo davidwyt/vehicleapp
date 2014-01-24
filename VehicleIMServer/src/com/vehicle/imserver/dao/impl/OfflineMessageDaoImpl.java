@@ -27,4 +27,13 @@ public class OfflineMessageDaoImpl extends BaseDaoImpl<OfflineMessage> implement
 		return msgs;
 	}
 
+	@Override
+	public void deleteOffline(String target) {
+		// TODO Auto-generated method stub
+		Session session = this.getSession();
+		Query query = session.createQuery(Contants.HQL_DEL_OFFLINE);
+		query.setString("target", target);
+		query.executeUpdate();
+	}
+
 }
