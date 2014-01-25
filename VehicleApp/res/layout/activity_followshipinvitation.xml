@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/followshipinvitation_titleId"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/followshipinvitation_goback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="0.3"
+            android:background="@drawable/chat_info" />
+
+        <TextView
+            android:id="@+id/followshipinvitation_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:background="@drawable/common_signin_btn_text_normal_dark" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/followshipinvitation_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/followshipinvitation_titleId"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/chatfrom_bg_normal"
+        android:text="@string/followshipinvitationformatstr"
+        android:textColor="@color/textFieldColor" />
+
+    <Button
+        android:id="@+id/followshipinvitation_shopdetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/followshipinvitation_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/chat_info" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/followshipinvitation_shopdetail"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/followshipinvitation_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/chat_info" />
+
+        <Button
+            android:id="@+id/followshipinvitation_reject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/chat_info" />
+    </LinearLayout>
+
+</RelativeLayout>
