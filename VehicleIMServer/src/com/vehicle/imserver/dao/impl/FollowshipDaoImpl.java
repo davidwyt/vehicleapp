@@ -6,6 +6,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import com.vehicle.imserver.dao.bean.Followship;
+import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;

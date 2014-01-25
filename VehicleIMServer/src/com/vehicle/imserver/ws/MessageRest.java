@@ -255,6 +255,7 @@ public class MessageRest {
 			return Response.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(msgResp).build();
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 
 			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);

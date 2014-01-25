@@ -1,8 +1,7 @@
 package com.vehicle.service.bean;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.sun.xml.internal.txw2.annotation.XmlElement;
 
 @XmlRootElement
 public class FollowshipAddedRequest implements IRequest{

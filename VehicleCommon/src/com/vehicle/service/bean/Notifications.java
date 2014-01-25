@@ -1,5 +1,5 @@
 package com.vehicle.service.bean;
 
 public enum Notifications {
-	NewFile, NewMessage, NewFollow, DropFollow
+	NewFile, NewMessage, NewFollow, DropFollow, FollowshipInvitation, FollowshipInvitationAccepted, FollowshipInvitationRejected
 }

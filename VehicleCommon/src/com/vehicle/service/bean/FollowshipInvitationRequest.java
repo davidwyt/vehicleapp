@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class FollowshipDroppedRequest implements IRequest{
+public class FollowshipInvitationRequest implements IRequest{
 	
 	private String memberId;
 	private String shopId;
@@ -29,11 +29,5 @@ public class FollowshipDroppedRequest implements IRequest{
 	public void setShopId(String shopId)
 	{
 		this.shopId = shopId;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return String.format("%s unfollow %s", this.memberId, this.shopId);
 	}
 }

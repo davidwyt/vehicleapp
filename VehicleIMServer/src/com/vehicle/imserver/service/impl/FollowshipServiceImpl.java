@@ -1,16 +1,23 @@
 package com.vehicle.imserver.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.MessageResult;
 
+import com.vehicle.imserver.dao.bean.FollowshipInvitation;
+import com.vehicle.imserver.dao.bean.FollowshipInvitationStatus;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
+import com.vehicle.imserver.dao.interfaces.FollowshipInvitationDao;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
+import com.vehicle.imserver.service.exception.FollowshipInvitationNotExistException;
+import com.vehicle.imserver.service.exception.FollowshipInvitationProcessedAlreadyException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
 import com.vehicle.imserver.service.interfaces.FollowshipService;
+import com.vehicle.imserver.utils.GUIDUtil;
 import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.FolloweesRequest;
@@ -19,11 +26,19 @@ import com.vehicle.service.bean.FollowshipAddedNotification;
 import com.vehicle.service.bean.FollowshipAddedRequest;
 import com.vehicle.service.bean.FollowshipDroppedNotification;
 import com.vehicle.service.bean.FollowshipDroppedRequest;
+import com.vehicle.service.bean.FollowshipInvitationAcceptNotification;
+import com.vehicle.service.bean.FollowshipInvitationNotification;
+import com.vehicle.service.bean.FollowshipInvitationRejectNotification;
+import com.vehicle.service.bean.FollowshipInvitationRequest;
+import com.vehicle.service.bean.FollowshipInvitationResultRequest;
 import com.vehicle.service.bean.FollowshipRequest;
+import com.vehicle.service.bean.INotification;
 
 public class FollowshipServiceImpl implements FollowshipService {
 
 	FollowshipDao followshipDao;
+
+	FollowshipInvitationDao followshipInvitationDao;
 
 	public FollowshipDao getFollowshipDao() {
 		return this.followshipDao;
@@ -31,6 +46,14 @@ public class FollowshipServiceImpl implements FollowshipService {
 
 	public void setFollowshipDao(FollowshipDao followshipDao) {
 		this.followshipDao = followshipDao;
+	}
+
+	public FollowshipInvitationDao getFollowshipInvitationDao() {
+		return this.followshipInvitationDao;
+	}
+
+	public void setFollowshipInvitationDao(FollowshipInvitationDao invitationDao) {
+		this.followshipInvitationDao = invitationDao;
 	}
 
 	public void AddFollowship(FollowshipRequest followshipReq)
@@ -122,6 +145,122 @@ public class FollowshipServiceImpl implements FollowshipService {
 		if (null != msgResult) {
 			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
 
+			} else {
+				throw new PushNotificationFailedException(msgResult.getErrmsg());
+			}
+		} else {
+			throw new PushNotificationFailedException("no push result");
+		}
+	}
+
+	@Override
+	public void InviteFollowship(FollowshipInvitationRequest invitationRequest)
+			throws PushNotificationFailedException, PersistenceException {
+
+		// should verify if the member has followed the shop first
+		// //
+
+		String invitationId = GUIDUtil.genNewGuid();
+		FollowshipInvitation invitation = new FollowshipInvitation();
+		invitation.setID(invitationId);
+		invitation.setReqTime(new Date());
+		invitation.setSource(invitationRequest.getShopId());
+		invitation.setTarget(invitationRequest.getMemberId());
+		invitation.setStatus(FollowshipInvitationStatus.REQUESTED);
+
+		try {
+			this.followshipInvitationDao.AddFollowshipInvitation(invitation);
+		} catch (Exception e) {
+			throw new PersistenceException(e.getMessage(), e);
+		}
+
+		FollowshipInvitationNotification notification = new FollowshipInvitationNotification();
+		notification.setSource(invitationRequest.getMemberId());
+		notification.setTarget(invitationRequest.getShopId());
+		notification.setInvitationId(invitationId);
+
+		MessageResult msgResult = null;
+		try {
+
+			msgResult = JPushUtil.getInstance().SendNotification(
+					notification.getTarget(), notification.getTitle(),
+					notification.getContent(), notification.getExtras());
+		} catch (Exception e) {
+			throw new PushNotificationFailedException(e);
+		}
+
+		if (null != msgResult) {
+			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
+
+			} else {
+				throw new PushNotificationFailedException(msgResult.getErrmsg());
+			}
+		} else {
+			throw new PushNotificationFailedException("no push result");
+		}
+	}
+
+	@Override
+	public void InvitedFollowshipResult(
+			FollowshipInvitationResultRequest invitationResult)
+			throws PushNotificationFailedException,
+			FollowshipInvitationNotExistException,
+			FollowshipInvitationProcessedAlreadyException, PersistenceException {
+
+		String invitationId = invitationResult.getInvitationId();
+		FollowshipInvitation invitation = this.followshipInvitationDao
+				.GetFollowshipInvitation(invitationId);
+
+		if (null == invitation) {
+			throw new FollowshipInvitationNotExistException(String.format(
+					"the invitation:%s not exist", invitationId));
+		}
+
+		if (FollowshipInvitationStatus.ACCEPTED == invitation.getStatus()
+				|| FollowshipInvitationStatus.REJECTED == invitation
+						.getStatus()) {
+			throw new FollowshipInvitationProcessedAlreadyException(
+					String.format("the invitation:%s has been processed",
+							invitationId));
+		}
+
+		INotification notification = null;
+		if (invitationResult.getIsAccepted()) {
+			notification = new FollowshipInvitationAcceptNotification();
+			((FollowshipInvitationAcceptNotification) notification)
+					.setSource(invitation.getTarget());
+			((FollowshipInvitationAcceptNotification) notification)
+					.setTarget(invitation.getSource());
+			invitation.setStatus(FollowshipInvitationStatus.ACCEPTED);
+
+		} else {
+			notification = new FollowshipInvitationRejectNotification();
+			((FollowshipInvitationRejectNotification) notification)
+					.setSource(invitation.getTarget());
+			((FollowshipInvitationRejectNotification) notification)
+					.setTarget(invitation.getSource());
+			invitation.setStatus(FollowshipInvitationStatus.REJECTED);
+		}
+
+		try {
+			this.followshipInvitationDao.UpdateFollowshipInvitation(invitation);
+		} catch (Exception e) {
+			throw new PersistenceException(e.getMessage(), e);
+		}
+
+		MessageResult msgResult = null;
+		try {
+
+			msgResult = JPushUtil.getInstance().SendNotification(
+					notification.getTarget(), notification.getTitle(),
+					notification.getContent(), notification.getExtras());
+		} catch (Exception e) {
+			throw new PushNotificationFailedException(e);
+		}
+
+		if (null != msgResult) {
+			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
+				
 			} else {
 				throw new PushNotificationFailedException(msgResult.getErrmsg());
 			}

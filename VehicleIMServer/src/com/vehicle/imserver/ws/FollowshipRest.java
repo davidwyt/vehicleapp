@@ -15,6 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
+import com.vehicle.imserver.service.exception.FollowshipInvitationNotExistException;
+import com.vehicle.imserver.service.exception.FollowshipInvitationProcessedAlreadyException;
 import com.vehicle.imserver.service.exception.FollowshipNotExistException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
@@ -29,6 +31,10 @@ import com.vehicle.service.bean.FollowshipAddedRequest;
 import com.vehicle.service.bean.FollowshipAddedResponse;
 import com.vehicle.service.bean.FollowshipDroppedRequest;
 import com.vehicle.service.bean.FollowshipDroppedResponse;
+import com.vehicle.service.bean.FollowshipInvitationRequest;
+import com.vehicle.service.bean.FollowshipInvitationResponse;
+import com.vehicle.service.bean.FollowshipInvitationResultRequest;
+import com.vehicle.service.bean.FollowshipInvitationResultResponse;
 import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
 
@@ -248,39 +254,42 @@ public class FollowshipRest {
 					.build();
 		}
 	}
-	
+
 	@POST
 	@Path("added")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response FollowshipAdded(@Context HttpServletRequest request, FollowshipAddedRequest followshipAddedRequest)
-	{
+	public Response FollowshipAdded(@Context HttpServletRequest request,
+			FollowshipAddedRequest followshipAddedRequest) {
 		FollowshipAddedResponse resp = new FollowshipAddedResponse();
-		if(null == followshipAddedRequest || StringUtil.isEmptyOrNull(followshipAddedRequest.getMemberId()) || StringUtil.isEmptyOrNull(followshipAddedRequest.getShopId()))
-		{
+		if (null == followshipAddedRequest
+				|| StringUtil.isEmptyOrNull(followshipAddedRequest
+						.getMemberId())
+				|| StringUtil.isEmptyOrNull(followshipAddedRequest.getShopId())) {
 			resp.setErrorCode(ErrorCodes.FOLLOWSHIPADDED_INVALID_ERRCODE);
 			resp.setErrorMsg(ErrorCodes.FOLLOWSHIPADDED_INVALID_ERRMSG);
 
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
-		
+
 		System.out.println(followshipAddedRequest.toString());
-		
+
 		try {
 			followshipService.FollowshipAdded(followshipAddedRequest);
-			
+
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (PushNotificationFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
-			resp.setErrorCode(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRCODE);
-			resp.setErrorMsg(String.format(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRMSG,
-					e.getMessage(), followshipAddedRequest.toString()));
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(resp).build();
-		}catch (Exception e) {
+			resp.setErrorCode(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.NOTIFICATION_PUSHFAILED_ERRMSG, e.getMessage(),
+					followshipAddedRequest.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		} catch (Exception e) {
 			e.printStackTrace();
 
 			resp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
@@ -291,37 +300,39 @@ public class FollowshipRest {
 					.build();
 		}
 	}
-	
+
 	@POST
 	@Path("dropped")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response FollowshipDropped(@Context HttpServletRequest request, FollowshipDroppedRequest droppedRequest)
-	{
+	public Response FollowshipDropped(@Context HttpServletRequest request,
+			FollowshipDroppedRequest droppedRequest) {
 		FollowshipDroppedResponse resp = new FollowshipDroppedResponse();
-		if(null == droppedRequest || StringUtil.isEmptyOrNull(droppedRequest.getMemberId()) || StringUtil.isEmptyOrNull(droppedRequest.getShopId()))
-		{
+		if (null == droppedRequest
+				|| StringUtil.isEmptyOrNull(droppedRequest.getMemberId())
+				|| StringUtil.isEmptyOrNull(droppedRequest.getShopId())) {
 			resp.setErrorCode(ErrorCodes.FOLLOWSHIPADDED_INVALID_ERRCODE);
 			resp.setErrorMsg(ErrorCodes.FOLLOWSHIPADDED_INVALID_ERRMSG);
 
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
-		
+
 		try {
 			followshipService.followshipDropped(droppedRequest);
-			
+
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (PushNotificationFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
-			resp.setErrorCode(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRCODE);
-			resp.setErrorMsg(String.format(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRMSG,
-					e.getMessage(), droppedRequest.toString()));
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(resp).build();
-		}catch (Exception e) {
+			resp.setErrorCode(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.NOTIFICATION_PUSHFAILED_ERRMSG, e.getMessage(),
+					droppedRequest.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		} catch (Exception e) {
 			e.printStackTrace();
 
 			resp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
@@ -330,6 +341,152 @@ public class FollowshipRest {
 
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
 					.build();
+		}
+	}
+
+	@POST
+	@Path("invitation")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response InviteFollowship(@Context HttpServletRequest request,
+			FollowshipInvitationRequest invitationRequest) {
+
+		FollowshipInvitationResponse invitationResponse = new FollowshipInvitationResponse();
+
+		if (null == invitationRequest
+				|| StringUtil.isEmptyOrNull(invitationRequest.getMemberId())
+				|| StringUtil.isEmptyOrNull(invitationRequest.getShopId())) {
+			invitationResponse
+					.setErrorCode(ErrorCodes.FOLLOWINVITATION_INVALID_ERRCODE);
+			invitationResponse
+					.setErrorMsg(ErrorCodes.FOLLOWINVITATION_INVALID_ERRMSG);
+
+			return Response.status(Status.BAD_REQUEST)
+					.entity(invitationResponse).build();
+		}
+
+		try {
+			followshipService.InviteFollowship(invitationRequest);
+
+			return Response.status(Status.OK).entity(invitationResponse)
+					.build();
+		} catch (PushNotificationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			invitationResponse
+					.setErrorCode(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRCODE);
+			invitationResponse.setErrorMsg(String.format(
+					ErrorCodes.NOTIFICATION_PUSHFAILED_ERRMSG, e.getMessage(),
+					invitationRequest.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(invitationResponse).build();
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			invitationResponse
+					.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			invitationResponse.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					invitationRequest.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(invitationResponse).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			invitationResponse.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			invitationResponse.setErrorMsg(String.format(
+					ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(invitationResponse).build();
+		}
+	}
+
+	@POST
+	@Path("invitationresult")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response FollowshipInvitationResult(
+			@Context HttpServletRequest request,
+			FollowshipInvitationResultRequest invitationResult) {
+
+		FollowshipInvitationResultResponse invitationResp = new FollowshipInvitationResultResponse();
+
+		if (null == invitationResult
+				|| StringUtil.isEmptyOrNull(invitationResult.getInvitationId())) {
+			invitationResp
+					.setErrorCode(ErrorCodes.FOLLOWINVRESULT_INVALID_ERRCODE);
+			invitationResp
+					.setErrorMsg(ErrorCodes.FOLLOWINVRESULT_INVALID_ERRMSG);
+
+			return Response.status(Status.BAD_REQUEST).entity(invitationResp)
+					.build();
+		}
+
+		try {
+			followshipService.InvitedFollowshipResult(invitationResult);
+
+			return Response.status(Status.OK).entity(invitationResp).build();
+		} catch (FollowshipInvitationNotExistException e) {
+			e.printStackTrace();
+
+			invitationResp
+					.setErrorCode(ErrorCodes.FOLLOWINVITATION_NOTEXIST_ERRCODE);
+			invitationResp.setErrorMsg(String.format(
+					ErrorCodes.FOLLOWINVITATION_NOTEXIST_ERRMSG,
+					invitationResult.getInvitationId()));
+
+			return Response.status(Status.NOT_FOUND).entity(invitationResp)
+					.build();
+		} catch (FollowshipInvitationProcessedAlreadyException e) {
+			e.printStackTrace();
+
+			invitationResp
+					.setErrorCode(ErrorCodes.FOLLOWINVITATION_PROCESSED_ERRCODE);
+			invitationResp.setErrorMsg(String.format(
+					ErrorCodes.FOLLOWINVITATION_PROCESSED_ERRMSG,
+					invitationResult.getInvitationId()));
+
+			return Response.status(Status.BAD_REQUEST).entity(invitationResp)
+					.build();
+		} catch (PersistenceException e) {
+
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			invitationResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			invitationResp.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					invitationResult.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(invitationResp).build();
+		} catch (PushNotificationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			invitationResp
+					.setErrorCode(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRCODE);
+			invitationResp.setErrorMsg(String.format(
+					ErrorCodes.NOTIFICATION_PUSHFAILED_ERRMSG, e.getMessage(),
+					invitationResult.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(invitationResp).build();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			invitationResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			invitationResp.setErrorMsg(String.format(
+					ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(invitationResp).build();
 		}
 	}
 }

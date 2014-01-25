@@ -10,7 +10,7 @@ public class JPushUtil {
 	private static final String appKey = "ee54a39cda5f4cf0ed4e2617";
 	private static final String masterSecret = "94e283e4837ba401fcb12c08";
 
-	private static long timeToLive = 60 * 60 * 24;
+	private static long timeToLive = 0;
 
 	private static JPushClient jpush = null;
 	private static JPushClient iosJpush = null;

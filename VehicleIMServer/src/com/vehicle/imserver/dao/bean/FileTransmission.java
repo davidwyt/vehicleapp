@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "FILETRANSMISSION")
@@ -75,6 +77,7 @@ public class FileTransmission {
 	}
 	
 	@Column(name="TRANSMISSIONTIME")
+	@Temporal(TemporalType.TIMESTAMP)
 	public Date getTransmissionTime()
 	{
 		return this.transmissionTime;

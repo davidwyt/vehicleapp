@@ -14,8 +14,11 @@
 		</property>
 	</bean> 
 	<bean id="followshipService" class="com.vehicle.imserver.service.impl.FollowshipServiceImpl">
-	<property name="followshipDao">
+		<property name="followshipDao">
 			<ref bean="followshipDao" />
+		</property>
+		<property name="followshipInvitationDao">
+			<ref bean="followshipInvitationDao" />
 		</property>
 	</bean>
 	<bean id="messageService" class="com.vehicle.imserver.service.impl.MessageServiceImpl">

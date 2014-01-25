@@ -27,5 +27,10 @@
 		<property name="sessionFactory">
 			<ref bean="sessionFactory" />
 		</property>
+	</bean>
+		<bean id="followshipInvitationDao" class="com.vehicle.imserver.dao.impl.FollowshipInvitationDaoImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
 	</bean>  
     </beans>
