@@ -106,8 +106,18 @@ public class LoginActivity extends Activity {
 							//Intent intent = new Intent(LoginActivity.this, UserListActivity.class);
 							//startActivity(intent);
 							
-							VehicleClient client = new VehicleClient(Constants.SELFID);
-							client.FollowshipAdded(Constants.SELFID);
+							AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>(){
+
+								@Override
+								protected Void doInBackground(Void... arg0) {
+									// TODO Auto-generated method stub
+									VehicleClient client = new VehicleClient(Constants.SELFID);
+									client.FollowshipAdded(Constants.SELFID);
+									return null;
+								}
+							};
+							
+							asyncTask.execute();
 						}
 						
 						//attemptLogin();

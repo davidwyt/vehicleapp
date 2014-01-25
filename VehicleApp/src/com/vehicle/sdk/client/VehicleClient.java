@@ -201,6 +201,7 @@ public class VehicleClient {
 		request.setShopId(shopId);
 		
 		FollowshipAddedResponse response = HttpUtil.PostJson(url, request, FollowshipAddedResponse.class);
+		
 	}
 	
 	public void FollowshipDropped(String shopId)

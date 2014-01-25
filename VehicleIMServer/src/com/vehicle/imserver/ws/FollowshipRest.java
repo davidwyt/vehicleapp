@@ -264,6 +264,8 @@ public class FollowshipRest {
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
 		
+		System.out.println(followshipAddedRequest.toString());
+		
 		try {
 			followshipService.FollowshipAdded(followshipAddedRequest);
 			
