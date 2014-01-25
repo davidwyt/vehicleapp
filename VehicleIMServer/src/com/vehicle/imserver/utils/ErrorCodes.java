@@ -2,24 +2,25 @@ package com.vehicle.imserver.utils;
 
 public class ErrorCodes {
 	
-	public static final int UNKNOWN_ERROR_ERRCODE             = 0x00000001;
-	public static final int MESSAGE_NOT_FOUND_ERRCODE         = 0x00000002;
-	public static final int MESSAGEID_NULL_ERRCODE            = 0x00000003;
-	public static final int MESSAGE_INVALID_ERRCODE           = 0x00000004;
-	public static final int MESSAGE_PERSISTENCE_ERRCODE       = 0x00000005;
-	public static final int MESSAGE_JPUSH_ERRCODE             = 0x00000006;
-	public static final int FOLLOWSHIP_ALREXIST_ERRCODE       = 0x00000007;
-	public static final int FOLLOWSHIP_NOTEXIST_ERRCODE       = 0x00000008;
-	public static final int FOLLOWSHIP_NULL_ERRCODE           = 0x00000009;
-	public static final int FOLLOWSHIP_FOLLOWERNULL_ERRCODE   = 0x0000000A;
-	public static final int FOLLOWSHIP_FOLLOWEENULL_ERRCODE   = 0x0000000B;
-	public static final int FILETRAN_INVALID_ERRCODE          = 0x0000000C;
-	public static final int FILETRAN_FILESAVE_ERRCODE         = 0x0000000D;
-	public static final int NOTIFICATION_PUSHFAILED_ERRCODE   = 0x0000000E;
-	public static final int FILEFETCH_TOKENNULL_ERRCODE       = 0x0000000F;
-	public static final int FILEFETCH_TOKENINVALID_ERRCODE    = 0x00000010;
-	public static final int FILEFETCH_NOTFOUND_ERRCODE        = 0x00000011;
-	
+	public static final int UNKNOWN_ERROR_ERRCODE               = 0x00000001;
+	public static final int MESSAGE_NOT_FOUND_ERRCODE           = 0x00000002;
+	public static final int MESSAGEID_NULL_ERRCODE              = 0x00000003;
+	public static final int MESSAGE_INVALID_ERRCODE             = 0x00000004;
+	public static final int MESSAGE_PERSISTENCE_ERRCODE         = 0x00000005;
+	public static final int MESSAGE_JPUSH_ERRCODE               = 0x00000006;
+	public static final int FOLLOWSHIP_ALREXIST_ERRCODE         = 0x00000007;
+	public static final int FOLLOWSHIP_NOTEXIST_ERRCODE         = 0x00000008;
+	public static final int FOLLOWSHIP_NULL_ERRCODE             = 0x00000009;
+	public static final int FOLLOWSHIP_FOLLOWERNULL_ERRCODE     = 0x0000000A;
+	public static final int FOLLOWSHIP_FOLLOWEENULL_ERRCODE     = 0x0000000B;
+	public static final int FILETRAN_INVALID_ERRCODE            = 0x0000000C;
+	public static final int FILETRAN_FILESAVE_ERRCODE           = 0x0000000D;
+	public static final int NOTIFICATION_PUSHFAILED_ERRCODE     = 0x0000000E;
+	public static final int FILEFETCH_TOKENNULL_ERRCODE         = 0x0000000F;
+	public static final int FILEFETCH_TOKENINVALID_ERRCODE      = 0x00000010;
+	public static final int FILEFETCH_NOTFOUND_ERRCODE          = 0x00000011;
+	public static final int FOLLOWSHIPADDED_INVALID_ERRCODE     = 0x00000012;
+	public static final int FOLLOWSHIPDROPPED_INVALIED_ERRCODE  = 0x00000013;
 	
 	
 	public static final String UNKNOWN_ERROR_ERRMSG             = "unknown error in the server: %s";
@@ -39,4 +40,6 @@ public class ErrorCodes {
 	public static final String FILEFETCH_TOKENNULL_ERRMSG       = "invalid file fetch request, please check if the token is null";
 	public static final String FILEFETCH_TOKENINVALID_ERRMSG    = "file token : %s not found";
 	public static final String FILEFETCH_NOTFOUND_ERRMSG        = "your request file: %s not found";
+	public static final String FOLLOWSHIPADDED_INVALID_ERRMSG   = "invalid request, the memberid/shopid should not be null";
+	public static final String FOLLOWSHIPDROPPED_INVALID_ERRMSG = "invalid request, the memberid/shopid should not be null";
 }

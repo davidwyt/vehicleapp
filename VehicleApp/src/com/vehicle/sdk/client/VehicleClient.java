@@ -12,6 +12,10 @@ import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileTransmissionResponse;
 import com.vehicle.service.bean.FolloweesResponse;
 import com.vehicle.service.bean.FollowersResponse;
+import com.vehicle.service.bean.FollowshipAddedRequest;
+import com.vehicle.service.bean.FollowshipAddedResponse;
+import com.vehicle.service.bean.FollowshipDroppedRequest;
+import com.vehicle.service.bean.FollowshipDroppedResponse;
 import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
 import com.vehicle.service.bean.MessageACKRequest;
@@ -42,6 +46,8 @@ public class VehicleClient {
 	private static final String URL_FOLLOWSHIP_DROP = "drop";
 	private static final String URL_FOLLOWSHIP_FOLLOWEES = "followees/%s";
 	private static final String URL_FOLLOWSHIP_FOLLOWERS = "followers/%s";
+	private static final String URL_FOLLOWSHIP_ADDED = "added";
+	private static final String URL_FOLLOWSHIP_DROPPED = "dropped";
 
 	private String URL_SERVERROOT;
 	private String source;
@@ -185,5 +191,26 @@ public class VehicleClient {
 		// FollowersResponse.class);
 		return resp.getFollowers();
 	}
-
+	
+	public void FollowshipAdded(String shopId)
+	{
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FOLLOWSHIP_ROOT, URL_FOLLOWSHIP_ADDED);
+		
+		FollowshipAddedRequest request = new FollowshipAddedRequest();
+		request.setMemberId(source);
+		request.setShopId(shopId);
+		
+		FollowshipAddedResponse response = HttpUtil.PostJson(url, request, FollowshipAddedResponse.class);
+	}
+	
+	public void FollowshipDropped(String shopId)
+	{
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FOLLOWSHIP_ROOT, URL_FOLLOWSHIP_DROPPED);
+		
+		FollowshipDroppedRequest request = new FollowshipDroppedRequest();
+		request.setMemberId(source);
+		request.setShopId(shopId);
+		
+		FollowshipDroppedResponse response = HttpUtil.PostJson(url, request, FollowshipDroppedResponse.class);
+	}
 }

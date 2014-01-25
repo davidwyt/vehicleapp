@@ -5,6 +5,7 @@ import cn.edu.sjtu.vehicleapp.R;
 import cn.jpush.android.api.JPushInterface;
 
 import com.vehicle.app.utils.Constants;
+import com.vehicle.sdk.client.VehicleClient;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -102,8 +103,11 @@ public class LoginActivity extends Activity {
 							//JPushInterface.setAlias(getApplicationContext(), Constants.SELFID, arg2);
 							JPushInterface.setAliasAndTags(getApplicationContext(), Constants.SELFID, null);
 							
-							Intent intent = new Intent(LoginActivity.this, UserListActivity.class);
-							startActivity(intent);
+							//Intent intent = new Intent(LoginActivity.this, UserListActivity.class);
+							//startActivity(intent);
+							
+							VehicleClient client = new VehicleClient(Constants.SELFID);
+							client.FollowshipAdded(Constants.SELFID);
 						}
 						
 						//attemptLogin();

@@ -14,7 +14,7 @@
 		<property name="username" value="root"></property>
 		<property name="password" value="root"></property>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mysql://169.254.175.30:3306/VEHICLEIMSERVER"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/VEHICLEIMSERVER"></property>
 	</bean>
 	
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
