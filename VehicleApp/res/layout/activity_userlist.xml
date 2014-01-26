@@ -18,45 +18,18 @@
             android:background="@drawable/common_signin_btn_icon_pressed_dark" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_bottombar"
-        android:layout_width="fill_parent"
+    <com.vehicle.app.layout.BottomBarLayout
+        android:id="@+id/userlist_bottombar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
+        android:layout_alignParentBottom="true" >
+    </com.vehicle.app.layout.BottomBarLayout>
 
-        <Button
-            android:id="@+id/bar_btn_message"
-            style="@drawable/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
-            android:gravity="fill" />
-
-        <Button
-            android:id="@+id/bar_btn_vendor"
-            style="@drawable/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
-            android:gravity="fill" />
-
-        <Button
-            android:id="@+id/bar_btn_setting"
-            style="@drawable/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
-            android:gravity="fill" />
-    </LinearLayout> 
     <ListView
         android:id="@+id/list_users"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/layout_bottombar"
+        android:layout_above="@id/userlist_bottombar"
         android:layout_below="@id/layout_tile"
         android:layout_marginLeft="2dip"
         android:layout_marginRight="2dip"

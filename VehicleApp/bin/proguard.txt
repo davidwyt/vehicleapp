@@ -1,23 +1,26 @@
-# view AndroidManifest.xml #generated:150
+# view AndroidManifest.xml #generated:152
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:120
+# view AndroidManifest.xml #generated:122
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:78
+# view AndroidManifest.xml #generated:80
 -keep class cn.jpush.android.service.DownloadService { <init>(...); }
 
-# view AndroidManifest.xml #generated:98
+# view AndroidManifest.xml #generated:100
 -keep class cn.jpush.android.service.PushReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:85
+# view AndroidManifest.xml #generated:87
 -keep class cn.jpush.android.service.PushService { <init>(...); }
 
-# view AndroidManifest.xml #generated:66
+# view AndroidManifest.xml #generated:68
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:48
 -keep class com.vehicle.app.activities.ChatActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:64
+-keep class com.vehicle.app.activities.DriverInfoActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:56
 -keep class com.vehicle.app.activities.FollowshipInvitationActivity { <init>(...); }
@@ -25,7 +28,7 @@
 # view AndroidManifest.xml #generated:41
 -keep class com.vehicle.app.activities.LoginActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:123
+# view AndroidManifest.xml #generated:125
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }
 
 # view AndroidManifest.xml #generated:58
@@ -47,5 +50,6 @@
 -keep class com.vehicle.app.activities.UserListActivity { <init>(...); }
 
 # view res/layout/activity_nearbymain.xml #generated:49
+# view res/layout/activity_userlist.xml #generated:21
 -keep class com.vehicle.app.layout.BottomBarLayout { <init>(...); }
 
