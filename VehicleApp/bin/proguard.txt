@@ -1,6 +1,9 @@
 # view AndroidManifest.xml #generated:142
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
+# view res/layout/activity_nearbymain.xml #generated:49
+-keep class cn.edu.sjtu.vehicleapp.layout_bottom_bar { <init>(...); }
+
 # view AndroidManifest.xml #generated:112
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/barDarkColor"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/nearbymain_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        android:gravity="center"
+        android:text="爱车帮"
+        android:textColor="@color/white"
+        android:textSize="20sp" >
+    </TextView>
+
+    <Button
+        android:id="@+id/nearbymain_nearby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nearbymain_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:background="@drawable/common_signin_btn_icon_pressed_dark" >
+    </Button>
+
+    <Button
+        android:id="@+id/nearbymain_nearbylist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nearbymain_nearby"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/common_signin_btn_text_normal_dark" >
+    </Button>
+
+    <Button
+        android:id="@+id/nearbymain_groupmsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nearbymain_nearbylist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/common_signin_btn_text_normal_dark" >
+    </Button>
+
+    <cn.edu.sjtu.vehicleapp.layout_bottom_bar android:id="@+id/nearbymain_bottombar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        
+    </cn.edu.sjtu.vehicleapp.layout_bottom_bar>
+</RelativeLayout>

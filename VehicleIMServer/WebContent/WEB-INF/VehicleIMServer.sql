@@ -82,3 +82,22 @@ CREATE TABLE `offlinemessage` (
 -- ----------------------------
 -- Records of offlinemessage
 -- ----------------------------
+
+--
+-- Table structure for table `followshipinvitation`
+--
+
+DROP TABLE IF EXISTS `followshipinvitation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `followshipinvitation` (
+  `ID` char(40) NOT NULL,
+  `SOURCE` char(100) NOT NULL,
+  `TARGET` char(100) NOT NULL,
+  `STATUS` varchar(255) NOT NULL,
+  `REQTIME` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `SOURCE` (`SOURCE`),
+  KEY `TARGET` (`TARGET`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;

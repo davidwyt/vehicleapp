@@ -42,14 +42,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/followshipinvitation_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/chat_info" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/followshipinvitation_shopdetail"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="48dp"
         android:orientation="horizontal" >
 
         <Button
