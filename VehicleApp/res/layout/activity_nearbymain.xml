@@ -46,10 +46,10 @@
         android:background="@drawable/common_signin_btn_text_normal_dark" >
     </Button>
 
-    <cn.edu.sjtu.vehicleapp.layout_bottom_bar android:id="@+id/nearbymain_bottombar"
+    <com.vehicle.app.layout.BottomBarLayout android:id="@+id/nearbymain_bottombar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
         
-    </cn.edu.sjtu.vehicleapp.layout_bottom_bar>
+    </com.vehicle.app.layout.BottomBarLayout>
 </RelativeLayout>

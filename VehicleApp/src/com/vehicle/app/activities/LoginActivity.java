@@ -11,6 +11,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -102,9 +103,10 @@ public class LoginActivity extends Activity {
 							//JPushInterface.setAlias(getApplicationContext(), Constants.SELFID, arg2);
 							JPushInterface.setAliasAndTags(getApplicationContext(), Constants.SELFID, null);
 							
-							//Intent intent = new Intent(LoginActivity.this, UserListActivity.class);
-							//startActivity(intent);
+							Intent intent = new Intent(LoginActivity.this, NearbyMainActivity.class);
+							startActivity(intent);
 							
+							/**
 							AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>(){
 
 								@Override
@@ -117,6 +119,7 @@ public class LoginActivity extends Activity {
 							};
 							
 							asyncTask.execute();
+							*/
 						}
 						
 						//attemptLogin();
