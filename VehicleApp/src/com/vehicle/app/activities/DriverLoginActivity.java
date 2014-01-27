@@ -1,12 +1,8 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.utils.StringUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import cn.jpush.android.api.JPushInterface;
-
-import com.vehicle.app.utils.Constants;
-import com.vehicle.sdk.client.VehicleClient;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -27,13 +23,12 @@ import android.widget.TextView;
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class LoginActivity extends Activity {
+public class DriverLoginActivity extends Activity {
 	/**
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
 	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
+	private static final String[] DUMMY_CREDENTIALS = new String[] { "foo@example.com:hello", "bar@example.com:world" };
 
 	/**
 	 * The default email to populate the email field with.
@@ -60,71 +55,47 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_driverlogin);
 
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
-		mEmailView = (EditText) findViewById(R.id.selfID);
-		mEmailView.setText(Constants.SELFID);
+		mEmailView = (EditText) findViewById(R.id.driverlogin_email);
+		mEmailView.setText(mEmail);
 
-		mPasswordView = (EditText) findViewById(R.id.herID);
-		mPasswordView
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView textView, int id,
-							KeyEvent keyEvent) {
-						if (id == R.id.login || id == EditorInfo.IME_NULL) {
-							attemptLogin();
-							return true;
-						}
-						return false;
-					}
-				});
-		
-		mPasswordView.setText(Constants.HERID);
-		
-		mLoginFormView = findViewById(R.id.login_form);
-		mLoginStatusView = findViewById(R.id.login_status);
-		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+		mPasswordView = (EditText) findViewById(R.id.driverlogin_password);
+		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+				if (id == R.id.driverlogin_login || id == EditorInfo.IME_NULL) {
+					attemptLogin();
+					return true;
+				}
+				return false;
+			}
+		});
 
-		findViewById(R.id.sign_in_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						Constants.SELFID = mEmailView.getText().toString();
-						Constants.HERID = mPasswordView.getText().toString();
-						
-						if(Constants.SELFID.isEmpty() || Constants.HERID.isEmpty())
-						{
-							TextView tipView = (TextView)findViewById(R.id.tip);
-							tipView.setText("your id and her id can't be null");
-						}else
-						{
-							//JPushInterface.setAlias(getApplicationContext(), Constants.SELFID, arg2);
-							JPushInterface.setAliasAndTags(getApplicationContext(), Constants.SELFID, null);
-							
-							Intent intent = new Intent(LoginActivity.this, NearbyMainActivity.class);
-							startActivity(intent);
-							
-							/**
-							AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>(){
+		mLoginFormView = findViewById(R.id.driverlogin_form);
+		mLoginStatusView = findViewById(R.id.driverlogin_status);
+		mLoginStatusMessageView = (TextView) findViewById(R.id.driverlogin_status_message);
 
-								@Override
-								protected Void doInBackground(Void... arg0) {
-									// TODO Auto-generated method stub
-									VehicleClient client = new VehicleClient(Constants.SELFID);
-									client.FollowshipAdded(Constants.SELFID);
-									return null;
-								}
-							};
-							
-							asyncTask.execute();
-							*/
-						}
-						
-						//attemptLogin();
-					}
-				});
+		findViewById(R.id.driverlogin_signinbtn).setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				attemptLogin();
+			}
+		});
+
+		findViewById(R.id.driverlogin_regisiter).setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(getApplicationContext(), RegisterActivity.class);
+
+				DriverLoginActivity.this.startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -160,7 +131,7 @@ public class LoginActivity extends Activity {
 			mPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
 			cancel = true;
-		} else if (mPassword.length() < 4) {
+		} else if (mPassword.length() < 6) {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
 			cancel = true;
@@ -171,7 +142,7 @@ public class LoginActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!mEmail.contains("@")) {
+		} else if (!StringUtil.IsEmail(mEmail)) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
@@ -200,28 +171,23 @@ public class LoginActivity extends Activity {
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(
-					android.R.integer.config_shortAnimTime);
+			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
 			mLoginStatusView.setVisibility(View.VISIBLE);
-			mLoginStatusView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
+			mLoginStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							mLoginStatusView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
+							mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 						}
 					});
 
 			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
+			mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
+							mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 						}
 					});
 		} else {
@@ -268,8 +234,7 @@ public class LoginActivity extends Activity {
 			if (success) {
 				finish();
 			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
+				mPasswordView.setError(getString(R.string.error_incorrect_password));
 				mPasswordView.requestFocus();
 			}
 		}

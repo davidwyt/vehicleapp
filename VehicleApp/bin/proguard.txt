@@ -22,11 +22,11 @@
 # view AndroidManifest.xml #generated:64
 -keep class com.vehicle.app.activities.DriverInfoActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:41
+-keep class com.vehicle.app.activities.DriverLoginActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:56
 -keep class com.vehicle.app.activities.FollowshipInvitationActivity { <init>(...); }
-
-# view AndroidManifest.xml #generated:41
--keep class com.vehicle.app.activities.LoginActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:125
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }

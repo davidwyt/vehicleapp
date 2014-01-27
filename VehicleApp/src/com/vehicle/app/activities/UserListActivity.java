@@ -32,7 +32,6 @@ public class UserListActivity extends Activity {
 		super.onCreate(bundle);
 		setContentView(R.layout.activity_userlist);
 		initView();
-
 	}
 
 	@Override

@@ -1,11 +1,16 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.utils.StringUtil;
-import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -14,12 +19,22 @@ import android.widget.TextView;
 
 public class RegisterActivity extends Activity {
 
-	private EditText etEmail;
-	private EditText etUserName;
-	private EditText etPwd;
-	private EditText etCfmPwd;
-	private TextView tvTip;
-	private Button btnOK;
+	private EditText mEmailET;
+	private EditText mUserNameET;
+	private EditText mPwdET;
+	private EditText mCfmPwdET;
+	private Button mOKBtn;
+
+	private View mRegFormView;
+	private View mRegStatusView;
+	private TextView mRegStatusMsgView;
+
+	private RegisterTask mRegTask = null;
+
+	private String mEmail;
+	private String mUserName;
+	private String mPassword;
+	private String mPwdCfm;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,59 +56,157 @@ public class RegisterActivity extends Activity {
 	}
 
 	private void initView() {
-		this.etEmail = (EditText) this.findViewById(R.id.reg_email);
-		this.etUserName = (EditText) this.findViewById(R.id.reg_username);
-		this.etPwd = (EditText) this.findViewById(R.id.reg_pwd);
-		this.etCfmPwd = (EditText) this.findViewById(R.id.reg_cfmpwd);
-		this.tvTip = (TextView) this.findViewById(R.id.reg_tip);
+		this.mEmailET = (EditText) this.findViewById(R.id.reg_email);
+		this.mUserNameET = (EditText) this.findViewById(R.id.reg_username);
+		this.mPwdET = (EditText) this.findViewById(R.id.reg_pwd);
+		this.mCfmPwdET = (EditText) this.findViewById(R.id.reg_cfmpwd);
 
-		this.btnOK = (Button) this.findViewById(R.id.reg_ok);
-		this.btnOK.setOnClickListener(new OnClickListener() {
+		this.mOKBtn = (Button) this.findViewById(R.id.reg_ok);
+		this.mOKBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
 
-				String strEmail = RegisterActivity.this.etEmail.getText().toString();
-				String strUserName = RegisterActivity.this.etUserName.getText().toString();
-				String strPwd = RegisterActivity.this.etPwd.getText().toString();
-				String strCfmPwd = RegisterActivity.this.etCfmPwd.getText().toString();
-
-				if (StringUtil.IsNullOrEmpty(strEmail) || StringUtil.IsNullOrEmpty(strUserName)
-						|| StringUtil.IsNullOrEmpty(strPwd) || StringUtil.IsNullOrEmpty(strCfmPwd)) {
-					
-					String strTip = RegisterActivity.this.getResources().getString(R.string.reg_tip_null);
-					RegisterActivity.this.tvTip.setText(strTip);
-
-					return;
-				}
-				
-				if(!StringUtil.IsEmail(strEmail))
-				{
-					String strTip = RegisterActivity.this.getResources().getString(R.string.reg_tip_invalidemail);
-					RegisterActivity.this.tvTip.setText(strTip);
-
-					return;
-				}
-
-				if (!(strPwd.length() >= 6 && strPwd.length() <= 20)
-						|| !(strCfmPwd.length() >= 6 && strCfmPwd.length() <= 20)) {
-					String strTip = RegisterActivity.this.getResources().getString(R.string.reg_tip_invalidpwd);
-					RegisterActivity.this.tvTip.setText(strTip);
-
-					return;
-				}
-
-				if (!strPwd.equals(strCfmPwd)) {
-					String strTip = RegisterActivity.this.getResources().getString(R.string.reg_tip_notequalpwd);
-					RegisterActivity.this.tvTip.setText(strTip);
-
-					return;
-				}
-				
-				VehicleWebClient client = new VehicleWebClient();
-				client.Register();
+				attemptRegister();
 			}
 
 		});
+
+		this.mRegFormView = this.findViewById(R.id.register_form);
+		this.mRegStatusView = this.findViewById(R.id.register_status);
+		this.mRegStatusMsgView = (TextView) this.findViewById(R.id.register_status_message);
+	}
+
+	private void attemptRegister() {
+
+		if (null != this.mRegTask) {
+			return;
+		}
+
+		this.mEmail = this.mEmailET.getText().toString();
+		this.mUserName = this.mUserNameET.getText().toString();
+		this.mPassword = this.mPwdET.getText().toString();
+		this.mPwdCfm = this.mCfmPwdET.getText().toString();
+
+		this.mEmailET.setError(null);
+		this.mUserNameET.setError(null);
+		this.mPwdET.setError(null);
+		this.mCfmPwdET.setError(null);
+
+		boolean cancel = false;
+		View focusView = null;
+
+		if (TextUtils.isEmpty(this.mPwdCfm)) {
+			this.mCfmPwdET.setError(this.getString(R.string.register_fieldnull));
+			cancel = true;
+			focusView = this.mCfmPwdET;
+		} else if (!this.mPwdCfm.equals(this.mPassword)) {
+			this.mCfmPwdET.setError(this.getString(R.string.register_invalid_pwdcfm));
+			cancel = true;
+			focusView = this.mCfmPwdET;
+		}
+
+		if (TextUtils.isEmpty(this.mPassword)) {
+			this.mPwdET.setError(this.getString(R.string.register_fieldnull));
+			cancel = true;
+			focusView = this.mPwdET;
+		} else if (this.mPassword.length() < 6 || this.mPassword.length() > 20) {
+			this.mPwdET.setError(this.getString(R.string.register_invalid_pwdlen));
+			cancel = true;
+			focusView = this.mPwdET;
+		}
+
+		if (TextUtils.isEmpty(this.mUserName)) {
+			this.mUserNameET.setError(this.getString(R.string.register_fieldnull));
+			cancel = true;
+			focusView = this.mUserNameET;
+		}
+
+		if (TextUtils.isEmpty(this.mEmail)) {
+			this.mEmailET.setError(this.getString(R.string.register_fieldnull));
+			cancel = true;
+			focusView = this.mEmailET;
+		} else if (!StringUtil.IsEmail(this.mEmail)) {
+			this.mEmailET.setError(this.getString(R.string.register_invalid_email));
+			cancel = true;
+			focusView = this.mEmailET;
+		}
+
+		if (cancel) {
+			focusView.requestFocus();
+		} else {
+			this.mRegStatusMsgView.setText(this.getString(R.string.register_progress));
+			this.showProgress(true);
+			this.mRegTask = new RegisterTask();
+			this.mRegTask.execute((Void) null);
+		}
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	private void showProgress(final boolean show) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+
+			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+			this.mRegStatusView.setVisibility(View.VISIBLE);
+			this.mRegStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
+					.setListener(new AnimatorListenerAdapter() {
+
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							mRegStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+						}
+					});
+
+			this.mRegFormView.setVisibility(View.VISIBLE);
+			this.mRegFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
+					.setListener(new AnimatorListenerAdapter() {
+
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							mRegFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+						}
+					});
+		} else {
+			this.mRegStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+			this.mRegFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+		}
+	}
+
+	public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return Boolean.TRUE;
+		}
+
+		@Override
+		protected void onPostExecute(final Boolean success) {
+
+			RegisterActivity.this.mRegTask = null;
+			RegisterActivity.this.showProgress(false);
+
+			if (success) {
+				RegisterActivity.this.finish();
+			} else {
+
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+
+			RegisterActivity.this.mRegTask = null;
+			RegisterActivity.this.showProgress(false);
+		}
 	}
 }

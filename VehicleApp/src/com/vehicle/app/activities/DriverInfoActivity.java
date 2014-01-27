@@ -62,5 +62,4 @@ public class DriverInfoActivity extends Activity{
 		super.onStop();
 	}
 	
-	
 }

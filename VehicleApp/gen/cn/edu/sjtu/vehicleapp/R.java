@@ -57,103 +57,104 @@ public final class R {
         public static final int top_bg=0x7f020014;
     }
     public static final class id {
-        public static final int bar_btn_message=0x7f0a004d;
-        public static final int bar_btn_setting=0x7f0a004f;
-        public static final int bar_btn_vendor=0x7f0a004e;
-        public static final int bt_alias=0x7f0a0062;
-        public static final int bt_tag=0x7f0a0060;
+        public static final int bar_btn_message=0x7f0a004e;
+        public static final int bar_btn_setting=0x7f0a0050;
+        public static final int bar_btn_vendor=0x7f0a004f;
+        public static final int bt_alias=0x7f0a0063;
+        public static final int bt_tag=0x7f0a0061;
         public static final int btn_back=0x7f0a0001;
         public static final int btn_send=0x7f0a0004;
         public static final int btn_setting=0x7f0a0002;
-        public static final int bu_setTime=0x7f0a0065;
-        public static final int cb_friday=0x7f0a006a;
-        public static final int cb_monday=0x7f0a0066;
-        public static final int cb_saturday=0x7f0a006b;
-        public static final int cb_sunday=0x7f0a006c;
-        public static final int cb_thursday=0x7f0a0069;
-        public static final int cb_tuesday=0x7f0a0067;
-        public static final int cb_wednesday=0x7f0a0068;
-        public static final int end_time=0x7f0a006e;
-        public static final int et_alias=0x7f0a0061;
+        public static final int bu_setTime=0x7f0a0066;
+        public static final int cb_friday=0x7f0a006b;
+        public static final int cb_monday=0x7f0a0067;
+        public static final int cb_saturday=0x7f0a006c;
+        public static final int cb_sunday=0x7f0a006d;
+        public static final int cb_thursday=0x7f0a006a;
+        public static final int cb_tuesday=0x7f0a0068;
+        public static final int cb_wednesday=0x7f0a0069;
+        public static final int driverlogin_email=0x7f0a0012;
+        public static final int driverlogin_form=0x7f0a0011;
+        public static final int driverlogin_login=0x7f0a0014;
+        public static final int driverlogin_password=0x7f0a0013;
+        public static final int driverlogin_regisiter=0x7f0a0016;
+        public static final int driverlogin_signinbtn=0x7f0a0015;
+        public static final int driverlogin_status=0x7f0a000f;
+        public static final int driverlogin_status_message=0x7f0a0010;
+        public static final int end_time=0x7f0a006f;
+        public static final int et_alias=0x7f0a0062;
         public static final int et_sendmessage=0x7f0a0005;
-        public static final int et_tag=0x7f0a005f;
-        public static final int followshipinvitation_accept=0x7f0a0014;
-        public static final int followshipinvitation_content=0x7f0a0012;
-        public static final int followshipinvitation_goback=0x7f0a0010;
-        public static final int followshipinvitation_reject=0x7f0a0015;
-        public static final int followshipinvitation_shopdetail=0x7f0a0013;
-        public static final int followshipinvitation_title=0x7f0a0011;
-        public static final int followshipinvitation_titleId=0x7f0a000f;
-        public static final int herID=0x7f0a001a;
-        public static final int icon=0x7f0a0046;
-        public static final int init=0x7f0a0059;
-        public static final int iv_userhead=0x7f0a0043;
-        public static final int layout_bottombar=0x7f0a004c;
-        public static final int layout_root=0x7f0a005e;
-        public static final int layout_tile=0x7f0a003f;
-        public static final int list_users=0x7f0a0041;
+        public static final int et_tag=0x7f0a0060;
+        public static final int followshipinvitation_accept=0x7f0a001c;
+        public static final int followshipinvitation_content=0x7f0a001a;
+        public static final int followshipinvitation_goback=0x7f0a0018;
+        public static final int followshipinvitation_reject=0x7f0a001d;
+        public static final int followshipinvitation_shopdetail=0x7f0a001b;
+        public static final int followshipinvitation_title=0x7f0a0019;
+        public static final int followshipinvitation_titleId=0x7f0a0017;
+        public static final int icon=0x7f0a0047;
+        public static final int init=0x7f0a005a;
+        public static final int iv_userhead=0x7f0a0044;
+        public static final int layout_bottombar=0x7f0a004d;
+        public static final int layout_root=0x7f0a005f;
+        public static final int layout_tile=0x7f0a0040;
+        public static final int list_users=0x7f0a0042;
         public static final int listview=0x7f0a0006;
-        public static final int login=0x7f0a001b;
-        public static final int login_form=0x7f0a0018;
-        public static final int login_status=0x7f0a0016;
-        public static final int login_status_message=0x7f0a0017;
-        public static final int m_icon=0x7f0a0049;
-        public static final int m_text=0x7f0a004b;
-        public static final int m_title=0x7f0a004a;
-        public static final int menu_forgot_password=0x7f0a006f;
-        public static final int msg_rec=0x7f0a005c;
+        public static final int m_icon=0x7f0a004a;
+        public static final int m_text=0x7f0a004c;
+        public static final int m_title=0x7f0a004b;
+        public static final int menu_forgot_password=0x7f0a0070;
+        public static final int msg_rec=0x7f0a005d;
         public static final int nearbymain_bottombar=0x7f0a0022;
         public static final int nearbymain_groupmsg=0x7f0a0021;
         public static final int nearbymain_nearby=0x7f0a001f;
         public static final int nearbymain_nearbylist=0x7f0a0020;
         public static final int nearbymain_title=0x7f0a001e;
-        public static final int reg_cfmpwd=0x7f0a0028;
-        public static final int reg_email=0x7f0a0025;
-        public static final int reg_ok=0x7f0a0029;
-        public static final int reg_pwd=0x7f0a0027;
-        public static final int reg_tip=0x7f0a002a;
-        public static final int reg_title=0x7f0a0024;
-        public static final int reg_username=0x7f0a0026;
-        public static final int register_form=0x7f0a0023;
-        public static final int resumePush=0x7f0a005b;
+        public static final int reg_cfmpwd=0x7f0a002a;
+        public static final int reg_email=0x7f0a0027;
+        public static final int reg_ok=0x7f0a002b;
+        public static final int reg_pwd=0x7f0a0029;
+        public static final int reg_title=0x7f0a0026;
+        public static final int reg_username=0x7f0a0028;
+        public static final int register_form=0x7f0a0025;
+        public static final int register_status=0x7f0a0023;
+        public static final int register_status_message=0x7f0a0024;
+        public static final int resumePush=0x7f0a005c;
         public static final int rl_bottom=0x7f0a0003;
         public static final int rl_layout=0x7f0a0000;
-        public static final int roleselect_driver=0x7f0a002b;
-        public static final int roleselect_shop=0x7f0a002c;
-        public static final int selfID=0x7f0a0019;
-        public static final int setStyle1=0x7f0a0063;
-        public static final int setStyle2=0x7f0a0064;
-        public static final int setting=0x7f0a005d;
-        public static final int setting_form=0x7f0a002d;
-        public static final int setting_herID=0x7f0a002f;
-        public static final int setting_ok=0x7f0a0031;
-        public static final int setting_selfID=0x7f0a002e;
-        public static final int setting_serverurl=0x7f0a0030;
-        public static final int setting_tip=0x7f0a0032;
-        public static final int shopinfo_addr=0x7f0a0039;
-        public static final int shopinfo_goback=0x7f0a0034;
-        public static final int shopinfo_head=0x7f0a0036;
-        public static final int shopinfo_icon=0x7f0a0037;
-        public static final int shopinfo_level=0x7f0a003a;
-        public static final int shopinfo_mobilenum=0x7f0a003c;
-        public static final int shopinfo_name=0x7f0a0038;
-        public static final int shopinfo_phonenum=0x7f0a003b;
-        public static final int shopinfo_points=0x7f0a003d;
-        public static final int shopinfo_title=0x7f0a0035;
-        public static final int shopinfo_titleId=0x7f0a0033;
-        public static final int sign_in_button=0x7f0a001c;
-        public static final int start_time=0x7f0a006d;
-        public static final int stopPush=0x7f0a005a;
-        public static final int text=0x7f0a0048;
-        public static final int tip=0x7f0a001d;
-        public static final int title=0x7f0a0047;
-        public static final int tv_appkey=0x7f0a0055;
-        public static final int tv_chatcontent=0x7f0a0044;
-        public static final int tv_imei=0x7f0a0057;
-        public static final int tv_package=0x7f0a0056;
-        public static final int tv_sendtime=0x7f0a0042;
-        public static final int tv_username=0x7f0a0045;
-        public static final int tv_version=0x7f0a0058;
+        public static final int roleselect_driver=0x7f0a002c;
+        public static final int roleselect_shop=0x7f0a002d;
+        public static final int setStyle1=0x7f0a0064;
+        public static final int setStyle2=0x7f0a0065;
+        public static final int setting=0x7f0a005e;
+        public static final int setting_form=0x7f0a002e;
+        public static final int setting_herID=0x7f0a0030;
+        public static final int setting_ok=0x7f0a0032;
+        public static final int setting_selfID=0x7f0a002f;
+        public static final int setting_serverurl=0x7f0a0031;
+        public static final int setting_tip=0x7f0a0033;
+        public static final int shopinfo_addr=0x7f0a003a;
+        public static final int shopinfo_goback=0x7f0a0035;
+        public static final int shopinfo_head=0x7f0a0037;
+        public static final int shopinfo_icon=0x7f0a0038;
+        public static final int shopinfo_level=0x7f0a003b;
+        public static final int shopinfo_mobilenum=0x7f0a003d;
+        public static final int shopinfo_name=0x7f0a0039;
+        public static final int shopinfo_phonenum=0x7f0a003c;
+        public static final int shopinfo_points=0x7f0a003e;
+        public static final int shopinfo_title=0x7f0a0036;
+        public static final int shopinfo_titleId=0x7f0a0034;
+        public static final int start_time=0x7f0a006e;
+        public static final int stopPush=0x7f0a005b;
+        public static final int text=0x7f0a0049;
+        public static final int title=0x7f0a0048;
+        public static final int tv_appkey=0x7f0a0056;
+        public static final int tv_chatcontent=0x7f0a0045;
+        public static final int tv_imei=0x7f0a0058;
+        public static final int tv_package=0x7f0a0057;
+        public static final int tv_sendtime=0x7f0a0043;
+        public static final int tv_username=0x7f0a0046;
+        public static final int tv_version=0x7f0a0059;
         public static final int userinfo_age=0x7f0a000b;
         public static final int userinfo_carinfo=0x7f0a000e;
         public static final int userinfo_driverinfo=0x7f0a000d;
@@ -162,19 +163,19 @@ public final class R {
         public static final int userinfo_name=0x7f0a000a;
         public static final int userinfo_sex=0x7f0a000c;
         public static final int userinfo_title=0x7f0a0008;
-        public static final int useritem=0x7f0a0050;
-        public static final int useritem_iv_userhead=0x7f0a0051;
-        public static final int useritem_tv_lastmessage=0x7f0a0053;
-        public static final int useritem_tv_lastmessagetime=0x7f0a0054;
-        public static final int useritem_tv_username=0x7f0a0052;
-        public static final int userlist=0x7f0a003e;
-        public static final int userlist_bottombar=0x7f0a0040;
+        public static final int useritem=0x7f0a0051;
+        public static final int useritem_iv_userhead=0x7f0a0052;
+        public static final int useritem_tv_lastmessage=0x7f0a0054;
+        public static final int useritem_tv_lastmessagetime=0x7f0a0055;
+        public static final int useritem_tv_username=0x7f0a0053;
+        public static final int userlist=0x7f0a003f;
+        public static final int userlist_bottombar=0x7f0a0041;
     }
     public static final class layout {
         public static final int activity_chat=0x7f030000;
         public static final int activity_driverinfo=0x7f030001;
-        public static final int activity_followshipinvitation=0x7f030002;
-        public static final int activity_login=0x7f030003;
+        public static final int activity_driverlogin=0x7f030002;
+        public static final int activity_followshipinvitation=0x7f030003;
         public static final int activity_nearbymain=0x7f030004;
         public static final int activity_register=0x7f030005;
         public static final int activity_roleselect=0x7f030006;
@@ -201,6 +202,8 @@ public final class R {
         public static final int app_name=0x7f060000;
         public static final int back=0x7f060004;
         public static final int chat_title_name=0x7f060003;
+        public static final int driverlogin_noaccount=0x7f06001d;
+        public static final int driverlogin_registerbtn=0x7f06001e;
         public static final int error_alias_empty=0x7f06000a;
         public static final int error_field_required=0x7f06001c;
         public static final int error_incorrect_password=0x7f06001b;
@@ -216,48 +219,53 @@ public final class R {
         public static final int logining=0x7f06000e;
         public static final int main_empty_list=0x7f060002;
         public static final int menu_forgot_password=0x7f060017;
-        public static final int pref_default_display_name=0x7f06002c;
-        public static final int pref_description_social_recommendations=0x7f06002a;
+        public static final int pref_default_display_name=0x7f060033;
+        public static final int pref_description_social_recommendations=0x7f060031;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f06002e;
+        public static final int pref_header_data_sync=0x7f060035;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f060028;
+        public static final int pref_header_general=0x7f06002f;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f060031;
-        public static final int pref_ringtone_silent=0x7f060034;
-        public static final int pref_title_add_friends_to_messages=0x7f06002d;
-        public static final int pref_title_display_name=0x7f06002b;
-        public static final int pref_title_new_message_notifications=0x7f060032;
-        public static final int pref_title_ringtone=0x7f060033;
-        public static final int pref_title_social_recommendations=0x7f060029;
-        public static final int pref_title_sync_frequency=0x7f06002f;
-        public static final int pref_title_system_sync_settings=0x7f060030;
-        public static final int pref_title_vibrate=0x7f060035;
+        public static final int pref_header_notifications=0x7f060038;
+        public static final int pref_ringtone_silent=0x7f06003b;
+        public static final int pref_title_add_friends_to_messages=0x7f060034;
+        public static final int pref_title_display_name=0x7f060032;
+        public static final int pref_title_new_message_notifications=0x7f060039;
+        public static final int pref_title_ringtone=0x7f06003a;
+        public static final int pref_title_social_recommendations=0x7f060030;
+        public static final int pref_title_sync_frequency=0x7f060036;
+        public static final int pref_title_system_sync_settings=0x7f060037;
+        public static final int pref_title_vibrate=0x7f06003c;
         /**  Strings related to login 
          */
         public static final int prompt_email=0x7f060013;
         public static final int prompt_password=0x7f060014;
         public static final int promt_server=0x7f060011;
-        public static final int reg_btn_ok=0x7f060022;
-        public static final int reg_prompt_cfmpwd=0x7f060020;
-        public static final int reg_prompt_email=0x7f06001d;
-        public static final int reg_prompt_password=0x7f06001f;
-        public static final int reg_prompt_username=0x7f06001e;
-        public static final int reg_tip_invalidemail=0x7f060026;
-        public static final int reg_tip_invalidpwd=0x7f060024;
-        public static final int reg_tip_notequalpwd=0x7f060025;
-        public static final int reg_tip_null=0x7f060023;
-        public static final int reg_title=0x7f060021;
+        public static final int reg_btn_ok=0x7f060024;
+        public static final int reg_prompt_cfmpwd=0x7f060022;
+        public static final int reg_prompt_email=0x7f06001f;
+        public static final int reg_prompt_password=0x7f060021;
+        public static final int reg_prompt_username=0x7f060020;
+        public static final int reg_tip_invalidemail=0x7f060028;
+        public static final int reg_tip_invalidpwd=0x7f060026;
+        public static final int reg_tip_notequalpwd=0x7f060027;
+        public static final int reg_tip_null=0x7f060025;
+        public static final int reg_title=0x7f060023;
+        public static final int register_fieldnull=0x7f06002a;
+        public static final int register_invalid_email=0x7f06002d;
+        public static final int register_invalid_pwdcfm=0x7f06002b;
+        public static final int register_invalid_pwdlen=0x7f06002c;
+        public static final int register_progress=0x7f060029;
         public static final int send=0x7f060005;
         public static final int setting_btn=0x7f060010;
         public static final int setting_su=0x7f06000f;
         public static final int style_hint=0x7f060008;
         public static final int tag_hint=0x7f060006;
-        public static final int title_activity_settings=0x7f060027;
+        public static final int title_activity_settings=0x7f06002e;
     }
     public static final class style {
         /** 
@@ -265,12 +273,6 @@ public final class R {
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
     
-
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-
-        
          */
         public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
