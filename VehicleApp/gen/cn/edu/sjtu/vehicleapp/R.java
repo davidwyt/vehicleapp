@@ -116,12 +116,12 @@ public final class R {
         public static final int layout_root=0x7f0a0060;
         public static final int layout_tile=0x7f0a0041;
         public static final int list_users=0x7f0a0043;
-        public static final int listview=0x7f0a0006;
         public static final int m_icon=0x7f0a004b;
         public static final int m_text=0x7f0a004d;
         public static final int m_title=0x7f0a004c;
         public static final int menu_forgot_password=0x7f0a0071;
         public static final int msg_rec=0x7f0a005e;
+        public static final int msglist=0x7f0a0006;
         public static final int nearbymain_bottombar=0x7f0a0022;
         public static final int nearbymain_groupmsg=0x7f0a0021;
         public static final int nearbymain_nearby=0x7f0a001f;

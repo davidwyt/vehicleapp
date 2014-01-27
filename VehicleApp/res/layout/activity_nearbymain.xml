@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/nearbymain_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/selector_button_nearby"
         android:text="点击附近"
         android:textSize="28sp" >
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/nearbymain_nearby"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/selector_button_nearbylist"
         android:paddingBottom="16dp"
         android:paddingLeft="32dp"
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/nearbymain_nearbylist"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/selector_button_groupmsg"
         android:paddingBottom="16dp"
         android:paddingLeft="32dp"
@@ -66,6 +66,7 @@
         android:id="@+id/nearbymain_bottombar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="fill"
         android:layout_alignParentBottom="true" >
     </com.vehicle.app.layout.BottomBarLayout>
 

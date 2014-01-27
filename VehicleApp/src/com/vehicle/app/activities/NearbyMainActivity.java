@@ -17,7 +17,6 @@ public class NearbyMainActivity extends Activity{
 	
 	private void initView()
 	{
-		
 	}
 	
 	@Override

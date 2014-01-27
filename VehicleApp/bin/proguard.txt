@@ -49,7 +49,7 @@
 # view AndroidManifest.xml #generated:54
 -keep class com.vehicle.app.activities.UserListActivity { <init>(...); }
 
-# view res/layout/activity_nearbymain.xml #generated:51
+# view res/layout/activity_nearbymain.xml #generated:65
 # view res/layout/activity_userlist.xml #generated:21
 -keep class com.vehicle.app.layout.BottomBarLayout { <init>(...); }
 

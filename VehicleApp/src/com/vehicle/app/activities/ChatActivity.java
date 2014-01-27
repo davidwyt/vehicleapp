@@ -41,7 +41,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private Button mBtnSetting;
 	private EditText mEditTextContent;
 	private ChatMsgViewAdapter mAdapter;
-	private ListView mListView;
+	private ListView mMsgList;
 
 	private BroadcastReceiver messageReceiver;
 	private List<Message> mDataArrays = new ArrayList<Message>();
@@ -56,7 +56,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	}
 
 	private void initView() {
-		mListView = (ListView) findViewById(R.id.list_users);
+		mMsgList = (ListView) findViewById(R.id.msglist);
 		mBtnBack = (Button) findViewById(R.id.btn_back);
 		mBtnBack.setOnClickListener(this);
 		mBtnSend = (Button) findViewById(R.id.btn_send);
@@ -66,8 +66,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 		mBtnSetting.setOnClickListener(this);
 
 		mEditTextContent.setCursorVisible(true);
-		mListView.setFastScrollEnabled(true);
-		mListView.setFastScrollAlwaysVisible(true);
 	}
 
 	@Override
@@ -142,7 +140,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		mAdapter = new ChatMsgViewAdapter(this, mDataArrays);
-		mListView.setAdapter(mAdapter);
+		this.mMsgList.setAdapter(mAdapter);
 	}
 
 	public void onClick(View view) {
@@ -179,7 +177,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			this.mAdapter.addMsg(entity);
 			mAdapter.notifyDataSetChanged();
 			mEditTextContent.setText("");
-			mListView.setSelection(mListView.getCount() - 1);
+			this.mMsgList.setSelection(this.mMsgList.getCount() - 1);
 
 			AsyncTask<String, Void, Void> sendAsync = new AsyncTask<String, Void, Void>() {
 
@@ -221,7 +219,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 				mAdapter.addMsg(msg);
 				mAdapter.notifyDataSetChanged();
-				mListView.setSelection(mListView.getCount() - 1);
+				mMsgList.setSelection(mMsgList.getCount() - 1);
 			}
 		}
 	}
