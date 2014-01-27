@@ -24,10 +24,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:textColor="@color/azure"
             android:fontFamily="sans-serif-light"
             android:text="@string/login_progress_signing_in"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/azure" />
     </LinearLayout>
 
     <!-- Login form -->
@@ -65,15 +65,17 @@
 
             <Button
                 android:id="@+id/driverlogin_signinbtn"
-                android:layout_width="228dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:layout_weight="1.46"
                 android:background="@color/tomato"
+                android:paddingBottom="8dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
-                android:text="@string/action_sign_in_register" />
+                android:paddingTop="8dp"
+                android:text="@string/action_sign_in_register"
+                android:textSize="22sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -85,15 +87,17 @@
 
             <Button
                 android:id="@+id/driverlogin_regisiter"
-                android:layout_width="228dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:background="@color/tomato"
+                android:paddingBottom="8dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
-                android:text="@string/driverlogin_registerbtn" />
-
+                android:paddingTop="8dp"
+                android:text="@string/driverlogin_registerbtn"
+                android:textSize="22sp" />
         </LinearLayout>
     </ScrollView>
 

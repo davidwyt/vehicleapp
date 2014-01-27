@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_bottombar"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    >
+    android:orientation="horizontal" >
 
     <Button
         android:id="@+id/bar_btn_message"
         style="@drawable/send_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/chatfrom_bg_normal"
-        android:gravity="fill" />
+        android:layout_weight="1"
+        android:background="@drawable/selector_button_bottommsg" />
 
     <Button
         android:id="@+id/bar_btn_vendor"
         style="@drawable/send_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/common_signin_btn_icon_pressed_dark"
-        android:gravity="fill" />
+        android:layout_weight="1"
+        android:background="@drawable/selector_button_bottomvendor" />
 
     <Button
         android:id="@+id/bar_btn_setting"
         style="@drawable/send_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/mm_title_back_normal"
-        android:gravity="fill" />
+        android:layout_weight="1"
+        android:background="@drawable/selector_button_bottomsetting" />
 
-</RelativeLayout>
+</LinearLayout>

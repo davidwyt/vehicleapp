@@ -233,6 +233,10 @@ public class DriverLoginActivity extends Activity {
 
 			if (success) {
 				finish();
+				Intent intent = new Intent();
+				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
+				DriverLoginActivity.this.startActivity(intent);
+
 			} else {
 				mPasswordView.setError(getString(R.string.error_incorrect_password));
 				mPasswordView.requestFocus();

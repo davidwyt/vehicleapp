@@ -28,7 +28,6 @@ public class BottomBarLayout extends LinearLayout{
 	private void create(Context context)
 	{
 		View child = inflate(context, R.layout.layout_bottom_bar, null);
-
 		this.addView(child);
 	}
 }

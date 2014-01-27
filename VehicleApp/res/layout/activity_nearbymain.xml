@@ -13,7 +13,9 @@
         android:gravity="center"
         android:text="爱车帮"
         android:textColor="@color/white"
-        android:textSize="20sp" >
+        android:textSize="22sp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp" >
     </TextView>
 
     <Button
@@ -23,7 +25,9 @@
         android:layout_below="@id/nearbymain_title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="64dp"
-        android:background="@drawable/common_signin_btn_icon_pressed_dark" >
+        android:background="@drawable/selector_button_nearby"
+        android:text="点击附近"
+        android:textSize="28sp" >
     </Button>
 
     <Button
@@ -33,7 +37,13 @@
         android:layout_below="@id/nearbymain_nearby"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp"
-        android:background="@drawable/common_signin_btn_text_normal_dark" >
+        android:background="@drawable/selector_button_nearbylist"
+        android:paddingBottom="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="16dp"
+        android:text="查询清单"
+        android:textSize="22sp" >
     </Button>
 
     <Button
@@ -43,13 +53,20 @@
         android:layout_below="@id/nearbymain_nearbylist"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp"
-        android:background="@drawable/common_signin_btn_text_normal_dark" >
+        android:background="@drawable/selector_button_groupmsg"
+        android:paddingBottom="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="16dp"
+        android:text="群发站内信"
+        android:textSize="22sp" >
     </Button>
 
-    <com.vehicle.app.layout.BottomBarLayout android:id="@+id/nearbymain_bottombar"
-        android:layout_width="match_parent"
+    <com.vehicle.app.layout.BottomBarLayout
+        android:id="@+id/nearbymain_bottombar"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-        
+        android:layout_alignParentBottom="true" >
     </com.vehicle.app.layout.BottomBarLayout>
+
 </RelativeLayout>

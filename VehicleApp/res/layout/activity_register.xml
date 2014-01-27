@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.vehicle.app.activities.RegisterActivity" >
 
-        <LinearLayout
+    <LinearLayout
         android:id="@+id/register_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:text="@string/register_progress"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
-        
+
     <ScrollView
         android:id="@+id/register_form"
         android:layout_width="match_parent"
@@ -40,16 +40,29 @@
             android:layout_gravity="center"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/reg_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/reg_title"
-                android:textColor="@color/blue"
-                android:textSize="20sp"
-                android:typeface="monospace" >
-            </TextView>
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/reg_goback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/roundbutton"
+                    android:text="goback" />
+
+                <TextView
+                    android:id="@+id/reg_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/reg_title"
+                    android:textColor="@color/blue"
+                    android:textSize="20sp"
+                    android:typeface="monospace" >
+                </TextView>
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/reg_email"

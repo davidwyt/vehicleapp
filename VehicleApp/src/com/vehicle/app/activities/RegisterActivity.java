@@ -24,6 +24,7 @@ public class RegisterActivity extends Activity {
 	private EditText mPwdET;
 	private EditText mCfmPwdET;
 	private Button mOKBtn;
+	private Button mBackBtn;
 
 	private View mRegFormView;
 	private View mRegStatusView;
@@ -70,6 +71,14 @@ public class RegisterActivity extends Activity {
 				attemptRegister();
 			}
 
+		});
+
+		this.mBackBtn = (Button) this.findViewById(R.id.reg_goback);
+		this.mBackBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				RegisterActivity.this.onBackPressed();
+			}
 		});
 
 		this.mRegFormView = this.findViewById(R.id.register_form);
@@ -178,14 +187,14 @@ public class RegisterActivity extends Activity {
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
-			
+
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			return Boolean.TRUE;
 		}
 
