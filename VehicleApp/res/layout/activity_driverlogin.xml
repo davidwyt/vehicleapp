@@ -42,10 +42,20 @@
             style="@style/LoginFormContainer"
             android:orientation="vertical" >
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/title"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_logintitle" >
+            </ImageView>
+
             <EditText
                 android:id="@+id/driverlogin_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
@@ -69,19 +79,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:background="@color/tomato"
-                android:paddingBottom="8dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:paddingTop="8dp"
-                android:text="@string/action_sign_in_register"
-                android:textSize="22sp" />
+                android:background="@drawable/selector_btn_login" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="16dp"
                 android:singleLine="true"
                 android:text="@string/driverlogin_noaccount" />
 
@@ -91,13 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:background="@color/tomato"
-                android:paddingBottom="8dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:paddingTop="8dp"
-                android:text="@string/driverlogin_registerbtn"
-                android:textSize="22sp" />
+                android:background="@drawable/selector_btn_driverreg" />
         </LinearLayout>
     </ScrollView>
 

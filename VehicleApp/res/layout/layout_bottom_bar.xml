@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_bottombar"
-    android:layout_width="fill_parent"
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_rdgroup"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/bar_btn_message"
-        style="@drawable/send_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <RadioButton
+        android:id="@+id/bar_rabtn_message"
         android:layout_weight="1"
+        android:button="@null"
         android:background="@drawable/selector_button_bottommsg" />
 
-    <Button
-        android:id="@+id/bar_btn_vendor"
-        style="@drawable/send_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <RadioButton
+        android:id="@+id/bar_rabtn_vendor"
         android:layout_weight="1"
-        android:background="@drawable/selector_button_bottomvendor" />
+        android:button="@null"
+        android:checked="true"
+        android:background="@drawable/selector_button_bottomvendor" >
+    </RadioButton>
 
-    <Button
-        android:id="@+id/bar_btn_setting"
-        style="@drawable/send_button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <RadioButton
+        android:id="@+id/bar_rabtn_setting"
         android:layout_weight="1"
-        android:background="@drawable/selector_button_bottomsetting" />
+        android:button="@null"
+        android:background="@drawable/selector_button_bottomsetting" >
+    </RadioButton>
 
-</LinearLayout>
+</RadioGroup>

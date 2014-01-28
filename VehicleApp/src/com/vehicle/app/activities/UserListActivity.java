@@ -18,9 +18,9 @@ import android.widget.ListView;
 public class UserListActivity extends Activity {
 
 	private ListView lvUser;
-	private Button btnMessage;
-	private Button btnVendor;
-	private Button btnSetting;
+	//private Button btnMessage;
+	//private Button btnVendor;
+	//private Button btnSetting;
 
 	private BaseAdapter adapter;
 	
@@ -46,9 +46,9 @@ public class UserListActivity extends Activity {
 
 	private void initView() {
 		lvUser = (ListView) this.findViewById(R.id.list_users);
-		btnMessage = (Button) this.findViewById(R.id.bar_btn_message);
-		btnVendor = (Button) this.findViewById(R.id.bar_btn_vendor);
-		btnSetting = (Button) this.findViewById(R.id.bar_btn_setting);
+		//btnMessage = (Button) this.findViewById(R.id.bar_btn_message);
+		//btnVendor = (Button) this.findViewById(R.id.bar_btn_vendor);
+		//btnSetting = (Button) this.findViewById(R.id.bar_btn_setting);
 
 		List<User> users = new ArrayList<User>();
 		for (int i = 0; i < 10; i++) {

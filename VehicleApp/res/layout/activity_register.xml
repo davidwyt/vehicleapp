@@ -37,7 +37,6 @@
             style="@style/RegFormContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -49,19 +48,17 @@
                     android:id="@+id/reg_goback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/roundbutton"
-                    android:text="goback" />
-
-                <TextView
-                    android:id="@+id/reg_title"
-                    android:layout_width="match_parent"
+                    android:background="@drawable/selector_btn_gobak"
+                     />
+                
+                <ImageView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/reg_title"
-                    android:textColor="@color/blue"
-                    android:textSize="20sp"
-                    android:typeface="monospace" >
-                </TextView>
+                    android:src="@drawable/icon_titletext"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginTop="4dp"
+                    android:contentDescription="@string/title">
+                    
+                </ImageView>
             </LinearLayout>
 
             <EditText
@@ -80,6 +77,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/reg_prompt_username"
                 android:inputType="textPersonName"
+                android:layout_marginTop="4dp"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -89,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/reg_prompt_password"
                 android:inputType="textPassword"
+                android:layout_marginTop="4dp"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -99,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/reg_prompt_cfmpwd"
                 android:inputType="textPassword"
+                android:layout_marginTop="4dp"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -109,9 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:text="@string/reg_btn_ok" />
+                android:background="@drawable/selector_btn_regok" />
         </LinearLayout>
     </ScrollView>
 

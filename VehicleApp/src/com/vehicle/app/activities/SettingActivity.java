@@ -26,8 +26,7 @@ public class SettingActivity extends Activity{
 		
 		super.onCreate(savedInstanceState);
 		
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		this.setTitle("Setting");
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.activity_setting);
 		

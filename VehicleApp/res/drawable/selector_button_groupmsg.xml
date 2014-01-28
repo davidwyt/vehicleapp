@@ -5,5 +5,5 @@
         android:state_pressed="true" 
         android:drawable="@drawable/icon_btn_groupmsg_pressed" />
     <item 
-        android:drawable="@drawable/icon_btn_groupmsg" />
+        android:drawable="@drawable/icon_btn_groupmsg_normal" />
 </selector>

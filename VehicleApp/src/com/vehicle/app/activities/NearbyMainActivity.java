@@ -5,8 +5,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Window;
 
-public class NearbyMainActivity extends Activity{
-	
+public class NearbyMainActivity extends Activity {
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -14,16 +14,15 @@ public class NearbyMainActivity extends Activity{
 		setContentView(R.layout.activity_nearbymain);
 		initView();
 	}
-	
-	private void initView()
-	{
+
+	private void initView() {
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();

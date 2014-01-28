@@ -10,9 +10,13 @@ import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 
-public class BottomBarLayout extends LinearLayout implements View.OnClickListener{
-
+public class BottomBarLayout extends LinearLayout implements OnCheckedChangeListener{
+	
+	private RadioGroup mBottomRdGroup;
+	
 	public BottomBarLayout(Context context) {
 		super(context);
 		create(context);
@@ -36,25 +40,24 @@ public class BottomBarLayout extends LinearLayout implements View.OnClickListene
 		
 		this.addView(child);
 		
-		this.findViewById(R.id.bar_btn_message).setOnClickListener(this);
-		this.findViewById(R.id.bar_btn_setting).setOnClickListener(this);
-		this.findViewById(R.id.bar_btn_vendor).setOnClickListener(this);
+		this.mBottomRdGroup = (RadioGroup)this.findViewById(R.id.bottom_rdgroup);
+		this.mBottomRdGroup.setOnCheckedChangeListener(this);
 	}
 
 	@Override
-	public void onClick(View view) {
-		
-		System.out.println("idddddddddddd:" + view.getId());
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+		int id = group.getCheckedRadioButtonId();
 		
 		Intent intent = new Intent();
 		
-		if(R.id.bar_btn_message == view.getId())
+		if(R.id.bar_rabtn_message == id)
 		{
 			intent.setClass(getContext(), ChatActivity.class);
-		}else if(R.id.bar_btn_setting == view.getId())
+		}else if(R.id.bar_rabtn_setting == id)
 		{
 			intent.setClass(getContext(), SettingActivity.class);
-		}else if(R.id.bar_btn_vendor == view.getId())
+		}else if(R.id.bar_rabtn_vendor == id)
 		{
 			intent.setClass(getContext(), NearbyMainActivity.class);
 		}else
@@ -63,5 +66,6 @@ public class BottomBarLayout extends LinearLayout implements View.OnClickListene
 		}
 		
 		this.getContext().startActivity(intent);
+		
 	}
 }
