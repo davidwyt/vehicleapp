@@ -33,9 +33,9 @@ public class BeginActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
+
 		this.mBaK.setVisibility(View.VISIBLE);
-		
+
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 
@@ -68,7 +68,7 @@ public class BeginActivity extends Activity {
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), RoleSelectActivity.class);
 		BeginActivity.this.startActivity(intent);
-		
+
 		BeginActivity.this.finish();
 	}
 
