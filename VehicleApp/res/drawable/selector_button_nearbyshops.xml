@@ -5,5 +5,5 @@
         android:state_pressed="true" 
         android:drawable="@drawable/icon_btn_nearbyshops_pressed" />
     <item 
-        android:drawable="@drawable/icon_btn_nearbyshops_normal" />
+        android:drawable="@drawable/icon_btn_nearbyshops" />
 </selector>

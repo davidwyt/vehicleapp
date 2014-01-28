@@ -5,5 +5,5 @@
         android:state_pressed="true" 
         android:drawable="@drawable/icon_btn_shop_pressed" />
     <item 
-        android:drawable="@drawable/icon_btn_shop_normal" />
+        android:drawable="@drawable/icon_btn_shop" />
 </selector>
