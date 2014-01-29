@@ -67,6 +67,10 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.GroupmsgNavActivity" >
         </activity>
+        <activity android:name="com.vehicle.app.activities.NearbyFellowListActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.MsgMgrActivity" >
+        </activity>
 
         <!-- Required SDK核心功能 -->
         <activity

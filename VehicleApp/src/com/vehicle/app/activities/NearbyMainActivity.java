@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.RadioGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 public class NearbyMainActivity extends Activity implements OnCheckedChangeListener {
 
 	private RadioGroup mRdGroup;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -22,13 +24,13 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	private void initView() {
 		this.mRdGroup = ((RadioGroup) this.findViewById(R.id.bottom_rdgroup));
 		this.mRdGroup.setOnCheckedChangeListener(this);
-		this.mRdGroup.check(R.id.bar_rabtn_vendor);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-
+		
+		((RadioButton)this.findViewById(R.id.bar_rabtn_vendor)).setChecked(true);
 	}
 
 	@Override

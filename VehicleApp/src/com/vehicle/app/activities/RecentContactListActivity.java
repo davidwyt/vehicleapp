@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
@@ -41,6 +42,8 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 	@Override
 	protected void onStart() {
 		super.onStart();
+
+		((RadioButton)this.findViewById(R.id.bar_rabtn_message)).setChecked(true);
 	}
 
 	@Override
@@ -70,7 +73,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 		this.mRdGroup = (RadioGroup) this.findViewById(R.id.bottom_rdgroup);
 		this.mRdGroup.setOnCheckedChangeListener(this);
-		this.mRdGroup.check(R.id.bar_rabtn_message);
+
 	}
 
 	@Override
