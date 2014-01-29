@@ -238,7 +238,7 @@ public class DriverLoginActivity extends Activity {
 			if (success) {
 				//finish();
 				Intent intent = new Intent();
-				intent.setClass(getApplicationContext(), MsgMgrActivity.class);
+				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				DriverLoginActivity.this.startActivity(intent);
 
 			} else {
