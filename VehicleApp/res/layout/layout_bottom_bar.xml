@@ -15,7 +15,6 @@
         android:id="@+id/bar_rabtn_vendor"
         android:layout_weight="1"
         android:button="@null"
-        android:checked="true"
         android:background="@drawable/selector_button_bottomvendor" >
     </RadioButton>
 

@@ -40,6 +40,9 @@
 # view AndroidManifest.xml #generated:60
 -keep class com.vehicle.app.activities.NearbyMainActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:56
+-keep class com.vehicle.app.activities.RecentContactListActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:54
 -keep class com.vehicle.app.activities.RegisterActivity { <init>(...); }
 
@@ -52,10 +55,7 @@
 # view AndroidManifest.xml #generated:64
 -keep class com.vehicle.app.activities.ShopInfoActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:56
--keep class com.vehicle.app.activities.UserListActivity { <init>(...); }
-
-# view res/layout/activity_nearbymain.xml #generated:54
-# view res/layout/activity_userlist.xml #generated:21
+# view res/layout/activity_nearbymain.xml #generated:27
+# view res/layout/activity_recentcontactlist.xml #generated:24
 -keep class com.vehicle.app.layout.BottomBarLayout { <init>(...); }
 

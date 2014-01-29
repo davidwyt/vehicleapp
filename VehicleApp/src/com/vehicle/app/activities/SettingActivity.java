@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 public class SettingActivity extends Activity{
@@ -44,6 +45,8 @@ public class SettingActivity extends Activity{
 	
 	private void initView()
 	{
+		//((RadioButton)this.findViewById(R.id.bar_rabtn_setting)).setChecked(true);
+		
 		this.selfIdET = (EditText)this.findViewById(R.id.setting_selfID);
 		this.herIdET = (EditText)this.findViewById(R.id.setting_herID);
 		this.serverET = (EditText)this.findViewById(R.id.setting_serverurl);

@@ -1,32 +1,48 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bottombar="http://schemas.android.com/apk/res/cn.edu.sjtu.vehicleapp"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.vehicle.app.activities.NearbyMainActivity" >
 
-    <ScrollView
+    <RelativeLayout
         android:id="@+id/nearbymain_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+        <LinearLayout
+            android:id="@+id/nearbymain_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" >
 
             <ImageView
-                android:id="@+id/nearbymain_title"
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:contentDescription="@string/title"
                 android:scaleType="centerCrop"
                 android:src="@drawable/icon_title" >
             </ImageView>
+        </LinearLayout>
+
+        <com.vehicle.app.layout.BottomBarLayout
+            android:id="@+id/nearbymain_bottombar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bottombar:checkedbtn="nearby"
+            android:layout_alignParentBottom="true" >
+        </com.vehicle.app.layout.BottomBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/nearbymain_bottombar"
+            android:layout_below="@id/nearbymain_title"
+            android:orientation="vertical" >
 
             <Button
-                android:id="@+id/nearbymain_nearby"
+                android:id="@+id/nearbymain_roundnearby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/nearbymain_title"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/selector_button_roundnearbyshops" >
             </Button>
@@ -35,8 +51,7 @@
                 android:id="@+id/nearbymain_nearbylist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/nearbymain_nearby"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/selector_button_nearbylist" >
             </Button>
@@ -45,19 +60,11 @@
                 android:id="@+id/nearbymain_groupmsg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/nearbymain_nearbylist"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/selector_button_groupmsg" >
             </Button>
-
-            <com.vehicle.app.layout.BottomBarLayout
-                android:id="@+id/nearbymain_bottombar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true" >
-            </com.vehicle.app.layout.BottomBarLayout>
-        </RelativeLayout>
-    </ScrollView>
+        </LinearLayout>
+    </RelativeLayout>
 
 </merge>
