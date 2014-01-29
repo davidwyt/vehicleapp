@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.vehicle.app.activities.RoleSelectActivity" >
+    tools:context="com.vehicle.app.activities.GroupMsgNavActivity" >
 
     <ScrollView
-        android:id="@+id/roleselect_form"
+        android:id="@+id/groupmsgnav_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray" >
@@ -19,25 +19,25 @@
                 android:layout_height="40dp"
                 android:contentDescription="@string/title"
                 android:scaleType="centerCrop"
-                android:src="@drawable/icon_title" >
+                android:src="@drawable/icon_groupmsgnavtitle" >
             </ImageView>
 
             <Button
-                android:id="@+id/roleselect_driver"
+                android:id="@+id/nav_allfellows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="128dp"
-                android:background="@drawable/selector_btn_roledriver" />
+                android:background="@drawable/selector_btn_groupnav_allfavshops" />
 
             <Button
-                android:id="@+id/roleselect_shop"
+                android:id="@+id/nav_allnearby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/roleselect_driver"
+                android:layout_below="@id/nav_allfellows"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="64dp"
-                android:background="@drawable/selector_btn_roleshop" />
+                android:background="@drawable/selector_btn_groupnav_nearbyshops" />
         </RelativeLayout>
     </ScrollView>
 

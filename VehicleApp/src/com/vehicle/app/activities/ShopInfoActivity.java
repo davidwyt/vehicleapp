@@ -12,14 +12,14 @@ import android.widget.TextView;
 
 public class ShopInfoActivity extends Activity {
 
-	private Button btnBack;
-	private ImageView ivhead;
-	private TextView tvName;
-	private TextView tvAddr;
-	private TextView tvLevel;
-	private TextView tvPhoneNum;
-	private TextView tvMobileNum;
-	private TextView tvPoints;
+	private Button mBtnBack;
+	private ImageView mIvhead;
+	private TextView mTvName;
+	private TextView mTvAddr;
+	private TextView mTvLevel;
+	private TextView mTvPhoneNum;
+	private TextView mTvMobileNum;
+	private TextView mTvPoints;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,9 +36,9 @@ public class ShopInfoActivity extends Activity {
 	}
 
 	private void initView() {
-		this.btnBack = (Button) this.findViewById(R.id.shopinfo_goback);
+		this.mBtnBack = (Button) this.findViewById(R.id.shopinfo_goback);
 
-		this.btnBack.setOnClickListener(new OnClickListener() {
+		this.mBtnBack.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -47,13 +47,13 @@ public class ShopInfoActivity extends Activity {
 			}
 		});
 		
-		this.ivhead = (ImageView) this.findViewById(R.id.shopinfo_icon);
-		this.tvName = (TextView) this.findViewById(R.id.shopinfo_name);
-		this.tvAddr = (TextView) this.findViewById(R.id.shopinfo_addr);
-		this.tvLevel = (TextView) this.findViewById(R.id.shopinfo_level);
-		this.tvPhoneNum = (TextView) this.findViewById(R.id.shopinfo_phonenum);
-		this.tvMobileNum = (TextView) this.findViewById(R.id.shopinfo_mobilenum);
-		this.tvPoints = (TextView) this.findViewById(R.id.shopinfo_points);
+		this.mIvhead = (ImageView) this.findViewById(R.id.shopinfo_icon);
+		this.mTvName = (TextView) this.findViewById(R.id.shopinfo_name);
+		this.mTvAddr = (TextView) this.findViewById(R.id.shopinfo_addr);
+		this.mTvLevel = (TextView) this.findViewById(R.id.shopinfo_level);
+		this.mTvPhoneNum = (TextView) this.findViewById(R.id.shopinfo_phonenum);
+		this.mTvMobileNum = (TextView) this.findViewById(R.id.shopinfo_mobilenum);
+		this.mTvPoints = (TextView) this.findViewById(R.id.shopinfo_points);
 	}
 	
 	private void initData()

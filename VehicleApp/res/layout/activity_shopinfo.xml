@@ -1,196 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/barDarkColor"
-    android:orientation="vertical" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.vehicle.app.activities.ShopInfoActivity" >
 
-    <LinearLayout
-        android:id="@+id/shopinfo_titleId"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/shopinfo_goback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_weight="0.3"
-            android:background="@drawable/chat_info" />
-
-        <TextView
-            android:id="@+id/shopinfo_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:background="@drawable/common_signin_btn_text_normal_dark" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/shopinfo_head"
+    <ScrollView
+        android:id="@+id/shopinfo_form"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp" >
+        android:layout_height="match_parent"
+        android:background="@color/gray" >
 
-        <ImageView
-            android:id="@+id/shopinfo_icon"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            style="@style/ShopInfoFormContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/chat_info" >
-        </ImageView>
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/shopinfo_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_toRightOf="@id/shopinfo_icon"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="商户名xxxxxxx" >
-        </TextView>
+            <LinearLayout
+                android:id="@+id/shopinfo_titleId"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/shopinfo_addr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/shopinfo_name"
-            android:layout_below="@id/shopinfo_name"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="我的地址是啥呢。。。。。。" >
-        </TextView>
-    </RelativeLayout>
+                <Button
+                    android:id="@+id/shopinfo_goback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_gobak" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="32dp"
-        android:background="@color/textShadow"
-        android:orientation="horizontal" >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:contentDescription="@string/title"
+                    android:src="@drawable/icon_shopinfotitle" >
+                </ImageView>
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="资质："
-            android:textSize="22sp" >
-        </TextView>
+            <RelativeLayout
+                android:id="@+id/shopinfo_head"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp" >
 
-        <TextView
-            android:id="@+id/shopinfo_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="一级"
-            android:textSize="22sp" >
-        </TextView>
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/shopinfo_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/chat_info"
+                    android:contentDescription="@string/title" >
+                </ImageView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/textShadow" >
+                <TextView
+                    android:id="@+id/shopinfo_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_toRightOf="@id/shopinfo_icon"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="商户名xxxxxxx" >
+                </TextView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="电话："
-            android:textSize="22sp" >
-        </TextView>
+                <TextView
+                    android:id="@+id/shopinfo_addr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/shopinfo_name"
+                    android:layout_below="@id/shopinfo_name"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="我的地址是啥呢。。。。。。" >
+                </TextView>
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/shopinfo_phonenum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="021110"
-            android:textSize="22sp" >
-        </TextView>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="32dp"
+                android:background="@color/textShadow"
+                android:orientation="horizontal" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/textShadow" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="资质："
+                    android:textSize="22sp" >
+                </TextView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="手机："
-            android:textSize="22sp" >
-        </TextView>
+                <TextView
+                    android:id="@+id/shopinfo_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="一级"
+                    android:textSize="22sp" >
+                </TextView>
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/shopinfo_mobilenum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="021110000"
-            android:textSize="22sp" >
-        </TextView>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/textShadow" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
-        android:background="@color/textShadow" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="电话："
+                    android:textSize="22sp" >
+                </TextView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="综合评价："
-            android:textSize="22sp" >
-        </TextView>
+                <TextView
+                    android:id="@+id/shopinfo_phonenum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="021110"
+                    android:textSize="22sp" >
+                </TextView>
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/shopinfo_points"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="4.75分"
-            android:textSize="22sp" >
-        </TextView>
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/textShadow" >
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="手机："
+                    android:textSize="22sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/shopinfo_mobilenum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="021110000"
+                    android:textSize="22sp" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/textShadow" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="综合评价："
+                    android:textSize="22sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/shopinfo_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="4.75分"
+                    android:textSize="22sp" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</merge>

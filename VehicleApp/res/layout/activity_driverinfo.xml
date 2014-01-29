@@ -1,151 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/barDarkColor"
-    android:orientation="vertical" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.vehicle.app.activities.DriverInfoActivity" >
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/driverinfo_form"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/barDarkColor" >
+        android:layout_height="match_parent"
+        android:background="@color/gray" >
 
-        <Button
-            android:id="@+id/userinfo_goback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_weight="0.2"
-            android:text="BACK" >
-        </Button>
-
-        <TextView
-            android:id="@+id/userinfo_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="0.8"
-            android:text="我的信息"
-            android:textColor="@color/azure"
-            android:textSize="26sp" >
-        </TextView>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/userinfo_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/chat_info" />
-
-        <TextView
-            android:id="@+id/userinfo_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/userinfo_icon"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@id/userinfo_icon"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="我的名字" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/userinfo_age"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/userinfo_name"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_toRightOf="@id/userinfo_icon"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="年龄：1999" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/userinfo_sex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/userinfo_age"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_toRightOf="@id/userinfo_icon"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="性别：男" >
-        </TextView>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="个人信息："
-            android:textColor="@color/blue"
-            android:textSize="22sp" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/userinfo_driverinfo"
-            android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/white"
-            android:gravity="center"
-            android:maxLines="5"
-            android:singleLine="false"
-            android:text="我是谁我是谁我是谁谁谁谁谁谁是事实上事实上是"
-            android:textSize="22sp" >
-        </TextView>
-    </LinearLayout>
-    
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:text="爱车信息："
-            android:textColor="@color/blue"
-            android:textSize="22sp" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/userinfo_carinfo"
+            style="@style/DriverInfoFormContainer"
             android:layout_width="match_parent"
-            android:layout_height="92dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/white"
-            android:gravity="center"
-            android:maxLines="5"
-            android:singleLine="false"
-            android:text="我是谁我是谁我是谁谁谁谁谁谁是事实上事实上是"
-            android:textSize="22sp" >
-        </TextView>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-</LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/barDarkColor" >
+
+                <Button
+                    android:id="@+id/driverinfo_goback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_gobak" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="4dp"
+                    android:contentDescription="@string/title"
+                    android:src="@drawable/icon_driverinfotitle" >
+                </ImageView>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/driverinfo_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/title"
+                    android:background="@drawable/chat_info" />
+
+                <TextView
+                    android:id="@+id/driverinfo_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_alignTop="@id/driverinfo_icon"
+                    android:layout_toRightOf="@id/driverinfo_icon"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="我的名字" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/driverinfo_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/driverinfo_name"
+                    android:layout_alignLeft="@id/driverinfo_name"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@id/driverinfo_icon"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="年龄：1999" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/driverinfo_sex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/driverinfo_age"
+                    android:layout_alignLeft="@id/driverinfo_name"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@id/driverinfo_icon"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="性别：男" >
+                </TextView>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="个人信息："
+                    android:textColor="@color/blue"
+                    android:textSize="22sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/userinfo_driverinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="92dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:maxLines="5"
+                    android:singleLine="false"
+                    android:text="我是谁我是谁我是谁谁谁谁谁谁是事实上事实上是"
+                    android:textSize="22sp" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="爱车信息："
+                    android:textColor="@color/blue"
+                    android:textSize="22sp" >
+                </TextView>
+
+                <TextView
+                    android:id="@+id/userinfo_carinfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="92dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:maxLines="5"
+                    android:singleLine="false"
+                    android:text="我是谁我是谁我是谁谁谁谁谁谁是事实上事实上是"
+                    android:textSize="22sp" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</merge>

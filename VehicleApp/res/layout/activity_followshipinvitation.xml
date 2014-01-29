@@ -6,7 +6,7 @@
         android:id="@+id/invitation_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/barMeduimColor" >
+        android:background="@color/gray" >
 
         <RelativeLayout
             style="@style/InvitationFormContainer"
@@ -43,7 +43,7 @@
                 android:layout_below="@id/followshipinvitation_titleId"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="32dp"
-                android:background="@drawable/chatfrom_bg_normal"
+                android:background="@drawable/icon_bg_invitationtext"
                 android:text="@string/followshipinvitationformatstr"
                 android:textColor="@color/textFieldColor" />
 

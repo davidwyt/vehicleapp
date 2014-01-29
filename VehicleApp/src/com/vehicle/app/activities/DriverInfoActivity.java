@@ -12,38 +12,38 @@ import android.widget.TextView;
 
 public class DriverInfoActivity extends Activity{
 	
-	private Button btnBack;
-	private ImageView ivHead;
-	private TextView tvName;
-	private TextView tvAge;
-	private TextView tvSex;
-	private TextView tvPerInfo;
-	private TextView tvCarInfo;
+	private Button mBtnBack;
+	private ImageView mIvHead;
+	private TextView mTvName;
+	private TextView mTvAge;
+	private TextView mTvSex;
+	private TextView mTvPerInfo;
+	private TextView mTvCarInfo;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_chat);
+		setContentView(R.layout.activity_driverinfo);
 		initView();
 		initData();
 	}
 
 	private void initView() {
-		this.btnBack = (Button)this.findViewById(R.id.userinfo_goback);
-		this.btnBack.setOnClickListener(new OnClickListener(){
+		this.mBtnBack = (Button)this.findViewById(R.id.driverinfo_goback);
+		this.mBtnBack.setOnClickListener(new OnClickListener(){
 
 			@Override
 			public void onClick(View arg0) {
 				DriverInfoActivity.this.onBackPressed();
 			}});
 		
-		this.ivHead = (ImageView)this.findViewById(R.id.userinfo_icon);
-		this.tvName = (TextView)this.findViewById(R.id.userinfo_name);
-		this.tvAge = (TextView)this.findViewById(R.id.userinfo_age);
-		this.tvSex = (TextView)this.findViewById(R.id.userinfo_sex);
-		this.tvPerInfo = (TextView)this.findViewById(R.id.userinfo_driverinfo);
-		this.tvCarInfo = (TextView)this.findViewById(R.id.userinfo_carinfo);
+		this.mIvHead = (ImageView)this.findViewById(R.id.driverinfo_icon);
+		this.mTvName = (TextView)this.findViewById(R.id.driverinfo_name);
+		this.mTvAge = (TextView)this.findViewById(R.id.driverinfo_age);
+		this.mTvSex = (TextView)this.findViewById(R.id.driverinfo_sex);
+		this.mTvPerInfo = (TextView)this.findViewById(R.id.userinfo_driverinfo);
+		this.mTvCarInfo = (TextView)this.findViewById(R.id.userinfo_carinfo);
 	}
 	
 	private void initData(){

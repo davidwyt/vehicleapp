@@ -34,6 +34,7 @@
         android:layout_marginLeft="2dip"
         android:layout_marginRight="2dip"
         android:layout_marginTop="10.0dip"
+        android:background="@color/gray"
         android:cacheColorHint="#00000000"
         android:divider="#000"
         android:dividerHeight="1dp"

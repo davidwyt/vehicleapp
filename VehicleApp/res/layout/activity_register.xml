@@ -31,7 +31,7 @@
         android:id="@+id/register_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/barMeduimColor" >
+        android:background="@color/gray" >
 
         <LinearLayout
             style="@style/RegFormContainer"
@@ -48,16 +48,15 @@
                     android:id="@+id/reg_goback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/selector_btn_gobak"
-                     />
-                
-                <ImageView android:layout_width="wrap_content"
+                    android:background="@drawable/selector_btn_gobak" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/icon_titletext"
                     android:layout_marginLeft="32dp"
                     android:layout_marginTop="4dp"
-                    android:contentDescription="@string/title">
-                    
+                    android:contentDescription="@string/title"
+                    android:src="@drawable/icon_titletext" >
                 </ImageView>
             </LinearLayout>
 
@@ -75,9 +74,9 @@
                 android:id="@+id/reg_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:hint="@string/reg_prompt_username"
                 android:inputType="textPersonName"
-                android:layout_marginTop="4dp"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -85,9 +84,9 @@
                 android:id="@+id/reg_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:hint="@string/reg_prompt_password"
                 android:inputType="textPassword"
-                android:layout_marginTop="4dp"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -96,13 +95,13 @@
                 android:id="@+id/reg_cfmpwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:hint="@string/reg_prompt_cfmpwd"
                 android:inputType="textPassword"
-                android:layout_marginTop="4dp"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:singleLine="true" />
-            
+
             <Button
                 android:id="@+id/reg_ok"
                 android:layout_width="wrap_content"
