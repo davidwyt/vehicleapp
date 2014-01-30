@@ -12,7 +12,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -21,11 +24,11 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 public class RecentContactListActivity extends Activity implements OnCheckedChangeListener {
 
-	private ListView lvUser;
+	private ListView mLVUsers;
 
-	private BaseAdapter adapter;
+	private BaseAdapter mAdapter;
 
-	private List<User> listUser = new ArrayList<User>();
+	private List<User> mListUser = new ArrayList<User>();
 
 	private RadioGroup mRdGroup;
 
@@ -43,7 +46,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 	protected void onStart() {
 		super.onStart();
 
-		((RadioButton)this.findViewById(R.id.bar_rabtn_message)).setChecked(true);
+		((RadioButton) this.findViewById(R.id.bar_rabtn_message)).setChecked(true);
 	}
 
 	@Override
@@ -52,28 +55,38 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 	}
 
 	private void initView() {
-		lvUser = (ListView) this.findViewById(R.id.list_users);
 
-		List<User> users = new ArrayList<User>();
 		for (int i = 0; i < 10; i++) {
 			User user = new User();
 			user.setAlias("user" + i);
-			user.setId(i + "");
+			user.setId(Integer.toString(i) + " user");
 			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));
 			user.setLastMessage("this is my last messagesssssssssssssssssss");
 			user.setLastMessageDate(new Date());
 
-			users.add(user);
-
-			listUser.add(user);
+			mListUser.add(user);
 		}
 
-		this.adapter = new UserViewAdapter(this, users);
-		this.lvUser.setAdapter(adapter);
+		this.mAdapter = new UserViewAdapter(this, mListUser);
+
+		this.mLVUsers = (ListView) this.findViewById(R.id.list_users);
+		this.mLVUsers.setAdapter(this.mAdapter);
+		this.mLVUsers.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+				User user = (User) mAdapter.getItem(position);
+				Intent intent = new Intent();
+				intent.setClass(getApplicationContext(), ChatActivity.class);
+				intent.putExtra("com.vehicle.app.activities.fellowId", user.getId());
+
+				RecentContactListActivity.this.startActivity(intent);
+			}
+		});
 
 		this.mRdGroup = (RadioGroup) this.findViewById(R.id.bottom_rdgroup);
 		this.mRdGroup.setOnCheckedChangeListener(this);
-
 	}
 
 	@Override

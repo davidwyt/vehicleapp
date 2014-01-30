@@ -6,7 +6,7 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:id="@+id/layout_tile"
+        android:id="@+id/ren_tile"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" >
@@ -34,7 +34,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/userlist_bottombar"
-        android:layout_below="@id/layout_tile"
+        android:layout_below="@id/ren_tile"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:background="@color/gray"
