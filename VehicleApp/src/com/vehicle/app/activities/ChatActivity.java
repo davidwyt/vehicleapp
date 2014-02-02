@@ -29,6 +29,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class ChatActivity extends Activity implements OnClickListener {
 
@@ -38,36 +39,50 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private Button mBtnSend;
 	private Button mBtnBack;
-	private Button mBtnSetting;
+	private Button mBtnSave;
+
 	private EditText mEditTextContent;
 	private ChatMsgViewAdapter mAdapter;
-	private ListView mListView;
+	private ListView mMsgList;
 
 	private BroadcastReceiver messageReceiver;
 	private List<Message> mDataArrays = new ArrayList<Message>();
 
+	private String mFellowId;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_chat);
+		
 		initView();
 		initData();
 	}
 
 	private void initView() {
-		mListView = (ListView) findViewById(R.id.list_users);
-		mBtnBack = (Button) findViewById(R.id.btn_back);
-		mBtnBack.setOnClickListener(this);
-		mBtnSend = (Button) findViewById(R.id.btn_send);
-		mBtnSend.setOnClickListener(this);
-		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
-		mBtnSetting = (Button) findViewById(R.id.btn_setting);
-		mBtnSetting.setOnClickListener(this);
+		mMsgList = (ListView) findViewById(R.id.msglist);
 
+		mBtnBack = (Button) findViewById(R.id.chat_btn_back);
+		mBtnBack.setOnClickListener(this);
+
+		mBtnSave = (Button) this.findViewById(R.id.chat_btn_save);
+		mBtnSave.setOnClickListener(this);
+
+		mBtnSend = (Button) findViewById(R.id.chat_btn_send);
+		mBtnSend.setOnClickListener(this);
+
+		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		mEditTextContent.setCursorVisible(true);
-		mListView.setFastScrollEnabled(true);
-		mListView.setFastScrollAlwaysVisible(true);
+
+		Bundle bundle = this.getIntent().getExtras();
+		this.mFellowId = bundle.getString("com.vehicle.app.activities.fellowId");
+		
+		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
+		tvFellow.setText(this.mFellowId);
+		
+		System.out.println("iddddddddddddd:" + this.mFellowId);
 	}
 
 	@Override
@@ -83,7 +98,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		messageReceiver = new MessageReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
@@ -101,16 +116,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private String[] msgArray = new String[] {
-			"  孩子们，要好好学习，天天向上！要好好听课，不要翘课！不要挂科，多拿奖学金！三等奖学金的争取拿二等，二等的争取拿一等，一等的争取拿励志！",
-			"姚妈妈还有什么吩咐...", "还有，明天早上记得跑操啊，不来的就扣德育分！", "德育分是什么？扣了会怎么样？",
-			"德育分会影响奖学金评比，严重的话，会影响毕业", "哇！学院那么不人道？", "你要是你不听话，我当场让你不能毕业！",
-			"姚妈妈，我知错了(- -我错在哪了...)" };
+	private String[] msgArray = new String[] { "  孩子们，要好好学习，天天向上！要好好听课，不要翘课！不要挂科，多拿奖学金！三等奖学金的争取拿二等，二等的争取拿一等，一等的争取拿励志！",
+			"姚妈妈还有什么吩咐...", "还有，明天早上记得跑操啊，不来的就扣德育分！", "德育分是什么？扣了会怎么样？", "德育分会影响奖学金评比，严重的话，会影响毕业", "哇！学院那么不人道？",
+			"你要是你不听话，我当场让你不能毕业！", "姚妈妈，我知错了(- -我错在哪了...)" };
 
-	private String[] dateArray = new String[] { "2012-09-01 18:00:03",
-			"2012-09-01 18:10:43", "2012-09-01 18:11:59",
-			"2012-09-01 18:20:05", "2012-09-01 18:30:32",
-			"2012-09-01 18:35:54", "2012-09-01 18:40:20", "2012-09-01 18:50:11" };
+	private String[] dateArray = new String[] { "2012-09-01 18:00:03", "2012-09-01 18:10:43", "2012-09-01 18:11:59",
+			"2012-09-01 18:20:05", "2012-09-01 18:30:32", "2012-09-01 18:35:54", "2012-09-01 18:40:20",
+			"2012-09-01 18:50:11" };
 
 	private final static int COUNT = 8;
 
@@ -119,8 +131,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			Message msg = new Message();
 
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-					Locale.US);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
 			try {
 				msg.setSentDate(sdf.parse(dateArray[i]));
@@ -142,27 +153,25 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		mAdapter = new ChatMsgViewAdapter(this, mDataArrays);
-		mListView.setAdapter(mAdapter);
+		this.mMsgList.setAdapter(mAdapter);
 	}
 
 	public void onClick(View view) {
 		// TODO Auto-generated method stub
 		switch (view.getId()) {
-		case R.id.btn_back:
+		case R.id.chat_btn_back:
 			back();
 			break;
-		case R.id.btn_send:
+		case R.id.chat_btn_send:
 			send();
 			break;
-		case R.id.btn_setting:
-			setting();
+		case R.id.chat_btn_save:
+			save();
 			break;
 		}
 	}
 
-	private void setting() {
-		Intent intent = new Intent(this, SettingActivity.class);
-		startActivity(intent);
+	private void save() {
 	}
 
 	private void send() {
@@ -179,7 +188,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			this.mAdapter.addMsg(entity);
 			mAdapter.notifyDataSetChanged();
 			mEditTextContent.setText("");
-			mListView.setSelection(mListView.getCount() - 1);
+			this.mMsgList.setSelection(this.mMsgList.getCount() - 1);
 
 			AsyncTask<String, Void, Void> sendAsync = new AsyncTask<String, Void, Void>() {
 
@@ -187,8 +196,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 				protected Void doInBackground(String... params) {
 					// TODO Auto-generated method stub
 					String content = params[0];
-					VehicleClient client = new VehicleClient(
-							Constants.SERVERURL, Constants.SELFID);
+					VehicleClient client = new VehicleClient(Constants.SERVERURL, Constants.SELFID);
 					client.SendMessage(Constants.HERID, content);
 					return null;
 				}
@@ -221,7 +229,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 				mAdapter.addMsg(msg);
 				mAdapter.notifyDataSetChanged();
-				mListView.setSelection(mListView.getCount() - 1);
+				mMsgList.setSelection(mMsgList.getCount() - 1);
 			}
 		}
 	}

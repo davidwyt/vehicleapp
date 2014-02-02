@@ -19,4 +19,6 @@
     <string name="setting_su">设置成功</string>
     <string name="setting_btn">设置</string>
 	<string name="promt_server">Your ServerURL</string>
+	<string name="title">天下车商</string>
+	
 </resources>

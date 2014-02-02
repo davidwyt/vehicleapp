@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="BottomBar">
+        <attr name="checkedbtn">
+            <enum name="setting" value="2"></enum>
+            <enum name="nearby" value="1"></enum>
+            <enum name="msg" value="0"></enum>
+        </attr>
+    </declare-styleable>
+
+</resources>

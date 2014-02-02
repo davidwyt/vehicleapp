@@ -1,88 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#f0f0e0" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.vehicle.app.activities.ChatActivity" >
 
     <RelativeLayout
-        android:id="@+id/rl_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/btn_back"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/selector_btn_back"
-            android:gravity="center_vertical"
-            android:paddingLeft="18dp"
-            android:text="@string/back"
-            android:textColor="@color/tomato"
-            android:textSize="18.0sp" />
-
-        <Button
-            android:id="@+id/btn_setting"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/setting_btn"
-            android:gravity="center_vertical"
-            android:textColor="@color/tomato"
-            android:textSize="18.0sp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/chat_info" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_bottom"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
-
-        <Button
-            android:id="@+id/btn_send"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            style="@drawable/send_button"
-            android:layout_marginRight="10dp" />
-
-        <EditText
-            android:id="@+id/et_sendmessage"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/btn_send"
-            android:background="@drawable/edittext1"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textColor="@color/tomato"
-            android:textCursorDrawable="@null"
-            android:textSize="18sp" />
-    </RelativeLayout>
-
-    <ListView
-        android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/rl_bottom"
-        android:layout_below="@id/rl_layout"
-        android:layout_marginLeft="10.0dip"
-        android:layout_marginRight="10.0dip"
-        android:layout_marginTop="10.0dip"
-        android:cacheColorHint="#00000000"
-        android:divider="@null"
-        android:dividerHeight="5dp"
-        android:scrollbars="vertical" />
+        android:background="#f0f0e0" >
 
-</RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/chat_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_bakground" >
+
+            <Button
+                android:id="@+id/chat_btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/selector_btn_gobak" />
+
+            <TextView
+                android:id="@+id/chat_tv_fellowalias"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="ssssssss"
+                android:textColor="@color/black"
+                android:textSize="20sp" >
+            </TextView>
+
+            <Button
+                android:id="@+id/chat_btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/selector_btn_save" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/chat_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp" >
+
+            <Button
+                android:id="@+id/chat_btn_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="8dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/title"
+                android:scaleType="centerInside"
+                android:background="@drawable/selector_btn_voice" />
+
+            <Button
+                android:id="@+id/chat_btn_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/chat_btn_voice"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@id/chat_btn_voice"
+                android:background="@drawable/selector_btn_plus" />
+
+            <Button
+                android:id="@+id/chat_btn_send"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@id/chat_btn_voice"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/selector_btn_send" />
+
+            <EditText
+                android:id="@+id/et_sendmessage"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@id/chat_btn_plus"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@id/chat_btn_send"
+                android:layout_toRightOf="@id/chat_btn_plus"
+                android:background="@drawable/edittext1"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="@color/tomato"
+                android:textCursorDrawable="@null"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/msglist"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/chat_bottom"
+            android:layout_below="@id/chat_title"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:dividerHeight="5dp"
+            android:scrollbars="vertical" />
+    </RelativeLayout>
+
+</merge>

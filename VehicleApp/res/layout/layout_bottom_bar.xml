@@ -1,39 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_rdgroup"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
 
-        <LinearLayout
-        android:id="@+id/layout_bottombar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
+    <RadioButton
+        android:id="@+id/bar_rabtn_message"
+        android:layout_weight="1"
+        android:button="@null"
+        android:background="@drawable/selector_button_bottommsg" />
 
-        <Button
-            android:id="@+id/bar_btn_message"
-            style="@drawable/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
-            android:gravity="fill" />
+    <RadioButton
+        android:id="@+id/bar_rabtn_vendor"
+        android:layout_weight="1"
+        android:button="@null"
+        android:background="@drawable/selector_button_bottomvendor" >
+    </RadioButton>
 
-        <Button
-            android:id="@+id/bar_btn_vendor"
-            style="@drawable/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
-            android:gravity="fill" />
+    <RadioButton
+        android:id="@+id/bar_rabtn_setting"
+        android:layout_weight="1"
+        android:button="@null"
+        android:background="@drawable/selector_button_bottomsetting" >
+    </RadioButton>
 
-        <Button
-            android:id="@+id/bar_btn_setting"
-            style="@drawable/send_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
-            android:gravity="fill" />
-    </LinearLayout>
-
-</merge>
+</RadioGroup>
