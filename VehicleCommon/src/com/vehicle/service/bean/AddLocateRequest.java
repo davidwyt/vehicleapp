@@ -1,0 +1,29 @@
+package com.vehicle.service.bean;
+
+import java.util.Date;
+
+public class AddLocateRequest implements IRequest{
+	
+	private String id;
+	private double locateX;
+	private double locateY;
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public double getLocateX() {
+		return locateX;
+	}
+	public void setLocateX(double locateX) {
+		this.locateX = locateX;
+	}
+	public double getLocateY() {
+		return locateY;
+	}
+	public void setLocateY(double locateY) {
+		this.locateY = locateY;
+	}
+
+}
