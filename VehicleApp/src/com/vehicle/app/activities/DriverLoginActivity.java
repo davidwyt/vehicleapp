@@ -51,7 +51,7 @@ public class DriverLoginActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -100,6 +100,12 @@ public class DriverLoginActivity extends Activity {
 				DriverLoginActivity.this.startActivity(intent);
 			}
 		});
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
 	}
 
 	@Override

@@ -6,16 +6,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.adapter.ChatMsgViewAdapter;
 import com.vehicle.app.bean.Message;
+import com.vehicle.app.bean.MessageStatus;
+import com.vehicle.app.db.DBManager;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -50,13 +54,17 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private String mFellowId;
 
+	private DBManager mDBMgr;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_chat);
-		
+
+		mDBMgr = new DBManager(this);
+
 		initView();
 		initData();
 	}
@@ -78,10 +86,10 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		Bundle bundle = this.getIntent().getExtras();
 		this.mFellowId = bundle.getString("com.vehicle.app.activities.fellowId");
-		
+
 		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
 		tvFellow.setText(this.mFellowId);
-		
+
 		System.out.println("iddddddddddddd:" + this.mFellowId);
 	}
 
@@ -89,6 +97,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 	protected void onStart() {
 		super.onStart();
 		registerMessageReceiver();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDBMgr.close();
 	}
 
 	private void registerMessageReceiver() {
@@ -180,30 +194,44 @@ public class ChatActivity extends Activity implements OnClickListener {
 		if (content.length() > 0) {
 
 			Message entity = new Message();
+			entity.setId(UUID.randomUUID().toString());
 			entity.setSentDate(new Date());
 			entity.setSource(Constants.SELFID);
 			entity.setTarget(Constants.HERID);
 			entity.setContent(content);
+			entity.setStatus(MessageStatus.SENT);
 
 			this.mAdapter.addMsg(entity);
 			mAdapter.notifyDataSetChanged();
 			mEditTextContent.setText("");
 			this.mMsgList.setSelection(this.mMsgList.getCount() - 1);
 
-			AsyncTask<String, Void, Void> sendAsync = new AsyncTask<String, Void, Void>() {
+			AsyncTask<Message, Void, Void> sendAsync = new AsyncTask<Message, Void, Void>() {
 
 				@Override
-				protected Void doInBackground(String... params) {
+				protected Void doInBackground(Message... params) {
 					// TODO Auto-generated method stub
-					String content = params[0];
+					
+					System.out.println("In Send Async Task.................");
+					
+					Message msg = params[0];
 					VehicleClient client = new VehicleClient(Constants.SERVERURL, Constants.SELFID);
-					client.SendMessage(Constants.HERID, content);
+					client.SendMessage(msg.getTarget(), msg.getContent());
+					
+					DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
+					dbMgr.addMessage(msg);
+					dbMgr.close();
+					
 					return null;
 				}
 			};
-
-			sendAsync.execute(content);
-
+			
+			if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+				sendAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, entity);
+			} else {
+				sendAsync.execute(entity);
+			}
+			
 		}
 	}
 
