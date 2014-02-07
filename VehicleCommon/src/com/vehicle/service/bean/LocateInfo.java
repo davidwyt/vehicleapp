@@ -33,5 +33,5 @@ public class LocateInfo {
 	public void setTime(Date time) {
 		this.time = time;
 	}
-
+	
 }

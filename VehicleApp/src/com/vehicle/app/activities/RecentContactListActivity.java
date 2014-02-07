@@ -97,7 +97,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), SettingActivity.class);
 			this.startActivity(intent);
-		} else if (R.id.bar_rabtn_vendor == checkedId) {
+		} else if (R.id.bar_rabtn_middle == checkedId) {
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 			this.startActivity(intent);

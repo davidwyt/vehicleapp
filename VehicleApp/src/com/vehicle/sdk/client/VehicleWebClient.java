@@ -34,13 +34,14 @@ public class VehicleWebClient {
 		
 	}
 	
-	public DriverLoginResult Login(String userName, String password)
+	public DriverLoginResult DriverLogin(String userName, String password)
 	{
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_DRIVER_LOGIN);
 		url = String.format(url, userName, password);
 		
 		return HttpUtil.PostJson(url, null, DriverLoginResult.class);
 	}
+	
 	
 	public RegisterResult Register(String email, String userName, String password)
 	{

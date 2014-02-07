@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.vehicle.app.activities.DriverLoginActivity" >
+        <activity android:name="com.vehicle.app.activities.LoginActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.ChatActivity" >
         </activity>

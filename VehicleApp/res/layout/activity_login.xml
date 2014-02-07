@@ -5,7 +5,7 @@
     <!-- Login progress -->
 
     <LinearLayout
-        android:id="@+id/driverlogin_status"
+        android:id="@+id/login_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -20,7 +20,7 @@
             android:layout_marginBottom="8dp" />
 
         <TextView
-            android:id="@+id/driverlogin_status_message"
+            android:id="@+id/login_status_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -33,7 +33,7 @@
     <!-- Login form -->
 
     <ScrollView
-        android:id="@+id/driverlogin_form"
+        android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray" >
@@ -43,16 +43,16 @@
             android:orientation="vertical" >
 
             <ImageView
+                android:id="@+id/login_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/title"
-                android:scaleType="centerCrop"
-                android:src="@drawable/icon_logintitle" >
+                android:scaleType="centerCrop" >
             </ImageView>
 
             <EditText
-                android:id="@+id/driverlogin_email"
+                android:id="@+id/login_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -62,7 +62,7 @@
                 android:singleLine="true" />
 
             <EditText
-                android:id="@+id/driverlogin_password"
+                android:id="@+id/login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
@@ -74,7 +74,7 @@
                 android:singleLine="true" />
 
             <Button
-                android:id="@+id/driverlogin_signinbtn"
+                android:id="@+id/login_signinbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -89,7 +89,7 @@
                 android:text="@string/driverlogin_noaccount" />
 
             <Button
-                android:id="@+id/driverlogin_regisiter"
+                android:id="@+id/login_regisiter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

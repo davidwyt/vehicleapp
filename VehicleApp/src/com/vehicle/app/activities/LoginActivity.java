@@ -1,8 +1,6 @@
 package com.vehicle.app.activities;
 
-import com.vehicle.app.bean.Driver;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.web.bean.DriverLoginResult;
 import com.vehicle.sdk.client.VehicleWebClient;
@@ -23,15 +21,17 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class DriverLoginActivity extends Activity {
-	
+public class LoginActivity extends Activity {
+
 	/**
 	 * The default email to populate the email field with.
 	 */
@@ -52,22 +52,26 @@ public class DriverLoginActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
-	
+
+	private ImageView mLoginTitle;
+
+	private Button mRegButton;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		setContentView(R.layout.activity_driverlogin);
-		
+
+		setContentView(R.layout.activity_login);
+
 		super.onCreate(savedInstanceState);
-		
+
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
-		mEmailView = (EditText) findViewById(R.id.driverlogin_email);
+		mEmailView = (EditText) findViewById(R.id.login_email);
 		mEmailView.setText(mEmail);
 
-		mPasswordView = (EditText) findViewById(R.id.driverlogin_password);
+		mPasswordView = (EditText) findViewById(R.id.login_password);
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -79,11 +83,11 @@ public class DriverLoginActivity extends Activity {
 			}
 		});
 
-		mLoginFormView = findViewById(R.id.driverlogin_form);
-		mLoginStatusView = findViewById(R.id.driverlogin_status);
-		mLoginStatusMessageView = (TextView) findViewById(R.id.driverlogin_status_message);
+		mLoginFormView = findViewById(R.id.login_form);
+		mLoginStatusView = findViewById(R.id.login_status);
+		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-		findViewById(R.id.driverlogin_signinbtn).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.login_signinbtn).setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
@@ -91,21 +95,33 @@ public class DriverLoginActivity extends Activity {
 			}
 		});
 
-		findViewById(R.id.driverlogin_regisiter).setOnClickListener(new View.OnClickListener() {
+		mRegButton = (Button) findViewById(R.id.login_regisiter);
 
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setClass(getApplicationContext(), DriverRegisterActivity.class);
+		mLoginTitle = (ImageView) this.findViewById(R.id.login_title);
 
-				DriverLoginActivity.this.startActivity(intent);
-			}
-		});
+		if (SelfMgr.getInstance().getIsDriver()) {
+			mLoginTitle.setBackgroundResource(R.drawable.icon_driverlogintitle);
+			mRegButton.setBackgroundResource(R.drawable.selector_btn_driverreg);
+
+			mRegButton.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent();
+					intent.setClass(getApplicationContext(), DriverRegisterActivity.class);
+
+					LoginActivity.this.startActivity(intent);
+				}
+			});
+		} else {
+			mLoginTitle.setBackgroundResource(R.drawable.icon_shoplogintitle);
+			mRegButton.setBackgroundResource(R.drawable.selector_btn_shopreg);
+		}
+
 	}
-	
+
 	@Override
-	protected void onDestroy()
-	{
+	protected void onDestroy() {
 		super.onDestroy();
 	}
 
@@ -220,42 +236,41 @@ public class DriverLoginActivity extends Activity {
 
 			try {
 				// Simulate network access.
-				VehicleWebClient webClient = new VehicleWebClient();
-				return webClient.Login(mEmail, mPassword);
-				
+				if (SelfMgr.getInstance().getIsDriver()) {
+					VehicleWebClient webClient = new VehicleWebClient();
+					return webClient.DriverLogin(mEmail, mPassword);
+				} else {
+					VehicleWebClient webClient = new VehicleWebClient();
+					return webClient.DriverLogin(mEmail, mPassword);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				
+
 				return null;
 			}
 
-			// TODO: register the new account here.
 		}
 
 		@Override
 		protected void onPostExecute(final DriverLoginResult result) {
 			mAuthTask = null;
 			showProgress(false);
-			
-			if(null == result)
-			{
+
+			if (null == result) {
 				mPasswordView.setError(getString(R.string.error_network));
 				mPasswordView.requestFocus();
 				return;
 			}
-			
+
 			if (result.isSuccess()) {
-				//finish();
-				
-				//System.out.println("memberIddddddddddddd:" + result.getDriverInfo().getId());
-				//System.out.println("email:" + result.getDriverInfo().getEmail());
-				
+				// finish();
+
 				JPushInterface.setAliasAndTags(getApplicationContext(), result.getDriverInfo().getId(), null);
 				SelfMgr.getInstance().setSelfDriver(result.getDriverInfo());
-				
+
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
-				DriverLoginActivity.this.startActivity(intent);
+				LoginActivity.this.startActivity(intent);
 
 			} else {
 				mPasswordView.setError(getString(R.string.error_incorrect_password));

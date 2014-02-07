@@ -12,7 +12,7 @@
         android:background="@drawable/selector_button_bottommsg" />
 
     <RadioButton
-        android:id="@+id/bar_rabtn_vendor"
+        android:id="@+id/bar_rabtn_middle"
         android:layout_weight="1"
         android:button="@null"
         android:background="@drawable/selector_button_bottomvendor" >
