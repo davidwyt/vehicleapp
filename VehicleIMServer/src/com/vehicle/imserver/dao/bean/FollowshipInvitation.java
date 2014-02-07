@@ -1,19 +1,17 @@
 package com.vehicle.imserver.dao.bean;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "FOLLOWSHIPINVITATION", indexes = {
-		@Index(columnList = "SOURCE"), @Index(columnList = "TARGET") })
+		@Index(columnList = "SOURCE"), @Index(columnList = "TARGET"),
+		@Index(columnList = "STATUS") })
 public class FollowshipInvitation implements Serializable {
 
 	/**
@@ -25,7 +23,7 @@ public class FollowshipInvitation implements Serializable {
 	private String source;
 	private String target;
 	private FollowshipInvitationStatus status;
-	private Date reqTime;
+	private long reqTime;
 
 	@Id
 	@Column(name = "ID")
@@ -65,12 +63,11 @@ public class FollowshipInvitation implements Serializable {
 	}
 
 	@Column(name = "REQTIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getReqTime() {
+	public long getReqTime() {
 		return this.reqTime;
 	}
 
-	public void setReqTime(Date reqTime) {
+	public void setReqTime(long reqTime) {
 		this.reqTime = reqTime;
 	}
 }

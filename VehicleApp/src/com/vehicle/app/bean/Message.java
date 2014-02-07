@@ -1,13 +1,11 @@
 package com.vehicle.app.bean;
 
-import java.util.Date;
-
 public class Message {
 	
 	private String id;
 	private String source;
 	private String target;
-	private Date sentTime;
+	private long sentTime;
 	private String content;
 	private MessageStatus status;
 	
@@ -41,12 +39,12 @@ public class Message {
 		this.target = tar;
 	}
 	
-	public Date getSentDate()
+	public long getSentDate()
 	{
 		return this.sentTime;
 	}
 	
-	public void setSentDate(Date sentD)
+	public void setSentDate(long sentD)
 	{
 		this.sentTime = sentD;
 	}

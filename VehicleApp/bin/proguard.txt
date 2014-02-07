@@ -28,6 +28,9 @@
 # view AndroidManifest.xml #generated:48
 -keep class com.vehicle.app.activities.DriverLoginActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:54
+-keep class com.vehicle.app.activities.DriverRegisterActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:58
 -keep class com.vehicle.app.activities.FollowshipInvitationActivity { <init>(...); }
 
@@ -48,9 +51,6 @@
 
 # view AndroidManifest.xml #generated:56
 -keep class com.vehicle.app.activities.RecentContactListActivity { <init>(...); }
-
-# view AndroidManifest.xml #generated:54
--keep class com.vehicle.app.activities.RegisterActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:62
 -keep class com.vehicle.app.activities.RoleSelectActivity { <init>(...); }

@@ -1,90 +1,75 @@
 package com.vehicle.imserver.dao.bean;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Index;
 
 @Entity
-@Table(name = "FILETRANSMISSION")
+@Table(name = "FILETRANSMISSION", indexes = { @Index(columnList = "SOURCE"),
+		@Index(columnList = "TARGET"), @Index(columnList = "STATUS") })
 public class FileTransmission {
-	
+
 	private String token;
 	private String path;
 	private String source;
 	private String target;
 	private FileTransmissionStatus status;
-	private Date transmissionTime;
-	
+	private long transmissionTime;
+
 	@Id
-	@Column(name="TOKEN")
-	public String getToken()
-	{
+	@Column(name = "TOKEN")
+	public String getToken() {
 		return this.token;
 	}
-	
-	public void setToken(String token)
-	{
+
+	public void setToken(String token) {
 		this.token = token;
 	}
-	
-	@Column(name="PATH")
-	public String getPath()
-	{
+
+	@Column(name = "PATH")
+	public String getPath() {
 		return this.path;
 	}
-	
-	public void setPath(String path)
-	{
+
+	public void setPath(String path) {
 		this.path = path;
 	}
-	
-	@Column(name="SOURCE")
-	public String getSource()
-	{
+
+	@Column(name = "SOURCE")
+	public String getSource() {
 		return this.source;
 	}
-	
-	public void setSource(String source)
-	{
+
+	public void setSource(String source) {
 		this.source = source;
 	}
-	
-	@Column(name="TARGET")
-	public String getTarget()
-	{
+
+	@Column(name = "TARGET")
+	public String getTarget() {
 		return this.target;
 	}
-	
-	public void setTarget(String target)
-	{
+
+	public void setTarget(String target) {
 		this.target = target;
 	}
-	
-	@Column(name="STATUS")
-	public FileTransmissionStatus getStatus()
-	{
+
+	@Column(name = "STATUS")
+	public FileTransmissionStatus getStatus() {
 		return this.status;
 	}
-	
-	public void setStatus(FileTransmissionStatus status)
-	{
+
+	public void setStatus(FileTransmissionStatus status) {
 		this.status = status;
 	}
-	
-	@Column(name="TRANSMISSIONTIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getTransmissionTime()
-	{
+
+	@Column(name = "TRANSMISSIONTIME")
+	public long getTransmissionTime() {
 		return this.transmissionTime;
 	}
-	
-	public void setTransmissionTime(Date time)
-	{
+
+	public void setTransmissionTime(long time) {
 		this.transmissionTime = time;
 	}
 }

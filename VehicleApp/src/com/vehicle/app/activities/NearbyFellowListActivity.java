@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.vehicle.app.adapter.NearbyFellowsViewAdapter;
-import com.vehicle.app.bean.User;
+import com.vehicle.app.bean.Driver;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
@@ -21,7 +21,7 @@ public class NearbyFellowListActivity extends Activity{
 
 	private BaseAdapter mAdapter;
 
-	private List<User> mListFellows = new ArrayList<User>();
+	private List<Driver> mListFellows = new ArrayList<Driver>();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,9 +37,9 @@ public class NearbyFellowListActivity extends Activity{
 	{
 		mLVFellows = (ListView) this.findViewById(R.id.nearbyfellows);
 
-		List<User> users = new ArrayList<User>();
+		List<Driver> users = new ArrayList<Driver>();
 		for (int i = 0; i < 10; i++) {
-			User user = new User();
+			Driver user = new Driver();
 			user.setAlias("user" + i);
 			user.setId(i + "");
 			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));

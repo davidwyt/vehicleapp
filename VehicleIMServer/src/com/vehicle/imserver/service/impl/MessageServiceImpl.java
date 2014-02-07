@@ -82,7 +82,7 @@ public class MessageServiceImpl implements MessageService {
 		}
 	}
 
-	public String SendMessage(MessageOne2OneRequest msgReq)
+	public Message SendMessage(MessageOne2OneRequest msgReq)
 			throws PersistenceException, PushMessageFailedException {
 
 		System.out.println(msgReq.toString());
@@ -91,7 +91,7 @@ public class MessageServiceImpl implements MessageService {
 
 		PersistentAndSendMessage(msg);
 
-		return msg.getId();
+		return msg;
 	}
 
 	private void PersistentAndSendMessageList(String source,
@@ -104,7 +104,7 @@ public class MessageServiceImpl implements MessageService {
 			msg.setSource(source);
 			msg.setTarget(target);
 			msg.setContent(content);
-			msg.setSentDate(now);
+			msg.setSentTime(now.getTime());
 			msg.setId(UUID.randomUUID().toString());
 
 			PersistentAndSendMessage(msg);
@@ -148,7 +148,7 @@ public class MessageServiceImpl implements MessageService {
 			RespMessage r=new RespMessage();
 			r.setContent(list.get(i).getContent());
 			r.setId(list.get(i).getId());
-			r.setSentTime(list.get(i).getSentDate());
+			r.setSentTime(list.get(i).getSentTime());
 			r.setSource(list.get(i).getSource());
 			r.setTarget(list.get(i).getTarget());
 			ret.add(r);

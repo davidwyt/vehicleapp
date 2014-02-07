@@ -1,8 +1,14 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.bean.Driver;
+import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.StringUtil;
+import com.vehicle.app.web.bean.DriverLoginResult;
+import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
+import cn.jpush.android.api.JPushInterface;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -25,12 +31,7 @@ import android.widget.TextView;
  * well.
  */
 public class DriverLoginActivity extends Activity {
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] { "foo@example.com:hello", "bar@example.com:world" };
-
+	
 	/**
 	 * The default email to populate the email field with.
 	 */
@@ -95,7 +96,7 @@ public class DriverLoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent();
-				intent.setClass(getApplicationContext(), RegisterActivity.class);
+				intent.setClass(getApplicationContext(), DriverRegisterActivity.class);
 
 				DriverLoginActivity.this.startActivity(intent);
 			}
@@ -212,37 +213,46 @@ public class DriverLoginActivity extends Activity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+	public class UserLoginTask extends AsyncTask<Void, Void, DriverLoginResult> {
 		@Override
-		protected Boolean doInBackground(Void... params) {
+		protected DriverLoginResult doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
 
 			try {
 				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return false;
-			}
-
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
+				VehicleWebClient webClient = new VehicleWebClient();
+				return webClient.Login(mEmail, mPassword);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+				return null;
 			}
 
 			// TODO: register the new account here.
-			return true;
 		}
 
 		@Override
-		protected void onPostExecute(final Boolean success) {
+		protected void onPostExecute(final DriverLoginResult result) {
 			mAuthTask = null;
 			showProgress(false);
-
-			if (success) {
+			
+			if(null == result)
+			{
+				mPasswordView.setError(getString(R.string.error_network));
+				mPasswordView.requestFocus();
+				return;
+			}
+			
+			if (result.isSuccess()) {
 				//finish();
+				
+				//System.out.println("memberIddddddddddddd:" + result.getDriverInfo().getId());
+				//System.out.println("email:" + result.getDriverInfo().getEmail());
+				
+				JPushInterface.setAliasAndTags(getApplicationContext(), result.getDriverInfo().getId(), null);
+				SelfMgr.getInstance().setSelfDriver(result.getDriverInfo());
+				
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				DriverLoginActivity.this.startActivity(intent);

@@ -2,7 +2,7 @@ package com.vehicle.app.adapter;
 
 import java.util.List;
 
-import com.vehicle.app.bean.User;
+import com.vehicle.app.bean.Driver;
 import cn.edu.sjtu.vehicleapp.R;
 
 import android.content.Context;
@@ -15,10 +15,10 @@ import android.widget.TextView;
 
 public class UserViewAdapter extends BaseAdapter {
 	
-	private List<User> users;
+	private List<Driver> users;
 	private LayoutInflater inflater;
 	
-	public UserViewAdapter(Context context, List<User> users)
+	public UserViewAdapter(Context context, List<Driver> users)
 	{
 		this.inflater = LayoutInflater.from(context);
 		this.users = users;
@@ -45,7 +45,7 @@ public class UserViewAdapter extends BaseAdapter {
 	@Override
 	public View getView(int pos, View view, ViewGroup viewgroup) {
 		// TODO Auto-generated method stub
-		User user = this.users.get(pos);
+		Driver user = this.users.get(pos);
 		if(null == view)
 		{
 			view = this.inflater.inflate(R.layout.layout_user_item, null);

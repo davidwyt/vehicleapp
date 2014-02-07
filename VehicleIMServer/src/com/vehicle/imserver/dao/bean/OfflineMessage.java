@@ -1,13 +1,10 @@
 package com.vehicle.imserver.dao.bean;
 
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "OFFLINEMESSAGE")
@@ -16,7 +13,7 @@ public class OfflineMessage {
 	private String id;
 	private String source;
 	private String target;
-	private Date sentTime;
+	private long sentTime;
 	private String content;
 	
 	public OfflineMessage(){}
@@ -25,7 +22,7 @@ public class OfflineMessage {
 		this.id=om.getId();
 		this.source=om.getSource();
 		this.target=om.getTarget();
-		this.sentTime=om.getSentDate();
+		this.sentTime=om.getSentTime();
 		this.content=om.getContent();
 	}
 	
@@ -64,15 +61,14 @@ public class OfflineMessage {
 	}
 	
 	@Column(name = "SENTTIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	public Date getSentDate()
+	public long getSentTime()
 	{
 		return this.sentTime;
 	}
 	
-	public void setSentDate(Date sentD)
+	public void setSentTime(long time)
 	{
-		this.sentTime = sentD;
+		this.sentTime = time;
 	}
 	
 	@Column(name = "CONTENT")

@@ -163,7 +163,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 		String invitationId = GUIDUtil.genNewGuid();
 		FollowshipInvitation invitation = new FollowshipInvitation();
 		invitation.setID(invitationId);
-		invitation.setReqTime(new Date());
+		invitation.setReqTime(new Date().getTime());
 		invitation.setSource(invitationRequest.getShopId());
 		invitation.setTarget(invitationRequest.getMemberId());
 		invitation.setStatus(FollowshipInvitationStatus.REQUESTED);

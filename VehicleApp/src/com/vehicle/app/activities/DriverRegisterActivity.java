@@ -1,6 +1,8 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.utils.StringUtil;
+import com.vehicle.app.web.bean.RegisterResult;
+import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
@@ -18,7 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class RegisterActivity extends Activity {
+public class DriverRegisterActivity extends Activity {
 
 	private EditText mEmailET;
 	private EditText mUserNameET;
@@ -81,7 +83,7 @@ public class RegisterActivity extends Activity {
 		this.mBackBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				RegisterActivity.this.onBackPressed();
+				DriverRegisterActivity.this.onBackPressed();
 			}
 		});
 
@@ -186,40 +188,48 @@ public class RegisterActivity extends Activity {
 		}
 	}
 
-	public class RegisterTask extends AsyncTask<Void, Void, Boolean> {
+	public class RegisterTask extends AsyncTask<Void, Void, RegisterResult> {
 
 		@Override
-		protected Boolean doInBackground(Void... arg0) {
+		protected RegisterResult doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
 
 			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
+				VehicleWebClient webClient = new VehicleWebClient();
+				return webClient.Register(mEmail, mUserName, mPassword);
+				
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
+				return null;
 			}
-
-			return Boolean.TRUE;
 		}
 
 		@Override
-		protected void onPostExecute(final Boolean success) {
+		protected void onPostExecute(final RegisterResult result) {
 
-			RegisterActivity.this.mRegTask = null;
-			RegisterActivity.this.showProgress(false);
-
-			if (success) {
-				RegisterActivity.this.finish();
+			DriverRegisterActivity.this.mRegTask = null;
+			DriverRegisterActivity.this.showProgress(false);
+			
+			if(null == result)
+			{
+				mEmailET.setError(getString(R.string.error_network));
+				return;
+			}
+			
+			if (result.isSuccess()) {
+				DriverRegisterActivity.this.finish();
 			} else {
-
+				mEmailET.setError(result.getMessage());
 			}
 		}
 
 		@Override
 		protected void onCancelled() {
 
-			RegisterActivity.this.mRegTask = null;
-			RegisterActivity.this.showProgress(false);
+			DriverRegisterActivity.this.mRegTask = null;
+			DriverRegisterActivity.this.showProgress(false);
 		}
 	}
 }

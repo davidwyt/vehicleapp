@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.vehicle.app.adapter.UserViewAdapter;
-import com.vehicle.app.bean.User;
+import com.vehicle.app.bean.Driver;
+import com.vehicle.app.mgrs.SelfMgr;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
@@ -28,7 +29,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 	private BaseAdapter mAdapter;
 
-	private List<User> mListUser = new ArrayList<User>();
+	private List<Driver> mListUser = new ArrayList<Driver>();
 
 	private RadioGroup mRdGroup;
 
@@ -57,9 +58,9 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 	private void initView() {
 
 		for (int i = 0; i < 10; i++) {
-			User user = new User();
+			Driver user = new Driver();
 			user.setAlias("user" + i);
-			user.setId(Integer.toString(i) + " user");
+			user.setId(SelfMgr.getInstance().getSelfDriver().getId());
 			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));
 			user.setLastMessage("this is my last messagesssssssssssssssssss");
 			user.setLastMessageDate(new Date());
@@ -76,7 +77,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				User user = (User) mAdapter.getItem(position);
+				Driver user = (Driver) mAdapter.getItem(position);
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), ChatActivity.class);
 				intent.putExtra("com.vehicle.app.activities.fellowId", user.getId());

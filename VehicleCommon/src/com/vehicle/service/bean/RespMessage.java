@@ -7,7 +7,7 @@ public class RespMessage {
 	private String id;
 	private String source;
 	private String target;
-	private Date sentTime;
+	private long sentTime;
 	private String content;
 	public String getId() {
 		return id;
@@ -27,10 +27,10 @@ public class RespMessage {
 	public void setTarget(String target) {
 		this.target = target;
 	}
-	public Date getSentTime() {
+	public long getSentTime() {
 		return sentTime;
 	}
-	public void setSentTime(Date sentTime) {
+	public void setSentTime(long sentTime) {
 		this.sentTime = sentTime;
 	}
 	public String getContent() {

@@ -20,7 +20,7 @@ public class RequestDaoUtil {
 		fileTran.setTarget(request.getTarget());
 		fileTran.setStatus(FileTransmissionStatus.SENT);
 		fileTran.setToken(UUID.randomUUID().toString());
-		fileTran.setTransmissionTime(new Date());
+		fileTran.setTransmissionTime(new Date().getTime());
 		fileTran.setPath(path);
 		
 		return fileTran;
@@ -32,7 +32,7 @@ public class RequestDaoUtil {
 		msg.setSource(request.getSource());
 		msg.setTarget(request.getTarget());
 		msg.setContent(request.getContent());
-		msg.setSentDate(new Date());
+		msg.setSentTime(new Date().getTime());
 
 		return msg;
 	}

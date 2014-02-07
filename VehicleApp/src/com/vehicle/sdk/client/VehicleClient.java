@@ -61,7 +61,7 @@ public class VehicleClient {
 		this(URL_DEFAULTSERVERROOT, source);
 	}
 
-	public void SendMessage(String target, String content) {
+	public MessageOne2OneResponse SendMessage(String target, String content) {
 		MessageOne2OneRequest request = new MessageOne2OneRequest();
 		request.setSource(source);
 		request.setTarget(target);
@@ -72,7 +72,7 @@ public class VehicleClient {
 
 		System.out.println("url:------------" + url);
 
-		HttpUtil.PostJson(url, request, MessageOne2OneResponse.class);
+		return HttpUtil.PostJson(url, request, MessageOne2OneResponse.class);
 
 		// JerseyUtil.HttpPost(url, request, MessageOne2OneResponse.class);
 	}

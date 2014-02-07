@@ -20,6 +20,11 @@ public class BaseResponse implements IResponse{
 		this.errorCode = errorCode;
 	}
 	
+	public boolean isSucess()
+	{
+		return 0 == this.errorCode;
+	}
+	
 	@Override
 	@XmlElement
 	public String getErrorMsg()

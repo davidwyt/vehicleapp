@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.vehicle.app.bean.Message;
-import com.vehicle.app.bean.MessageStatus;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -17,7 +16,7 @@ public class DBManager {
 	private SQLiteDatabase mDB;
 
 	private final static String SQL_MESSAGE_INSERT = "INSERT INTO `MESSAGE`(`ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`) VALUES(?, ?, ?, ?, ?)";
-	private final static String SQL_MESSAGE_SELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME` FROM `MESSAGE` WHERE `SOURCE` = ? AND `TARGET` = ?";
+	private final static String SQL_MESSAGE_SELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME` FROM `MESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` DESC";
 
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);
@@ -34,10 +33,12 @@ public class DBManager {
 	}
 
 	public List<Message> queryMessage(String source, String target) {
-		Cursor cursor = mDB.rawQuery(SQL_MESSAGE_SELECT, new String[] { source, target });
+		Cursor cursor = mDB.rawQuery(SQL_MESSAGE_SELECT, new String[] { source, target, target, source });
 
 		List<Message> messages = new ArrayList<Message>();
+		
 		while (cursor.moveToNext()) {
+			
 			Message msg = new Message();
 
 			msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
@@ -48,10 +49,7 @@ public class DBManager {
 
 			msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
 
-			long sentTime = cursor.getLong(cursor.getColumnIndex("SENTTIME"));
-			msg.setSentDate(new Date(sentTime));
-
-			msg.setStatus(MessageStatus.valueOf(cursor.getString(cursor.getColumnIndex("STATUS"))));
+			msg.setSentDate(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
 			messages.add(msg);
 		}

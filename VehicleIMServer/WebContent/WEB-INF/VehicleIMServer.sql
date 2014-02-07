@@ -25,8 +25,11 @@ CREATE TABLE `filetransmission` (
   `SOURCE` varchar(255) DEFAULT NULL,
   `STATUS` int(11) DEFAULT NULL,
   `TARGET` varchar(255) DEFAULT NULL,
-  `TRANSMISSIONTIME` datetime DEFAULT NULL,
-  PRIMARY KEY (`TOKEN`)
+  `TRANSMISSIONTIME` BIGINT UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`TOKEN`),
+  KEY `SOURCE` (`SOURCE`),
+  KEY `TARGET` (`TARGET`),
+  KEY `STATUS` (`STATUS`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -54,11 +57,12 @@ DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `ID` varchar(255) NOT NULL,
   `CONTENT` varchar(255) DEFAULT NULL,
-  `SENTTIME` datetime DEFAULT NULL,
+  `SENTTIME` BIGINT UNSIGNED DEFAULT NULL,
   `SOURCE` varchar(255) DEFAULT NULL,
-  `STATUS` int(11) DEFAULT NULL,
   `TARGET` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `SOURCE` (`SOURCE`),
+  KEY `TARGET` (`TARGET`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -72,7 +76,7 @@ DROP TABLE IF EXISTS `offlinemessage`;
 CREATE TABLE `offlinemessage` (
   `ID` varchar(255) NOT NULL,
   `CONTENT` varchar(255) DEFAULT NULL,
-  `SENTTIME` datetime DEFAULT NULL,
+  `SENTTIME` BIGINT UNSIGNED DEFAULT NULL,
   `SOURCE` varchar(255) DEFAULT NULL,
   `TARGET` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
@@ -95,9 +99,10 @@ CREATE TABLE `followshipinvitation` (
   `SOURCE` char(100) NOT NULL,
   `TARGET` char(100) NOT NULL,
   `STATUS` varchar(255) NOT NULL,
-  `REQTIME` datetime NOT NULL,
+  `REQTIME` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `SOURCE` (`SOURCE`),
-  KEY `TARGET` (`TARGET`)
+  KEY `TARGET` (`TARGET`),
+  KEY `STATUS` (`STATUS`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

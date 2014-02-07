@@ -20,21 +20,21 @@ public class HttpUtil {
 	public static <T> T PostJson(String url, Object entity, Class<T> t) {
 
 		HttpClient httpclient = new DefaultHttpClient();
-		
+
 		String resp = "";
 		HttpResponse response = null;
-		
+
 		try {
 			HttpPost httppost = new HttpPost(url);
 
-			StringEntity strBody = new StringEntity(
-					JsonUtil.toJsonString(entity), "UTF-8");
-			strBody.setContentType("application/json");
-			
-			httppost.setEntity(strBody);
+			if (null != entity) {
+				StringEntity strBody = new StringEntity(JsonUtil.toJsonString(entity), "UTF-8");
+				strBody.setContentType("application/json");
 
-			System.out
-					.println("executing request " + httppost.getRequestLine());
+				httppost.setEntity(strBody);
+			}
+			
+			System.out.println("executing request " + httppost.getRequestLine());
 
 			response = httpclient.execute(httppost);
 
@@ -42,9 +42,10 @@ public class HttpUtil {
 			System.out.println(response.getStatusLine());
 			HttpEntity resEntity = response.getEntity();
 			if (resEntity != null) {
-				System.out.println("Response content length: "
-						+ resEntity.getContentLength());
+				System.out.println("Response content length: " + resEntity.getContentLength());
+				
 				resp = EntityUtils.toString(resEntity, "UTF-8");
+				
 				// EntityUtils.consume(resEntity);
 			}
 		} catch (ClientProtocolException e) {
@@ -53,7 +54,7 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 
 		System.out.println(resp);
 		return JsonUtil.fromJson(resp, t);
@@ -77,8 +78,7 @@ public class HttpUtil {
 			System.out.println(response.getStatusLine());
 			HttpEntity resEntity = response.getEntity();
 			if (resEntity != null) {
-				System.out.println("Response content length: "
-						+ resEntity.getContentLength());
+				System.out.println("Response content length: " + resEntity.getContentLength());
 				resp = EntityUtils.toString(resEntity, "UTF-8");
 				// EntityUtils.consume(resEntity);
 			}
@@ -88,8 +88,8 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		
+		}
+
 		return JsonUtil.fromJson(resp, t);
 	}
 
@@ -103,13 +103,11 @@ public class HttpUtil {
 		try {
 			HttpPost httppost = new HttpPost(url);
 
-			FileEntity fileBody = new FileEntity(new File(filePath),
-					"application/octet-stream");
+			FileEntity fileBody = new FileEntity(new File(filePath), "application/octet-stream");
 
 			httppost.setEntity(fileBody);
 
-			System.out
-					.println("executing request " + httppost.getRequestLine());
+			System.out.println("executing request " + httppost.getRequestLine());
 
 			response = httpclient.execute(httppost);
 
@@ -117,8 +115,7 @@ public class HttpUtil {
 			System.out.println(response.getStatusLine());
 			HttpEntity resEntity = response.getEntity();
 			if (resEntity != null) {
-				System.out.println("Response content length: "
-						+ resEntity.getContentLength());
+				System.out.println("Response content length: " + resEntity.getContentLength());
 				resp = EntityUtils.toString(resEntity, "UTF-8");
 				// EntityUtils.consume(resEntity);
 			}
@@ -128,7 +125,7 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 
 		return JsonUtil.fromJson(resp, t);
 	}
@@ -157,7 +154,7 @@ public class HttpUtil {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 
 		return input;
 	}

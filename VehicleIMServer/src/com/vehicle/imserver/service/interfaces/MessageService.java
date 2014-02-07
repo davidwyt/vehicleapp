@@ -2,6 +2,7 @@ package com.vehicle.imserver.service.interfaces;
 
 import java.util.List;
 
+import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
@@ -13,7 +14,7 @@ import com.vehicle.service.bean.RespMessage;
 
 public interface MessageService {
 
-	public String SendMessage(MessageOne2OneRequest msgReq)
+	public Message SendMessage(MessageOne2OneRequest msgReq)
 			throws PersistenceException, PushMessageFailedException;
 
 	public List<RespMessage> sendOfflineMsgs(OfflineMessageRequest omReq) throws PersistenceException;

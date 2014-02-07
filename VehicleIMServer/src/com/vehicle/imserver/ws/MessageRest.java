@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.imserver.service.interfaces.MessageService;
@@ -123,8 +124,9 @@ public class MessageRest {
 		}
 
 		try {
-			String msgId = messageService.SendMessage(msgRequest);
-			msgResp.setMsgId(msgId);
+			Message msg = messageService.SendMessage(msgRequest);
+			msgResp.setMsgId(msg.getId());
+			msgResp.setMsgSentTime(msg.getSentTime());
 
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
