@@ -66,8 +66,8 @@ public final class R {
         public static final int icon_btn_acceptinvitation_pressed=0x7f02000f;
         public static final int icon_btn_allfavshops=0x7f020010;
         public static final int icon_btn_allfavshops_pressed=0x7f020011;
-        public static final int icon_btn_bardriver_checked=0x7f020012;
-        public static final int icon_btn_bardriver_normal=0x7f020013;
+        public static final int icon_btn_bardriver=0x7f020012;
+        public static final int icon_btn_bardriver_checked=0x7f020013;
         public static final int icon_btn_bardriver_pressed=0x7f020014;
         public static final int icon_btn_barmsg=0x7f020015;
         public static final int icon_btn_barmsg_checked=0x7f020016;

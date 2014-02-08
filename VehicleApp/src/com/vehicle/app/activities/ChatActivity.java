@@ -1,7 +1,13 @@
 package com.vehicle.app.activities;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import cn.edu.sjtu.vehicleapp.R;
 
@@ -18,11 +24,15 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.text.format.DateFormat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -38,9 +48,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 	public static final String KEY_MESSAGE = "message";
 	public static final String KEY_EXTRAS = "extras";
 
+	private static final int REQUESTCODE_CAPTURE_IMAGE = 0x00000001;
+	private static final int REQUESTCODE_BROWSE_ALBUM = 0x00000002;
+
 	private Button mBtnSend;
 	private Button mBtnBack;
 	private Button mBtnSave;
+	private Button mBtnPlus;
 
 	private EditText mEditTextContent;
 	private ChatMsgViewAdapter mAdapter;
@@ -78,6 +92,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		mBtnSend = (Button) findViewById(R.id.chat_btn_send);
 		mBtnSend.setOnClickListener(this);
 
+		mBtnPlus = (Button) findViewById(R.id.chat_btn_plus);
+		mBtnPlus.setOnClickListener(this);
+
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		mEditTextContent.setCursorVisible(true);
 
@@ -100,6 +117,94 @@ public class ChatActivity extends Activity implements OnClickListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		mDBMgr.close();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode) {
+		case REQUESTCODE_CAPTURE_IMAGE:
+			onCaptureImage(resultCode, data);
+			break;
+		case REQUESTCODE_BROWSE_ALBUM:
+			onBrowseAlbum(resultCode, data);
+			break;
+		default:
+			System.out.println("invalid requestcode :" + requestCode + " in chat activity");
+		}
+	}
+
+	private void onCaptureImage(int resultCode, Intent data) {
+
+		if (Activity.RESULT_OK == resultCode) {
+			String sdState = Environment.getExternalStorageState();
+			if (!sdState.equals(Environment.MEDIA_MOUNTED)) {
+				System.out.println("sd card unmount");
+				return;
+			}
+		}
+
+		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Environment.DIRECTORY_DCIM
+				+ File.separator + "Camera";
+		String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+
+		Bundle bundle = data.getExtras();
+		Bitmap bitmap = (Bitmap) bundle.get("data");
+		FileOutputStream fout = null;
+
+		String fileName = path + File.separator + name;
+
+		System.out.println("photoooooooooooo:" + fileName);
+
+		try {
+			fout = new FileOutputStream(fileName);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+
+			// do something
+		} finally {
+			try {
+				if (null != fout) {
+					fout.flush();
+					fout.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		File file = new File(fileName);
+
+		if (file.isFile() && file.exists()) {
+
+			AsyncTask<String, Void, Void> sendTask = new AsyncTask<String, Void, Void>() {
+
+				@Override
+				protected Void doInBackground(String... arg0) {
+					// TODO Auto-generated method stub
+					String file = arg0[0];
+
+					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
+					vClient.SendFile(mFellowId, file);
+					return null;
+				}
+			};
+
+			sendTask.execute(fileName);
+		} else {
+
+		}
+
+	}
+
+	private void onBrowseAlbum(int resultCode, Intent data) {
+
+		if (Activity.RESULT_OK == resultCode) {
+
+		}
 	}
 
 	private void registerMessageReceiver() {
@@ -150,10 +255,21 @@ public class ChatActivity extends Activity implements OnClickListener {
 		case R.id.chat_btn_save:
 			save();
 			break;
+		case R.id.chat_btn_plus:
+			plus();
+			break;
 		}
 	}
 
+	private void plus() {
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		this.startActivityForResult(intent, REQUESTCODE_CAPTURE_IMAGE);
+	}
+
 	private void save() {
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), MsgMgrActivity.class);
+		this.startActivity(intent);
 	}
 
 	private void send() {
@@ -173,6 +289,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 				@Override
 				protected Void doInBackground(Message... params) {
 					// TODO Auto-generated method stub
+
 					System.out.println("In Send Async Task.................");
 
 					try {

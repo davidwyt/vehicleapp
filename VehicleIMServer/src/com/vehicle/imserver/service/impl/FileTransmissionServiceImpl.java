@@ -3,9 +3,6 @@ package com.vehicle.imserver.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
-import cn.jpush.api.ErrorCodeEnum;
-import cn.jpush.api.MessageResult;
-
 import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 import com.vehicle.imserver.dao.interfaces.FileTransmissionDao;
@@ -15,6 +12,7 @@ import com.vehicle.imserver.service.exception.PushNotificationFailedException;
 import com.vehicle.imserver.service.interfaces.FileTransmissionService;
 import com.vehicle.imserver.utils.FileUtil;
 import com.vehicle.imserver.utils.JPushUtil;
+import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileTransmissionRequest;
@@ -39,6 +37,8 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		String filePath = FileUtil.GenPathForFileTransmission("",
 				request.getFileName());
 
+		System.out.println("upload file:" + filePath);
+
 		try {
 			FileUtil.SaveFile(filePath, input);
 		} catch (IOException e) {
@@ -56,26 +56,8 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		INotification notification = new NewFileNotification(
 				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken());
 
-		MessageResult msgResult = null;
-		try {
-
-			msgResult = JPushUtil.getInstance().SendNotification(
-					notification.getTarget(), notification.getTitle(),
-					notification.getContent(), notification.getExtras());
-
-		} catch (Exception e) {
-			throw new PushNotificationFailedException(e);
-		}
-
-		if (null != msgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
-
-			} else {
-				throw new PushNotificationFailedException(msgResult.getErrmsg());
-			}
-		} else {
-			throw new PushNotificationFailedException("no push result");
-		}
+		JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
+				notification.getTitle(), JsonUtil.toJsonString(notification));
 	}
 
 	public String FetchFile(FileFetchRequest request)

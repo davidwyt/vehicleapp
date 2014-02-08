@@ -31,4 +31,8 @@ public class SelfMgr {
 	public void setSelfDriver(Driver self) {
 		this.selfDriver = self;
 	}
+
+	public String getId() {
+		return isDriver ? selfDriver.getId() : selfDriver.getId();
+	}
 }

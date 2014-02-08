@@ -114,7 +114,7 @@ public class VehicleClient {
 		// MessageOne2FolloweesResponse.class);
 	}
 
-	public void SendFile(String target, String filePath) {
+	public FileTransmissionResponse SendFile(String target, String filePath) {
 		File file = new File(filePath);
 
 		String url = URLUtil.UrlAppend(
@@ -123,7 +123,7 @@ public class VehicleClient {
 				String.format(URL_FILETRANSMISSION_SEND, source, target,
 						file.getName()));
 
-		HttpUtil.UploadFile(url, filePath, FileTransmissionResponse.class);
+		return HttpUtil.UploadFile(url, filePath, FileTransmissionResponse.class);
 		// JerseyUtil.UploadFile(url, filePath);
 	}
 
@@ -201,7 +201,6 @@ public class VehicleClient {
 		request.setShopId(shopId);
 		
 		FollowshipAddedResponse response = HttpUtil.PostJson(url, request, FollowshipAddedResponse.class);
-		
 	}
 	
 	public void FollowshipDropped(String shopId)
