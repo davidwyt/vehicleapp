@@ -12,10 +12,9 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-
 import cn.edu.sjtu.vehicleapp.R;
 import com.vehicle.app.bean.Message;
-import com.vehicle.app.utils.UserUtil;
+import com.vehicle.app.mgrs.SelfMgr;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
 
@@ -49,7 +48,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		Message entity = data.get(position);
 
 		if (convertView == null) {
-			if (UserUtil.isSelf(entity.getSource())) {
+			if (SelfMgr.getInstance().IsSelf(entity.getSource())) {
 				convertView = mInflater.inflate(
 						R.layout.chatting_item_msg_text_left, null);
 			} else {

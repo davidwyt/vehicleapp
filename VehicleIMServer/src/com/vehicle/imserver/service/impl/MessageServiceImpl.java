@@ -22,6 +22,7 @@ import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
 import com.vehicle.service.bean.MessageOne2OneRequest;
+import com.vehicle.service.bean.Notifications;
 import com.vehicle.service.bean.OfflineAckRequest;
 import com.vehicle.service.bean.OfflineMessageRequest;
 import com.vehicle.service.bean.RespMessage;
@@ -57,7 +58,7 @@ public class MessageServiceImpl implements MessageService {
 		MessageResult iosMsgResult=null;
 		try {
 			androidMsgResult = JPushUtil.getInstance().SendAndroidMessage(
-					msg.getTarget(), "", JsonUtil.toJsonString(msg));
+					msg.getTarget(), Notifications.NewMessage.toString(), JsonUtil.toJsonString(msg));
 			iosMsgResult=JPushUtil.getInstance().SendIOSMessage(msg.getTarget(), "chat", JsonUtil.toJsonString(msg));
 		} catch (Exception e) {
 			throw new PushMessageFailedException(e);

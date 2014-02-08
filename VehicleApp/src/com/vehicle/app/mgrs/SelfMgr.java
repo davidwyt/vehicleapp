@@ -35,4 +35,8 @@ public class SelfMgr {
 	public String getId() {
 		return isDriver ? selfDriver.getId() : selfDriver.getId();
 	}
+
+	public boolean IsSelf(String id) {
+		return this.getId().equals(id);
+	}
 }

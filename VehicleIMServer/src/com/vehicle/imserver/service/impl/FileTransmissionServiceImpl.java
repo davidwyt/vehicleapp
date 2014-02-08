@@ -54,7 +54,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		}
 
 		INotification notification = new NewFileNotification(
-				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken());
+				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken(), request.getFileName());
 
 		JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
 				notification.getTitle(), JsonUtil.toJsonString(notification));

@@ -60,7 +60,6 @@ public class JPushUtil {
 		MessageResult msgAndroidResult = null;
 		MessageResult msgIosResult = null;
 		try {
-
 			msgAndroidResult = SendAndroidMessage(target, title, content);
 
 			msgIosResult = JPushUtil.getInstance().SendIOSMessage(target,

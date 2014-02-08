@@ -39,7 +39,7 @@ public class VehicleClient {
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
 	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
-	private static final String URL_FILETRANSMISSION_FETCH = "fetch/{token}";
+	private static final String URL_FILETRANSMISSION_FETCH = "fetch/%s";
 
 	private static final String URL_FOLLOWSHIP_ROOT = "followship";
 	private static final String URL_FOLLOWSHIP_FOLLOW = "follow";
@@ -128,12 +128,10 @@ public class VehicleClient {
 	}
 
 	public void FetchFile(String token, String filePath) {
-		FileFetchRequest request = new FileFetchRequest();
-		request.setToken(token);
-
 		String url = URLUtil.UrlAppend(URL_SERVERROOT,
 				URL_FILETRANSMISSION_ROOT, URL_FILETRANSMISSION_FETCH);
-
+		url = String.format(url, token);
+		
 		InputStream input = HttpUtil.DownloadFile(url);
 		try {
 			FileUtil.SaveFile(filePath, input);

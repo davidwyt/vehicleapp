@@ -16,7 +16,7 @@ public class DBManager {
 	private SQLiteDatabase mDB;
 
 	private final static String SQL_MESSAGE_INSERT = "INSERT INTO `MESSAGE`(`ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`) VALUES(?, ?, ?, ?, ?)";
-	private final static String SQL_MESSAGE_SELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME` FROM `MESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` DESC";
+	private final static String SQL_MESSAGE_SELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME` FROM `MESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` ASC";
 
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);

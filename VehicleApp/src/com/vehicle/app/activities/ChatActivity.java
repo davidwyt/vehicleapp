@@ -20,6 +20,7 @@ import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.service.bean.MessageOne2OneResponse;
+import com.vehicle.service.bean.NewFileNotification;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -48,6 +49,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 	public static final String KEY_MESSAGE = "message";
 	public static final String KEY_EXTRAS = "extras";
 
+	public static final String KEY_FELLOWID = "com.vehicle.app.activities.fellowId";
+
 	private static final int REQUESTCODE_CAPTURE_IMAGE = 0x00000001;
 	private static final int REQUESTCODE_BROWSE_ALBUM = 0x00000002;
 
@@ -65,16 +68,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private String mFellowId;
 
-	private DBManager mDBMgr;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_chat);
-
-		mDBMgr = new DBManager(this);
 
 		initView();
 		initData();
@@ -99,7 +98,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		mEditTextContent.setCursorVisible(true);
 
 		Bundle bundle = this.getIntent().getExtras();
-		this.mFellowId = bundle.getString("com.vehicle.app.activities.fellowId");
+		if (null != bundle) {
+			this.mFellowId = bundle.getString(KEY_FELLOWID);
+		}
 
 		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
 		tvFellow.setText(this.mFellowId);
@@ -116,7 +117,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		mDBMgr.close();
 	}
 
 	@Override
@@ -146,8 +146,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + Environment.DIRECTORY_DCIM
-				+ File.separator + "Camera";
+		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+				+ Environment.DIRECTORY_DCIM + File.separator + "Camera";
 		String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
 
 		Bundle bundle = data.getExtras();
@@ -215,11 +215,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 
-		messageReceiver = new MessageReceiver();
+		messageReceiver = new ChatMessageReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
 		filter.addAction(Constants.ACTION_MESSAGE_RECEIVED);
 		filter.addAction(Constants.ACTION_MESSAGE_ACKOK);
+		filter.addAction(Constants.ACTION_NEWFILE_RECEIVED);
 		registerReceiver(messageReceiver, filter);
 	}
 
@@ -295,8 +296,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 					try {
 						Message msg = params[0];
 
-						VehicleClient client = new VehicleClient(Constants.SERVERURL, SelfMgr.getInstance()
-								.getSelfDriver().getId());
+						VehicleClient client = new VehicleClient(Constants.SERVERURL, SelfMgr.getInstance().getId());
 
 						MessageOne2OneResponse resp = client.SendMessage(msg.getTarget(), msg.getContent());
 
@@ -340,53 +340,111 @@ public class ChatActivity extends Activity implements OnClickListener {
 		finish();
 	}
 
-	class MessageReceiver extends BroadcastReceiver {
+	class ChatMessageReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (Constants.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
 
-				String message = intent.getStringExtra(KEY_MESSAGE);
-				String extras = intent.getStringExtra(KEY_EXTRAS);
-				String title = intent.getStringExtra(KEY_TITLE);
+			String action = intent.getAction();
 
-				System.out.println(message);
+			if (Constants.ACTION_MESSAGE_RECEIVED.equals(action)) {
 
-				Message msg = JsonUtil.fromJson(message, Message.class);
+				onNewMessageReceived(intent);
+			} else if (Constants.ACTION_MESSAGE_ACKOK.equals(action)) {
 
-				try {
-					DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
-					dbMgr.addMessage(msg);
-					dbMgr.close();
+				onMessageACKReceived(intent);
+			} else if (Constants.ACTION_NEWFILE_RECEIVED.equals(action)) {
 
-					if (mFellowId.equals(msg.getSource())) {
-						mAdapter.addMsg(msg);
-						mAdapter.notifyDataSetChanged();
-						mMsgList.setSelection(mMsgList.getCount() - 1);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (Constants.ACTION_MESSAGE_ACKOK.equals(intent.getAction())) {
-				String message = intent.getStringExtra(KEY_MESSAGE);
-				Message msg = JsonUtil.fromJson(message, Message.class);
+				onNewFileReceived(intent);
+			}
+		}
 
-				try {
-					DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
-					dbMgr.addMessage(msg);
-					dbMgr.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		private void onNewMessageReceived(Intent intent) {
+			String message = intent.getStringExtra(KEY_MESSAGE);
 
-				try {
+			System.out.println("newwwwwwwwwww:" + message);
+
+			Message msg = JsonUtil.fromJson(message, Message.class);
+
+			try {
+				DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
+				dbMgr.addMessage(msg);
+				dbMgr.close();
+
+				if (mFellowId.equals(msg.getSource())) {
 					mAdapter.addMsg(msg);
 					mAdapter.notifyDataSetChanged();
 					mMsgList.setSelection(mMsgList.getCount() - 1);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+		}
+
+		private void onMessageACKReceived(Intent intent) {
+			String message = intent.getStringExtra(KEY_MESSAGE);
+			Message msg = JsonUtil.fromJson(message, Message.class);
+
+			System.out.println("newwwwwwwwwwackkkkkk:" + message);
+
+			if (!mFellowId.equals(msg.getTarget()))
+				return;
+
+			try {
+				DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
+				dbMgr.addMessage(msg);
+				dbMgr.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				mAdapter.addMsg(msg);
+				mAdapter.notifyDataSetChanged();
+				mMsgList.setSelection(mMsgList.getCount() - 1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		private void onNewFileReceived(Intent intent) {
+
+			String message = intent.getStringExtra(KEY_MESSAGE);
+
+			NewFileNotification notification = JsonUtil.fromJson(message, NewFileNotification.class);
+
+			if (!mFellowId.equals(notification.getTarget()))
+				return;
+
+			AsyncTask<NewFileNotification, Void, Boolean> fetchTask = new AsyncTask<NewFileNotification, Void, Boolean>() {
+
+				@Override
+				protected Boolean doInBackground(NewFileNotification... params) {
+					// TODO Auto-generated method stub
+
+					NewFileNotification notification = params[0];
+
+					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
+
+					String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+							+ Environment.DIRECTORY_PICTURES + File.separator + "Received";
+
+					File dir = new File(path);
+					if (!dir.exists()) {
+						dir.mkdirs();
+					}
+
+					String filePath = path + File.separator + notification.getFileName();
+
+					System.out.println("fetch file to:" + filePath);
+
+					vClient.FetchFile(notification.getToken(), filePath);
+
+					return true;
+				}
+			};
+
+			fetchTask.execute(notification);
 		}
 	}
 }

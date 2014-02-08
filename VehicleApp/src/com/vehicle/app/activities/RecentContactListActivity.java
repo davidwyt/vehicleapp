@@ -80,7 +80,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 				Driver user = (Driver) mAdapter.getItem(position);
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), ChatActivity.class);
-				intent.putExtra("com.vehicle.app.activities.fellowId", user.getId());
+				intent.putExtra(ChatActivity.KEY_FELLOWID, user.getId());
 
 				RecentContactListActivity.this.startActivity(intent);
 			}
