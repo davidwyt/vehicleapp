@@ -12,15 +12,15 @@ import java.util.Locale;
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.adapter.ChatMsgViewAdapter;
-import com.vehicle.app.bean.Message;
-import com.vehicle.app.bean.MessageStatus;
+import com.vehicle.app.bean.IMessageItem;
+import com.vehicle.app.bean.TextMessageItem;
+import com.vehicle.app.bean.PictureMessageItem;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
+import com.vehicle.service.bean.FileTransmissionResponse;
 import com.vehicle.service.bean.MessageOne2OneResponse;
-import com.vehicle.service.bean.NewFileNotification;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
 import android.view.KeyEvent;
 import android.view.View;
@@ -46,7 +47,7 @@ import android.widget.TextView;
 public class ChatActivity extends Activity implements OnClickListener {
 
 	public static final String KEY_TITLE = "title";
-	public static final String KEY_MESSAGE = "message";
+	public static final String KEY_MESSAGE = "com.vehicle.app.key.textmessage";
 	public static final String KEY_EXTRAS = "extras";
 
 	public static final String KEY_FELLOWID = "com.vehicle.app.activities.fellowId";
@@ -64,9 +65,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private ListView mMsgList;
 
 	private BroadcastReceiver messageReceiver;
-	private List<Message> mDataArrays = new ArrayList<Message>();
+	private List<IMessageItem> mDataArrays = new ArrayList<IMessageItem>();
 
-	private String mFellowId;
+	private static String mFellowId;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,13 +100,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		Bundle bundle = this.getIntent().getExtras();
 		if (null != bundle) {
-			this.mFellowId = bundle.getString(KEY_FELLOWID);
+			mFellowId = bundle.getString(KEY_FELLOWID);
 		}
 
 		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
-		tvFellow.setText(this.mFellowId);
+		tvFellow.setText(mFellowId);
 
-		System.out.println("iddddddddddddd:" + this.mFellowId);
+		System.out.println("iddddddddddddd:" + mFellowId);
 	}
 
 	@Override
@@ -117,6 +118,10 @@ public class ChatActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	}
+
+	public static String getCurrentFellowId() {
+		return mFellowId;
 	}
 
 	@Override
@@ -154,12 +159,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 		Bitmap bitmap = (Bitmap) bundle.get("data");
 		FileOutputStream fout = null;
 
-		String fileName = path + File.separator + name;
+		String filePath = path + File.separator + name;
 
-		System.out.println("photoooooooooooo:" + fileName);
+		System.out.println("photoooooooooooo:" + filePath);
 
 		try {
-			fout = new FileOutputStream(fileName);
+			fout = new FileOutputStream(filePath);
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -176,28 +181,53 @@ public class ChatActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		File file = new File(fileName);
+		sendFile(filePath);
+	}
+
+	private void sendFile(String filePath) {
+		File file = new File(filePath);
 
 		if (file.isFile() && file.exists()) {
 
-			AsyncTask<String, Void, Void> sendTask = new AsyncTask<String, Void, Void>() {
+			final PictureMessageItem picItem = new PictureMessageItem();
+			picItem.setSource(SelfMgr.getInstance().getId());
+			picItem.setTarget(SelfMgr.getInstance().getId());
+			picItem.setName(file.getName());
+			picItem.setContent(BitmapFactory.decodeFile(filePath));
+
+			AsyncTask<String, Void, FileTransmissionResponse> sendTask = new AsyncTask<String, Void, FileTransmissionResponse>() {
 
 				@Override
-				protected Void doInBackground(String... arg0) {
+				protected FileTransmissionResponse doInBackground(String... arg0) {
 					// TODO Auto-generated method stub
 					String file = arg0[0];
 
 					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-					vClient.SendFile(mFellowId, file);
-					return null;
+					FileTransmissionResponse resp = vClient.SendFile(mFellowId, file);
+					return resp;
+				}
+
+				@Override
+				protected void onPostExecute(FileTransmissionResponse resp) {
+					if (null != resp && resp.isSucess()) {
+
+						picItem.setSentTime(resp.getSentTime());
+						picItem.setToken(resp.getToken());
+
+						Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
+						msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picItem);
+						ChatActivity.this.sendBroadcast(msgIntent);
+					}
+
 				}
 			};
 
-			sendTask.execute(fileName);
-		} else {
-
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				sendTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, filePath);
+			} else {
+				sendTask.execute(filePath);
+			}
 		}
-
 	}
 
 	private void onBrowseAlbum(int resultCode, Intent data) {
@@ -218,9 +248,11 @@ public class ChatActivity extends Activity implements OnClickListener {
 		messageReceiver = new ChatMessageReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
-		filter.addAction(Constants.ACTION_MESSAGE_RECEIVED);
-		filter.addAction(Constants.ACTION_MESSAGE_ACKOK);
-		filter.addAction(Constants.ACTION_NEWFILE_RECEIVED);
+		filter.addAction(Constants.ACTION_TEXTMESSAGE_RECEIVED);
+		filter.addAction(Constants.ACTION_TEXTMESSAGE_SENTOK);
+		filter.addAction(Constants.ACTION_FILEMSG_RECEIVED);
+		filter.addAction(Constants.ACTION_FILEMSG_SENTOK);
+
 		registerReceiver(messageReceiver, filter);
 	}
 
@@ -237,10 +269,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private void initData() {
 
 		DBManager dbMgr = new DBManager(this);
-		this.mDataArrays = dbMgr.queryMessage(SelfMgr.getInstance().getSelfDriver().getId(), this.mFellowId);
-		dbMgr.close();
 
-		mAdapter = new ChatMsgViewAdapter(this, mDataArrays);
+		List<TextMessageItem> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getSelfDriver().getId(),
+				mFellowId);
+
+		this.mDataArrays.addAll(msgList);
+
+		mAdapter = new ChatMsgViewAdapter(this.getApplicationContext(), mDataArrays);
 		this.mMsgList.setAdapter(mAdapter);
 	}
 
@@ -251,7 +286,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			back();
 			break;
 		case R.id.chat_btn_send:
-			send();
+			sendTextMsg();
 			break;
 		case R.id.chat_btn_save:
 			save();
@@ -273,42 +308,32 @@ public class ChatActivity extends Activity implements OnClickListener {
 		this.startActivity(intent);
 	}
 
-	private void send() {
+	private void sendTextMsg() {
 
 		String content = mEditTextContent.getText().toString();
 
 		if (content.length() > 0) {
 
-			Message entity = new Message();
+			final TextMessageItem entity = new TextMessageItem();
 			entity.setSource(SelfMgr.getInstance().getSelfDriver().getId());
 			entity.setTarget(SelfMgr.getInstance().getSelfDriver().getId());
 			entity.setContent(content);
-			entity.setStatus(MessageStatus.SENT);
 
-			AsyncTask<Message, Void, Void> sendAsync = new AsyncTask<Message, Void, Void>() {
+			AsyncTask<Void, Void, MessageOne2OneResponse> sendAsync = new AsyncTask<Void, Void, MessageOne2OneResponse>() {
 
 				@Override
-				protected Void doInBackground(Message... params) {
+				protected MessageOne2OneResponse doInBackground(Void... params) {
 					// TODO Auto-generated method stub
 
 					System.out.println("In Send Async Task.................");
 
 					try {
-						Message msg = params[0];
 
 						VehicleClient client = new VehicleClient(Constants.SERVERURL, SelfMgr.getInstance().getId());
 
-						MessageOne2OneResponse resp = client.SendMessage(msg.getTarget(), msg.getContent());
+						MessageOne2OneResponse resp = client.SendMessage(entity.getTarget(), entity.getContent());
 
-						if (null != resp && resp.isSucess()) {
-
-							msg.setId(resp.getMsgId());
-							msg.setSentDate(resp.getMsgSentTime());
-
-							Intent msgIntent = new Intent(Constants.ACTION_MESSAGE_ACKOK);
-							msgIntent.putExtra(ChatActivity.KEY_MESSAGE, JsonUtil.toJsonString(msg));
-							ChatActivity.this.sendBroadcast(msgIntent);
-						}
+						return resp;
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -317,16 +342,26 @@ public class ChatActivity extends Activity implements OnClickListener {
 				}
 
 				@Override
-				protected void onPostExecute(Void result) {
-					mEditTextContent.setText("");
+				protected void onPostExecute(MessageOne2OneResponse resp) {
+					if (null != resp && resp.isSucess()) {
+
+						mEditTextContent.setText("");
+
+						entity.setId(resp.getMsgId());
+						entity.setSentTime(resp.getMsgSentTime());
+
+						Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
+						msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
+						ChatActivity.this.sendBroadcast(msgIntent);
+					}
 				}
 
 			};
 
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				sendAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, entity);
+				sendAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			} else {
-				sendAsync.execute(entity);
+				sendAsync.execute();
 			}
 		}
 	}
@@ -347,59 +382,72 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			String action = intent.getAction();
 
-			if (Constants.ACTION_MESSAGE_RECEIVED.equals(action)) {
+			if (Constants.ACTION_TEXTMESSAGE_RECEIVED.equals(action)) {
 
 				onNewMessageReceived(intent);
-			} else if (Constants.ACTION_MESSAGE_ACKOK.equals(action)) {
+			} else if (Constants.ACTION_TEXTMESSAGE_SENTOK.equals(action)) {
 
-				onMessageACKReceived(intent);
-			} else if (Constants.ACTION_NEWFILE_RECEIVED.equals(action)) {
+				onMessageSent(intent);
+			} else if (Constants.ACTION_FILEMSG_RECEIVED.equals(action)) {
 
 				onNewFileReceived(intent);
+			} else if (Constants.ACTION_FILEMSG_SENTOK.equals(action)) {
+				onNewFileSent(intent);
 			}
 		}
 
 		private void onNewMessageReceived(Intent intent) {
-			String message = intent.getStringExtra(KEY_MESSAGE);
+			TextMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
 
-			System.out.println("newwwwwwwwwww:" + message);
-
-			Message msg = JsonUtil.fromJson(message, Message.class);
+			if (!mFellowId.equals(msg.getSource()) || !msg.getTarget().equals(SelfMgr.getInstance().getId()))
+				return;
 
 			try {
-				DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
-				dbMgr.addMessage(msg);
-				dbMgr.close();
-
-				if (mFellowId.equals(msg.getSource())) {
-					mAdapter.addMsg(msg);
-					mAdapter.notifyDataSetChanged();
-					mMsgList.setSelection(mMsgList.getCount() - 1);
-				}
+				mAdapter.addChatItem(msg);
+				mAdapter.notifyDataSetChanged();
+				mMsgList.setSelection(mMsgList.getCount() - 1);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		private void onMessageACKReceived(Intent intent) {
-			String message = intent.getStringExtra(KEY_MESSAGE);
-			Message msg = JsonUtil.fromJson(message, Message.class);
+		private void onMessageSent(Intent intent) {
+			TextMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
 
-			System.out.println("newwwwwwwwwwackkkkkk:" + message);
-
-			if (!mFellowId.equals(msg.getTarget()))
+			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
 			try {
 				DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
-				dbMgr.addMessage(msg);
-				dbMgr.close();
+				dbMgr.insertTextMessage(msg);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			try {
-				mAdapter.addMsg(msg);
+				mAdapter.addChatItem(msg);
+				mAdapter.notifyDataSetChanged();
+				mMsgList.setSelection(mMsgList.getCount() - 1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		private void onNewFileSent(Intent intent) {
+			PictureMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
+
+			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
+				return;
+
+			try {
+				DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
+				dbMgr.insertFileMessage(msg);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				mAdapter.addChatItem(msg);
 				mAdapter.notifyDataSetChanged();
 				mMsgList.setSelection(mMsgList.getCount() - 1);
 			} catch (Exception e) {
@@ -409,42 +457,18 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		private void onNewFileReceived(Intent intent) {
 
-			String message = intent.getStringExtra(KEY_MESSAGE);
+			PictureMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
 
-			NewFileNotification notification = JsonUtil.fromJson(message, NewFileNotification.class);
-
-			if (!mFellowId.equals(notification.getTarget()))
+			if (!mFellowId.equals(msg.getSource()) || !msg.getTarget().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			AsyncTask<NewFileNotification, Void, Boolean> fetchTask = new AsyncTask<NewFileNotification, Void, Boolean>() {
-
-				@Override
-				protected Boolean doInBackground(NewFileNotification... params) {
-					// TODO Auto-generated method stub
-
-					NewFileNotification notification = params[0];
-
-					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-
-					String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-							+ Environment.DIRECTORY_PICTURES + File.separator + "Received";
-
-					File dir = new File(path);
-					if (!dir.exists()) {
-						dir.mkdirs();
-					}
-
-					String filePath = path + File.separator + notification.getFileName();
-
-					System.out.println("fetch file to:" + filePath);
-
-					vClient.FetchFile(notification.getToken(), filePath);
-
-					return true;
-				}
-			};
-
-			fetchTask.execute(notification);
+			try {
+				mAdapter.addChatItem(msg);
+				mAdapter.notifyDataSetChanged();
+				mMsgList.setSelection(mMsgList.getCount() - 1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

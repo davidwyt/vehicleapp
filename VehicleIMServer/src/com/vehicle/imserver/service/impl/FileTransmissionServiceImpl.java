@@ -31,7 +31,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		this.fileTransmissionDao = fileTransmissionDao;
 	}
 
-	public void SendFile(FileTransmissionRequest request, InputStream input)
+	public FileTransmission SendFile(FileTransmissionRequest request, InputStream input)
 			throws IOException, PushNotificationFailedException,
 			PersistenceException {
 		String filePath = FileUtil.GenPathForFileTransmission("",
@@ -58,6 +58,8 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 
 		JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
 				notification.getTitle(), JsonUtil.toJsonString(notification));
+		
+		return fileTran;
 	}
 
 	public String FetchFile(FileFetchRequest request)

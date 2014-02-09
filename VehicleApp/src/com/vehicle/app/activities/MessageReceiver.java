@@ -1,31 +1,24 @@
 package com.vehicle.app.activities;
 
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.StringUtil;
+import com.vehicle.app.bean.PictureMessageItem;
+import com.vehicle.app.bean.TextMessageItem;
+import com.vehicle.app.msgprocessors.IMessageProcessor;
+import com.vehicle.app.msgprocessors.PictureMessageProcessor;
+import com.vehicle.app.msgprocessors.TextMessageProcessor;
+import com.vehicle.app.utils.JsonUtil;
+import com.vehicle.service.bean.NewFileNotification;
 import com.vehicle.service.bean.Notifications;
 
-import android.app.ActivityManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import cn.edu.sjtu.vehicleapp.R;
 import cn.jpush.android.api.JPushInterface;
 
 public class MessageReceiver extends BroadcastReceiver {
 	private static final String TAG = "MyJPushReceiver";
-
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Bundle bundle = intent.getExtras();
@@ -78,69 +71,34 @@ public class MessageReceiver extends BroadcastReceiver {
 	private void processCustomMessage(Context context, Bundle bundle) {
 
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-		String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
 		String title = bundle.getString(JPushInterface.EXTRA_TITLE);
 
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-
-		String topActivity = taskInfo.get(0).topActivity.getClassName();
-
-		// System.out.println("CURRENT Activity ::" +
-		// taskInfo.get(0).topActivity.getClassName());
-
-		if (!topActivity.equals(ChatActivity.class.getCanonicalName())) {
-			NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-					.setSmallIcon(R.drawable.jpush_notification_icon)
-					.setContentTitle(title)
-					.setContentText(message)
-					.setDefaults(
-							Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
-					.setTicker(title);
-
-			Intent resultIntent = new Intent(context, ChatActivity.class);
-			PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-			notificationBuilder.setContentIntent(resultPendingIntent);
-			notificationBuilder.setAutoCancel(true);
-
-			NotificationManager notificationMgr = (NotificationManager) context
-					.getSystemService(Context.NOTIFICATION_SERVICE);
-			notificationMgr.notify(R.string.app_name, notificationBuilder.build());
-		}
-
 		if (Notifications.NewMessage.toString().equalsIgnoreCase(title)) {
-			onNewMessageReceived(context, title, message, extras);
+			onNewMessageReceived(context, message);
 		} else if (Notifications.NewFile.toString().equalsIgnoreCase(title)) {
-			onNewFileReceived(context, title, message, extras);
+			onNewFileReceived(context, message);
 		}
 	}
 
-	private void onNewMessageReceived(Context context, String title, String message, String extras) {
-
-		Intent msgIntent = new Intent(Constants.ACTION_MESSAGE_RECEIVED);
-		msgIntent.putExtra(ChatActivity.KEY_MESSAGE, message);
-		msgIntent.putExtra(ChatActivity.KEY_TITLE, title);
-
-		if (StringUtil.IsNullOrEmpty(extras)) {
-			try {
-				JSONObject extraJson = new JSONObject(extras);
-				if (null != extraJson && extraJson.length() > 0) {
-					msgIntent.putExtra(ChatActivity.KEY_EXTRAS, extras);
-				}
-			} catch (JSONException e) {
-
-			}
-		}
-		context.sendBroadcast(msgIntent);
+	private void onNewMessageReceived(Context context, String message) {
+		TextMessageItem msg = JsonUtil.fromJson(message, TextMessageItem.class);
+		
+		IMessageProcessor cpu = new TextMessageProcessor(context);
+		cpu.process(msg);
 	}
 
-	private void onNewFileReceived(Context context, String title, String message, String extras) {
-
-		Intent intent = new Intent(Constants.ACTION_NEWFILE_RECEIVED);
-		intent.putExtra(ChatActivity.KEY_MESSAGE, message);
-		intent.putExtra(ChatActivity.KEY_TITLE, title);
-
-		context.sendBroadcast(intent);
+	private void onNewFileReceived(Context context, String message) {
+		
+		NewFileNotification newFileNotification = JsonUtil.fromJson(message, NewFileNotification.class);
+		
+		PictureMessageItem msg = new PictureMessageItem();
+		msg.setToken(newFileNotification.getToken());
+		msg.setSource(newFileNotification.getSource());
+		msg.setTarget(newFileNotification.getTarget());
+		msg.setName(newFileNotification.getFileName());
+		msg.setSentTime(newFileNotification.getSentTime());
+		
+		IMessageProcessor cpu = new PictureMessageProcessor(context);
+		cpu.process(msg);
 	}
 }

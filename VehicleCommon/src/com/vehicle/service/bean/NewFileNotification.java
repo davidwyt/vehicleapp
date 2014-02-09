@@ -9,6 +9,7 @@ public class NewFileNotification implements INotification {
 	private String source;
 	private String target;
 	private String fileName;
+	private long sentTime;
 
 	public NewFileNotification(String source, String target, String token,
 			String fileName) {
@@ -16,6 +17,14 @@ public class NewFileNotification implements INotification {
 		this.target = target;
 		this.token = token;
 		this.fileName = fileName;
+	}
+
+	public long getSentTime() {
+		return this.sentTime;
+	}
+
+	public void setSentTime(long time) {
+		this.sentTime = time;
 	}
 
 	@Override
