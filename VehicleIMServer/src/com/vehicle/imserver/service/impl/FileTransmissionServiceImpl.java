@@ -68,13 +68,6 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 
 		INotification notification = new NewFileNotification(
 				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken(), request.getFileName());
-
-<<<<<<< HEAD
-		} catch (Exception e) {
-			throw new PushNotificationFailedException(e);
-		}
-
-		if (null != msgResult) {
 			Message msg=new Message();
 			msg.setContent(token);
 			msg.setId(GUIDUtil.genNewGuid());
@@ -82,21 +75,17 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			msg.setSentTime(System.currentTimeMillis());
 			msg.setTarget(notification.getTarget());
 			msg.setSource(notification.getSource());
-			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
-				messageDao.save(msg);
-			} else {
-				offlineMessageDao.save(new OfflineMessage(msg));
-				throw new PushNotificationFailedException(msgResult.getErrmsg());
-			}
-		} else {
-			throw new PushNotificationFailedException("no push result");
-		}
-=======
-		JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
+
+		try{
+			JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
 				notification.getTitle(), JsonUtil.toJsonString(notification));
+			messageDao.save(msg);
+		}catch(PushNotificationFailedException e){
+			offlineMessageDao.save(new OfflineMessage(msg));
+			throw e;
+		}
 		
 		return fileTran;
->>>>>>> bfcbda618a6027a6a1b0ef05c1e48bc9188a3b62
 	}
 
 	public String FetchFile(FileFetchRequest request)
