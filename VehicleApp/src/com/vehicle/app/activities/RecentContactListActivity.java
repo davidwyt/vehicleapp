@@ -60,7 +60,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		for (int i = 0; i < 10; i++) {
 			Driver user = new Driver();
 			user.setAlias("user" + i);
-			user.setId(SelfMgr.getInstance().getSelfDriver().getId());
+			user.setId(SelfMgr.getInstance().getId());
 			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));
 			user.setLastMessage("this is my last messagesssssssssssssssssss");
 			user.setLastMessageDate(new Date());
@@ -80,7 +80,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 				Driver user = (Driver) mAdapter.getItem(position);
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), ChatActivity.class);
-				intent.putExtra("com.vehicle.app.activities.fellowId", user.getId());
+				intent.putExtra(ChatActivity.KEY_FELLOWID, user.getId());
 
 				RecentContactListActivity.this.startActivity(intent);
 			}

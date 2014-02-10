@@ -1,5 +1,6 @@
 package com.vehicle.app.mgrs;
 
+
 import com.vehicle.app.bean.Driver;
 
 public class SelfMgr {
@@ -30,5 +31,13 @@ public class SelfMgr {
 
 	public void setSelfDriver(Driver self) {
 		this.selfDriver = self;
+	}
+
+	public String getId() {
+		return isDriver ? selfDriver.getId() : selfDriver.getId();
+	}
+
+	public boolean IsSelf(String id) {
+		return this.getId().equals(id);
 	}
 }

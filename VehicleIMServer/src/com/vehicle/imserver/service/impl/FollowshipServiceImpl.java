@@ -3,9 +3,6 @@ package com.vehicle.imserver.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import cn.jpush.api.ErrorCodeEnum;
-import cn.jpush.api.MessageResult;
-
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.dao.bean.FollowshipInvitationStatus;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
@@ -19,6 +16,7 @@ import com.vehicle.imserver.service.exception.PushNotificationFailedException;
 import com.vehicle.imserver.service.interfaces.FollowshipService;
 import com.vehicle.imserver.utils.GUIDUtil;
 import com.vehicle.imserver.utils.JPushUtil;
+import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.FolloweesRequest;
 import com.vehicle.service.bean.FollowersRequest;
@@ -104,24 +102,8 @@ public class FollowshipServiceImpl implements FollowshipService {
 		notification.setSource(followshipAddedRequest.getMemberId());
 		notification.setTarget(followshipAddedRequest.getShopId());
 
-		MessageResult msgResult = null;
-		try {
-			msgResult = JPushUtil.getInstance().SendNotification(
-					notification.getTarget(), notification.getTitle(),
-					notification.getContent());
-		} catch (Exception e) {
-			throw new PushNotificationFailedException(e);
-		}
-
-		if (null != msgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
-
-			} else {
-				throw new PushNotificationFailedException(msgResult.getErrmsg());
-			}
-		} else {
-			throw new PushNotificationFailedException("no push result");
-		}
+		JPushUtil.getInstance().SendNotification(notification.getTarget(),
+				notification.getTitle(), JsonUtil.toJsonString(notification));
 	}
 
 	@Override
@@ -133,24 +115,8 @@ public class FollowshipServiceImpl implements FollowshipService {
 		notification.setSource(followshipDroppedRequest.getMemberId());
 		notification.setTarget(followshipDroppedRequest.getShopId());
 
-		MessageResult msgResult = null;
-		try {
-			msgResult = JPushUtil.getInstance().SendNotification(
-					notification.getTarget(), notification.getTitle(),
-					notification.getContent());
-		} catch (Exception e) {
-			throw new PushNotificationFailedException(e);
-		}
-
-		if (null != msgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
-
-			} else {
-				throw new PushNotificationFailedException(msgResult.getErrmsg());
-			}
-		} else {
-			throw new PushNotificationFailedException("no push result");
-		}
+		JPushUtil.getInstance().SendNotification(notification.getTarget(),
+				notification.getTitle(), JsonUtil.toJsonString(notification));
 	}
 
 	@Override
@@ -179,25 +145,8 @@ public class FollowshipServiceImpl implements FollowshipService {
 		notification.setTarget(invitationRequest.getShopId());
 		notification.setInvitationId(invitationId);
 
-		MessageResult msgResult = null;
-		try {
-
-			msgResult = JPushUtil.getInstance().SendNotification(
-					notification.getTarget(), notification.getTitle(),
-					notification.getContent(), notification.getExtras());
-		} catch (Exception e) {
-			throw new PushNotificationFailedException(e);
-		}
-
-		if (null != msgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
-
-			} else {
-				throw new PushNotificationFailedException(msgResult.getErrmsg());
-			}
-		} else {
-			throw new PushNotificationFailedException("no push result");
-		}
+		JPushUtil.getInstance().SendNotification(notification.getTarget(),
+				notification.getTitle(), JsonUtil.toJsonString(notification));
 	}
 
 	@Override
@@ -248,24 +197,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 			throw new PersistenceException(e.getMessage(), e);
 		}
 
-		MessageResult msgResult = null;
-		try {
-
-			msgResult = JPushUtil.getInstance().SendNotification(
-					notification.getTarget(), notification.getTitle(),
-					notification.getContent(), notification.getExtras());
-		} catch (Exception e) {
-			throw new PushNotificationFailedException(e);
-		}
-
-		if (null != msgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == msgResult.getErrcode()) {
-				
-			} else {
-				throw new PushNotificationFailedException(msgResult.getErrmsg());
-			}
-		} else {
-			throw new PushNotificationFailedException("no push result");
-		}
+		JPushUtil.getInstance().SendNotification(notification.getTarget(),
+				notification.getTitle(), JsonUtil.toJsonString(notification));
 	}
 }

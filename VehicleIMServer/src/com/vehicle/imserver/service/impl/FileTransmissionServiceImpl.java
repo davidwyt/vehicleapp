@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import cn.jpush.api.ErrorCodeEnum;
-import cn.jpush.api.MessageResult;
-
 import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 import com.vehicle.imserver.dao.bean.Message;
@@ -22,6 +19,7 @@ import com.vehicle.imserver.service.interfaces.FileTransmissionService;
 import com.vehicle.imserver.utils.FileUtil;
 import com.vehicle.imserver.utils.GUIDUtil;
 import com.vehicle.imserver.utils.JPushUtil;
+import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileTransmissionRequest;
@@ -42,12 +40,14 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		this.fileTransmissionDao = fileTransmissionDao;
 	}
 
-	public void SendFile(FileTransmissionRequest request, InputStream input)
+	public FileTransmission SendFile(FileTransmissionRequest request, InputStream input)
 			throws IOException, PushNotificationFailedException,
 			PersistenceException {
 		String token=UUID.randomUUID().toString();
 		String filePath = FileUtil.GenPathForFileTransmission("",
 				request.getFileName(),token);
+
+		System.out.println("upload file:" + filePath);
 
 		try {
 			FileUtil.SaveFile(filePath, input);
@@ -67,15 +67,9 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		}
 
 		INotification notification = new NewFileNotification(
-				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken());
+				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken(), request.getFileName());
 
-		MessageResult msgResult = null;
-		try {
-
-			msgResult = JPushUtil.getInstance().SendNotification(
-					notification.getTarget(), notification.getTitle(),
-					notification.getContent(), notification.getExtras());
-
+<<<<<<< HEAD
 		} catch (Exception e) {
 			throw new PushNotificationFailedException(e);
 		}
@@ -97,6 +91,12 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		} else {
 			throw new PushNotificationFailedException("no push result");
 		}
+=======
+		JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
+				notification.getTitle(), JsonUtil.toJsonString(notification));
+		
+		return fileTran;
+>>>>>>> bfcbda618a6027a6a1b0ef05c1e48bc9188a3b62
 	}
 
 	public String FetchFile(FileFetchRequest request)

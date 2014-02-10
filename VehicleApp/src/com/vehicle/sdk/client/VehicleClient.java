@@ -39,7 +39,7 @@ public class VehicleClient {
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
 	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
-	private static final String URL_FILETRANSMISSION_FETCH = "fetch/{token}";
+	private static final String URL_FILETRANSMISSION_FETCH = "fetch/%s";
 
 	private static final String URL_FOLLOWSHIP_ROOT = "followship";
 	private static final String URL_FOLLOWSHIP_FOLLOW = "follow";
@@ -114,7 +114,7 @@ public class VehicleClient {
 		// MessageOne2FolloweesResponse.class);
 	}
 
-	public void SendFile(String target, String filePath) {
+	public FileTransmissionResponse SendFile(String target, String filePath) {
 		File file = new File(filePath);
 
 		String url = URLUtil.UrlAppend(
@@ -123,17 +123,15 @@ public class VehicleClient {
 				String.format(URL_FILETRANSMISSION_SEND, source, target,
 						file.getName()));
 
-		HttpUtil.UploadFile(url, filePath, FileTransmissionResponse.class);
+		return HttpUtil.UploadFile(url, filePath, FileTransmissionResponse.class);
 		// JerseyUtil.UploadFile(url, filePath);
 	}
 
 	public void FetchFile(String token, String filePath) {
-		FileFetchRequest request = new FileFetchRequest();
-		request.setToken(token);
-
 		String url = URLUtil.UrlAppend(URL_SERVERROOT,
 				URL_FILETRANSMISSION_ROOT, URL_FILETRANSMISSION_FETCH);
-
+		url = String.format(url, token);
+		
 		InputStream input = HttpUtil.DownloadFile(url);
 		try {
 			FileUtil.SaveFile(filePath, input);
@@ -201,7 +199,6 @@ public class VehicleClient {
 		request.setShopId(shopId);
 		
 		FollowshipAddedResponse response = HttpUtil.PostJson(url, request, FollowshipAddedResponse.class);
-		
 	}
 	
 	public void FollowshipDropped(String shopId)

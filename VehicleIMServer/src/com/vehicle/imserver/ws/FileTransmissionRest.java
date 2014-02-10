@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.service.exception.FileTransmissionNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
@@ -66,7 +67,9 @@ public class FileTransmissionRest {
 		fileRequest.setFileName(fileName);
 
 		try {
-			fileTransmissionService.SendFile(fileRequest, input);
+			FileTransmission fileTran = fileTransmissionService.SendFile(fileRequest, input);
+			resp.setSentTime(fileTran.getTransmissionTime());
+			resp.setToken(fileTran.getToken());
 			
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (IOException e) {

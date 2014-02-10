@@ -38,8 +38,6 @@ public class SettingActivity extends Activity{
 	public void onStart()
 	{
 		super.onStart();
-		this.selfIdET.setText(Constants.SELFID);
-		this.herIdET.setText(Constants.HERID);
 		this.serverET.setText(Constants.SERVERURL);
 	}
 	
@@ -67,11 +65,7 @@ public class SettingActivity extends Activity{
 					return;
 				}
 				
-				Constants.SELFID = selfId;
-				Constants.HERID = herId;
 				Constants.SERVERURL = server;
-				
-				JPushInterface.setAliasAndTags(getApplicationContext(), Constants.SELFID, null);
 				
 				tip.setText("setting success");
 			}});
