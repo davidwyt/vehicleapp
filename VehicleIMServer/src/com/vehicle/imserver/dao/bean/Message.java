@@ -16,6 +16,7 @@ public class Message {
 	private String target;
 	private long sentTime;
 	private String content;
+	private int messageType;
 
 	public Message() {
 	}
@@ -72,5 +73,14 @@ public class Message {
 
 	public void setContent(String c) {
 		this.content = c;
+	}
+
+	@Column(name = "TYPE")
+	public int getMessageType() {
+		return messageType;
+	}
+
+	public void setMessageType(int messageType) {
+		this.messageType = messageType;
 	}
 }

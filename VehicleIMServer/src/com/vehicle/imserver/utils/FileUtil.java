@@ -10,9 +10,11 @@ import org.apache.commons.io.IOUtils;
 
 public class FileUtil {
 
-	public static String GenPathForFileTransmission(String root, String fileName)
+	public static String GenPathForFileTransmission(String root, String fileName,String token)
 	{
-		return AppendPath(AppendPath(root, Contants.FILE_TRANSMISSION_ROOTPATH), fileName);
+		String[] temps=fileName.split("\\.");
+		String name=token+"."+temps[temps.length-1];
+		return AppendPath(AppendPath(root, Contants.FILE_TRANSMISSION_ROOTPATH), name);
 	}
 	
 	public static String AppendPath(String part1, String part2)

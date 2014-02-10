@@ -13,13 +13,13 @@ import com.vehicle.service.bean.MessageOne2OneRequest;
 
 public class RequestDaoUtil {
 	
-	public static FileTransmission toFileTransmission(FileTransmissionRequest request, String path)
+	public static FileTransmission toFileTransmission(FileTransmissionRequest request,String path, String token)
 	{
 		FileTransmission fileTran = new FileTransmission();
 		fileTran.setSource(request.getSource());
 		fileTran.setTarget(request.getTarget());
 		fileTran.setStatus(FileTransmissionStatus.SENT);
-		fileTran.setToken(UUID.randomUUID().toString());
+		fileTran.setToken(token);
 		fileTran.setTransmissionTime(new Date().getTime());
 		fileTran.setPath(path);
 		
@@ -33,6 +33,7 @@ public class RequestDaoUtil {
 		msg.setTarget(request.getTarget());
 		msg.setContent(request.getContent());
 		msg.setSentTime(new Date().getTime());
+		msg.setMessageType(request.getMessageType());
 
 		return msg;
 	}

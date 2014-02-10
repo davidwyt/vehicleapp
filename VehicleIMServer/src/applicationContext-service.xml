@@ -12,6 +12,12 @@
 		<property name="fileTransmissionDao">
 			<ref bean="fileTransmissionDao" />
 		</property>
+		<property name="messageDao">
+			<ref bean="messageDao" />
+		</property>
+		<property name="offlineMessageDao">
+			<ref bean="offlineMessageDao" />
+		</property>
 	</bean> 
 	<bean id="followshipService" class="com.vehicle.imserver.service.impl.FollowshipServiceImpl">
 		<property name="followshipDao">

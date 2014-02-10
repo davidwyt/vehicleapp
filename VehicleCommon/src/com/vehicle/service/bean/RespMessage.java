@@ -9,6 +9,7 @@ public class RespMessage {
 	private String target;
 	private long sentTime;
 	private String content;
+	private int messageType;
 	public String getId() {
 		return id;
 	}
@@ -38,5 +39,11 @@ public class RespMessage {
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+	public int getMessageType() {
+		return messageType;
+	}
+	public void setMessageType(int messageType) {
+		this.messageType = messageType;
 	}
 }

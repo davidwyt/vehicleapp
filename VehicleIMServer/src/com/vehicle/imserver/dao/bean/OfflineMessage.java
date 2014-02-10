@@ -15,6 +15,7 @@ public class OfflineMessage {
 	private String target;
 	private long sentTime;
 	private String content;
+	private int messageType;
 	
 	public OfflineMessage(){}
 	
@@ -80,5 +81,14 @@ public class OfflineMessage {
 	public void setContent(String c)
 	{
 		this.content = c;
+	}
+
+	@Column(name="TYPE")
+	public int getMessageType() {
+		return messageType;
+	}
+
+	public void setMessageType(int messageType) {
+		this.messageType = messageType;
 	}
 }

@@ -151,6 +151,7 @@ public class MessageServiceImpl implements MessageService {
 			r.setSentTime(list.get(i).getSentTime());
 			r.setSource(list.get(i).getSource());
 			r.setTarget(list.get(i).getTarget());
+			r.setMessageType(list.get(i).getMessageType());
 			ret.add(r);
 		}
 		return ret;
