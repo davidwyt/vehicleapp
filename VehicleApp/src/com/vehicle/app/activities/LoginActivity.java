@@ -266,6 +266,7 @@ public class LoginActivity extends Activity {
 				// finish();
 
 				JPushInterface.setAliasAndTags(getApplicationContext(), result.getDriverInfo().getId(), null);
+				SelfMgr.getInstance().setIsDriver(true);
 				SelfMgr.getInstance().setSelfDriver(result.getDriverInfo());
 
 				Intent intent = new Intent();

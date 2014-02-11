@@ -46,6 +46,7 @@ public class NearbyFellowsViewAdapter extends BaseAdapter{
 	@Override
 	public View getView(int pos, View view, ViewGroup viewGroup) {
 		// TODO Auto-generated method stub
+		
 		Driver user = this.fellows.get(pos);
 		if(null == view)
 		{

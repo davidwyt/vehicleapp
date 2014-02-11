@@ -3,8 +3,8 @@ package com.vehicle.app.mgrs;
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.activities.ChatActivity;
-import com.vehicle.app.bean.PictureMessageItem;
-import com.vehicle.app.bean.TextMessageItem;
+import com.vehicle.app.msg.PictureMessageItem;
+import com.vehicle.app.msg.TextMessageItem;
 
 import android.app.Notification;
 import android.app.NotificationManager;

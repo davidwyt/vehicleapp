@@ -1,6 +1,7 @@
-package com.vehicle.app.msgprocessors;
+package com.vehicle.app.msg;
 
 import java.io.File;
+import java.io.InputStream;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,31 +10,28 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.vehicle.app.activities.ChatActivity;
-import com.vehicle.app.bean.IMessageItem;
-import com.vehicle.app.bean.MessageFlag;
-import com.vehicle.app.bean.PictureMessageItem;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.NotificationMgr;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.sdk.client.VehicleClient;
 
-public class PictureMessageProcessor extends MessageBaseProcessor{
+public class PictureMessageRecipient extends MessageBaseRecipient {
 
-	public PictureMessageProcessor(Context context) {
+	public PictureMessageRecipient(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void process(IMessageItem msg) {
+	public void receive(IMessageItem msg) {
 		// TODO Auto-generated method stub
 		if (!(msg instanceof PictureMessageItem)) {
 			throw new IllegalArgumentException("msg is not PictureMessageItem");
 		}
 
 		final PictureMessageItem picMsgItem = (PictureMessageItem) msg;
-		
+
 		AsyncTask<Void, Void, Boolean> fetchTask = new AsyncTask<Void, Void, Boolean>() {
 
 			@Override
@@ -54,37 +52,52 @@ public class PictureMessageProcessor extends MessageBaseProcessor{
 
 				System.out.println("fetch file to:" + filePath);
 
-				vClient.FetchFile(picMsgItem.getToken(), filePath);
-				
+				InputStream fileStream = vClient.FetchFile(picMsgItem.getToken(), filePath);
+				if (null == fileStream) {
+					System.out.println("fetch file failed:" + picMsgItem.getToken());
+					return false;
+				}
+
+				File file = new File(filePath);
+				System.out.println("file: " + filePath + " exist:" + file.exists());
+
 				picMsgItem.setContent(BitmapFactory.decodeFile(filePath));
-				
+
+				System.out.println("content null :" + (null == picMsgItem.getContent()));
 				return true;
 			}
-			
+
 			@Override
-			protected void onPostExecute(Boolean result)
-			{
-				if(!result)
-				{
+			protected void onPostExecute(Boolean result) {
+				if (!result) {
 					System.out.println(String.format("fetch file:%s from server failed", picMsgItem.getToken()));
 					return;
 				}
-				
-				if(IsChattingWithFellow(picMsgItem.getSource()))
-				{
+
+				if (IsChattingWithFellow(picMsgItem.getSource())) {
 					picMsgItem.setFlag(MessageFlag.READ);
-					DBManager dbManager = new DBManager(context);
-					dbManager.insertFileMessage(picMsgItem);
-					
+
+					try {
+						DBManager dbManager = new DBManager(context);
+						dbManager.insertFileMessage(picMsgItem);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_RECEIVED);
 					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMsgItem);
 					context.sendBroadcast(msgIntent);
-				}else
-				{
+				} else {
+
 					picMsgItem.setFlag(MessageFlag.UNREAD);
-					DBManager dbManager = new DBManager(context);
-					dbManager.insertFileMessage(picMsgItem);
-					
+
+					try {
+						DBManager dbManager = new DBManager(context);
+						dbManager.insertFileMessage(picMsgItem);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					NotificationMgr notificationMgr = new NotificationMgr(context);
 					notificationMgr.notifyNewFileMsg(picMsgItem);
 				}

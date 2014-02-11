@@ -67,5 +67,4 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 			this.startActivity(intent);
 		}
 	}
-
 }

@@ -1,4 +1,4 @@
-package com.vehicle.app.msgprocessors;
+package com.vehicle.app.msg;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import com.vehicle.app.activities.ChatActivity;
 import android.app.ActivityManager;
 import android.content.Context;
 
-public abstract class MessageBaseProcessor implements IMessageProcessor {
+public abstract class MessageBaseRecipient implements IMessageRecipient {
 
 	protected Context context;
 
-	public MessageBaseProcessor(Context context) {
+	public MessageBaseRecipient(Context context) {
 		this.context = context;
 	}
 

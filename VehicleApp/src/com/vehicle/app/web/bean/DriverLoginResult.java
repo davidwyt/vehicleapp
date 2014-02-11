@@ -1,7 +1,7 @@
 package com.vehicle.app.web.bean;
 
 import com.google.gson.annotations.SerializedName;
-import com.vehicle.app.bean.Driver;
+import com.vehicle.app.bean.SelfDriver;
 
 public class DriverLoginResult extends WebCallBaseResult{
 
@@ -19,7 +19,7 @@ public class DriverLoginResult extends WebCallBaseResult{
 		this.result = result;
 	}
 	
-	public Driver getDriverInfo()
+	public SelfDriver getDriverInfo()
 	{
 		return this.result.getDriver();
 	}

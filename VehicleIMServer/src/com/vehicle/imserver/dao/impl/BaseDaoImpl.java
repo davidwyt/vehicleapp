@@ -30,7 +30,8 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 	}
 
 	public Serializable save(T obj) {
-		return (Serializable) getSession().save(obj);
+		Serializable ret = (Serializable) getSession().save(obj);
+		return ret;
 	}
 
 	public void saveOrUpdate(T obj) {

@@ -4,9 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vehicle.app.bean.MessageFlag;
-import com.vehicle.app.bean.PictureMessageItem;
-import com.vehicle.app.bean.TextMessageItem;
+import com.vehicle.app.msg.MessageFlag;
+import com.vehicle.app.msg.PictureMessageItem;
+import com.vehicle.app.msg.TextMessageItem;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,12 +20,12 @@ public class DBManager {
 	private DBHelper mDBHelper;
 
 	private final static String SQL_TEXTMESSAGE_INSERT = "INSERT INTO `TEXTMESSAGE`(`ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?, ?);";
-	private final static String SQL_TEXTMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME` `FLAG` FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` ASC;";
-	private final static String SQL_TEXTMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME` `FLAG` FROM `TEXTMESSAGE` WHERE `FLAG` = ? AND ((`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?)) ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_TEXTMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_TEXTMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `TEXTMESSAGE` WHERE `FLAG` = ? AND ((`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?)) ORDER BY `SENTTIME` ASC;";
 
 	private final static String SQL_FILEMESSAGE_INSERT = "INSERT INTO `FILEMESSAGE` (`TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?, ?);";
 	private final static String SQL_FILEMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` ASC;";
-	private final static String SQL_FILEMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME` `FLAG` FROM `FILEMESSAGE` WHERE `FLAG` = ? AND ((`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?)) ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_FILEMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `FILEMESSAGE` WHERE `FLAG` = ? AND ((`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?)) ORDER BY `SENTTIME` ASC;";
 
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);
@@ -56,64 +56,69 @@ public class DBManager {
 	public List<TextMessageItem> queryAllTextMessage(String source, String target) {
 
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
-
-		Cursor cursor = db.rawQuery(SQL_TEXTMESSAGE_ALLSELECT, new String[] { source, target, target, source });
-
 		List<TextMessageItem> messages = new ArrayList<TextMessageItem>();
 
-		while (cursor.moveToNext()) {
+		try {
+			Cursor cursor = db.rawQuery(SQL_TEXTMESSAGE_ALLSELECT, new String[] { source, target, target, source });
 
-			TextMessageItem msg = new TextMessageItem();
+			while (cursor.moveToNext()) {
 
-			msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
+				TextMessageItem msg = new TextMessageItem();
 
-			msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
-			msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-			msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-			msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+				msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
 
-			msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-			messages.add(msg);
+				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+
+				messages.add(msg);
+			}
+
+		} finally {
+			if (null != db)
+				db.close();
 		}
 
-		db.close();
 		return messages;
 	}
 
 	public List<TextMessageItem> queryUnreadTextMessage(String source, String target) {
 
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
-
-		Cursor cursor = db.rawQuery(SQL_TEXTMESSAGE_FLAGSELECT, new String[] { MessageFlag.UNREAD.toString(), source,
-				target, target, source });
-
 		List<TextMessageItem> messages = new ArrayList<TextMessageItem>();
 
-		while (cursor.moveToNext()) {
+		try {
+			Cursor cursor = db.rawQuery(SQL_TEXTMESSAGE_FLAGSELECT, new String[] { MessageFlag.UNREAD.toString(),
+					source, target, target, source });
 
-			TextMessageItem msg = new TextMessageItem();
+			while (cursor.moveToNext()) {
 
-			msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
+				TextMessageItem msg = new TextMessageItem();
 
-			msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
-			msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-			msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-			msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+				msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
 
-			msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-			messages.add(msg);
+				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+
+				messages.add(msg);
+			}
+		} finally {
+			if (null != db)
+				db.close();
 		}
-
-		db.close();
-
 		return messages;
 	}
 
@@ -122,18 +127,21 @@ public class DBManager {
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
-		SQLiteStatement insertStmt = db.compileStatement(SQL_FILEMESSAGE_INSERT);
-		insertStmt.clearBindings();
-		insertStmt.bindString(1, id);
-		insertStmt.bindString(2, source);
-		insertStmt.bindString(3, target);
+		try {
+			SQLiteStatement insertStmt = db.compileStatement(SQL_FILEMESSAGE_INSERT);
+			insertStmt.clearBindings();
+			insertStmt.bindString(1, id);
+			insertStmt.bindString(2, source);
+			insertStmt.bindString(3, target);
 
-		insertStmt.bindBlob(4, content);
-		insertStmt.bindLong(5, sentTime);
-		insertStmt.bindString(6, flag.toString());
-		insertStmt.executeInsert();
-
-		db.close();
+			insertStmt.bindBlob(4, content);
+			insertStmt.bindLong(5, sentTime);
+			insertStmt.bindString(6, flag.toString());
+			insertStmt.executeInsert();
+		} finally {
+			if (null != db)
+				db.close();
+		}
 	}
 
 	public void insertFileMessage(PictureMessageItem msg) {
@@ -145,71 +153,75 @@ public class DBManager {
 
 	public List<PictureMessageItem> queryAllFileMessage(String source, String target) {
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
-		Cursor cursor = db.rawQuery(SQL_FILEMESSAGE_ALLSELECT, new String[] { source, target, target, source });
-
 		List<PictureMessageItem> messages = new ArrayList<PictureMessageItem>();
 
-		while (cursor.moveToNext()) {
+		try {
+			Cursor cursor = db.rawQuery(SQL_FILEMESSAGE_ALLSELECT, new String[] { source, target, target, source });
 
-			PictureMessageItem msg = new PictureMessageItem();
+			while (cursor.moveToNext()) {
 
-			msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
+				PictureMessageItem msg = new PictureMessageItem();
 
-			msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+				msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
 
-			msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-			byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
+				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-			Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
 
-			msg.setContent(bitmap);
+				Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-			msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+				msg.setContent(bitmap);
 
-			msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-			messages.add(msg);
+				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+
+				messages.add(msg);
+			}
+		} finally {
+			if (null != db)
+				db.close();
 		}
-
-		db.close();
-
 		return messages;
 	}
 
 	public List<PictureMessageItem> queryUnreadFileMessage(String source, String target) {
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
-		Cursor cursor = db.rawQuery(SQL_FILEMESSAGE_FLAGSELECT, new String[] { MessageFlag.UNREAD.toString(), source,
-				target, target, source });
-
 		List<PictureMessageItem> messages = new ArrayList<PictureMessageItem>();
 
-		while (cursor.moveToNext()) {
+		try {
+			Cursor cursor = db.rawQuery(SQL_FILEMESSAGE_FLAGSELECT, new String[] { MessageFlag.UNREAD.toString(),
+					source, target, target, source });
 
-			PictureMessageItem msg = new PictureMessageItem();
+			while (cursor.moveToNext()) {
 
-			msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
+				PictureMessageItem msg = new PictureMessageItem();
 
-			msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+				msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
 
-			msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-			byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
+				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-			Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
 
-			msg.setContent(bitmap);
+				Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-			msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+				msg.setContent(bitmap);
 
-			msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-			messages.add(msg);
+				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+
+				messages.add(msg);
+			}
+		} finally {
+			if (null != db)
+				db.close();
 		}
-
-		db.close();
-
 		return messages;
 	}
 }

@@ -1,12 +1,10 @@
 package com.vehicle.app.bean;
 
-import java.util.Date;
-
 import com.google.gson.annotations.SerializedName;
 
 import android.graphics.Bitmap;
 
-public class Driver {
+public class SelfDriver {
 
 	@SerializedName("member_id")
 	private String id;
@@ -15,12 +13,16 @@ public class Driver {
 	private String alias;
 
 	private String email;
+	private String password;
+	private String guid;
+
+	@SerializedName("log_count")
+	private String logCount;
+
+	private int integral;
 
 	@SerializedName("last_log_date")
 	private String lastLoginDate;
-	
-	@SerializedName("log_count")
-	private String logCount;
 
 	private String name;
 	private String sex;
@@ -39,12 +41,12 @@ public class Driver {
 
 	@SerializedName("view_total")
 	private String viewTotal;
-	
+
 	private String introduction;
 
+	private String sid;
+
 	private Bitmap icon;
-	private String lastMessage;
-	private Date lastMessageTime;
 
 	public String getId() {
 		return this.id;
@@ -70,20 +72,44 @@ public class Driver {
 		this.email = email;
 	}
 
-	public String getLastLoginDate() {
-		return this.lastLoginDate;
+	public String getPassword() {
+		return this.password;
 	}
 
-	public void setLastLoginDate(String date) {
-		this.lastLoginDate = date;
+	public void setPassword(String pwd) {
+		this.password = pwd;
 	}
-	
+
+	public String getGuid() {
+		return this.guid;
+	}
+
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
+
 	public String getLogCount() {
 		return this.logCount;
 	}
 
 	public void setLogCount(String logCount) {
 		this.logCount = logCount;
+	}
+
+	public int getIntegral() {
+		return this.integral;
+	}
+
+	public void setIntegral(int integral) {
+		this.integral = integral;
+	}
+
+	public String getLastLoginDate() {
+		return this.lastLoginDate;
+	}
+
+	public void setLastLoginDate(String date) {
+		this.lastLoginDate = date;
 	}
 
 	public String getName() {
@@ -109,7 +135,7 @@ public class Driver {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-	
+
 	public String getCity() {
 		return this.city;
 	}
@@ -174,6 +200,14 @@ public class Driver {
 		this.introduction = intro;
 	}
 
+	public String getSid() {
+		return this.sid;
+	}
+
+	public void setSid(String sid) {
+		this.sid = sid;
+	}
+
 	public Bitmap getIcon() {
 		return this.icon;
 	}
@@ -181,21 +215,4 @@ public class Driver {
 	public void setIcon(Bitmap icon) {
 		this.icon = icon;
 	}
-
-	public String getLastMessage() {
-		return this.lastMessage;
-	}
-
-	public void setLastMessage(String lastMsg) {
-		this.lastMessage = lastMsg;
-	}
-
-	public Date getLastMessageDate() {
-		return this.lastMessageTime;
-	}
-
-	public void setLastMessageDate(Date lastMsgDate) {
-		this.lastMessageTime = lastMsgDate;
-	}
-
 }

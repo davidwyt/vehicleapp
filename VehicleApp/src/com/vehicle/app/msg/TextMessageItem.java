@@ -1,4 +1,4 @@
-package com.vehicle.app.bean;
+package com.vehicle.app.msg;
 
 import android.os.Parcel;
 import android.os.Parcelable;

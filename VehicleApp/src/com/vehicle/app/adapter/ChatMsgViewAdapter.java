@@ -16,10 +16,10 @@ import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
 
-import com.vehicle.app.bean.IMessageItem;
-import com.vehicle.app.bean.TextMessageItem;
-import com.vehicle.app.bean.PictureMessageItem;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.IMessageItem;
+import com.vehicle.app.msg.PictureMessageItem;
+import com.vehicle.app.msg.TextMessageItem;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
 

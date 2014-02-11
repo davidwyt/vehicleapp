@@ -3,7 +3,7 @@ package com.vehicle.app.mgrs;
 import java.util.HashMap;
 import java.util.List;
 
-import com.vehicle.app.bean.TextMessageItem;
+import com.vehicle.app.msg.TextMessageItem;
 
 public class MessageMgr {
 

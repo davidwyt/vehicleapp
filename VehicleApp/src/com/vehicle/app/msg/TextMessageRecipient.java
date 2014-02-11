@@ -1,25 +1,22 @@
-package com.vehicle.app.msgprocessors;
+package com.vehicle.app.msg;
 
 import android.content.Context;
 import android.content.Intent;
 
 import com.vehicle.app.activities.ChatActivity;
-import com.vehicle.app.bean.IMessageItem;
-import com.vehicle.app.bean.MessageFlag;
-import com.vehicle.app.bean.TextMessageItem;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.NotificationMgr;
 import com.vehicle.app.utils.Constants;
 
-public class TextMessageProcessor extends MessageBaseProcessor{
+public class TextMessageRecipient extends MessageBaseRecipient{
 
-	public TextMessageProcessor(Context context) {
+	public TextMessageRecipient(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void process(IMessageItem msg) {
+	public void receive(IMessageItem msg) {
 		// TODO Auto-generated method stub
 		if (!(msg instanceof TextMessageItem)) {
 			throw new IllegalArgumentException("msg is not TextMessageItem");

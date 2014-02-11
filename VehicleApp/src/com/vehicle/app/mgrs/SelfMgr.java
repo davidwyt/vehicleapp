@@ -1,7 +1,7 @@
 package com.vehicle.app.mgrs;
 
-
-import com.vehicle.app.bean.Driver;
+import com.vehicle.app.bean.SelfDriver;
+import com.vehicle.app.bean.SelfVendor;
 
 public class SelfMgr {
 
@@ -23,18 +23,27 @@ public class SelfMgr {
 		this.isDriver = isDriver;
 	}
 
-	private Driver selfDriver;
+	private SelfDriver selfDriver;
+	private SelfVendor selfVendor;
 
-	public Driver getSelfDriver() {
+	public SelfDriver getSelfDriver() {
 		return this.selfDriver;
 	}
 
-	public void setSelfDriver(Driver self) {
+	public void setSelfDriver(SelfDriver self) {
 		this.selfDriver = self;
 	}
 
+	public SelfVendor getSelfVendor() {
+		return this.selfVendor;
+	}
+
+	public void setSelfVendor(SelfVendor self) {
+		this.selfVendor = self;
+	}
+
 	public String getId() {
-		return isDriver ? selfDriver.getId() : selfDriver.getId();
+		return isDriver ? selfDriver.getId() : selfVendor.getId();
 	}
 
 	public boolean IsSelf(String id) {

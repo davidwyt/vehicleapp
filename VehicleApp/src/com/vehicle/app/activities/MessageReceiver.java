@@ -1,10 +1,10 @@
 package com.vehicle.app.activities;
 
-import com.vehicle.app.bean.PictureMessageItem;
-import com.vehicle.app.bean.TextMessageItem;
-import com.vehicle.app.msgprocessors.IMessageProcessor;
-import com.vehicle.app.msgprocessors.PictureMessageProcessor;
-import com.vehicle.app.msgprocessors.TextMessageProcessor;
+import com.vehicle.app.msg.IMessageRecipient;
+import com.vehicle.app.msg.PictureMessageItem;
+import com.vehicle.app.msg.PictureMessageRecipient;
+import com.vehicle.app.msg.TextMessageItem;
+import com.vehicle.app.msg.TextMessageRecipient;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.service.bean.NewFileNotification;
 import com.vehicle.service.bean.Notifications;
@@ -83,8 +83,8 @@ public class MessageReceiver extends BroadcastReceiver {
 	private void onNewMessageReceived(Context context, String message) {
 		TextMessageItem msg = JsonUtil.fromJson(message, TextMessageItem.class);
 		
-		IMessageProcessor cpu = new TextMessageProcessor(context);
-		cpu.process(msg);
+		IMessageRecipient cpu = new TextMessageRecipient(context);
+		cpu.receive(msg);
 	}
 
 	private void onNewFileReceived(Context context, String message) {
@@ -98,7 +98,7 @@ public class MessageReceiver extends BroadcastReceiver {
 		msg.setName(newFileNotification.getFileName());
 		msg.setSentTime(newFileNotification.getSentTime());
 		
-		IMessageProcessor cpu = new PictureMessageProcessor(context);
-		cpu.process(msg);
+		IMessageRecipient cpu = new PictureMessageRecipient(context);
+		cpu.receive(msg);
 	}
 }

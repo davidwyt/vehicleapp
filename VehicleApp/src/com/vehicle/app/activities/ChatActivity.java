@@ -6,42 +6,53 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.adapter.ChatMsgViewAdapter;
-import com.vehicle.app.bean.IMessageItem;
-import com.vehicle.app.bean.TextMessageItem;
-import com.vehicle.app.bean.PictureMessageItem;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.IMessageCourier;
+import com.vehicle.app.msg.IMessageItem;
+import com.vehicle.app.msg.MessageFlag;
+import com.vehicle.app.msg.PictureMessageCourier;
+import com.vehicle.app.msg.PictureMessageItem;
+import com.vehicle.app.msg.TextMessageCourier;
+import com.vehicle.app.msg.TextMessageItem;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.sdk.client.VehicleClient;
-import com.vehicle.service.bean.FileTransmissionResponse;
-import com.vehicle.service.bean.MessageOne2OneResponse;
 
-import android.os.AsyncTask;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.text.format.DateFormat;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class ChatActivity extends Activity implements OnClickListener {
@@ -68,6 +79,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private List<IMessageItem> mDataArrays = new ArrayList<IMessageItem>();
 
 	private static String mFellowId;
+
+	private PopupWindow chatPlusPopup;
+
+	private final static int[] CHATPLUS_ICONS = { R.drawable.icon_chatplus_camera, R.drawable.icon_chatplus_gallery,
+			R.drawable.icon_chatplus_location };
+
+	private final static String[] CHATPLUS_FUNS = { "camera", "gallery", "location" };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +124,59 @@ public class ChatActivity extends Activity implements OnClickListener {
 		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
 		tvFellow.setText(mFellowId);
 
+		chatPlusPopup();
+
 		System.out.println("iddddddddddddd:" + mFellowId);
+	}
+
+	@SuppressWarnings("deprecation")
+	private void chatPlusPopup() {
+
+		View contentView = getLayoutInflater().inflate(R.layout.popwindow_chatplus, null);
+
+		chatPlusPopup = new PopupWindow(contentView, ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		chatPlusPopup.setFocusable(true);
+		chatPlusPopup.setBackgroundDrawable(new BitmapDrawable());
+		chatPlusPopup.setAnimationStyle(R.style.chatpluspopupwin_animation);
+
+		GridView gridView = (GridView) contentView.findViewById(R.id.chatplus_gridView);
+
+		List<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
+		for (int i = 0; i < CHATPLUS_ICONS.length; i++) {
+			HashMap<String, Object> item = new HashMap<String, Object>();
+			item.put("icon", CHATPLUS_ICONS[i]);
+			item.put("fun", CHATPLUS_FUNS[i]);
+			data.add(item);
+		}
+
+		SimpleAdapter simpleAdapter = new SimpleAdapter(this, data, R.layout.chatplusitem,
+				new String[] { "icon", "fun" }, new int[] { R.id.chatplus_imageView, R.id.chatplus_textView });
+
+		gridView.setAdapter(simpleAdapter);
+
+		gridView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				if (chatPlusPopup.isShowing()) {
+					chatPlusPopup.dismiss();
+				}
+
+				switch (position) {
+				case 0:
+					captureImage();
+					break;
+				case 1:
+					browseImage();
+					break;
+				case 2:
+					break;
+				}
+
+			}
+		});
 	}
 
 	@Override
@@ -138,102 +208,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 			break;
 		default:
 			System.out.println("invalid requestcode :" + requestCode + " in chat activity");
-		}
-	}
-
-	private void onCaptureImage(int resultCode, Intent data) {
-
-		if (Activity.RESULT_OK == resultCode) {
-			String sdState = Environment.getExternalStorageState();
-			if (!sdState.equals(Environment.MEDIA_MOUNTED)) {
-				System.out.println("sd card unmount");
-				return;
-			}
-		}
-
-		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-				+ Environment.DIRECTORY_DCIM + File.separator + "Camera";
-		String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
-
-		Bundle bundle = data.getExtras();
-		Bitmap bitmap = (Bitmap) bundle.get("data");
-		FileOutputStream fout = null;
-
-		String filePath = path + File.separator + name;
-
-		System.out.println("photoooooooooooo:" + filePath);
-
-		try {
-			fout = new FileOutputStream(filePath);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-
-			// do something
-		} finally {
-			try {
-				if (null != fout) {
-					fout.flush();
-					fout.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		sendFile(filePath);
-	}
-
-	private void sendFile(String filePath) {
-		File file = new File(filePath);
-
-		if (file.isFile() && file.exists()) {
-
-			final PictureMessageItem picItem = new PictureMessageItem();
-			picItem.setSource(SelfMgr.getInstance().getId());
-			picItem.setTarget(SelfMgr.getInstance().getId());
-			picItem.setName(file.getName());
-			picItem.setContent(BitmapFactory.decodeFile(filePath));
-
-			AsyncTask<String, Void, FileTransmissionResponse> sendTask = new AsyncTask<String, Void, FileTransmissionResponse>() {
-
-				@Override
-				protected FileTransmissionResponse doInBackground(String... arg0) {
-					// TODO Auto-generated method stub
-					String file = arg0[0];
-
-					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-					FileTransmissionResponse resp = vClient.SendFile(mFellowId, file);
-					return resp;
-				}
-
-				@Override
-				protected void onPostExecute(FileTransmissionResponse resp) {
-					if (null != resp && resp.isSucess()) {
-
-						picItem.setSentTime(resp.getSentTime());
-						picItem.setToken(resp.getToken());
-
-						Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
-						msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picItem);
-						ChatActivity.this.sendBroadcast(msgIntent);
-					}
-
-				}
-			};
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				sendTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, filePath);
-			} else {
-				sendTask.execute(filePath);
-			}
-		}
-	}
-
-	private void onBrowseAlbum(int resultCode, Intent data) {
-
-		if (Activity.RESULT_OK == resultCode) {
-
 		}
 	}
 
@@ -298,8 +272,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	}
 
 	private void plus() {
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		this.startActivityForResult(intent, REQUESTCODE_CAPTURE_IMAGE);
+		chatPlusPopup.showAtLocation(this.mBtnPlus, Gravity.BOTTOM, 0, 0);
 	}
 
 	private void save() {
@@ -308,61 +281,121 @@ public class ChatActivity extends Activity implements OnClickListener {
 		this.startActivity(intent);
 	}
 
+	private void captureImage() {
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		this.startActivityForResult(intent, REQUESTCODE_CAPTURE_IMAGE);
+	}
+
+	private void browseImage() {
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		intent.setType("image/*");
+
+		startActivityForResult(intent, REQUESTCODE_BROWSE_ALBUM);
+	}
+
+	private void onCaptureImage(int resultCode, Intent data) {
+
+		if (Activity.RESULT_OK == resultCode) {
+			String sdState = Environment.getExternalStorageState();
+			if (!sdState.equals(Environment.MEDIA_MOUNTED)) {
+				System.out.println("sd card unmount");
+				return;
+			}
+		}
+
+		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+				+ Environment.DIRECTORY_DCIM + File.separator + "Camera";
+		String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+
+		Bundle bundle = data.getExtras();
+		Bitmap bitmap = (Bitmap) bundle.get("data");
+		FileOutputStream fout = null;
+
+		String filePath = path + File.separator + name;
+
+		System.out.println("photoooooooooooo:" + filePath);
+
+		try {
+			fout = new FileOutputStream(filePath);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+
+			// do something
+		} finally {
+			try {
+				if (null != fout) {
+					fout.flush();
+					fout.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		sendFile(filePath);
+	}
+
+	private void onBrowseAlbum(int resultCode, Intent data) {
+
+		if (Activity.RESULT_OK == resultCode) {
+
+			Uri originalUri = data.getData();
+			ContentResolver resolver = getContentResolver();
+			String[] proj = { MediaStore.Images.Media.DATA };
+			Cursor cursor = resolver.query(originalUri, proj, null, null, null);
+			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+			cursor.moveToFirst();
+			String path = cursor.getString(column_index);
+
+			File file = new File(path);
+			if (file.isFile() && file.exists()) {
+				sendFile(path);
+				System.out.println("selected file:" + path);
+			} else {
+				System.out.println("file not exist:" + path);
+			}
+		}
+	}
+
 	private void sendTextMsg() {
 
 		String content = mEditTextContent.getText().toString();
 
 		if (content.length() > 0) {
 
-			final TextMessageItem entity = new TextMessageItem();
+			mEditTextContent.setText("");
+
+			TextMessageItem entity = new TextMessageItem();
 			entity.setSource(SelfMgr.getInstance().getSelfDriver().getId());
 			entity.setTarget(SelfMgr.getInstance().getSelfDriver().getId());
 			entity.setContent(content);
+			entity.setFlag(MessageFlag.READ);
 
-			AsyncTask<Void, Void, MessageOne2OneResponse> sendAsync = new AsyncTask<Void, Void, MessageOne2OneResponse>() {
+			IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext());
+			msgCourier.dispatch(entity);
+		}
+	}
 
-				@Override
-				protected MessageOne2OneResponse doInBackground(Void... params) {
-					// TODO Auto-generated method stub
+	private void sendFile(String filePath) {
+		
+		File file = new File(filePath);
 
-					System.out.println("In Send Async Task.................");
+		if (file.isFile() && file.exists()) {
 
-					try {
+			PictureMessageItem picItem = new PictureMessageItem();
+			picItem.setSource(SelfMgr.getInstance().getId());
+			picItem.setTarget(SelfMgr.getInstance().getId());
+			picItem.setName(file.getName());
+			picItem.setContent(BitmapFactory.decodeFile(filePath));
+			picItem.setFlag(MessageFlag.READ);
+			
+			System.out.println("send file " + filePath + " null:" + (null == picItem.getContent()));
 
-						VehicleClient client = new VehicleClient(Constants.SERVERURL, SelfMgr.getInstance().getId());
-
-						MessageOne2OneResponse resp = client.SendMessage(entity.getTarget(), entity.getContent());
-
-						return resp;
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-					return null;
-				}
-
-				@Override
-				protected void onPostExecute(MessageOne2OneResponse resp) {
-					if (null != resp && resp.isSucess()) {
-
-						mEditTextContent.setText("");
-
-						entity.setId(resp.getMsgId());
-						entity.setSentTime(resp.getMsgSentTime());
-
-						Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
-						msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
-						ChatActivity.this.sendBroadcast(msgIntent);
-					}
-				}
-
-			};
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				sendAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			} else {
-				sendAsync.execute();
-			}
+			IMessageCourier msgCourier = new PictureMessageCourier(this.getApplicationContext(), filePath);
+			msgCourier.dispatch(picItem);
+		} else {
+			System.out.println("selected file not exist:" + filePath);
 		}
 	}
 
@@ -402,13 +435,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			if (!mFellowId.equals(msg.getSource()) || !msg.getTarget().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			try {
-				mAdapter.addChatItem(msg);
-				mAdapter.notifyDataSetChanged();
-				mMsgList.setSelection(mMsgList.getCount() - 1);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			addToMsgList(msg);
 		}
 
 		private void onMessageSent(Intent intent) {
@@ -417,20 +444,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			try {
-				DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
-				dbMgr.insertTextMessage(msg);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				mAdapter.addChatItem(msg);
-				mAdapter.notifyDataSetChanged();
-				mMsgList.setSelection(mMsgList.getCount() - 1);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			addToMsgList(msg);
 		}
 
 		private void onNewFileSent(Intent intent) {
@@ -439,20 +453,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			try {
-				DBManager dbMgr = new DBManager(ChatActivity.this.getApplicationContext());
-				dbMgr.insertFileMessage(msg);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				mAdapter.addChatItem(msg);
-				mAdapter.notifyDataSetChanged();
-				mMsgList.setSelection(mMsgList.getCount() - 1);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			addToMsgList(msg);
 		}
 
 		private void onNewFileReceived(Intent intent) {
@@ -462,6 +463,10 @@ public class ChatActivity extends Activity implements OnClickListener {
 			if (!mFellowId.equals(msg.getSource()) || !msg.getTarget().equals(SelfMgr.getInstance().getId()))
 				return;
 
+			addToMsgList(msg);
+		}
+
+		private void addToMsgList(IMessageItem msg) {
 			try {
 				mAdapter.addChatItem(msg);
 				mAdapter.notifyDataSetChanged();

@@ -4,13 +4,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.edu.sjtu.vehicleapp.R;
-import cn.jpush.android.api.BasicPushNotificationBuilder;
-import cn.jpush.android.api.JPushInterface;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,14 +28,6 @@ public class BeginActivity extends Activity {
 		this.setContentView(R.layout.activity_begin);
 
 		this.mBaK = this.findViewById(R.id.activity_begin);
-		
-		/**
-		BasicPushNotificationBuilder builder = new BasicPushNotificationBuilder(this);
-		builder.statusBarDrawable = R.drawable.jpush_notification_icon;
-		builder.notificationFlags = Notification.FLAG_AUTO_CANCEL;
-		builder.notificationDefaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS;
-		JPushInterface.setPushNotificationBuilder(1, builder);
-		*/
 	}
 
 	@Override
