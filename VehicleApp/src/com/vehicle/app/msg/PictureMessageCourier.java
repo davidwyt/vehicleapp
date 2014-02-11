@@ -14,11 +14,8 @@ import com.vehicle.service.bean.FileTransmissionResponse;
 
 public class PictureMessageCourier extends MessageBaseCourier {
 
-	private String filePath;
-
-	public PictureMessageCourier(Context context, String path) {
+	public PictureMessageCourier(Context context) {
 		super(context);
-		this.filePath = path;
 	}
 
 	@Override
@@ -38,7 +35,7 @@ public class PictureMessageCourier extends MessageBaseCourier {
 				// TODO Auto-generated method stub
 
 				VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-				FileTransmissionResponse resp = vClient.SendFile(picMessage.getTarget(), filePath);
+				FileTransmissionResponse resp = vClient.SendFile(picMessage.getTarget(), picMessage.getPath());
 				return resp;
 			}
 

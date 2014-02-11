@@ -91,6 +91,8 @@ public class MessageReceiver extends BroadcastReceiver {
 		
 		NewFileNotification newFileNotification = JsonUtil.fromJson(message, NewFileNotification.class);
 		
+		System.out.println("receive new file: " + message);
+		
 		PictureMessageItem msg = new PictureMessageItem();
 		msg.setToken(newFileNotification.getToken());
 		msg.setSource(newFileNotification.getSource());

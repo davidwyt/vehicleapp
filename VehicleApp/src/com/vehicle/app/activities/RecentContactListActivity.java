@@ -40,6 +40,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 		super.onCreate(bundle);
 		setContentView(R.layout.activity_recentcontactlist);
+
 		initView();
 	}
 
@@ -47,6 +48,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 	protected void onStart() {
 		super.onStart();
 
+		initData();
 		((RadioButton) this.findViewById(R.id.bar_rabtn_message)).setChecked(true);
 	}
 
@@ -55,18 +57,24 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		super.onStop();
 	}
 
-	private void initView() {
-
+	private void initData() {
+		mListUser.clear();
 		for (int i = 0; i < 10; i++) {
 			Driver user = new Driver();
 			user.setAlias("user" + i);
-			user.setId("18755");
+			user.setId(ChatActivity.getCurrentFellowId());
 			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));
 			user.setLastMessage("this is my last messagesssssssssssssssssss");
 			user.setLastMessageDate(new Date());
 
 			mListUser.add(user);
 		}
+
+		this.mAdapter.notifyDataSetChanged();
+
+	}
+
+	private void initView() {
 
 		this.mAdapter = new UserViewAdapter(this, mListUser);
 

@@ -2,6 +2,7 @@ package com.vehicle.app.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	private List<IMessageItem> data;
 	private LayoutInflater mInflater;
 	private Context mContext;
-	
+
 	public ChatMsgViewAdapter(Context context, List<IMessageItem> data) {
 		this.data = data;
 		mInflater = LayoutInflater.from(context);
@@ -58,10 +59,12 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 			TextMessageItem msg = (TextMessageItem) entity;
 
-			if (convertView == null || R.id.chatitem_msg != convertView.getId()) {
-				if (SelfMgr.getInstance().IsSelf(msg.getSource())) {
+			if (SelfMgr.getInstance().IsSelf(msg.getSource())) {
+				if (convertView == null || R.id.chatitem_msg_left != convertView.getId()) {
 					convertView = mInflater.inflate(R.layout.chatting_item_msg_text_left, null);
-				} else {
+				}
+			} else {
+				if (convertView == null || R.id.chatitem_msg_right != convertView.getId()) {
 					convertView = mInflater.inflate(R.layout.chatting_item_msg_text_right, null);
 				}
 			}
@@ -77,10 +80,13 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			tvContent.setText(msg.getContent());
 		} else if (entity instanceof PictureMessageItem) {
 			PictureMessageItem pic = (PictureMessageItem) entity;
-			if (convertView == null || R.id.chatitem_pic != convertView.getId()) {
-				if (SelfMgr.getInstance().IsSelf(pic.getSource())) {
+
+			if (SelfMgr.getInstance().IsSelf(pic.getSource())) {
+				if (convertView == null || R.id.chatitem_pic_left != convertView.getId()) {
 					convertView = mInflater.inflate(R.layout.chatting_item_pic_left, null);
-				} else {
+				}
+			} else {
+				if (convertView == null || R.id.chatitem_pic_right != convertView.getId()) {
 					convertView = mInflater.inflate(R.layout.chatting_item_pic_right, null);
 				}
 			}
@@ -94,8 +100,14 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 			ImageView ivContent = (ImageView) convertView.findViewById(R.id.chatpic_tv_content);
 
-			ivContent.setImageBitmap(pic.getContent());
-			//ivContent.setImageBitmap(BitmapFactory.decodeResource(this.mContext.getResources(), R.drawable.icon_bakground));
+			if (null == pic.getContent()) {
+				ivContent.setImageBitmap(BitmapFactory.decodeFile(pic.getPath()));
+			} else {
+				ivContent.setImageBitmap(pic.getContent());
+			}
+			
+			// ivContent.setImageBitmap(BitmapFactory.decodeResource(this.mContext.getResources(),
+			// R.drawable.icon_bakground));
 		}
 
 		return convertView;

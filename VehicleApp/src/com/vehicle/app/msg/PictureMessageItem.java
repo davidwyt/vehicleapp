@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class PictureMessageItem implements IMessageItem, Parcelable{
-	
+public class PictureMessageItem implements IMessageItem, Parcelable {
+
 	private String token;
 	private String name;
 	private String source;
@@ -14,8 +14,18 @@ public class PictureMessageItem implements IMessageItem, Parcelable{
 	private long sentTime;
 	private Bitmap content;
 
+	private String path;
+
+	public String getPath() {
+		return this.path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 	public String getToken() {
-		
+
 		return this.token;
 	}
 
@@ -57,16 +67,14 @@ public class PictureMessageItem implements IMessageItem, Parcelable{
 		this.flag = flag;
 	}
 
-	public long getSentTime()
-	{
+	public long getSentTime() {
 		return this.sentTime;
 	}
-	
-	public void setSentTime(long time)
-	{
+
+	public void setSentTime(long time) {
 		this.sentTime = time;
 	}
-	
+
 	public Bitmap getContent() {
 		return this.content;
 	}
@@ -90,23 +98,25 @@ public class PictureMessageItem implements IMessageItem, Parcelable{
 		dest.writeString(target);
 		dest.writeString(flag.toString());
 		dest.writeLong(sentTime);
-		content.writeToParcel(dest, flags);
+		//content.writeToParcel(dest, flags);
+		dest.writeString(path);
 	}
-	
+
 	public static final Parcelable.Creator<PictureMessageItem> CREATOR = new Parcelable.Creator<PictureMessageItem>() {
 
 		@Override
 		public PictureMessageItem createFromParcel(Parcel parcel) {
 			// TODO Auto-generated method stub
 			PictureMessageItem item = new PictureMessageItem();
-			
+
 			item.setToken(parcel.readString());
 			item.setName(parcel.readString());
 			item.setSource(parcel.readString());
 			item.setTarget(parcel.readString());
 			item.setFlag(MessageFlag.valueOf(parcel.readString()));
 			item.setSentTime(parcel.readLong());
-			item.setContent(Bitmap.CREATOR.createFromParcel(parcel));
+			//item.setContent(Bitmap.CREATOR.createFromParcel(parcel));
+			item.setPath(parcel.readString());
 			
 			return item;
 		}

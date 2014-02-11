@@ -81,7 +81,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private BroadcastReceiver messageReceiver;
 	private List<IMessageItem> mDataArrays = new ArrayList<IMessageItem>();
 
-	private static String mFellowId;
+	private static String mFellowId = "18755";
 
 	private PopupWindow chatPlusPopup;
 
@@ -98,7 +98,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_chat);
 
 		initView();
-		initData();
 	}
 
 	private void initView() {
@@ -130,6 +129,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		chatPlusPopup();
 
 		System.out.println("iddddddddddddd:" + mFellowId);
+		
+		mAdapter = new ChatMsgViewAdapter(this.getApplicationContext(), mDataArrays);
+		this.mMsgList.setAdapter(mAdapter);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -187,11 +189,16 @@ public class ChatActivity extends Activity implements OnClickListener {
 	protected void onStart() {
 		super.onStart();
 		registerMessageReceiver();
+		initData();
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	}
+
+	public static void setCurrentFellowId(String fellowId) {
+		mFellowId = fellowId;
 	}
 
 	public static String getCurrentFellowId() {
@@ -246,15 +253,15 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private void initData() {
 
-		DBManager dbMgr = new DBManager(this);
-
-		List<TextMessageItem> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getSelfDriver().getId(),
+		DBManager dbMgr = new DBManager(this.getApplicationContext());
+		
+		List<TextMessageItem> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(),
 				mFellowId);
-
+		
+		this.mDataArrays.clear();
 		this.mDataArrays.addAll(msgList);
-
-		mAdapter = new ChatMsgViewAdapter(this.getApplicationContext(), mDataArrays);
-		this.mMsgList.setAdapter(mAdapter);
+		this.mAdapter.notifyDataSetChanged();
+		
 	}
 
 	public void onClick(View view) {
@@ -376,7 +383,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			entity.setContent(content);
 			entity.setFlag(MessageFlag.READ);
 			entity.setMsgType(IMessageItem.MESSAGE_TYPE_TEXT);
-			
+
 			IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext());
 			msgCourier.dispatch(entity);
 		}
@@ -394,10 +401,11 @@ public class ChatActivity extends Activity implements OnClickListener {
 			picItem.setName(file.getName());
 			picItem.setContent(BitmapFactory.decodeFile(filePath));
 			picItem.setFlag(MessageFlag.READ);
+			picItem.setPath(filePath);
 
 			System.out.println("send file " + filePath + " null:" + (null == picItem.getContent()));
 
-			IMessageCourier msgCourier = new PictureMessageCourier(this.getApplicationContext(), filePath);
+			IMessageCourier msgCourier = new PictureMessageCourier(this.getApplicationContext());
 			msgCourier.dispatch(picItem);
 		} else {
 			System.out.println("selected file not exist:" + filePath);
@@ -413,13 +421,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		SimpleLocation simLocation = new SimpleLocation();
-		
+
 		if (null == location) {
 			System.err.println("can't get location");
 			simLocation.setLatitude(34.56789);
 			simLocation.setLongitude(56.12345);
-		}else
-		{
+		} else {
 			simLocation.setLatitude(location.getLatitude());
 			simLocation.setLongitude(location.getLongitude());
 		}
@@ -493,8 +500,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			PictureMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
 
+			System.out.println("file msg:" + JsonUtil.toJsonString(msg));
+
 			if (!mFellowId.equals(msg.getSource()) || !msg.getTarget().equals(SelfMgr.getInstance().getId()))
 				return;
+
+			System.out.println("add to list");
 
 			addToMsgList(msg);
 		}

@@ -62,7 +62,8 @@ public class PictureMessageRecipient extends MessageBaseRecipient {
 				System.out.println("file: " + filePath + " exist:" + file.exists());
 
 				picMsgItem.setContent(BitmapFactory.decodeFile(filePath));
-
+				picMsgItem.setPath(filePath);
+				
 				System.out.println("content null :" + (null == picMsgItem.getContent()));
 				return true;
 			}
@@ -76,7 +77,7 @@ public class PictureMessageRecipient extends MessageBaseRecipient {
 
 				if (IsChattingWithFellow(picMsgItem.getSource())) {
 					picMsgItem.setFlag(MessageFlag.READ);
-
+					System.out.println("Is chatting with fellow");
 					try {
 						DBManager dbManager = new DBManager(context);
 						dbManager.insertFileMessage(picMsgItem);
@@ -88,6 +89,7 @@ public class PictureMessageRecipient extends MessageBaseRecipient {
 					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMsgItem);
 					context.sendBroadcast(msgIntent);
 				} else {
+					System.out.println("Is Not chatting with fellow");
 
 					picMsgItem.setFlag(MessageFlag.UNREAD);
 
