@@ -8,7 +8,7 @@ import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.NotificationMgr;
 import com.vehicle.app.utils.Constants;
 
-public class TextMessageRecipient extends MessageBaseRecipient{
+public class TextMessageRecipient extends MessageBaseRecipient {
 
 	public TextMessageRecipient(Context context) {
 		super(context);
@@ -21,26 +21,32 @@ public class TextMessageRecipient extends MessageBaseRecipient{
 		if (!(msg instanceof TextMessageItem)) {
 			throw new IllegalArgumentException("msg is not TextMessageItem");
 		}
-		
+
 		TextMessageItem textMsgItem = (TextMessageItem) msg;
-		if(IsChattingWithFellow(textMsgItem.getSource()))
-		{
+		if (IsChattingWithFellow(textMsgItem.getSource())) {
 			textMsgItem.setFlag(MessageFlag.READ);
-			DBManager dbManager = new DBManager(context);
-			dbManager.insertTextMessage(textMsgItem);
-			
+			try {
+				DBManager dbManager = new DBManager(context);
+				dbManager.insertTextMessage(textMsgItem);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_RECEIVED);
 			msgIntent.putExtra(ChatActivity.KEY_MESSAGE, textMsgItem);
 			context.sendBroadcast(msgIntent);
-		}else
-		{
+		} else {
 			textMsgItem.setFlag(MessageFlag.UNREAD);
-			DBManager dbManager = new DBManager(context);
-			dbManager.insertTextMessage(textMsgItem);
-			
+			try {
+				DBManager dbManager = new DBManager(context);
+				dbManager.insertTextMessage(textMsgItem);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			NotificationMgr notificationMgr = new NotificationMgr(context);
 			notificationMgr.notifyNewTextMsg(textMsgItem);
 		}
 	}
-	
+
 }

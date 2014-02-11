@@ -11,6 +11,7 @@ public class TextMessageItem implements IMessageItem, Parcelable {
 	private long sentTime;
 	private String content;
 	private MessageFlag flag;
+	private int msgType;
 
 	public String getId() {
 		return this.id;
@@ -62,6 +63,14 @@ public class TextMessageItem implements IMessageItem, Parcelable {
 		this.flag = flag;
 	}
 
+	public int getMsgType() {
+		return this.msgType;
+	}
+
+	public void setMsgType(int type) {
+		this.msgType = type;
+	}
+
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -77,6 +86,7 @@ public class TextMessageItem implements IMessageItem, Parcelable {
 		parcel.writeLong(sentTime);
 		parcel.writeString(content);
 		parcel.writeString(flag.toString());
+		parcel.writeInt(msgType);
 	}
 
 	public static final Parcelable.Creator<TextMessageItem> CREATOR = new Parcelable.Creator<TextMessageItem>() {
@@ -85,14 +95,15 @@ public class TextMessageItem implements IMessageItem, Parcelable {
 		public TextMessageItem createFromParcel(Parcel parcel) {
 			// TODO Auto-generated method stub
 			TextMessageItem item = new TextMessageItem();
-			
+
 			item.setId(parcel.readString());
 			item.setSource(parcel.readString());
 			item.setTarget(parcel.readString());
 			item.setSentTime(parcel.readLong());
 			item.setContent(parcel.readString());
 			item.setFlag(MessageFlag.valueOf(parcel.readString()));
-			
+			item.setMsgType(parcel.readInt());
+
 			return item;
 		}
 

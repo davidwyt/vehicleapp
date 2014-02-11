@@ -9,7 +9,7 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "VEHICLE.db";
 	private static final int DATABASE_VERSION = 1;
 
-	private static final String DATABASE_TABLE_TEXTMESSAGE = "CREATE TABLE IF NOT EXISTS `TEXTMESSAGE` (`ID` CHAR(40) PRIMARY KEY NOT NULL, `SOURCE` VARCHAR(255) NOT NULL, `TARGET` VARCHAR(255) NOT NULL, `CONTENT` TEXT NOT NULL, `SENTTIME` INTEGER, `FLAG` CHAR(250));";
+	private static final String DATABASE_TABLE_TEXTMESSAGE = "CREATE TABLE IF NOT EXISTS `TEXTMESSAGE` (`ID` CHAR(40) PRIMARY KEY NOT NULL, `SOURCE` VARCHAR(255) NOT NULL, `TARGET` VARCHAR(255) NOT NULL, `CONTENT` TEXT NOT NULL, `SENTTIME` INTEGER, `FLAG` CHAR(250), `MSGTYPE` INTEGER);";
 	private static final String DATABASE_INDEX_TEXTMSGSOURCE = "CREATE INDEX `TEXTMSG_SOURCE_IDX` ON `TEXTMESSAGE`(`SOURCE` ASC);";
 	private static final String DATABASE_INDEX_TEXTMSGTARGET = "CREATE INDEX `TEXTMSG_TARGET_IDX` ON `TEXTMESSAGE`(`TARGET` ASC);";
 	private static final String DATABASE_INDEX_TEXTMSGFLAG = "CREATE INDEX `TEXTMSG_FLAG_IDX` ON `TEXTMESSAGE`(`FLAG` ASC);";
@@ -46,7 +46,6 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

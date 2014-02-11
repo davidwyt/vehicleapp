@@ -12,7 +12,7 @@ import com.vehicle.app.utils.Constants;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.service.bean.MessageOne2OneResponse;
 
-public class TextMessageCourier extends MessageBaseCourier{
+public class TextMessageCourier extends MessageBaseCourier {
 
 	public TextMessageCourier(Context context) {
 		super(context);
@@ -22,14 +22,13 @@ public class TextMessageCourier extends MessageBaseCourier{
 	@Override
 	public void dispatch(IMessageItem item) {
 		// TODO Auto-generated method stub
-		
-		if(!(item instanceof TextMessageItem))
-		{
+
+		if (!(item instanceof TextMessageItem)) {
 			throw new IllegalArgumentException("item is not valid TextMessageItem");
 		}
-		
-		final TextMessageItem textMsg = (TextMessageItem)item;
-		
+
+		final TextMessageItem msg = (TextMessageItem) item;
+
 		AsyncTask<Void, Void, MessageOne2OneResponse> sendAsync = new AsyncTask<Void, Void, MessageOne2OneResponse>() {
 
 			@Override
@@ -37,37 +36,40 @@ public class TextMessageCourier extends MessageBaseCourier{
 				// TODO Auto-generated method stub
 
 				System.out.println("In Send Async Task.................");
-
+				MessageOne2OneResponse resp = null;
 				try {
 
-					VehicleClient client = new VehicleClient(Constants.SERVERURL, SelfMgr.getInstance().getId());
+					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
 
-					MessageOne2OneResponse resp = client.SendMessage(textMsg.getTarget(), textMsg.getContent());
-
-					return resp;
+					if (IMessageItem.MESSAGE_TYPE_TEXT == msg.getMsgType()) {
+						resp = client.SendTextMessage(msg.getTarget(), msg.getContent());
+					} else if (IMessageItem.MESSAGE_TYPE_LOCATION == msg.getMsgType()) {
+						resp = client.SendLocationMessage(msg.getTarget(), msg.getContent());
+					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
-				return null;
+				return resp;
 			}
 
 			@Override
 			protected void onPostExecute(MessageOne2OneResponse resp) {
 				if (null != resp && resp.isSucess()) {
 
-					textMsg.setId(resp.getMsgId());
-					textMsg.setSentTime(resp.getMsgSentTime());
-					
+					msg.setId(resp.getMsgId());
+					msg.setSentTime(resp.getMsgSentTime());
+
 					try {
 						DBManager dbMgr = new DBManager(context);
-						dbMgr.insertTextMessage(textMsg);
+						dbMgr.insertTextMessage(msg);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 
 					Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
-					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, textMsg);
+					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, msg);
 					context.sendBroadcast(msgIntent);
 				}
 			}
@@ -80,5 +82,5 @@ public class TextMessageCourier extends MessageBaseCourier{
 			sendAsync.execute();
 		}
 	}
-	
+
 }

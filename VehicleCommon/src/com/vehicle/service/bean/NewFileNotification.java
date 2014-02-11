@@ -12,11 +12,12 @@ public class NewFileNotification implements INotification {
 	private long sentTime;
 
 	public NewFileNotification(String source, String target, String token,
-			String fileName) {
+			String fileName, long sentTime) {
 		this.source = source;
 		this.target = target;
 		this.token = token;
 		this.fileName = fileName;
+		this.sentTime = sentTime;
 	}
 
 	public long getSentTime() {

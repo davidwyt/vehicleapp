@@ -19,9 +19,9 @@ public class DBManager {
 
 	private DBHelper mDBHelper;
 
-	private final static String SQL_TEXTMESSAGE_INSERT = "INSERT INTO `TEXTMESSAGE`(`ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?, ?);";
-	private final static String SQL_TEXTMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` ASC;";
-	private final static String SQL_TEXTMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `TEXTMESSAGE` WHERE `FLAG` = ? AND ((`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?)) ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_TEXTMESSAGE_INSERT = "INSERT INTO `TEXTMESSAGE`(`ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE`) VALUES(?, ?, ?, ?, ?, ?, ?);";
+	private final static String SQL_TEXTMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_TEXTMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `TEXTMESSAGE` WHERE `FLAG` = ? AND ((`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?)) ORDER BY `SENTTIME` ASC;";
 
 	private final static String SQL_FILEMESSAGE_INSERT = "INSERT INTO `FILEMESSAGE` (`TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?, ?);";
 	private final static String SQL_FILEMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ?) OR (`SOURCE` = ? AND `TARGET` = ?) ORDER BY `SENTTIME` ASC;";
@@ -32,7 +32,7 @@ public class DBManager {
 	}
 
 	public void insertTextMessage(String id, String source, String target, String content, long sentTime,
-			MessageFlag flag) {
+			MessageFlag flag, int msgType) {
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
@@ -44,13 +44,14 @@ public class DBManager {
 		insertStmt.bindString(4, content);
 		insertStmt.bindLong(5, sentTime);
 		insertStmt.bindString(6, flag.toString());
+		insertStmt.bindLong(7, msgType);
 		insertStmt.executeInsert();
 		db.close();
 	}
 
 	public void insertTextMessage(TextMessageItem msg) {
 		insertTextMessage(msg.getId(), msg.getSource(), msg.getTarget(), msg.getContent(), msg.getSentTime(),
-				msg.getFlag());
+				msg.getFlag(), msg.getMsgType());
 	}
 
 	public List<TextMessageItem> queryAllTextMessage(String source, String target) {
@@ -76,6 +77,8 @@ public class DBManager {
 				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
 				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+
+				msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
 
 				messages.add(msg);
 			}
@@ -112,6 +115,8 @@ public class DBManager {
 				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
 				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+
+				msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
 
 				messages.add(msg);
 			}

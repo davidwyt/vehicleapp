@@ -60,7 +60,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		for (int i = 0; i < 10; i++) {
 			Driver user = new Driver();
 			user.setAlias("user" + i);
-			user.setId(SelfMgr.getInstance().getId());
+			user.setId("18755");
 			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));
 			user.setLastMessage("this is my last messagesssssssssssssssssss");
 			user.setLastMessageDate(new Date());

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import com.vehicle.app.msg.IMessageItem;
 import com.vehicle.sdk.utils.FileUtil;
 import com.vehicle.sdk.utils.HttpUtil;
 import com.vehicle.sdk.utils.URLUtil;
@@ -28,7 +29,8 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
-	private static final String URL_DEFAULTSERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
+	private static final String URL_DEFAULTSERVERROOT = "http://103.21.140.232:81/VehicleIMServer/rest";
+	//private static final String URL_DEFAULTSERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -51,10 +53,6 @@ public class VehicleClient {
 	private String URL_SERVERROOT;
 	private String source;
 
-	private static final int MESSAGE_TYPE_TEXT = 0;
-	private static final int MESSAGE_TYPE_IMAGE = 1;
-	private static final int MESSAGE_TYPE_LOCATION = 2;
-	
 	public VehicleClient(String serverUrl, String source) {
 		this.URL_SERVERROOT = serverUrl;
 		this.source = source;
@@ -64,13 +62,27 @@ public class VehicleClient {
 		this(URL_DEFAULTSERVERROOT, source);
 	}
 
-	public MessageOne2OneResponse SendMessage(String target, String content) {
+	public MessageOne2OneResponse SendLocationMessage(String target, String content) {
 		MessageOne2OneRequest request = new MessageOne2OneRequest();
 		request.setSource(source);
 		request.setTarget(target);
 		request.setContent(content);
-		request.setMessageType(MESSAGE_TYPE_TEXT);
-		
+		request.setMessageType(IMessageItem.MESSAGE_TYPE_LOCATION);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_ONE2ONE);
+
+		System.out.println("url:------------" + url);
+
+		return HttpUtil.PostJson(url, request, MessageOne2OneResponse.class);
+	}
+
+	public MessageOne2OneResponse SendTextMessage(String target, String content) {
+		MessageOne2OneRequest request = new MessageOne2OneRequest();
+		request.setSource(source);
+		request.setTarget(target);
+		request.setContent(content);
+		request.setMessageType(IMessageItem.MESSAGE_TYPE_TEXT);
+
 		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_ONE2ONE);
 
 		System.out.println("url:------------" + url);

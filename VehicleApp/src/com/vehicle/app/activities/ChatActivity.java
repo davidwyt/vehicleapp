@@ -20,10 +20,14 @@ import com.vehicle.app.msg.IMessageItem;
 import com.vehicle.app.msg.MessageFlag;
 import com.vehicle.app.msg.PictureMessageCourier;
 import com.vehicle.app.msg.PictureMessageItem;
+import com.vehicle.app.msg.SimpleLocation;
 import com.vehicle.app.msg.TextMessageCourier;
 import com.vehicle.app.msg.TextMessageItem;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.JsonUtil;
+import com.vehicle.app.utils.LocationUtil;
 
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,7 +44,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.format.DateFormat;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -172,6 +175,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 					browseImage();
 					break;
 				case 2:
+					sendLocationMsg();
 					break;
 				}
 
@@ -368,28 +372,29 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			TextMessageItem entity = new TextMessageItem();
 			entity.setSource(SelfMgr.getInstance().getSelfDriver().getId());
-			entity.setTarget(SelfMgr.getInstance().getSelfDriver().getId());
+			entity.setTarget(mFellowId);
 			entity.setContent(content);
 			entity.setFlag(MessageFlag.READ);
-
+			entity.setMsgType(IMessageItem.MESSAGE_TYPE_TEXT);
+			
 			IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext());
 			msgCourier.dispatch(entity);
 		}
 	}
 
 	private void sendFile(String filePath) {
-		
+
 		File file = new File(filePath);
 
 		if (file.isFile() && file.exists()) {
 
 			PictureMessageItem picItem = new PictureMessageItem();
 			picItem.setSource(SelfMgr.getInstance().getId());
-			picItem.setTarget(SelfMgr.getInstance().getId());
+			picItem.setTarget(mFellowId);
 			picItem.setName(file.getName());
 			picItem.setContent(BitmapFactory.decodeFile(filePath));
 			picItem.setFlag(MessageFlag.READ);
-			
+
 			System.out.println("send file " + filePath + " null:" + (null == picItem.getContent()));
 
 			IMessageCourier msgCourier = new PictureMessageCourier(this.getApplicationContext(), filePath);
@@ -399,9 +404,37 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		back();
-		return true;
+	private void sendLocationMsg() {
+		Location location = null;
+		try {
+			location = LocationUtil.getCurLocation(getApplicationContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		SimpleLocation simLocation = new SimpleLocation();
+		
+		if (null == location) {
+			System.err.println("can't get location");
+			simLocation.setLatitude(34.56789);
+			simLocation.setLongitude(56.12345);
+		}else
+		{
+			simLocation.setLatitude(location.getLatitude());
+			simLocation.setLongitude(location.getLongitude());
+		}
+
+		String content = JsonUtil.toJsonString(simLocation);
+
+		TextMessageItem entity = new TextMessageItem();
+		entity.setSource(SelfMgr.getInstance().getSelfDriver().getId());
+		entity.setTarget(mFellowId);
+		entity.setContent(content);
+		entity.setFlag(MessageFlag.READ);
+		entity.setMsgType(IMessageItem.MESSAGE_TYPE_LOCATION);
+
+		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext());
+		msgCourier.dispatch(entity);
 	}
 
 	private void back() {

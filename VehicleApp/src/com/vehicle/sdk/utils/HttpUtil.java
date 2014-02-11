@@ -128,7 +128,7 @@ public class HttpUtil {
 				if (resEntity != null) {
 					System.out.println("Response content length: " + resEntity.getContentLength());
 					resp = EntityUtils.toString(resEntity, "UTF-8");
-
+					System.out.println("upload resp:" + resp);
 					return JsonUtil.fromJson(resp, t);
 				}
 			}

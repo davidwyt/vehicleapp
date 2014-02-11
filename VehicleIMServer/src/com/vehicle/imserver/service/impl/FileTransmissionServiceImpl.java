@@ -40,12 +40,12 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		this.fileTransmissionDao = fileTransmissionDao;
 	}
 
-	public FileTransmission SendFile(FileTransmissionRequest request, InputStream input)
-			throws IOException, PushNotificationFailedException,
-			PersistenceException {
-		String token=UUID.randomUUID().toString();
+	public FileTransmission SendFile(FileTransmissionRequest request,
+			InputStream input) throws IOException,
+			PushNotificationFailedException, PersistenceException {
+		String token = UUID.randomUUID().toString();
 		String filePath = FileUtil.GenPathForFileTransmission("",
-				request.getFileName(),token);
+				request.getFileName(), token);
 
 		System.out.println("upload file:" + filePath);
 
@@ -56,10 +56,8 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		}
 
 		FileTransmission fileTran = RequestDaoUtil.toFileTransmission(request,
-				filePath,token);
-		
-		
-		
+				filePath, token);
+
 		try {
 			fileTransmissionDao.AddFileTranmission(fileTran);
 		} catch (Exception e) {
@@ -67,24 +65,28 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		}
 
 		INotification notification = new NewFileNotification(
-				fileTran.getSource(), fileTran.getTarget(), fileTran.getToken(), request.getFileName());
-			Message msg=new Message();
-			msg.setContent(token);
-			msg.setId(GUIDUtil.genNewGuid());
-			msg.setMessageType(MessageType.IMAGE.ordinal());
-			msg.setSentTime(System.currentTimeMillis());
-			msg.setTarget(notification.getTarget());
-			msg.setSource(notification.getSource());
+				fileTran.getSource(), fileTran.getTarget(),
+				fileTran.getToken(), request.getFileName(),
+				fileTran.getTransmissionTime());
+		
+		Message msg = new Message();
+		msg.setContent(token);
+		msg.setId(GUIDUtil.genNewGuid());
+		msg.setMessageType(MessageType.IMAGE.ordinal());
+		msg.setSentTime(System.currentTimeMillis());
+		msg.setTarget(notification.getTarget());
+		msg.setSource(notification.getSource());
 
-		try{
+		try {
 			JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
-				notification.getTitle(), JsonUtil.toJsonString(notification));
+					notification.getTitle(),
+					JsonUtil.toJsonString(notification));
 			messageDao.save(msg);
-		}catch(PushNotificationFailedException e){
+		} catch (PushNotificationFailedException e) {
 			offlineMessageDao.save(new OfflineMessage(msg));
 			throw e;
 		}
-		
+
 		return fileTran;
 	}
 
