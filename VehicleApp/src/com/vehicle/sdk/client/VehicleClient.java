@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import com.vehicle.app.msg.IMessageItem;
-import com.vehicle.sdk.utils.FileUtil;
-import com.vehicle.sdk.utils.HttpUtil;
-import com.vehicle.sdk.utils.URLUtil;
+import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.bean.IMessageItem;
+import com.vehicle.app.utils.FileUtil;
+import com.vehicle.app.utils.HttpUtil;
+import com.vehicle.app.utils.URLUtil;
 import com.vehicle.service.bean.FileTransmissionResponse;
 import com.vehicle.service.bean.FolloweesResponse;
 import com.vehicle.service.bean.FollowersResponse;
@@ -16,8 +17,14 @@ import com.vehicle.service.bean.FollowshipAddedRequest;
 import com.vehicle.service.bean.FollowshipAddedResponse;
 import com.vehicle.service.bean.FollowshipDroppedRequest;
 import com.vehicle.service.bean.FollowshipDroppedResponse;
+import com.vehicle.service.bean.FollowshipInvitationRequest;
+import com.vehicle.service.bean.FollowshipInvitationResponse;
+import com.vehicle.service.bean.FollowshipInvitationResultRequest;
+import com.vehicle.service.bean.FollowshipInvitationResultResponse;
 import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
+import com.vehicle.service.bean.LoginRequest;
+import com.vehicle.service.bean.LoginResponse;
 import com.vehicle.service.bean.MessageACKRequest;
 import com.vehicle.service.bean.MessageACKResponse;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
@@ -50,6 +57,11 @@ public class VehicleClient {
 	private static final String URL_FOLLOWSHIP_FOLLOWERS = "followers/%s";
 	private static final String URL_FOLLOWSHIP_ADDED = "added";
 	private static final String URL_FOLLOWSHIP_DROPPED = "dropped";
+	private static final String URL_FOLLOWSHIP_INVITATION = "invitation";
+	private static final String URL_FOLLOWSHIP_INVVERDICT = "invitationresult";
+
+	private static final String URL_LOGIN_ROOT = "login";
+	private static final String URL_LOGIN_LOGIN = "wakeup";
 
 	private String URL_SERVERROOT;
 	private String source;
@@ -214,6 +226,44 @@ public class VehicleClient {
 		request.setShopId(shopId);
 
 		FollowshipDroppedResponse response = HttpUtil.PostJson(url, request, FollowshipDroppedResponse.class);
+		return response;
+	}
+
+	public FollowshipInvitationResponse InviteFollowship(String driverId) {
+
+		if (SelfMgr.getInstance().isDriver()) {
+			throw new IllegalArgumentException("you are driver, could not invite invitation");
+		}
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FOLLOWSHIP_ROOT, URL_FOLLOWSHIP_INVITATION);
+
+		FollowshipInvitationRequest request = new FollowshipInvitationRequest();
+		request.setMemberId(driverId);
+		request.setShopId(source);
+
+		FollowshipInvitationResponse response = HttpUtil.PostJson(url, request, FollowshipInvitationResponse.class);
+		return response;
+	}
+
+	public FollowshipInvitationResultResponse FollowshipInvitationVerdict(String invitationId, boolean isAccepted) {
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FOLLOWSHIP_ROOT, URL_FOLLOWSHIP_INVVERDICT);
+
+		FollowshipInvitationResultRequest request = new FollowshipInvitationResultRequest();
+		request.setInvitationId(invitationId);
+		request.setIsAccepted(isAccepted);
+
+		FollowshipInvitationResultResponse response = HttpUtil.PostJson(url, request,
+				FollowshipInvitationResultResponse.class);
+		return response;
+	}
+
+	public LoginResponse Login(String id) {
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOGIN_ROOT, URL_LOGIN_LOGIN);
+
+		LoginRequest request = new LoginRequest();
+		request.setId(id);
+
+		LoginResponse response = HttpUtil.PostJson(url, request, LoginResponse.class);
 		return response;
 	}
 }

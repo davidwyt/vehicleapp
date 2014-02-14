@@ -15,26 +15,43 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/driverinfo_title"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/barDarkColor" >
+                android:background="@drawable/icon_bakground" >
 
                 <Button
-                    android:id="@+id/driverinfo_goback"
+                    android:id="@+id/driver_btn_back"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
                     android:background="@drawable/selector_btn_gobak" />
 
-                <ImageView
+                <TextView
+                    android:id="@+id/driver_title_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="4dp"
-                    android:contentDescription="@string/title"
-                    android:src="@drawable/icon_driverinfotitle" >
-                </ImageView>
-            </LinearLayout>
+                    android:layout_centerInParent="true"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="ssssssss"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" >
+                </TextView>
+
+                <Button
+                    android:id="@+id/driver_btn_connect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/selector_btn_connect" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -104,7 +121,7 @@
                 </TextView>
 
                 <TextView
-                    android:id="@+id/userinfo_driverinfo"
+                    android:id="@+id/driver_driverinfo"
                     android:layout_width="match_parent"
                     android:layout_height="92dp"
                     android:layout_marginRight="32dp"
@@ -135,7 +152,7 @@
                 </TextView>
 
                 <TextView
-                    android:id="@+id/userinfo_carinfo"
+                    android:id="@+id/driver_carinfo"
                     android:layout_width="match_parent"
                     android:layout_height="92dp"
                     android:layout_marginRight="32dp"

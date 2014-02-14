@@ -1,10 +1,17 @@
 package com.vehicle.app.bean;
 
+import java.io.Serializable;
+
 import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SelfVendor {
+public class SelfVendor implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6369655167032880306L;
 
 	@SerializedName("member_id")
 	private String id;
@@ -49,7 +56,7 @@ public class SelfVendor {
 	private float efficiencyScore;
 
 	@SerializedName("receive")
-	private float receiveScore;
+	private float receptionScore;
 
 	@SerializedName("environment")
 	private float environmentScore;
@@ -75,7 +82,7 @@ public class SelfVendor {
 
 	private String introduction;
 
-	private Bitmap icon;
+	transient private Bitmap icon;
 
 	public String getId() {
 		return this.id;
@@ -213,12 +220,12 @@ public class SelfVendor {
 		this.efficiencyScore = eff;
 	}
 
-	public float getReceiveScore() {
-		return this.receiveScore;
+	public float getReceptionScore() {
+		return this.receptionScore;
 	}
 
-	public void setReceiveScore(float rev) {
-		this.receiveScore = rev;
+	public void setReceptioncore(float rev) {
+		this.receptionScore = rev;
 	}
 
 	public float getEnvironmentScore() {

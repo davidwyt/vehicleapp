@@ -18,7 +18,11 @@
     <string name="logining">程序在后台执行, 请查看日志！</string>
     <string name="setting_su">设置成功</string>
     <string name="setting_btn">设置</string>
-	<string name="promt_server">Your ServerURL</string>
-	<string name="title">天下车商</string>
-	
+    <string name="promt_server">Your ServerURL</string>
+    <string name="title">天下车商</string>
+    <string name="nearbysearch_vendors">正在搜索附近的商户&#8230;</string>
+    <string name="nearbysearch_dirvers">正在搜索附近的司机&#8230;</string>
+    <string name="status_getfavvendorlist">正在获取你关注的商家&#8230;</string>
+    <string name="status_getvendorfellowlist">正在获取关注你的司机&#8230;</string>
+
 </resources>

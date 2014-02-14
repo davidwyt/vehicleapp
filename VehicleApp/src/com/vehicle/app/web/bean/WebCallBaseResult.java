@@ -1,36 +1,32 @@
 package com.vehicle.app.web.bean;
 
 public abstract class WebCallBaseResult {
-	
+
 	private static final int CODE_SUCCESS = 10000;
-	
+
 	private int code;
 	private String message;
-	
-	public int getCode()
-	{
+
+	public int getCode() {
 		return code;
 	}
-	
-	public void setCode(int c)
-	{
+
+	public void setCode(int c) {
 		this.code = c;
 	}
-	
-	public boolean isSuccess()
-	{
+
+	public boolean isSuccess() {
 		return CODE_SUCCESS == this.code;
 	}
-	
-	public String getMessage()
-	{
+
+	public String getMessage() {
 		return this.message;
 	}
-	
-	public void setMessage(String msg)
-	{
+
+	public void setMessage(String msg) {
 		this.message = msg;
 	}
-	
+
+	public abstract Object getInfoBean();
 	public abstract Object getResult();
 }

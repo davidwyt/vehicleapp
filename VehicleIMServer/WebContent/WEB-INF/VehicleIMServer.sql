@@ -18,12 +18,12 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for `filetransmission`
 -- ----------------------------
-DROP TABLE IF EXISTS `filetransmission`;
-CREATE TABLE `filetransmission` (
+DROP TABLE IF EXISTS `FILETRANSMISSION`;
+CREATE TABLE `FILETRANSMISSION` (
   `TOKEN` varchar(255) NOT NULL,
   `PATH` varchar(255) DEFAULT NULL,
   `SOURCE` varchar(255) DEFAULT NULL,
-  `STATUS` int(11) DEFAULT NULL,
+  `STATUS` INT(1) DEFAULT NULL,
   `TARGET` varchar(255) DEFAULT NULL,
   `TRANSMISSIONTIME` BIGINT UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`TOKEN`),
@@ -39,8 +39,8 @@ CREATE TABLE `filetransmission` (
 -- ----------------------------
 -- Table structure for `followship`
 -- ----------------------------
-DROP TABLE IF EXISTS `followship`;
-CREATE TABLE `followship` (
+DROP TABLE IF EXISTS `FOLLOWSHIP`;
+CREATE TABLE `FOLLOWSHIP` (
   `FOLLOWER` varchar(255) NOT NULL,
   `FOLLOWEE` varchar(255) NOT NULL,
   PRIMARY KEY (`FOLLOWER`,`FOLLOWEE`)
@@ -53,8 +53,8 @@ CREATE TABLE `followship` (
 -- ----------------------------
 -- Table structure for `message`
 -- ----------------------------
-DROP TABLE IF EXISTS `message`;
-CREATE TABLE `message` (
+DROP TABLE IF EXISTS `MESSAGE`;
+CREATE TABLE `MESSAGE` (
   `ID` varchar(255) NOT NULL,
   `CONTENT` varchar(255) DEFAULT NULL,
   `SENTTIME` BIGINT UNSIGNED DEFAULT NULL,
@@ -73,8 +73,8 @@ CREATE TABLE `message` (
 -- ----------------------------
 -- Table structure for `offlinemessage`
 -- ----------------------------
-DROP TABLE IF EXISTS `offlinemessage`;
-CREATE TABLE `offlinemessage` (
+DROP TABLE IF EXISTS `OFFLINEMESSAGE`;
+CREATE TABLE `OFFLINEMESSAGE` (
   `ID` varchar(255) NOT NULL,
   `CONTENT` varchar(255) DEFAULT NULL,
   `SENTTIME` BIGINT UNSIGNED DEFAULT NULL,
@@ -95,14 +95,14 @@ CREATE TABLE `offlinemessage` (
 -- Table structure for table `followshipinvitation`
 --
 
-DROP TABLE IF EXISTS `followshipinvitation`;
+DROP TABLE IF EXISTS `FOLLOWSHIPINVITATION`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `followshipinvitation` (
+CREATE TABLE `FOLLOWSHIPINVITATION` (
   `ID` char(40) NOT NULL,
   `SOURCE` char(100) NOT NULL,
   `TARGET` char(100) NOT NULL,
-  `STATUS` varchar(255) NOT NULL,
+  `STATUS` INT(1) DEFAULT '0',
   `REQTIME` BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `SOURCE` (`SOURCE`),

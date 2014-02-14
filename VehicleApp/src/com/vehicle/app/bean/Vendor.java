@@ -1,12 +1,18 @@
 package com.vehicle.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Vendor {
+public class Vendor implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1239603827677527705L;
 
 	@SerializedName("id")
 	private String id;
@@ -33,7 +39,7 @@ public class Vendor {
 	private float efficiencyScore;
 
 	@SerializedName("receive")
-	private float receiveScore;
+	private float receptionScore;
 
 	@SerializedName("environment")
 	private float environmentScore;
@@ -60,9 +66,11 @@ public class Vendor {
 
 	private String introduction;
 
-	private Bitmap icon;
+	transient private Bitmap icon;
 	private String lastMessage;
 	private Date lastMessageTime;
+
+	private String distance;
 
 	public String getId() {
 		return this.id;
@@ -136,12 +144,12 @@ public class Vendor {
 		this.efficiencyScore = eff;
 	}
 
-	public float getReceiveScore() {
-		return this.receiveScore;
+	public float getReceptionScore() {
+		return this.receptionScore;
 	}
 
-	public void setReceiveScore(float rev) {
-		this.receiveScore = rev;
+	public void setReceptioncore(float rev) {
+		this.receptionScore = rev;
 	}
 
 	public float getEnvironmentScore() {
@@ -246,6 +254,14 @@ public class Vendor {
 
 	public void setLastMessageDate(Date lastMsgDate) {
 		this.lastMessageTime = lastMsgDate;
+	}
+
+	public String getDistance() {
+		return this.distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
 	}
 
 }

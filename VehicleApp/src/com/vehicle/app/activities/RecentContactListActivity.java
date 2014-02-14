@@ -1,17 +1,16 @@
 package com.vehicle.app.activities;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.vehicle.app.adapter.UserViewAdapter;
+import com.vehicle.app.adapter.RecentContactListViewAdapter;
 import com.vehicle.app.bean.Driver;
+import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -29,7 +28,8 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 	private BaseAdapter mAdapter;
 
-	private List<Driver> mListUser = new ArrayList<Driver>();
+	@SuppressWarnings("rawtypes")
+	private List mListRecentContacts = new ArrayList();
 
 	private RadioGroup mRdGroup;
 
@@ -48,8 +48,8 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 	protected void onStart() {
 		super.onStart();
 
-		initData();
 		((RadioButton) this.findViewById(R.id.bar_rabtn_message)).setChecked(true);
+		initData();
 	}
 
 	@Override
@@ -57,26 +57,23 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		super.onStop();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initData() {
-		mListUser.clear();
-		for (int i = 0; i < 10; i++) {
-			Driver user = new Driver();
-			user.setAlias("user" + i);
-			user.setId(ChatActivity.getCurrentFellowId());
-			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));
-			user.setLastMessage("this is my last messagesssssssssssssssssss");
-			user.setLastMessageDate(new Date());
 
-			mListUser.add(user);
+		mListRecentContacts.clear();
+
+		if (SelfMgr.getInstance().isDriver()) {
+			mListRecentContacts.addAll(SelfMgr.getInstance().getFavVendorDetailMap().values());
+		} else {
+			mListRecentContacts.addAll(SelfMgr.getInstance().getVendorFellowDetailMap().values());
 		}
 
 		this.mAdapter.notifyDataSetChanged();
-
 	}
 
 	private void initView() {
 
-		this.mAdapter = new UserViewAdapter(this, mListUser);
+		this.mAdapter = new RecentContactListViewAdapter(this, mListRecentContacts);
 
 		this.mLVUsers = (ListView) this.findViewById(R.id.list_users);
 		this.mLVUsers.setAdapter(this.mAdapter);
@@ -85,10 +82,15 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				Driver user = (Driver) mAdapter.getItem(position);
+				Object user = mAdapter.getItem(position);
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), ChatActivity.class);
-				intent.putExtra(ChatActivity.KEY_FELLOWID, user.getId());
+
+				if (SelfMgr.getInstance().isDriver() && user instanceof Vendor) {
+					intent.putExtra(ChatActivity.KEY_FELLOWID, ((Vendor) user).getId());
+				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
+					intent.putExtra(ChatActivity.KEY_FELLOWID, ((Driver) user).getId());
+				}
 
 				RecentContactListActivity.this.startActivity(intent);
 			}

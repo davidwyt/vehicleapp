@@ -1,8 +1,10 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.bean.SelfDriver;
+import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.StringUtil;
-import com.vehicle.app.web.bean.DriverLoginResult;
+import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -99,7 +101,7 @@ public class LoginActivity extends Activity {
 
 		mLoginTitle = (ImageView) this.findViewById(R.id.login_title);
 
-		if (SelfMgr.getInstance().getIsDriver()) {
+		if (SelfMgr.getInstance().isDriver()) {
 			mLoginTitle.setBackgroundResource(R.drawable.icon_driverlogintitle);
 			mRegButton.setBackgroundResource(R.drawable.selector_btn_driverreg);
 
@@ -169,12 +171,15 @@ public class LoginActivity extends Activity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!StringUtil.IsEmail(mEmail)) {
+		}
+		/**
+		else if (!StringUtil.IsEmail(mEmail)) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
 		}
-
+		*/
+		
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
 			// form field with an error.
@@ -229,30 +234,28 @@ public class LoginActivity extends Activity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, DriverLoginResult> {
+	public class UserLoginTask extends AsyncTask<Void, Void, WebCallBaseResult> {
 		@Override
-		protected DriverLoginResult doInBackground(Void... params) {
+		protected WebCallBaseResult doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
 
 			try {
 				// Simulate network access.
-				if (SelfMgr.getInstance().getIsDriver()) {
+				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient webClient = new VehicleWebClient();
 					return webClient.DriverLogin(mEmail, mPassword);
 				} else {
 					VehicleWebClient webClient = new VehicleWebClient();
-					return webClient.DriverLogin(mEmail, mPassword);
+					return webClient.VendorLogin(mEmail, mPassword);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-
 				return null;
 			}
-
 		}
 
 		@Override
-		protected void onPostExecute(final DriverLoginResult result) {
+		protected void onPostExecute(final WebCallBaseResult result) {
 			mAuthTask = null;
 			showProgress(false);
 
@@ -265,9 +268,15 @@ public class LoginActivity extends Activity {
 			if (result.isSuccess()) {
 				// finish();
 
-				JPushInterface.setAliasAndTags(getApplicationContext(), result.getDriverInfo().getId(), null);
-				SelfMgr.getInstance().setIsDriver(true);
-				SelfMgr.getInstance().setSelfDriver(result.getDriverInfo());
+				if (SelfMgr.getInstance().isDriver()) {
+					SelfDriver self = (SelfDriver) result.getInfoBean();
+					SelfMgr.getInstance().setSelfDriver(self);
+				} else {
+					SelfVendor self = (SelfVendor) result.getInfoBean();
+					SelfMgr.getInstance().setSelfVendor(self);
+				}
+
+				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);

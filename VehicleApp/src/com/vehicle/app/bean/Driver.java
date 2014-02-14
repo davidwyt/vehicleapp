@@ -1,12 +1,18 @@
 package com.vehicle.app.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
 
 import android.graphics.Bitmap;
 
-public class Driver {
+public class Driver implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6645547105668102215L;
 
 	@SerializedName("member_id")
 	private String id;
@@ -18,7 +24,7 @@ public class Driver {
 
 	@SerializedName("last_log_date")
 	private String lastLoginDate;
-	
+
 	@SerializedName("log_count")
 	private String logCount;
 
@@ -39,12 +45,14 @@ public class Driver {
 
 	@SerializedName("view_total")
 	private String viewTotal;
-	
+
 	private String introduction;
 
-	private Bitmap icon;
+	transient private Bitmap icon;
+
 	private String lastMessage;
 	private Date lastMessageTime;
+	private String distance;
 
 	public String getId() {
 		return this.id;
@@ -77,7 +85,7 @@ public class Driver {
 	public void setLastLoginDate(String date) {
 		this.lastLoginDate = date;
 	}
-	
+
 	public String getLogCount() {
 		return this.logCount;
 	}
@@ -109,7 +117,7 @@ public class Driver {
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-	
+
 	public String getCity() {
 		return this.city;
 	}
@@ -157,7 +165,7 @@ public class Driver {
 	public void setTelephone(String tel) {
 		this.telephone = tel;
 	}
-	
+
 	public String getViewTotal() {
 		return this.viewTotal;
 	}
@@ -196,6 +204,14 @@ public class Driver {
 
 	public void setLastMessageDate(Date lastMsgDate) {
 		this.lastMessageTime = lastMsgDate;
+	}
+
+	public String getDistance() {
+		return this.distance;
+	}
+
+	public void setDistance(String dis) {
+		this.distance = dis;
 	}
 
 }

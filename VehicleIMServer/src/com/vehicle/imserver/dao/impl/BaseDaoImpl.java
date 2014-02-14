@@ -18,7 +18,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 	
 	public Session getSession() {  
         return sessionFactory.getCurrentSession();  
-    }  
+    }
 	
 	public void delete(Serializable id) {
 		T obj = this.load(id);

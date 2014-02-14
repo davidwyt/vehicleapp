@@ -10,6 +10,7 @@
         android:id="@+id/nearbyfellow_iv_head"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/title"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:background="@drawable/contact_list_minus_btn_normal"
@@ -24,12 +25,12 @@
         android:layout_toRightOf="@id/nearbyfellow_iv_head"
         android:ellipsize="end"
         android:gravity="left"
+        android:textStyle="bold"
         android:singleLine="true"
-        android:text="username"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/nearbyfellow_tv_address"
+        android:id="@+id/nearbyfellow_tv_feature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/nearbyfellow_tv_name"
@@ -37,19 +38,17 @@
         android:ellipsize="end"
         android:gravity="left"
         android:singleLine="true"
-        android:text="sssss"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/nearbyfellow_tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/nearbyfellow_tv_address"
+        android:layout_below="@id/nearbyfellow_tv_feature"
         android:ellipsize="end"
         android:gravity="right"
         android:singleLine="true"
-        android:text="ttt"
         android:textSize="15sp" />
 
 </RelativeLayout>

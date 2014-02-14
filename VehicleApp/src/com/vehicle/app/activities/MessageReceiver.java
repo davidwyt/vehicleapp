@@ -1,11 +1,18 @@
 package com.vehicle.app.activities;
 
-import com.vehicle.app.msg.IMessageRecipient;
-import com.vehicle.app.msg.PictureMessageItem;
-import com.vehicle.app.msg.PictureMessageRecipient;
-import com.vehicle.app.msg.TextMessageItem;
-import com.vehicle.app.msg.TextMessageRecipient;
+import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
+import com.vehicle.app.msg.bean.InvitationVerdictMessage;
+import com.vehicle.app.msg.bean.PictureMessage;
+import com.vehicle.app.msg.bean.TextMessage;
+import com.vehicle.app.msg.worker.FollowshipInvMessageRecipient;
+import com.vehicle.app.msg.worker.IMessageRecipient;
+import com.vehicle.app.msg.worker.InvitationVerdictMessageRecipient;
+import com.vehicle.app.msg.worker.PictureMessageRecipient;
+import com.vehicle.app.msg.worker.TextMessageRecipient;
 import com.vehicle.app.utils.JsonUtil;
+import com.vehicle.service.bean.FollowshipInvitationAcceptNotification;
+import com.vehicle.service.bean.FollowshipInvitationNotification;
+import com.vehicle.service.bean.FollowshipInvitationRejectNotification;
 import com.vehicle.service.bean.NewFileNotification;
 import com.vehicle.service.bean.Notifications;
 
@@ -18,7 +25,7 @@ import cn.jpush.android.api.JPushInterface;
 
 public class MessageReceiver extends BroadcastReceiver {
 	private static final String TAG = "MyJPushReceiver";
-	
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Bundle bundle = intent.getExtras();
@@ -77,30 +84,74 @@ public class MessageReceiver extends BroadcastReceiver {
 			onNewMessageReceived(context, message);
 		} else if (Notifications.NewFile.toString().equalsIgnoreCase(title)) {
 			onNewFileReceived(context, message);
+		} else if (Notifications.FollowshipInvitation.toString().equalsIgnoreCase(title)) {
+
+		} else if (Notifications.FollowshipInvitationAccepted.toString().equalsIgnoreCase(title)) {
+			onNewInvVerdictAcceptedReceived(context, message);
+		} else if (Notifications.FollowshipInvitationRejected.toString().equalsIgnoreCase(title)) {
+			onNewInvVerdictRejectedReceived(context, message);
+		} else if (Notifications.FollowshipInvitation.toString().equalsIgnoreCase(title)) {
+			onNewFollowshipInvitationReceived(context, message);
 		}
 	}
 
 	private void onNewMessageReceived(Context context, String message) {
-		TextMessageItem msg = JsonUtil.fromJson(message, TextMessageItem.class);
-		
+
+		TextMessage msg = JsonUtil.fromJson(message, TextMessage.class);
+
 		IMessageRecipient cpu = new TextMessageRecipient(context);
 		cpu.receive(msg);
 	}
 
 	private void onNewFileReceived(Context context, String message) {
-		
+
 		NewFileNotification newFileNotification = JsonUtil.fromJson(message, NewFileNotification.class);
-		
+
 		System.out.println("receive new file: " + message);
-		
-		PictureMessageItem msg = new PictureMessageItem();
-		msg.setToken(newFileNotification.getToken());
-		msg.setSource(newFileNotification.getSource());
-		msg.setTarget(newFileNotification.getTarget());
-		msg.setName(newFileNotification.getFileName());
-		msg.setSentTime(newFileNotification.getSentTime());
-		
+
+		PictureMessage msg = new PictureMessage();
+		msg.fromRawNotification(newFileNotification);
+
 		IMessageRecipient cpu = new PictureMessageRecipient(context);
+		cpu.receive(msg);
+	}
+
+	private void onNewInvVerdictAcceptedReceived(Context context, String message) {
+		System.out.println("new invition verdict received:" + message);
+
+		FollowshipInvitationAcceptNotification notification = JsonUtil.fromJson(message,
+				FollowshipInvitationAcceptNotification.class);
+
+		InvitationVerdictMessage msg = new InvitationVerdictMessage();
+		msg.fromRawNotification(notification);
+
+		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context);
+		cpu.receive(msg);
+	}
+
+	private void onNewInvVerdictRejectedReceived(Context context, String message) {
+		System.out.println("new invition verdict received:" + message);
+
+		FollowshipInvitationRejectNotification notification = JsonUtil.fromJson(message,
+				FollowshipInvitationRejectNotification.class);
+
+		InvitationVerdictMessage msg = new InvitationVerdictMessage();
+		msg.fromRawNotification(notification);
+
+		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context);
+		cpu.receive(msg);
+	}
+
+	private void onNewFollowshipInvitationReceived(Context context, String message) {
+		System.out.println("new invition received:" + message);
+
+		FollowshipInvitationNotification notification = JsonUtil.fromJson(message,
+				FollowshipInvitationNotification.class);
+
+		FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
+		msg.fromRawNotification(notification);
+
+		IMessageRecipient cpu = new FollowshipInvMessageRecipient(context);
 		cpu.receive(msg);
 	}
 }

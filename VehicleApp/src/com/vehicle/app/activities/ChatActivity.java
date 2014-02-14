@@ -15,14 +15,14 @@ import cn.edu.sjtu.vehicleapp.R;
 import com.vehicle.app.adapter.ChatMsgViewAdapter;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.msg.IMessageCourier;
-import com.vehicle.app.msg.IMessageItem;
-import com.vehicle.app.msg.MessageFlag;
-import com.vehicle.app.msg.PictureMessageCourier;
-import com.vehicle.app.msg.PictureMessageItem;
-import com.vehicle.app.msg.SimpleLocation;
-import com.vehicle.app.msg.TextMessageCourier;
-import com.vehicle.app.msg.TextMessageItem;
+import com.vehicle.app.msg.bean.IMessageItem;
+import com.vehicle.app.msg.bean.MessageFlag;
+import com.vehicle.app.msg.bean.PictureMessage;
+import com.vehicle.app.msg.bean.SimpleLocation;
+import com.vehicle.app.msg.bean.TextMessage;
+import com.vehicle.app.msg.worker.IMessageCourier;
+import com.vehicle.app.msg.worker.PictureMessageCourier;
+import com.vehicle.app.msg.worker.TextMessageCourier;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.app.utils.LocationUtil;
@@ -81,7 +81,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private BroadcastReceiver messageReceiver;
 	private List<IMessageItem> mDataArrays = new ArrayList<IMessageItem>();
 
-	private static String mFellowId = "18755";
+	private static String mFellowId = "18726";
 
 	private PopupWindow chatPlusPopup;
 
@@ -117,19 +117,11 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		mEditTextContent.setCursorVisible(true);
-
-		Bundle bundle = this.getIntent().getExtras();
-		if (null != bundle) {
-			mFellowId = bundle.getString(KEY_FELLOWID);
-		}
-
-		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
-		tvFellow.setText(mFellowId);
-
+		
 		chatPlusPopup();
 
 		System.out.println("iddddddddddddd:" + mFellowId);
-		
+
 		mAdapter = new ChatMsgViewAdapter(this.getApplicationContext(), mDataArrays);
 		this.mMsgList.setAdapter(mAdapter);
 	}
@@ -253,15 +245,22 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private void initData() {
 
+		Bundle bundle = this.getIntent().getExtras();
+		if (null != bundle) {
+			mFellowId = bundle.getString(KEY_FELLOWID);
+		}
+
+		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
+		tvFellow.setText(mFellowId);
+
 		DBManager dbMgr = new DBManager(this.getApplicationContext());
-		
-		List<TextMessageItem> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(),
-				mFellowId);
-		
+
+		List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
+
 		this.mDataArrays.clear();
 		this.mDataArrays.addAll(msgList);
 		this.mAdapter.notifyDataSetChanged();
-		
+		mMsgList.setSelection(mMsgList.getCount() - 1);
 	}
 
 	public void onClick(View view) {
@@ -377,7 +376,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			mEditTextContent.setText("");
 
-			TextMessageItem entity = new TextMessageItem();
+			TextMessage entity = new TextMessage();
 			entity.setSource(SelfMgr.getInstance().getSelfDriver().getId());
 			entity.setTarget(mFellowId);
 			entity.setContent(content);
@@ -395,7 +394,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		if (file.isFile() && file.exists()) {
 
-			PictureMessageItem picItem = new PictureMessageItem();
+			PictureMessage picItem = new PictureMessage();
 			picItem.setSource(SelfMgr.getInstance().getId());
 			picItem.setTarget(mFellowId);
 			picItem.setName(file.getName());
@@ -433,7 +432,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		String content = JsonUtil.toJsonString(simLocation);
 
-		TextMessageItem entity = new TextMessageItem();
+		TextMessage entity = new TextMessage();
 		entity.setSource(SelfMgr.getInstance().getSelfDriver().getId());
 		entity.setTarget(mFellowId);
 		entity.setContent(content);
@@ -470,7 +469,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		private void onNewMessageReceived(Intent intent) {
-			TextMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
+			TextMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
 
 			if (!mFellowId.equals(msg.getSource()) || !msg.getTarget().equals(SelfMgr.getInstance().getId()))
 				return;
@@ -479,7 +478,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		private void onMessageSent(Intent intent) {
-			TextMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
+			TextMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
 
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
@@ -488,7 +487,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		private void onNewFileSent(Intent intent) {
-			PictureMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
+			PictureMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
 
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
@@ -498,7 +497,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		private void onNewFileReceived(Intent intent) {
 
-			PictureMessageItem msg = intent.getParcelableExtra(KEY_MESSAGE);
+			PictureMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
 
 			System.out.println("file msg:" + JsonUtil.toJsonString(msg));
 

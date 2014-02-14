@@ -3,12 +3,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.vehicle.app.activities.NearbyMainActivity" >
 
+    <LinearLayout
+        android:id="@+id/nearbysearch_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/nearbysearch_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/nearbysearch_vendors"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/azure" />
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/nearbymain_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/gray" >
-        <LinearLayout
+
+        <LinearLayout
             android:id="@+id/nearbymain_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -27,44 +54,49 @@
             android:id="@+id/nearbymain_bottombar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            bottombar:checkedbtn="nearby"
-            android:layout_alignParentBottom="true" >
+            android:layout_alignParentBottom="true"
+            bottombar:checkedbtn="nearby" >
         </com.vehicle.app.layout.BottomBarLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_above="@id/nearbymain_bottombar"
             android:layout_below="@id/nearbymain_title"
-            android:orientation="vertical" >
+            android:background="@color/gray" >
 
-            <Button
-                android:id="@+id/nearbymain_roundnearby"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/selector_button_roundnearbyshops" >
-            </Button>
+                android:orientation="vertical" >
+                <Button
+                    android:id="@+id/nearbymain_roundnearby"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/selector_button_roundnearbyshops" >
+                </Button>
 
-            <Button
-                android:id="@+id/nearbymain_nearbylist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/selector_button_nearbylist" >
-            </Button>
+                <Button
+                    android:id="@+id/nearbymain_nearbylist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/selector_button_nearbylist" >
+                </Button>
 
-            <Button
-                android:id="@+id/nearbymain_groupmsg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/selector_button_groupmsg" >
-            </Button>
-        </LinearLayout>
+                <Button
+                    android:id="@+id/nearbymain_groupmsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/selector_button_groupmsg" >
+                </Button>
+            </LinearLayout>
+        </ScrollView>
     </RelativeLayout>
 
 </merge>

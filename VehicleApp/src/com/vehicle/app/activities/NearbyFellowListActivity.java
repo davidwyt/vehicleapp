@@ -1,69 +1,91 @@
 package com.vehicle.app.activities;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.vehicle.app.adapter.NearbyFellowsViewAdapter;
 import com.vehicle.app.bean.Driver;
+import com.vehicle.app.bean.Vendor;
+import com.vehicle.app.mgrs.SelfMgr;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-public class NearbyFellowListActivity extends Activity{
+public class NearbyFellowListActivity extends Activity {
 
 	private ListView mLVFellows;
 
 	private BaseAdapter mAdapter;
 
-	private List<Driver> mListFellows = new ArrayList<Driver>();
-	
+	public static final String KEY_NEARBYFELLOWS = "com.vehicle.app.key.nearbyfellows";
+
+	@SuppressWarnings("rawtypes")
+	private List<?> mListFillows = new ArrayList();
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.setContentView(R.layout.activity_nearbyfellowlist);
-		
+
 		initView();
 	}
-	
-	private void initView()
-	{
+
+	private void initView() {
 		mLVFellows = (ListView) this.findViewById(R.id.nearbyfellows);
 
-		List<Driver> users = new ArrayList<Driver>();
-		for (int i = 0; i < 10; i++) {
-			Driver user = new Driver();
-			user.setAlias("user" + i);
-			user.setId(i + "");
-			user.setIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.chat_info));
-			user.setLastMessage("this is my last messagesssssssssssssssssss");
-			user.setLastMessageDate(new Date());
+		this.mAdapter = new NearbyFellowsViewAdapter(this, this.mListFillows);
+		this.mLVFellows.setAdapter(mAdapter);
 
-			users.add(user);
+		this.mLVFellows.setOnItemClickListener(new OnItemClickListener() {
 
-			mListFellows.add(user);
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// TODO Auto-generated method stub
+				Object user = mListFillows.get(position);
+				if (SelfMgr.getInstance().isDriver() && user instanceof Vendor) {
+					Vendor vendor = (Vendor) user;
+					Intent intent = new Intent(getApplicationContext(), VendorInfoActivity.class);
+					intent.putExtra(VendorInfoActivity.KEY_NEARBYVENDORID, vendor.getId());
+					startActivity(intent);
+				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
+
+				}
+			}
+		});
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		initData();
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void initData() {
+		this.mListFillows.clear();
+
+		Bundle bundle = this.getIntent().getExtras();
+		if (null != bundle) {
+			List fellows = (List<?>) bundle.getSerializable(KEY_NEARBYFELLOWS);
+			this.mListFillows.addAll(fellows);
 		}
 
-		this.mAdapter = new NearbyFellowsViewAdapter(this, users);
-		this.mLVFellows.setAdapter(mAdapter);
+		this.mAdapter.notifyDataSetChanged();
+		this.mLVFellows.setSelection(0);
 	}
-	
+
 	@Override
-	protected void onStart()
-	{
-		super.onStart();
-	}
-	
-	@Override
-	protected void onStop()
-	{
+	protected void onStop() {
 		super.onStop();
 	}
 }

@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipInvitationNotExistException;
 import com.vehicle.imserver.service.exception.FollowshipInvitationProcessedAlreadyException;
@@ -366,8 +367,10 @@ public class FollowshipRest {
 		}
 
 		try {
-			followshipService.InviteFollowship(invitationRequest);
-
+			FollowshipInvitation invitation = followshipService
+					.InviteFollowship(invitationRequest);
+			invitationResponse.setInvitationId(invitation.getID());
+			invitationResponse.setReqTime(invitation.getReqTime());
 			return Response.status(Status.OK).entity(invitationResponse)
 					.build();
 		} catch (PushNotificationFailedException e) {
@@ -477,7 +480,7 @@ public class FollowshipRest {
 
 			return Response.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(invitationResp).build();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 

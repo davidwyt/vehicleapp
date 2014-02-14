@@ -1,7 +1,7 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.utils.StringUtil;
-import com.vehicle.app.web.bean.RegisterResult;
+import com.vehicle.app.web.bean.DriverRegisterResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -188,15 +188,15 @@ public class DriverRegisterActivity extends Activity {
 		}
 	}
 
-	public class RegisterTask extends AsyncTask<Void, Void, RegisterResult> {
+	public class RegisterTask extends AsyncTask<Void, Void, DriverRegisterResult> {
 
 		@Override
-		protected RegisterResult doInBackground(Void... arg0) {
+		protected DriverRegisterResult doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
 
 			try {
 				VehicleWebClient webClient = new VehicleWebClient();
-				return webClient.Register(mEmail, mUserName, mPassword);
+				return webClient.DriverRegister(mEmail, mUserName, mPassword);
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -207,7 +207,7 @@ public class DriverRegisterActivity extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(final RegisterResult result) {
+		protected void onPostExecute(final DriverRegisterResult result) {
 
 			DriverRegisterActivity.this.mRegTask = null;
 			DriverRegisterActivity.this.showProgress(false);

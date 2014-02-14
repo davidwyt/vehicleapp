@@ -1,10 +1,17 @@
 package com.vehicle.app.bean;
 
+import java.io.Serializable;
+
 import com.google.gson.annotations.SerializedName;
 
 import android.graphics.Bitmap;
 
-public class SelfDriver {
+public class SelfDriver implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8008365646929127682L;
 
 	@SerializedName("member_id")
 	private String id;
@@ -46,7 +53,7 @@ public class SelfDriver {
 
 	private String sid;
 
-	private Bitmap icon;
+	transient private Bitmap icon;
 
 	public String getId() {
 		return this.id;

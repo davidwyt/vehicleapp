@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import com.vehicle.imserver.dao.bean.FileTransmission;
-import com.vehicle.imserver.dao.bean.FileTransmissionStatus;
 import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.dao.bean.MessageType;
 import com.vehicle.imserver.dao.bean.OfflineMessage;
@@ -103,7 +102,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 
 		String path = fileTran.getPath();
 
-		fileTran.setStatus(FileTransmissionStatus.RECEIVED);
+		fileTran.setStatus(FileTransmission.STATUS_RECEIVED);
 		try {
 			fileTransmissionDao.UpdateFileTranmission(fileTran);
 		} catch (Exception e) {

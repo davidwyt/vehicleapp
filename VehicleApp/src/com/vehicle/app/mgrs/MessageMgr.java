@@ -3,11 +3,11 @@ package com.vehicle.app.mgrs;
 import java.util.HashMap;
 import java.util.List;
 
-import com.vehicle.app.msg.TextMessageItem;
+import com.vehicle.app.msg.bean.TextMessage;
 
 public class MessageMgr {
 
-	private HashMap<String, List<TextMessageItem>> messageMap = new HashMap<String, List<TextMessageItem>>();
+	private HashMap<String, List<TextMessage>> messageMap = new HashMap<String, List<TextMessage>>();
 
 	private static class InstanceHolder {
 		private static MessageMgr instance = new MessageMgr();
@@ -17,11 +17,11 @@ public class MessageMgr {
 		return InstanceHolder.instance;
 	}
 
-	public List<TextMessageItem> getMessageByUser(String id) {
+	public List<TextMessage> getMessageByUser(String id) {
 		return messageMap.get(id);
 	}
 
-	public void setMessage(String id, List<TextMessageItem> msgs) {
+	public void setMessage(String id, List<TextMessage> msgs) {
 		messageMap.put(id, msgs);
 	}
 }

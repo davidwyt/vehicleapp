@@ -1,7 +1,5 @@
 package com.vehicle.service.bean;
 
-import java.util.Date;
-
 public class AddLocateRequest implements IRequest{
 	
 	private String id;

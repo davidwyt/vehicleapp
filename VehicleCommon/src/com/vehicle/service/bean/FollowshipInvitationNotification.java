@@ -1,14 +1,12 @@
 package com.vehicle.service.bean;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FollowshipInvitationNotification implements INotification {
 
 	private String source;
 	private String target;
 
 	private String invitationId;
+	private long inviteTime;
 
 	public String getInvitationId() {
 		return this.invitationId;
@@ -50,13 +48,12 @@ public class FollowshipInvitationNotification implements INotification {
 		this.target = target;
 	}
 
-	@Override
-	public Map<String, Object> getExtras() {
-		// TODO Auto-generated method stub
-		Map<String, Object> extras = new HashMap<String, Object>();
-		extras.put("InvitationId", this.invitationId);
+	public long getInviteTime() {
+		return this.inviteTime;
+	}
 
-		return extras;
+	public void setInviteTime(long time) {
+		this.inviteTime = time;
 	}
 
 }

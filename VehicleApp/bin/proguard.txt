@@ -1,19 +1,19 @@
-# view AndroidManifest.xml #generated:166
+# view AndroidManifest.xml #generated:171
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:136
+# view AndroidManifest.xml #generated:138
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:94
+# view AndroidManifest.xml #generated:96
 -keep class cn.jpush.android.service.DownloadService { <init>(...); }
 
-# view AndroidManifest.xml #generated:114
+# view AndroidManifest.xml #generated:116
 -keep class cn.jpush.android.service.PushReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:101
+# view AndroidManifest.xml #generated:103
 -keep class cn.jpush.android.service.PushService { <init>(...); }
 
-# view AndroidManifest.xml #generated:82
+# view AndroidManifest.xml #generated:84
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:47
@@ -37,7 +37,7 @@
 # view AndroidManifest.xml #generated:54
 -keep class com.vehicle.app.activities.LoginActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:139
+# view AndroidManifest.xml #generated:141
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }
 
 # view AndroidManifest.xml #generated:78
@@ -55,13 +55,16 @@
 # view AndroidManifest.xml #generated:68
 -keep class com.vehicle.app.activities.RoleSelectActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:70
+-keep class com.vehicle.app.activities.SelfVendorInfoActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:58
 -keep class com.vehicle.app.activities.SettingActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:70
--keep class com.vehicle.app.activities.ShopInfoActivity { <init>(...); }
+# view AndroidManifest.xml #generated:80
+-keep class com.vehicle.app.activities.VendorInfoActivity { <init>(...); }
 
-# view res/layout/activity_nearbymain.xml #generated:27
+# view res/layout/activity_nearbymain.xml #generated:53
 # view res/layout/activity_recentcontactlist.xml #generated:24
 -keep class com.vehicle.app.layout.BottomBarLayout { <init>(...); }
 

@@ -22,12 +22,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
 
     <!-- Optional for location -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -67,7 +67,7 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.RoleSelectActivity" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.ShopInfoActivity" >
+        <activity android:name="com.vehicle.app.activities.SelfVendorInfoActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.DriverInfoActivity" >
         </activity>
@@ -76,6 +76,8 @@
         <activity android:name="com.vehicle.app.activities.NearbyFellowListActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.MsgMgrActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.VendorInfoActivity" >
         </activity>
 
         <!-- Required SDK核心功能 -->
@@ -162,7 +164,10 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="ee54a39cda5f4cf0ed4e2617" />
-        <!-- </>值来自开发者平台取得的AppKey -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="854165fc21d9b1b567dcf4d5382ffc2e" />
+
         <activity
             android:name="cn.edu.sjtu.vehicleapp.SettingsActivity"
             android:label="@string/title_activity_settings" >

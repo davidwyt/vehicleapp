@@ -13,6 +13,7 @@ public class Contants {
 	public static final String HQL_SELECT_FOLLOWERS = "SELECT follower FROM com.vehicle.imserver.dao.bean.Followship WHERE followee=:followee";
 	public static final String HQL_SELECT_FOLLOWEES = "SELECT followee FROM com.vehicle.imserver.dao.bean.Followship WHERE follower=:follower";
 	public static final String HQL_DEL_OFFLINE = "DELETE from com.vehicle.imserver.dao.bean.OfflineMessage WHERE target=:target";
+	public static final String HQL_SELECT_NEWFOLLOWINV = "FROM com.vehicle.imserver.dao.bean.FollowshipInvitation WHERE (target=:target and status=:requested) or (source=:source and (status=:accepted or status=:rejected))";
 
 	public static String getFileRootPath() {
 		Properties prop = System.getProperties();

@@ -53,7 +53,6 @@ public class MessageServiceImpl implements MessageService {
 	private void PersistentAndSendMessage(Message msg)
 			throws PersistenceException, PushMessageFailedException {
 		
-
 		MessageResult androidMsgResult = null;
 		MessageResult iosMsgResult=null;
 		try {
