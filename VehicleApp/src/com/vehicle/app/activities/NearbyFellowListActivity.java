@@ -58,7 +58,10 @@ public class NearbyFellowListActivity extends Activity {
 					intent.putExtra(VendorInfoActivity.KEY_NEARBYVENDORID, vendor.getId());
 					startActivity(intent);
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
-
+					Driver driver = (Driver) user;
+					Intent intent = new Intent(getApplicationContext(), DriverInfoActivity.class);
+					intent.putExtra(DriverInfoActivity.KEY_NEARBYDRIVERID, driver.getId());
+					startActivity(intent);
 				}
 			}
 		});

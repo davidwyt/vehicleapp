@@ -7,6 +7,7 @@ import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
+import com.vehicle.sdk.client.VehicleWebClient;
 import com.vehicle.service.bean.FollowshipInvitationResultResponse;
 
 import android.content.Context;
@@ -34,10 +35,17 @@ public class InvitationVerdictMessageCourier extends MessageBaseCourier {
 			@Override
 			protected FollowshipInvitationResultResponse doInBackground(Void... arg0) {
 				// TODO Auto-generated method stub
+				
+				if(!SelfMgr.getInstance().isDriver())
+					return null;
+				
 				FollowshipInvitationResultResponse resp = null;
-
-				VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
 				try {
+					VehicleWebClient webClient = new VehicleWebClient();
+					webClient.AddFavVendor(SelfMgr.getInstance().getId(), msg.getTarget());
+
+					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
+
 					resp = vClient.FollowshipInvitationVerdict(msg.getInvitationId(),
 							InvitationVerdict.ACCEPTED.equals(msg.getVerdict()));
 				} catch (Exception e) {
@@ -50,13 +58,13 @@ public class InvitationVerdictMessageCourier extends MessageBaseCourier {
 			protected void onPostExecute(FollowshipInvitationResultResponse result) {
 				if (null != result && result.isSucess()) {
 					System.out.println("invitation verdict sent successful:" + JsonUtil.toJsonString(msg));
-					
+
 					try {
 						DBManager dbManager = new DBManager(context);
 						dbManager.insertInvitationVerdictMessage(msg);
 					} catch (Exception e) {
 						e.printStackTrace();
-					}					
+					}
 				} else {
 					System.out.println(String.format("invitation verdict %s send failed with:%s",
 							JsonUtil.toJsonString(msg), null == result ? "" : JsonUtil.toJsonString(result)));

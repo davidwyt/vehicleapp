@@ -63,7 +63,7 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 
 			Driver driver = (Driver) fellow;
 
-			tvAlias.setText(driver.getName());
+			tvAlias.setText(driver.getAlias());
 
 			tvFeature.setText(driver.getIntroduction());
 

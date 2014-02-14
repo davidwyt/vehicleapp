@@ -5,6 +5,7 @@ import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.web.bean.WebCallBaseResult;
+import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -173,13 +174,11 @@ public class LoginActivity extends Activity {
 			cancel = true;
 		}
 		/**
-		else if (!StringUtil.IsEmail(mEmail)) {
-			mEmailView.setError(getString(R.string.error_invalid_email));
-			focusView = mEmailView;
-			cancel = true;
-		}
-		*/
-		
+		 * else if (!StringUtil.IsEmail(mEmail)) {
+		 * mEmailView.setError(getString(R.string.error_invalid_email));
+		 * focusView = mEmailView; cancel = true; }
+		 */
+
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
 			// form field with an error.
@@ -275,6 +274,9 @@ public class LoginActivity extends Activity {
 					SelfVendor self = (SelfVendor) result.getInfoBean();
 					SelfMgr.getInstance().setSelfVendor(self);
 				}
+
+				VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+				client.Login(SelfMgr.getInstance().getId());
 
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 

@@ -188,6 +188,7 @@ public class VehicleWebClient {
 		result.put("NearbyDriver.list", driverList);
 
 		NearbyDriverListViewResult nearbyDriverListResult = new NearbyDriverListViewResult();
+		nearbyDriverListResult.setCode(10000);
 		nearbyDriverListResult.setResult(result);
 
 		return nearbyDriverListResult;
