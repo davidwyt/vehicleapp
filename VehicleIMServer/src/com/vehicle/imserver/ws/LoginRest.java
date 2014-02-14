@@ -16,8 +16,8 @@ import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.interfaces.LoginService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
-import com.vehicle.service.bean.LoginRequest;
-import com.vehicle.service.bean.LoginResponse;
+import com.vehicle.service.bean.WakeupRequest;
+import com.vehicle.service.bean.WakeupResponse;
 
 @Path("login")
 public class LoginRest {
@@ -37,11 +37,11 @@ public class LoginRest {
 	@Consumes("application/json")
 	@Produces("application/json")
 	public Response login(@Context HttpServletRequest request,
-			LoginRequest loginRequest) {
+			WakeupRequest loginRequest) {
 
 		System.out.println("in login request");
 
-		LoginResponse loginResponse = new LoginResponse();
+		WakeupResponse loginResponse = new WakeupResponse();
 
 		if (null == loginRequest
 				|| StringUtil.isEmptyOrNull(loginRequest.getId())) {

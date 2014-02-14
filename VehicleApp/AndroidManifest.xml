@@ -67,7 +67,11 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.RoleSelectActivity" >
         </activity>
+        <activity android:name="com.vehicle.app.activities.SelfDriverInfoActivity" >
+        </activity>
         <activity android:name="com.vehicle.app.activities.SelfVendorInfoActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.VendorInfoActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.DriverInfoActivity" >
         </activity>
@@ -76,8 +80,6 @@
         <activity android:name="com.vehicle.app.activities.NearbyFellowListActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.MsgMgrActivity" >
-        </activity>
-        <activity android:name="com.vehicle.app.activities.VendorInfoActivity" >
         </activity>
 
         <!-- Required SDK核心功能 -->

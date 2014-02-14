@@ -37,10 +37,10 @@ public class DBManager {
 	private final static String SQL_INVVERDICTMESSAGE_FLAGSELECT = "SELECT `INVITATIONID`, `SOURCE`, `TARGET`, `VERDICT`, `FLAG` WHERE `TARGET` = ? AND `FLAG` = ?;";
 	private final static String SQL_INVVERDICTMESSAGE_FLAGUPDATE = "UPDATE `INVITATIONVERDICT` SET `FLAG`= ? WHERE `INVITATIONID` = ?;";
 
-	private final static String SQL_FOLLOWINV_INSERT = "INSERT INTO `FOLLOWSHIPINVITATION`(`INVITATIONID`, `SOURCE`, `TARGET`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?);";
-	private final static String SQL_FOLLOWINV_ALLSELECT = "SELECT `INVITATIONID`, `SOURCE`, `TARGET`, `SENTTIME`, `FLAG` WHERE `TARGET` = ?;";
-	private final static String SQL_FOLLOWINV_FLAGSELECT = "SELECT `INVITATIONID`, `SOURCE`, `TARGET`, `SENTTIME`, `FLAG` WHERE `TARGET` = ? AND `FLAG` = ?;";
-	private final static String SQL_FOLLOWINV_FLAGUPDATE = "UPDATE `FOLLOWSHIPINVITATION` SET `FLAG`= ? WHERE `INVITATIONID` = ?;";
+	private final static String SQL_FOLLOWINV_INSERT = "INSERT INTO `FOLLOWSHIPINVITATION`(`ID`, `SOURCE`, `TARGET`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?);";
+	private final static String SQL_FOLLOWINV_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `SENTTIME`, `FLAG` WHERE `TARGET` = ?;";
+	private final static String SQL_FOLLOWINV_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `SENTTIME`, `FLAG` WHERE `TARGET` = ? AND `FLAG` = ?;";
+	private final static String SQL_FOLLOWINV_FLAGUPDATE = "UPDATE `FOLLOWSHIPINVITATION` SET `FLAG`= ? WHERE `ID` = ?;";
 
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);
@@ -426,7 +426,7 @@ public class DBManager {
 
 				FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
 
-				msg.setId(cursor.getString(cursor.getColumnIndex("INVITATIONID")));
+				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
 				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
@@ -457,7 +457,7 @@ public class DBManager {
 
 				FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
 
-				msg.setId(cursor.getString(cursor.getColumnIndex("INVITATIONID")));
+				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
 				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 

@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class OfflineMessageResponse extends BaseResponse {
-
 	
 	private List<RespMessage> messages;
 

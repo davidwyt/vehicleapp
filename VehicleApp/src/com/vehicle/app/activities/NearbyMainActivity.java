@@ -6,6 +6,8 @@ import java.util.List;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.worker.IMessageCourier;
+import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
@@ -72,6 +74,9 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		this.mViewNearbyMainForm = this.findViewById(R.id.nearbymain_form);
 		this.mViewSearchNearbyStatus = this.findViewById(R.id.nearbysearch_status);
 		this.mTextViewSearchNearbyStatus = (TextView) this.findViewById(R.id.nearbysearch_status_message);
+		
+		IMessageCourier courier = new WakeupMessageCourier(this.getApplicationContext());
+		courier.dispatch(null);
 	}
 
 	@Override

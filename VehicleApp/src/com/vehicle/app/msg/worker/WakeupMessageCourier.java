@@ -10,7 +10,7 @@ import com.vehicle.app.msg.bean.InvitationVerdictMessage;
 import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.sdk.client.VehicleClient;
-import com.vehicle.service.bean.LoginResponse;
+import com.vehicle.service.bean.WakeupResponse;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -65,13 +65,13 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 	@Override
 	public void dispatch(IMessageItem item) {
 		// TODO Auto-generated method stub
-		AsyncTask<Void, Void, LoginResponse> asyncTask = new AsyncTask<Void, Void, LoginResponse>() {
+		AsyncTask<Void, Void, WakeupResponse> asyncTask = new AsyncTask<Void, Void, WakeupResponse>() {
 
 			@Override
-			protected LoginResponse doInBackground(Void... params) {
+			protected WakeupResponse doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 
-				LoginResponse resp = null;
+				WakeupResponse resp = null;
 				try {
 					String id = SelfMgr.getInstance().getId();
 
@@ -85,7 +85,7 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 			}
 
 			@Override
-			protected void onPostExecute(LoginResponse result) {
+			protected void onPostExecute(WakeupResponse result) {
 				if (null == result) {
 					System.out.println("login to imserver failed");
 					return;

@@ -6,7 +6,7 @@ import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.dao.interfaces.FollowshipInvitationDao;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.interfaces.LoginService;
-import com.vehicle.service.bean.LoginRequest;
+import com.vehicle.service.bean.WakeupRequest;
 
 public class LoginServiceImpl implements LoginService {
 
@@ -21,7 +21,7 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Override
-	public List<FollowshipInvitation> getNewInvitations(LoginRequest request)
+	public List<FollowshipInvitation> getNewInvitations(WakeupRequest request)
 			throws PersistenceException {
 		// TODO Auto-generated method stub
 

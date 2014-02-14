@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 
 @XmlRootElement
-public class LoginResponse extends BaseResponse{
+public class WakeupResponse extends BaseResponse {
 
-	List<FollowshipInvitation> newInvitations;
+	private List<FollowshipInvitation> newInvitations;
 
 	@XmlElement
 	public List<FollowshipInvitation> getNewInvitations() {

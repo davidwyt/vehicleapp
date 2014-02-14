@@ -238,19 +238,21 @@ public class LoginActivity extends Activity {
 		protected WebCallBaseResult doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
 
+			WebCallBaseResult result = null;
 			try {
 				// Simulate network access.
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient webClient = new VehicleWebClient();
-					return webClient.DriverLogin(mEmail, mPassword);
+					result = webClient.DriverLogin(mEmail, mPassword);
 				} else {
 					VehicleWebClient webClient = new VehicleWebClient();
-					return webClient.VendorLogin(mEmail, mPassword);
+					result = webClient.VendorLogin(mEmail, mPassword);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
 			}
+
+			return result;
 		}
 
 		@Override
@@ -274,9 +276,6 @@ public class LoginActivity extends Activity {
 					SelfVendor self = (SelfVendor) result.getInfoBean();
 					SelfMgr.getInstance().setSelfVendor(self);
 				}
-
-				VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
-				client.Login(SelfMgr.getInstance().getId());
 
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 

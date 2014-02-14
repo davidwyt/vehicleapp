@@ -23,8 +23,8 @@ import com.vehicle.service.bean.FollowshipInvitationResultRequest;
 import com.vehicle.service.bean.FollowshipInvitationResultResponse;
 import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
-import com.vehicle.service.bean.LoginRequest;
-import com.vehicle.service.bean.LoginResponse;
+import com.vehicle.service.bean.WakeupRequest;
+import com.vehicle.service.bean.WakeupResponse;
 import com.vehicle.service.bean.MessageACKRequest;
 import com.vehicle.service.bean.MessageACKResponse;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
@@ -256,13 +256,13 @@ public class VehicleClient {
 		return response;
 	}
 
-	public LoginResponse Login(String id) {
+	public WakeupResponse Login(String id) {
 		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOGIN_ROOT, URL_LOGIN_LOGIN);
 
-		LoginRequest request = new LoginRequest();
+		WakeupRequest request = new WakeupRequest();
 		request.setId(id);
 
-		LoginResponse response = HttpUtil.PostJson(url, request, LoginResponse.class);
+		WakeupResponse response = HttpUtil.PostJson(url, request, WakeupResponse.class);
 		return response;
 	}
 }

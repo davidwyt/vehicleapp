@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class LoginRequest implements IRequest {
+public class WakeupRequest implements IRequest {
 
 	private String id;
 
