@@ -74,7 +74,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		this.mViewNearbyMainForm = this.findViewById(R.id.nearbymain_form);
 		this.mViewSearchNearbyStatus = this.findViewById(R.id.nearbysearch_status);
 		this.mTextViewSearchNearbyStatus = (TextView) this.findViewById(R.id.nearbysearch_status_message);
-		
+
 		IMessageCourier courier = new WakeupMessageCourier(this.getApplicationContext());
 		courier.dispatch(null);
 	}
@@ -85,6 +85,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		mSearchTask = null;
 		mFellowViewTask = null;
 		((RadioButton) this.findViewById(R.id.bar_rabtn_middle)).setChecked(true);
+		//this.pageNum = 1;
 	}
 
 	@Override
@@ -214,7 +215,10 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		}
 	}
 
-	public class NearbySearchTask extends AsyncTask<Void, Void, WebCallBaseResult> {
+	private static int pageNum = 1;
+
+	private class NearbySearchTask extends AsyncTask<Void, Void, WebCallBaseResult> {
+
 		@Override
 		protected WebCallBaseResult doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
@@ -223,7 +227,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 				// Simulate network access.
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
-					return client.NearbyVendorListView(1, -1, -1, 1, 121.56, 31.24, 4, 1, -1, -1);
+					return client.NearbyVendorListView(1, -1, -1, pageNum, 121.56, 31.24, 4, 1, -1, -1);
 				} else {
 					VehicleWebClient client = new VehicleWebClient();
 					return client.NearbyDriverListView(1, 121.56, 31.24);
@@ -247,6 +251,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			}
 
 			if (result.isSuccess()) {
+				pageNum++;
 				List<?> fellows = null;
 				if (SelfMgr.getInstance().isDriver()) {
 					fellows = (List<?>) result.getInfoBean();

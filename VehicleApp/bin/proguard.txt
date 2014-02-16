@@ -16,6 +16,9 @@
 # view AndroidManifest.xml #generated:86
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
 
+# view res/layout/activity_nearbyfellowlist.xml #generated:16
+-keep class com.handmark.pulltorefresh.library.PullToRefreshListView { <init>(...); }
+
 # view AndroidManifest.xml #generated:47
 -keep class com.vehicle.app.activities.BeginActivity { <init>(...); }
 

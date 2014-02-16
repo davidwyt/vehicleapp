@@ -74,9 +74,9 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 			Driver driver = (Driver) user;
 
 			tvAlias.setText(driver.getAlias());
-			
+
 			System.out.println("driver name:" + driver.getName());
-			
+
 			tvLastMessage.setText(driver.getLastMessage());
 
 			tvLastMessageDate.setText((new Date()).getSeconds() + "");

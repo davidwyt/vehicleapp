@@ -165,6 +165,22 @@ public class SelfMgr {
 		return null;
 	}
 
+	public Driver getVendorFellow(String id) {
+		if (null == this.mVendorFellowDetailMap) {
+			return null;
+		}
+
+		return this.mVendorFellowDetailMap.get(id);
+	}
+
+	public Vendor getFavVendor(String id) {
+		if (null == this.mFavVendorDetailMap) {
+			return null;
+		}
+
+		return this.mFavVendorDetailMap.get(id);
+	}
+
 	public void refreshFellows() {
 		VehicleWebClient webClient = new VehicleWebClient();
 

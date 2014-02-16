@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_rdgroup"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <RadioButton
+        android:id="@+id/bar_rabtn_message"
+        android:layout_weight="1"
+        android:button="@null"
+        android:background="@drawable/selector_button_bottommsg" />
+
+    <RadioButton
+        android:id="@+id/bar_rabtn_middle"
+        android:layout_weight="1"
+        android:button="@null"
+        android:background="@drawable/selector_button_bottomvendor" >
+    </RadioButton>
+
+    <RadioButton
+        android:id="@+id/bar_rabtn_setting"
+        android:layout_weight="1"
+        android:button="@null"
+        android:background="@drawable/selector_button_bottomsetting" >
+    </RadioButton>
+
+</RadioGroup>

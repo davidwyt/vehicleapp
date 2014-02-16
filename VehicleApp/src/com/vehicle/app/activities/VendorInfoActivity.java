@@ -48,7 +48,7 @@ public class VendorInfoActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		setContentView(R.layout.activity_vendor);
+		setContentView(R.layout.activity_vendorinfo);
 
 		initView();
 	}
