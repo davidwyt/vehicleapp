@@ -1,18 +1,24 @@
 package com.vehicle.app.activities;
 
+import java.util.Date;
+
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.bean.FollowshipMessage;
+import com.vehicle.app.msg.bean.MessageFlag;
+import com.vehicle.app.msg.worker.FollowshipMessageCourier;
+import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
-import com.vehicle.app.web.bean.AddFavVendorResult;
-import com.vehicle.sdk.client.VehicleWebClient;
+import com.vehicle.app.utils.Constants;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -20,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class VendorInfoActivity extends Activity {
 
@@ -45,6 +52,8 @@ public class VendorInfoActivity extends Activity {
 
 	public static final String KEY_VENDORID = "com.vehicle.app.key.vendorinfoactivity.vendor.id";
 	public static final String KEY_ISNEARBY = "com.vehicle.app.key.vendorinfoactivity.vendor.isnearby";
+
+	private BroadcastReceiver mReceiver;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +106,29 @@ public class VendorInfoActivity extends Activity {
 		this.mTvMobileNum = (TextView) this.findViewById(R.id.vendor_mobilenum);
 	}
 
+	private void registerMessageReceiver() {
+
+		mReceiver = new FollowshipResultReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+		filter.addAction(Constants.ACTION_FOLLOWSHIP_FAILED);
+		filter.addAction(Constants.ACTION_FOLLOWSHIP_SUCCESS);
+
+		try {
+			registerReceiver(mReceiver, filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void unregisterMessageReceiver() {
+		try {
+			unregisterReceiver(this.mReceiver);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void initData() {
 		Bundle bundle = this.getIntent().getExtras();
 		if (null == bundle) {
@@ -110,7 +142,7 @@ public class VendorInfoActivity extends Activity {
 		} else {
 			this.mVendor = SelfMgr.getInstance().getFavVendorDetail(vendorId);
 		}
-		
+
 		if (null == mVendor) {
 			return;
 		}
@@ -148,11 +180,14 @@ public class VendorInfoActivity extends Activity {
 	public void onStart() {
 		super.onStart();
 		initData();
+		registerMessageReceiver();
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
+
+		unregisterMessageReceiver();
 	}
 
 	private void connectVendor() {
@@ -164,42 +199,33 @@ public class VendorInfoActivity extends Activity {
 			intent.putExtra(ChatActivity.KEY_FELLOWID, this.mVendor.getId());
 			this.startActivity(intent);
 		} else {
+			FollowshipMessage msg = new FollowshipMessage();
+			msg.setSource(SelfMgr.getInstance().getId());
+			msg.setTarget(this.mVendor.getId());
+			msg.setSentTime(new Date().getTime());
+			msg.setFlag(MessageFlag.SELF);
+			msg.setId("followship");
 
-			AsyncTask<Void, Void, AddFavVendorResult> asyncTask = new AsyncTask<Void, Void, AddFavVendorResult>() {
+			IMessageCourier courier = new FollowshipMessageCourier(this.getApplicationContext());
+			courier.dispatch(msg);
+		}
+	}
 
-				@Override
-				protected AddFavVendorResult doInBackground(Void... arg0) {
-					// TODO Auto-generated method stub
-					AddFavVendorResult result = null;
-					try {
-						VehicleWebClient client = new VehicleWebClient();
-						result = client.AddFavVendor(SelfMgr.getInstance().getId(), mVendor.getId());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return result;
-				}
+	class FollowshipResultReceiver extends BroadcastReceiver {
 
-				@Override
-				protected void onPostExecute(AddFavVendorResult result) {
-					if (null == result) {
-						System.out.println("send add favorite request failed");
-						return;
-					}
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
 
-					if (result.isSuccess()) {
-						System.out.println("add favorite success");
-					} else {
-						System.out.println("add favorite failed:" + result.getMessage());
-					}
-				}
-			};
-
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			} else {
-				asyncTask.execute();
+			if (Constants.ACTION_FOLLOWSHIP_SUCCESS.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_followsuccess),
+						Toast.LENGTH_LONG).show();
+			} else if (Constants.ACTION_FOLLOWSHIP_FAILED.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_followfailed),
+						Toast.LENGTH_LONG).show();
 			}
 		}
+
 	}
 }

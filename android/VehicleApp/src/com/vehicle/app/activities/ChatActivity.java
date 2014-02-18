@@ -229,12 +229,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 	}
 
 	private void registerMessageReceiver() {
-		// this.unregisterReceiver(messageReceiver);
-		try {
-			unregisterReceiver(messageReceiver);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		messageReceiver = new ChatMessageReceiver();
 		IntentFilter filter = new IntentFilter();
@@ -247,12 +241,14 @@ public class ChatActivity extends Activity implements OnClickListener {
 		filter.addAction(Constants.ACTION_FILEMESSAGE_SENTFAILED);
 		filter.addAction(Constants.ACTION_LOCMESSAGE_SENTFAILED);
 
-		registerReceiver(messageReceiver, filter);
+		try {
+			registerReceiver(messageReceiver, filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
+	private void unregisterMessageReceiver() {
 		try {
 			unregisterReceiver(messageReceiver);
 		} catch (Exception e) {
@@ -260,16 +256,26 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+		unregisterMessageReceiver();
+	}
+
 	private void initData() {
 
 		Bundle bundle = this.getIntent().getExtras();
 		if (null != bundle) {
 			mFellowId = bundle.getString(KEY_FELLOWID);
-
+			
+			System.out.println("fellow:" + mFellowId);
+			
 			TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
 
 			if (SelfMgr.getInstance().isDriver()) {
 				this.mVendor = SelfMgr.getInstance().getFavVendorDetail(mFellowId);
+				
+				System.out.println("vendor null:" + (null == mVendor));
 				if (null != this.mVendor) {
 					tvFellow.setText(this.mVendor.getName());
 				}
@@ -500,13 +506,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 				onNewFileSent(intent);
 			} else if (Constants.ACTION_TEXTMESSAGE_SENTFAILED.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_textmsgfailed),
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 			} else if (Constants.ACTION_FILEMESSAGE_SENTFAILED.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_picmsgfailed),
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 			} else if (Constants.ACTION_LOCMESSAGE_SENTFAILED.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_locmsgfailed),
-						Toast.LENGTH_SHORT).show();
+						Toast.LENGTH_LONG).show();
 			}
 		}
 

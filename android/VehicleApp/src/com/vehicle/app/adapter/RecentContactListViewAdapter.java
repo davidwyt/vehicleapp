@@ -64,7 +64,7 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 	public View getView(int pos, View view, ViewGroup viewgroup) {
 		// TODO Auto-generated method stub
 		if (null == view) {
-			view = this.inflater.inflate(R.layout.layout_user_item, null);
+			view = this.inflater.inflate(R.layout.layout_recentmsg_item, null);
 		}
 
 		TextView tvAlias = (TextView) view.findViewById(R.id.useritem_tv_username);
@@ -133,6 +133,8 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 			} else {
 				throw new IllegalArgumentException("rejuect invitaion verdict should not show here");
 			}
+		} else if (IMessageItem.MESSAGE_TYPE_FOLLOW == msg.getMessageType()) {
+			return context.getResources().getString(R.string.format_msg_newfellow);
 		} else {
 			throw new IllegalArgumentException("wrong message type");
 		}

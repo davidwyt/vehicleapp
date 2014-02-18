@@ -45,7 +45,7 @@ public class DBManager {
 	private final static String SQL_FOLLOWINV_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `SENTTIME`, `FLAG` WHERE `TARGET` = ? AND `FLAG` = ?;";
 	private final static String SQL_FOLLOWINV_FLAGUPDATE = "UPDATE `FOLLOWSHIPINVITATION` SET `FLAG`= ? WHERE `ID` = ? AND `FLAG` = ?;";
 
-	private final static String SQL_RECENTMSG_INSERT = "INSERT INTO `RECENTMESSAGE`(`SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME`) VALUES(?, ?, ?, ?, ?, ?));";
+	private final static String SQL_RECENTMSG_INSERT = "INSERT INTO `RECENTMESSAGE`(`SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME`) VALUES(?, ?, ?, ?, ?, ?);";
 	private final static String SQL_RECENTMSG_UPDATE = "UPDATE `RECENTMESSAGE` SET `MESSAGEID` = ?, `MESSAGETYPE` = ?, `CONTENT` = ?, `SENTTIME` = ? WHERE `SELFID` = ? AND `FELLOWID` = ?;";
 	private final static String SQL_RECENTMSG_ONEDELETE = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ? AND `FELLOWID` = ?;";
 	private final static String SQL_RECENTMSG_ALLDELETE = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ?;";
@@ -576,10 +576,11 @@ public class DBManager {
 					update = true;
 				}
 			} else {
-				db.endTransaction();
 				throw new IllegalStateException(String.format("wrong number of recent message for %s and %s", selfId,
 						fellowId));
 			}
+
+			System.out.println("update:" + update);
 
 			if (update) {
 				SQLiteStatement updateStmt = db.compileStatement(SQL_RECENTMSG_UPDATE);
@@ -602,10 +603,10 @@ public class DBManager {
 				insertStmt.bindLong(6, sentTime);
 				insertStmt.executeInsert();
 			}
-
-			db.endTransaction();
+			db.setTransactionSuccessful();
 		} finally {
 			if (null != db)
+				db.endTransaction();
 				db.close();
 		}
 	}

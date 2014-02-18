@@ -5,11 +5,13 @@ import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.MessageFlag;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.service.bean.FollowshipInvitationResponse;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -56,13 +58,19 @@ public class FollowshipInvMessageCourier extends MessageBaseCourier {
 						msg.setId(result.getInvitationId());
 						msg.setSentTime(result.getReqTime());
 						dbManager.insertFollowshipInvMessage(msg);
-						
+
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+
+					Intent intent = new Intent(Constants.ACTION_INVITATION_SUCCESS);
+					context.sendBroadcast(intent);
 				} else {
 					System.out.println(String.format("followship invitation %s send failed with:%s",
 							JsonUtil.toJsonString(msg), null == result ? "" : JsonUtil.toJsonString(result)));
+
+					Intent intent = new Intent(Constants.ACTION_INVITATION_FAILED);
+					context.sendBroadcast(intent);
 				}
 			}
 		};

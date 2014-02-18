@@ -30,7 +30,7 @@ CREATE TABLE `FILETRANSMISSION` (
   KEY `SOURCE` (`SOURCE`),
   KEY `TARGET` (`TARGET`),
   KEY `STATUS` (`STATUS`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of filetransmission
@@ -41,10 +41,10 @@ CREATE TABLE `FILETRANSMISSION` (
 -- ----------------------------
 DROP TABLE IF EXISTS `FOLLOWSHIP`;
 CREATE TABLE `FOLLOWSHIP` (
-  `FOLLOWER` varchar(255) NOT NULL,
-  `FOLLOWEE` varchar(255) NOT NULL,
+  `FOLLOWER` varchar(150) NOT NULL,
+  `FOLLOWEE` varchar(150) NOT NULL,
   PRIMARY KEY (`FOLLOWER`,`FOLLOWEE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of followship
@@ -64,7 +64,7 @@ CREATE TABLE `MESSAGE` (
   PRIMARY KEY (`ID`),
   KEY `SOURCE` (`SOURCE`),
   KEY `TARGET` (`TARGET`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of message
@@ -85,7 +85,7 @@ CREATE TABLE `OFFLINEMESSAGE` (
   KEY `SOURCE` (`SOURCE`),
   KEY `TARGET` (`TARGET`),
   KEY `SENTTIME` (`SENTTIME`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of offlinemessage

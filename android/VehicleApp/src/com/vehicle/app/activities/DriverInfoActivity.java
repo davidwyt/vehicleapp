@@ -8,10 +8,14 @@ import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.worker.FollowshipInvMessageCourier;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
+import com.vehicle.app.utils.Constants;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +24,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DriverInfoActivity extends Activity {
 
@@ -38,6 +43,8 @@ public class DriverInfoActivity extends Activity {
 
 	public static final String KEY_DRIVERID = "com.vehicle.app.key.driver.id";
 	public static final String KEY_ISNEARBY = "com.vehicle.app.key.driver.isnearby";
+
+	private BroadcastReceiver mReceiver;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -137,15 +144,58 @@ public class DriverInfoActivity extends Activity {
 		}
 	}
 
+	private void registerMessageReceiver() {
+
+		mReceiver = new InvitationResultReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+		filter.addAction(Constants.ACTION_INVITATION_SUCCESS);
+		filter.addAction(Constants.ACTION_INVITATION_FAILED);
+
+		try {
+			registerReceiver(mReceiver, filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void unregisterMessageReceiver() {
+		try {
+			unregisterReceiver(this.mReceiver);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
 		initData();
+		registerMessageReceiver();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+		unregisterMessageReceiver();
+	}
+
+	class InvitationResultReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+
+			if (Constants.ACTION_INVITATION_SUCCESS.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_invitationsuccess),
+						Toast.LENGTH_LONG).show();
+			} else if (Constants.ACTION_INVITATION_FAILED.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_invitationfailed),
+						Toast.LENGTH_LONG).show();
+			}
+		}
+
 	}
 
 }

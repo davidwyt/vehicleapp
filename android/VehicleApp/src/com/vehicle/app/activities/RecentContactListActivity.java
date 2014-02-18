@@ -166,11 +166,10 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
-			RecentMessage msg = (RecentMessage) intent.getSerializableExtra(KEY_RECENTMSG);
-			updateRecentMsg(msg);
 
 			if (Constants.ACTION_RECENTMSG_UPDATE.equals(action)) {
-
+				RecentMessage msg = (RecentMessage) intent.getSerializableExtra(KEY_RECENTMSG);
+				updateRecentMsg(msg);
 			} else {
 				System.err.println("what the hell of action:" + action);
 			}

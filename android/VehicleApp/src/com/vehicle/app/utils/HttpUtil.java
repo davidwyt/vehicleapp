@@ -21,10 +21,12 @@ import org.apache.http.util.EntityUtils;
 
 public class HttpUtil {
 
+	private static final int TIMEOUT = 10000;
+	
 	public static <T> T PostJson(String url, Object entity, Class<T> t) {
 
 		final HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
+		HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		String resp = "";
@@ -72,7 +74,7 @@ public class HttpUtil {
 	public static <T> T GetJson(String url, Class<T> t) {
 
 		final HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
+		HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT);
 
 		HttpClient httpclient = new DefaultHttpClient(httpParams);
 

@@ -46,5 +46,8 @@
     <string name="tip_textmsgfailed">消息发送失败，请确保网络连接正常</string>
     <string name="tip_picmsgfailed">图片发送失败，请确保网络连接正常</string>
     <string name="tip_locmsgfailed">位置发送失败，请确保网络连接正常</string>
-
+	<string name="tip_followsuccess">关注商家成功</string>
+	<string name="tip_followfailed">关注商家失败，请检查网络连接</string>
+	<string name="tip_invitationsuccess">关注请求发送成功</string>
+	<string name="tip_invitationfailed">关注请求发送失败，请确保网络连接正常</string>
 </resources>

@@ -585,7 +585,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int layout_bottom_bar=0x7f03001b;
         public static final int layout_myfellow_item=0x7f03001c;
         public static final int layout_nearbyfellow_item=0x7f03001d;
-        public static final int layout_user_item=0x7f03001e;
+        public static final int layout_recentmsg_item=0x7f03001e;
         public static final int main=0x7f03001f;
         public static final int need_this_for_maven=0x7f030020;
         public static final int popwindow_chatplus=0x7f030021;
@@ -598,30 +598,30 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int activity_login=0x7f0c0000;
     }
     public static final class string {
-        public static final int action_sign_in_register=0x7f080037;
-        public static final int action_sign_in_short=0x7f080038;
+        public static final int action_sign_in_register=0x7f08003b;
+        public static final int action_sign_in_short=0x7f08003c;
         public static final int alert_zh=0x7f08002c;
         public static final int alias_hint=0x7f08000d;
         public static final int animate=0x7f080028;
         public static final int app_name=0x7f080006;
         public static final int back=0x7f08000a;
-        public static final int beginwords=0x7f080033;
+        public static final int beginwords=0x7f080037;
         public static final int camera_zh=0x7f08002b;
         public static final int chat_title_name=0x7f080009;
         public static final int clearmsg_confirmtxt=0x7f08002f;
         public static final int down_arrow=0x7f080024;
-        public static final int driverlogin_noaccount=0x7f08003f;
-        public static final int driverlogin_registerbtn=0x7f080040;
+        public static final int driverlogin_noaccount=0x7f080043;
+        public static final int driverlogin_registerbtn=0x7f080044;
         public static final int error_alias_empty=0x7f080010;
-        public static final int error_field_required=0x7f08003e;
-        public static final int error_incorrect_password=0x7f08003d;
-        public static final int error_invalid_email=0x7f08003b;
-        public static final int error_invalid_password=0x7f08003c;
+        public static final int error_field_required=0x7f080042;
+        public static final int error_incorrect_password=0x7f080041;
+        public static final int error_invalid_email=0x7f08003f;
+        public static final int error_invalid_password=0x7f080040;
         public static final int error_network=0x7f080013;
         public static final int error_style_empty=0x7f08000f;
         public static final int error_tag_empty=0x7f080011;
         public static final int error_tag_gs_empty=0x7f080012;
-        public static final int followshipinvitationformatstr=0x7f080034;
+        public static final int followshipinvitationformatstr=0x7f080038;
         public static final int format_msg_location=0x7f08001d;
         public static final int format_msg_newfellow=0x7f08001f;
         public static final int format_msg_picture=0x7f08001e;
@@ -629,39 +629,39 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int hello=0x7f080007;
         public static final int left_arrow=0x7f080021;
         public static final int location_zh=0x7f080029;
-        public static final int login_progress_signing_in=0x7f08003a;
+        public static final int login_progress_signing_in=0x7f08003e;
         public static final int logining=0x7f080014;
         public static final int main_empty_list=0x7f080008;
-        public static final int menu_forgot_password=0x7f080039;
+        public static final int menu_forgot_password=0x7f08003d;
         public static final int nearbysearch_dirvers=0x7f08001a;
         public static final int nearbysearch_vendors=0x7f080019;
         public static final int negative_zh=0x7f08002e;
         public static final int positive_zh=0x7f08002d;
-        public static final int pref_default_display_name=0x7f080055;
-        public static final int pref_description_social_recommendations=0x7f080053;
+        public static final int pref_default_display_name=0x7f080059;
+        public static final int pref_description_social_recommendations=0x7f080057;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f080057;
+        public static final int pref_header_data_sync=0x7f08005b;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f080051;
+        public static final int pref_header_general=0x7f080055;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f08005a;
-        public static final int pref_ringtone_silent=0x7f08005d;
-        public static final int pref_title_add_friends_to_messages=0x7f080056;
-        public static final int pref_title_display_name=0x7f080054;
-        public static final int pref_title_new_message_notifications=0x7f08005b;
-        public static final int pref_title_ringtone=0x7f08005c;
-        public static final int pref_title_social_recommendations=0x7f080052;
-        public static final int pref_title_sync_frequency=0x7f080058;
-        public static final int pref_title_system_sync_settings=0x7f080059;
-        public static final int pref_title_vibrate=0x7f08005e;
+        public static final int pref_header_notifications=0x7f08005e;
+        public static final int pref_ringtone_silent=0x7f080061;
+        public static final int pref_title_add_friends_to_messages=0x7f08005a;
+        public static final int pref_title_display_name=0x7f080058;
+        public static final int pref_title_new_message_notifications=0x7f08005f;
+        public static final int pref_title_ringtone=0x7f080060;
+        public static final int pref_title_social_recommendations=0x7f080056;
+        public static final int pref_title_sync_frequency=0x7f08005c;
+        public static final int pref_title_system_sync_settings=0x7f08005d;
+        public static final int pref_title_vibrate=0x7f080062;
         /**  Strings related to login 
          */
-        public static final int prompt_email=0x7f080035;
-        public static final int prompt_password=0x7f080036;
+        public static final int prompt_email=0x7f080039;
+        public static final int prompt_password=0x7f08003a;
         public static final int promt_server=0x7f080017;
         /**  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
@@ -672,21 +672,21 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int pull_to_refresh_pull_label=0x7f080000;
         public static final int pull_to_refresh_refreshing_label=0x7f080002;
         public static final int pull_to_refresh_release_label=0x7f080001;
-        public static final int reg_btn_ok=0x7f080046;
-        public static final int reg_prompt_cfmpwd=0x7f080044;
-        public static final int reg_prompt_email=0x7f080041;
-        public static final int reg_prompt_password=0x7f080043;
-        public static final int reg_prompt_username=0x7f080042;
-        public static final int reg_tip_invalidemail=0x7f08004a;
-        public static final int reg_tip_invalidpwd=0x7f080048;
-        public static final int reg_tip_notequalpwd=0x7f080049;
-        public static final int reg_tip_null=0x7f080047;
-        public static final int reg_title=0x7f080045;
-        public static final int register_fieldnull=0x7f08004c;
-        public static final int register_invalid_email=0x7f08004f;
-        public static final int register_invalid_pwdcfm=0x7f08004d;
-        public static final int register_invalid_pwdlen=0x7f08004e;
-        public static final int register_progress=0x7f08004b;
+        public static final int reg_btn_ok=0x7f08004a;
+        public static final int reg_prompt_cfmpwd=0x7f080048;
+        public static final int reg_prompt_email=0x7f080045;
+        public static final int reg_prompt_password=0x7f080047;
+        public static final int reg_prompt_username=0x7f080046;
+        public static final int reg_tip_invalidemail=0x7f08004e;
+        public static final int reg_tip_invalidpwd=0x7f08004c;
+        public static final int reg_tip_notequalpwd=0x7f08004d;
+        public static final int reg_tip_null=0x7f08004b;
+        public static final int reg_title=0x7f080049;
+        public static final int register_fieldnull=0x7f080050;
+        public static final int register_invalid_email=0x7f080053;
+        public static final int register_invalid_pwdcfm=0x7f080051;
+        public static final int register_invalid_pwdlen=0x7f080052;
+        public static final int register_progress=0x7f08004f;
         public static final int right_arrow=0x7f080022;
         public static final int send=0x7f08000b;
         public static final int setting_btn=0x7f080016;
@@ -696,11 +696,15 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int stop_animation=0x7f080025;
         public static final int style_hint=0x7f08000e;
         public static final int tag_hint=0x7f08000c;
+        public static final int tip_followfailed=0x7f080034;
+        public static final int tip_followsuccess=0x7f080033;
+        public static final int tip_invitationfailed=0x7f080036;
+        public static final int tip_invitationsuccess=0x7f080035;
         public static final int tip_locmsgfailed=0x7f080032;
         public static final int tip_picmsgfailed=0x7f080031;
         public static final int tip_textmsgfailed=0x7f080030;
         public static final int title=0x7f080018;
-        public static final int title_activity_settings=0x7f080050;
+        public static final int title_activity_settings=0x7f080054;
         public static final int up_arrow=0x7f080023;
         public static final int yesterday=0x7f080020;
         public static final int zoom_in=0x7f080026;
