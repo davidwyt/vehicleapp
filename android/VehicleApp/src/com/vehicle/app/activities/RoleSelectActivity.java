@@ -24,7 +24,7 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_roleselect);
 
 		super.onCreate(savedInstanceState);
-		
+
 		initView();
 	}
 
@@ -51,17 +51,19 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 	public void onClick(View view) {
 
 		if (R.id.roleselect_driver == view.getId()) {
-			
+
+			SelfMgr.getInstance().clear();
 			SelfMgr.getInstance().setIsDriver(true);
-			
+
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), LoginActivity.class);
 			this.startActivity(intent);
 
 		} else if (R.id.roleselect_shop == view.getId()) {
-			
+
+			SelfMgr.getInstance().clear();
 			SelfMgr.getInstance().setIsDriver(false);
-			
+
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), LoginActivity.class);
 			this.startActivity(intent);

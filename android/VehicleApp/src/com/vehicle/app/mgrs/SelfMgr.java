@@ -87,28 +87,51 @@ public class SelfMgr {
 	}
 
 	public boolean isFavoriteVendor(String id) {
-		if (null == mFavVendorVector) {
+		if (null == this.mFavVendorDetailMap) {
 			return false;
 		}
 
-		synchronized (mFavVendorVector) {
-			for (FavoriteVendor vendor : mFavVendorVector) {
-				if (id.equals(vendor.getId())) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return this.mFavVendorDetailMap.containsKey(id);
 	}
 
-	public void addFavoriteVendor(FavoriteVendor favVendor) {
-		if (isFavoriteVendor(favVendor.getId())) {
-			throw new IllegalArgumentException(String.format("vendor %s has benn in the favorite list",
-					favVendor.getName()));
+	public boolean isVendorFellow(String driverId) {
+		if (null == this.mVendorFellowDetailMap) {
+			return false;
 		}
 
-		this.mFavVendorVector.add(favVendor);
+		return this.mVendorFellowDetailMap.containsKey(driverId);
+	}
+
+	public FavoriteVendor getFavVendor(String id) {
+
+		if (null == this.mFavVendorVector) {
+			return null;
+		}
+
+		synchronized (this.mFavVendorVector) {
+
+			for (FavoriteVendor vendor : this.mFavVendorVector) {
+				if (id.equals(vendor.getId()))
+					return vendor;
+			}
+
+			return null;
+		}
+	}
+
+	public VendorFellow getVendorFellow(String id) {
+		if (null == this.mVendorFellowVector) {
+			return null;
+		}
+		synchronized (this.mVendorFellowVector) {
+			for (VendorFellow driver : this.mVendorFellowVector) {
+				if (id.equals(driver.getId())) {
+					return driver;
+				}
+			}
+
+			return null;
+		}
 	}
 
 	public Vendor getNearbyVendor(String id) {
@@ -189,7 +212,7 @@ public class SelfMgr {
 		return this.mFavVendorDetailMap;
 	}
 
-	public Driver getVendorFellow(String id) {
+	public Driver getVendorFellowDetail(String id) {
 		if (null == this.mVendorFellowDetailMap) {
 			return null;
 		}
@@ -197,7 +220,7 @@ public class SelfMgr {
 		return this.mVendorFellowDetailMap.get(id);
 	}
 
-	public Vendor getFavVendor(String id) {
+	public Vendor getFavVendorDetail(String id) {
 		if (null == this.mFavVendorDetailMap) {
 			return null;
 		}
@@ -232,5 +255,16 @@ public class SelfMgr {
 			this.mVendorFellowDetailMap.clear();
 			this.mVendorFellowDetailMap.putAll(webClient.DriverListView(driverIds).getInfoBean());
 		}
+	}
+
+	public void clear() {
+		this.mFavVendorDetailMap.clear();
+		this.mFavVendorVector.clear();
+
+		this.mNearbyDriverMap.clear();
+		this.mNearbyVendorMap.clear();
+
+		this.mVendorFellowDetailMap.clear();
+		this.mVendorFellowVector.clear();
 	}
 }

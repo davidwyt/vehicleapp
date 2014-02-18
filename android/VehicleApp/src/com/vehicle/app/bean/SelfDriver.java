@@ -3,6 +3,7 @@ package com.vehicle.app.bean;
 import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
+import com.vehicle.app.utils.Constants;
 
 public class SelfDriver implements Serializable{
 
@@ -136,7 +137,11 @@ public class SelfDriver implements Serializable{
 	}
 
 	public void setAvatar(String avatar) {
-		this.avatar = avatar;
+		if (null == avatar || avatar.isEmpty()) {
+			this.avatar = Constants.URL_DEFAULTICON;
+		} else {
+			this.avatar = avatar;
+		}
 	}
 
 	public String getCity() {

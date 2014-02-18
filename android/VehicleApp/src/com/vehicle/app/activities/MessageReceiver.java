@@ -2,7 +2,7 @@ package com.vehicle.app.activities;
 
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
-import com.vehicle.app.msg.bean.PictureMessage;
+import com.vehicle.app.msg.bean.ImageMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.msg.worker.FollowshipInvMessageRecipient;
 import com.vehicle.app.msg.worker.IMessageRecipient;
@@ -109,7 +109,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		System.out.println("receive new file: " + message);
 
-		PictureMessage msg = new PictureMessage();
+		ImageMessage msg = new ImageMessage();
 		msg.fromRawNotification(newFileNotification);
 
 		IMessageRecipient cpu = new PictureMessageRecipient(context);

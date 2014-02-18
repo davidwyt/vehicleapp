@@ -4,13 +4,13 @@ import java.io.Serializable;
 
 import com.vehicle.service.bean.FollowshipInvitationNotification;
 
-public class FollowshipInvitationMessage implements IMessageItem, Serializable{
+public class FollowshipInvitationMessage implements IMessageItem, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7628128119286526427L;
-	
+
 	private String id;
 	private String source;
 	private String target;
@@ -78,5 +78,11 @@ public class FollowshipInvitationMessage implements IMessageItem, Serializable{
 		this.sentTime = rawMsg.getInviteTime();
 		this.source = rawMsg.getSource();
 		this.target = rawMsg.getTarget();
+	}
+
+	@Override
+	public int getMessageType() {
+		// TODO Auto-generated method stub
+		return IMessageItem.MESSAGE_TYPE_FELLOWSHIPINVITATION;
 	}
 }

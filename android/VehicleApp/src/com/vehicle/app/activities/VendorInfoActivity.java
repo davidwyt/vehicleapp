@@ -9,6 +9,7 @@ import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,7 +43,8 @@ public class VendorInfoActivity extends Activity {
 
 	private Vendor mVendor;
 
-	public static final String KEY_NEARBYVENDORID = "com.vehicle.app.key.nearbyvendor.id";
+	public static final String KEY_VENDORID = "com.vehicle.app.key.vendorinfoactivity.vendor.id";
+	public static final String KEY_ISNEARBY = "com.vehicle.app.key.vendorinfoactivity.vendor.isnearby";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -100,10 +102,15 @@ public class VendorInfoActivity extends Activity {
 		if (null == bundle) {
 			return;
 		}
-		String vendorId = bundle.getString(KEY_NEARBYVENDORID);
+		String vendorId = bundle.getString(KEY_VENDORID);
+		boolean isNearby = bundle.getBoolean(KEY_ISNEARBY);
 
-		mVendor = SelfMgr.getInstance().getNearbyVendor(vendorId);
-
+		if (isNearby) {
+			mVendor = SelfMgr.getInstance().getNearbyVendor(vendorId);
+		} else {
+			this.mVendor = SelfMgr.getInstance().getFavVendorDetail(vendorId);
+		}
+		
 		if (null == mVendor) {
 			return;
 		}
@@ -112,7 +119,7 @@ public class VendorInfoActivity extends Activity {
 
 		this.mTvName.setText(mVendor.getName());
 		this.mTvBusinessTime.setText(mVendor.getAnswerTime());
-		
+
 		String url = mVendor.getAvatar();
 		Bitmap bitmap = BitmapCache.getInstance().get(url);
 
@@ -149,43 +156,50 @@ public class VendorInfoActivity extends Activity {
 	}
 
 	private void connectVendor() {
-		if(null == this.mVendor)
+		if (null == this.mVendor)
 			return;
-		
-		AsyncTask<Void, Void, AddFavVendorResult> asyncTask = new AsyncTask<Void, Void, AddFavVendorResult>() {
 
-			@Override
-			protected AddFavVendorResult doInBackground(Void... arg0) {
-				// TODO Auto-generated method stub
-				AddFavVendorResult result = null;
-				try {
-					VehicleWebClient client = new VehicleWebClient();
-					result = client.AddFavVendor(SelfMgr.getInstance().getId(), mVendor.getId());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return result;
-			}
-
-			@Override
-			protected void onPostExecute(AddFavVendorResult result) {
-				if (null == result) {
-					System.out.println("send add favorite request failed");
-					return;
-				}
-
-				if (result.isSuccess()) {
-					System.out.println("add favorite success");
-				} else {
-					System.out.println("add favorite failed:" + result.getMessage());
-				}
-			}
-		};
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		if (SelfMgr.getInstance().isFavoriteVendor(this.mVendor.getId())) {
+			Intent intent = new Intent(this, ChatActivity.class);
+			intent.putExtra(ChatActivity.KEY_FELLOWID, this.mVendor.getId());
+			this.startActivity(intent);
 		} else {
-			asyncTask.execute();
+
+			AsyncTask<Void, Void, AddFavVendorResult> asyncTask = new AsyncTask<Void, Void, AddFavVendorResult>() {
+
+				@Override
+				protected AddFavVendorResult doInBackground(Void... arg0) {
+					// TODO Auto-generated method stub
+					AddFavVendorResult result = null;
+					try {
+						VehicleWebClient client = new VehicleWebClient();
+						result = client.AddFavVendor(SelfMgr.getInstance().getId(), mVendor.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return result;
+				}
+
+				@Override
+				protected void onPostExecute(AddFavVendorResult result) {
+					if (null == result) {
+						System.out.println("send add favorite request failed");
+						return;
+					}
+
+					if (result.isSuccess()) {
+						System.out.println("add favorite success");
+					} else {
+						System.out.println("add favorite failed:" + result.getMessage());
+					}
+				}
+			};
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				asyncTask.execute();
+			}
 		}
 	}
 }

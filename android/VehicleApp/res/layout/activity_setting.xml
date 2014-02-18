@@ -2,6 +2,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.vehicle.app.activities.SettingActivity" >
 
+     <LinearLayout
+        android:id="@+id/setting_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/setting_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/nearbysearch_vendors"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/azure" />
+    </LinearLayout>
+    
     <ScrollView
         android:id="@+id/setting_form"
         android:layout_width="match_parent"
@@ -43,6 +69,16 @@
 
             <Button
                 android:id="@+id/setting_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="@string/setting_btn" />
+
+            <Button
+                android:id="@+id/setting_btn_openfellows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"

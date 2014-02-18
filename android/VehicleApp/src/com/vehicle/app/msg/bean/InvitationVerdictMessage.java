@@ -99,4 +99,10 @@ public class InvitationVerdictMessage implements IMessageItem, Serializable{
 		}
 
 	}
+
+	@Override
+	public int getMessageType() {
+		// TODO Auto-generated method stub
+		return IMessageItem.MESSAGE_TYPE_INVITATIONVERDICT;
+	}
 }

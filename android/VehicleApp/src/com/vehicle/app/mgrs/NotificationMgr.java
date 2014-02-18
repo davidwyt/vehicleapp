@@ -7,7 +7,7 @@ import com.vehicle.app.activities.FollowshipInvitationActivity;
 import com.vehicle.app.activities.SettingActivity;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
-import com.vehicle.app.msg.bean.PictureMessage;
+import com.vehicle.app.msg.bean.ImageMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 
 import android.app.Notification;
@@ -63,7 +63,7 @@ public class NotificationMgr {
 		notificationMgr.notify(num, notificationBuilder.build());
 	}
 
-	public void notifyNewFileMsg(PictureMessage msg) {
+	public void notifyNewFileMsg(ImageMessage msg) {
 
 		int num = nextNotificationNum();
 		String ticker = String.format(FORMAT_NOTIFICATION_NEWPICMSG, msg.getSource());

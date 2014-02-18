@@ -9,7 +9,9 @@ import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
-import com.vehicle.app.msg.bean.PictureMessage;
+import com.vehicle.app.msg.bean.MessageFlag;
+import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.service.bean.FileTransmissionResponse;
@@ -24,11 +26,11 @@ public class PictureMessageCourier extends MessageBaseCourier {
 	public void dispatch(IMessageItem item) {
 		// TODO Auto-generated method stub
 
-		if (!(item instanceof PictureMessage)) {
+		if (!(item instanceof ImageMessage)) {
 			throw new IllegalArgumentException();
 		}
 
-		final PictureMessage picMessage = (PictureMessage) item;
+		final ImageMessage picMessage = (ImageMessage) item;
 
 		AsyncTask<Void, Void, FileTransmissionResponse> sendTask = new AsyncTask<Void, Void, FileTransmissionResponse>() {
 
@@ -47,10 +49,26 @@ public class PictureMessageCourier extends MessageBaseCourier {
 
 					picMessage.setSentTime(resp.getSentTime());
 					picMessage.setToken(resp.getToken());
+					picMessage.setFlag(MessageFlag.SELF);
 
 					try {
 						DBManager dbMgr = new DBManager(context.getApplicationContext());
 						dbMgr.insertFileMessage(picMessage);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					try {
+						RecentMessage recentMsg = new RecentMessage();
+						recentMsg.setSelfId(SelfMgr.getInstance().getId());
+						recentMsg.setFellowId(picMessage.getTarget());
+						recentMsg.setMessageType(picMessage.getMessageType());
+						recentMsg.setContent("");
+						recentMsg.setSentTime(picMessage.getSentTime());
+						recentMsg.setMessageId(picMessage.getToken());
+
+						updateRecentMessage(recentMsg);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

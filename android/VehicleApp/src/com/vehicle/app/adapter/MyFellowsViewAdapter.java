@@ -5,7 +5,9 @@ import java.util.List;
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.bean.Driver;
+import com.vehicle.app.bean.FavoriteVendor;
 import com.vehicle.app.bean.Vendor;
+import com.vehicle.app.bean.VendorFellow;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
@@ -19,7 +21,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class NearbyFellowsViewAdapter extends BaseAdapter {
+public class MyFellowsViewAdapter extends BaseAdapter {
 
 	private List<?> fellows;
 	private LayoutInflater inflater;
@@ -27,7 +29,7 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 	private final static int ICON_WIDTH = 64;
 	private final static int ICON_HEIGHT = 64;
 
-	public NearbyFellowsViewAdapter(Context context, List<?> fellows) {
+	public MyFellowsViewAdapter(Context context, List<?> fellows) {
 		this.inflater = LayoutInflater.from(context);
 		this.fellows = fellows;
 	}
@@ -55,19 +57,19 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 
 		if (null == view) {
-			view = this.inflater.inflate(R.layout.layout_nearbyfellow_item, null);
+			view = this.inflater.inflate(R.layout.layout_myfellow_item, null);
 		}
 
-		TextView tvAlias = (TextView) view.findViewById(R.id.nearbyfellow_tv_name);
-		TextView tvFeature = (TextView) view.findViewById(R.id.nearbyfellow_tv_feature);
-		TextView tvDistance = (TextView) view.findViewById(R.id.nearbyfellow_tv_distance);
-		ImageView ivHead = (ImageView) view.findViewById(R.id.nearbyfellow_iv_head);
+		TextView tvAlias = (TextView) view.findViewById(R.id.myfellow_tv_name);
+		TextView tvFeature = (TextView) view.findViewById(R.id.myfellow_tv_feature);
+		TextView tvAddedTime = (TextView) view.findViewById(R.id.myfellow_tv_addedtime);
+		ImageView ivHead = (ImageView) view.findViewById(R.id.myfellow_iv_head);
 
 		Object fellow = this.fellows.get(pos);
 
 		String name = "";
 		String feature = "";
-		String distance = "";
+		String addedTime = "";
 		String url = "";
 
 		if (fellow instanceof Driver && !SelfMgr.getInstance().isDriver()) {
@@ -76,7 +78,10 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 
 			name = driver.getAlias();
 			feature = driver.getIntroduction();
-			distance = driver.getDistance();
+			VendorFellow vfellow = SelfMgr.getInstance().getVendorFellow(driver.getId());
+			if (null != vfellow) {
+				addedTime = vfellow.getAddedDate();
+			}
 			url = driver.getAvatar();
 
 		} else if (fellow instanceof Vendor && SelfMgr.getInstance().isDriver()) {
@@ -84,7 +89,10 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 			Vendor vendor = (Vendor) fellow;
 			name = vendor.getName();
 			feature = vendor.getAddress();
-			distance = vendor.getDistance();
+			FavoriteVendor favVendor = SelfMgr.getInstance().getFavVendor(vendor.getId());
+			if (null != favVendor) {
+				addedTime = favVendor.getAddedDate();
+			}
 			url = vendor.getAvatar();
 
 		} else {
@@ -95,7 +103,7 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 
 		tvFeature.setText(feature);
 
-		tvDistance.setText(distance);
+		tvAddedTime.setText(addedTime);
 
 		Bitmap bitmap = BitmapCache.getInstance().get(url);
 

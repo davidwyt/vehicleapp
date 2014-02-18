@@ -246,6 +246,18 @@ public class LoginActivity extends Activity {
 					VehicleWebClient webClient = new VehicleWebClient();
 					result = webClient.VendorLogin(mEmail, mPassword);
 				}
+
+				if (null != result && result.isSuccess()) {
+					if (SelfMgr.getInstance().isDriver()) {
+						SelfDriver self = (SelfDriver) result.getInfoBean();
+						SelfMgr.getInstance().setSelfDriver(self);
+					} else {
+						SelfVendor self = (SelfVendor) result.getInfoBean();
+						SelfMgr.getInstance().setSelfVendor(self);
+					}
+
+					SelfMgr.getInstance().refreshFellows();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -266,14 +278,6 @@ public class LoginActivity extends Activity {
 
 			if (result.isSuccess()) {
 				// finish();
-
-				if (SelfMgr.getInstance().isDriver()) {
-					SelfDriver self = (SelfDriver) result.getInfoBean();
-					SelfMgr.getInstance().setSelfDriver(self);
-				} else {
-					SelfVendor self = (SelfVendor) result.getInfoBean();
-					SelfMgr.getInstance().setSelfVendor(self);
-				}
 
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 

@@ -15,7 +15,8 @@ import com.vehicle.app.mgrs.NotificationMgr;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.MessageFlag;
-import com.vehicle.app.msg.bean.PictureMessage;
+import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.sdk.client.VehicleClient;
@@ -30,11 +31,11 @@ public class PictureMessageRecipient extends MessageBaseRecipient {
 	@Override
 	public void receive(IMessageItem msg) {
 		// TODO Auto-generated method stub
-		if (!(msg instanceof PictureMessage)) {
+		if (!(msg instanceof ImageMessage)) {
 			throw new IllegalArgumentException("msg is not PictureMessageItem");
 		}
 
-		final PictureMessage picMsgItem = (PictureMessage) msg;
+		final ImageMessage picMsgItem = (ImageMessage) msg;
 
 		AsyncTask<Void, Void, Boolean> fetchTask = new AsyncTask<Void, Void, Boolean>() {
 
@@ -67,7 +68,7 @@ public class PictureMessageRecipient extends MessageBaseRecipient {
 
 				picMsgItem.setContent(BitmapFactory.decodeFile(filePath));
 				picMsgItem.setPath(filePath);
-				
+
 				System.out.println("content null :" + (null == picMsgItem.getContent()));
 				return true;
 			}
@@ -107,12 +108,26 @@ public class PictureMessageRecipient extends MessageBaseRecipient {
 					NotificationMgr notificationMgr = new NotificationMgr(context);
 					notificationMgr.notifyNewFileMsg(picMsgItem);
 				}
+				
+				try {
+					RecentMessage recentMsg = new RecentMessage();
+					recentMsg.setSelfId(SelfMgr.getInstance().getId());
+					recentMsg.setFellowId(picMsgItem.getTarget());
+					recentMsg.setMessageType(picMsgItem.getMessageType());
+					recentMsg.setContent("");
+					recentMsg.setSentTime(picMsgItem.getSentTime());
+					recentMsg.setMessageId(picMsgItem.getToken());
+
+					updateRecentMessage(recentMsg);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		};
 
 		fetchTask.execute();
 	}
-	
+
 	@Override
 	protected boolean shouldNotifyBar() {
 		return true;

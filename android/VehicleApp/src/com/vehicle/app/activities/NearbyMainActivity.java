@@ -1,6 +1,5 @@
 package com.vehicle.app.activities;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.vehicle.app.bean.Driver;
@@ -42,7 +41,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	private Button mButtonGroupMsg;
 
 	private NearbySearchTask mSearchTask;
-	private FellowViewTask mFellowViewTask;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,7 +81,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	protected void onStart() {
 		super.onStart();
 		mSearchTask = null;
-		mFellowViewTask = null;
 		((RadioButton) this.findViewById(R.id.bar_rabtn_middle)).setChecked(true);
 		// this.pageNum = 1;
 	}
@@ -107,19 +104,11 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	}
 
 	private void openChatList() {
-		if (null != this.mFellowViewTask) {
-			return;
-		}
+		
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), RecentContactListActivity.class);
+		startActivity(intent);
 
-		if (SelfMgr.getInstance().isDriver()) {
-			this.mTextViewSearchNearbyStatus.setText(R.string.status_getfavvendorlist);
-		} else {
-			this.mTextViewSearchNearbyStatus.setText(R.string.status_getvendorfellowlist);
-		}
-
-		showProgress(true);
-		this.mFellowViewTask = new FellowViewTask();
-		this.mFellowViewTask.execute((Void) null);
 	}
 
 	@Override
@@ -183,38 +172,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		}
 	}
 
-	public class FellowViewTask extends AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			// TODO Auto-generated method stub
-			try {
-				SelfMgr.getInstance().refreshFellows();
-			} catch (Exception e) {
-				e.printStackTrace();
-
-				System.err.println("refresh fellows failed");
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			mSearchTask = null;
-			showProgress(false);
-
-			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), RecentContactListActivity.class);
-			startActivity(intent);
-		}
-
-		@Override
-		protected void onCancelled() {
-			mSearchTask = null;
-			showProgress(false);
-		}
-	}
-
 	private class NearbySearchTask extends AsyncTask<Void, Void, WebCallBaseResult> {
 
 		@Override
@@ -260,7 +217,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyFellowListActivity.class);
-				intent.putExtra(NearbyFellowListActivity.KEY_NEARBYFELLOWS, (Serializable) fellows);
 				startActivity(intent);
 
 			} else {

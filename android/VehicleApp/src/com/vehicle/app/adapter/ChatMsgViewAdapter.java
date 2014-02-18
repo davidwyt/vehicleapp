@@ -22,7 +22,7 @@ import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
-import com.vehicle.app.msg.bean.PictureMessage;
+import com.vehicle.app.msg.bean.ImageMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
@@ -82,8 +82,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 			TextView tvContent = (TextView) convertView.findViewById(R.id.chatmsg_tv_chatcontent);
 			tvContent.setText(msg.getContent());
-		} else if (entity instanceof PictureMessage) {
-			PictureMessage pic = (PictureMessage) entity;
+		} else if (entity instanceof ImageMessage) {
+			ImageMessage pic = (ImageMessage) entity;
 
 			if (SelfMgr.getInstance().IsSelf(pic.getSource())) {
 				if (convertView == null || R.id.chatitem_pic_left != convertView.getId()) {

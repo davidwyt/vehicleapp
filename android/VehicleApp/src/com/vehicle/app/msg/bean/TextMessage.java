@@ -64,11 +64,7 @@ public class TextMessage implements IMessageItem, Parcelable {
 		this.flag = flag;
 	}
 
-	public int getMsgType() {
-		return this.msgType;
-	}
-
-	public void setMsgType(int type) {
+	public void setMessageType(int type) {
 		this.msgType = type;
 	}
 
@@ -103,7 +99,7 @@ public class TextMessage implements IMessageItem, Parcelable {
 			item.setSentTime(parcel.readLong());
 			item.setContent(parcel.readString());
 			item.setFlag(MessageFlag.valueOf(parcel.readString()));
-			item.setMsgType(parcel.readInt());
+			item.setMessageType(parcel.readInt());
 
 			return item;
 		}
@@ -119,6 +115,12 @@ public class TextMessage implements IMessageItem, Parcelable {
 	@Override
 	public void fromRawNotification(Object notification) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public int getMessageType() {
+		// TODO Auto-generated method stub
+		return IMessageItem.MESSAGE_TYPE_TEXT;
 	}
 
 }

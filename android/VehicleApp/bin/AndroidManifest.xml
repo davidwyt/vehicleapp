@@ -81,6 +81,8 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.MsgMgrActivity" >
         </activity>
+        <activity android:name="com.vehicle.app.activities.MyFellowListActivity" >
+        </activity>
 
         <!-- Required SDK核心功能 -->
         <activity

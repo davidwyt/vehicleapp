@@ -9,6 +9,8 @@ import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
+import com.vehicle.app.msg.bean.MessageFlag;
+import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.sdk.client.VehicleClient;
@@ -43,9 +45,9 @@ public class TextMessageCourier extends MessageBaseCourier {
 
 					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
 
-					if (IMessageItem.MESSAGE_TYPE_TEXT == msg.getMsgType()) {
+					if (IMessageItem.MESSAGE_TYPE_TEXT == msg.getMessageType()) {
 						resp = client.SendTextMessage(msg.getTarget(), msg.getContent());
-					} else if (IMessageItem.MESSAGE_TYPE_LOCATION == msg.getMsgType()) {
+					} else if (IMessageItem.MESSAGE_TYPE_LOCATION == msg.getMessageType()) {
 						resp = client.SendLocationMessage(msg.getTarget(), msg.getContent());
 					}
 
@@ -62,10 +64,26 @@ public class TextMessageCourier extends MessageBaseCourier {
 
 					msg.setId(resp.getMsgId());
 					msg.setSentTime(resp.getMsgSentTime());
+					msg.setFlag(MessageFlag.SELF);
 
 					try {
 						DBManager dbMgr = new DBManager(context);
 						dbMgr.insertTextMessage(msg);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					try {
+						RecentMessage recentMsg = new RecentMessage();
+						recentMsg.setSelfId(SelfMgr.getInstance().getId());
+						recentMsg.setFellowId(msg.getTarget());
+						recentMsg.setMessageType(msg.getMessageType());
+						recentMsg.setContent(msg.getContent());
+						recentMsg.setSentTime(msg.getSentTime());
+						recentMsg.setMessageId(msg.getId());
+
+						updateRecentMessage(recentMsg);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -73,7 +91,7 @@ public class TextMessageCourier extends MessageBaseCourier {
 					Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
 					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, msg);
 					context.sendBroadcast(msgIntent);
-					
+
 					System.out.println("send msg success:" + resp.getMsgId());
 				}
 			}
@@ -86,5 +104,4 @@ public class TextMessageCourier extends MessageBaseCourier {
 			sendAsync.execute();
 		}
 	}
-
 }

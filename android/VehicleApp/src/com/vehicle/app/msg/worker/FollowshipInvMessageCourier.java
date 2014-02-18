@@ -52,10 +52,11 @@ public class FollowshipInvMessageCourier extends MessageBaseCourier {
 
 					try {
 						DBManager dbManager = new DBManager(context);
-						msg.setFlag(MessageFlag.READ);
+						msg.setFlag(MessageFlag.SELF);
 						msg.setId(result.getInvitationId());
 						msg.setSentTime(result.getReqTime());
 						dbManager.insertFollowshipInvMessage(msg);
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

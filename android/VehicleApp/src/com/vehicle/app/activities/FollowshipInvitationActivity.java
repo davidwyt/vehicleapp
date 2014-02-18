@@ -99,7 +99,7 @@ public class FollowshipInvitationActivity extends Activity implements OnClickLis
 		msg.setInvitationId(mInvitation.getId());
 		msg.setSource(SelfMgr.getInstance().getId());
 		msg.setTarget(mInvitation.getSource());
-		msg.setFlag(MessageFlag.READ);
+		msg.setFlag(MessageFlag.SELF);
 		msg.setVerdict(isAccept ? InvitationVerdict.ACCEPTED : InvitationVerdict.REJECTED);
 
 		IMessageCourier cpu = new InvitationVerdictMessageCourier(this.getApplicationContext());

@@ -6,8 +6,10 @@ import android.content.Intent;
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.NotificationMgr;
+import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.MessageFlag;
+import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
@@ -27,6 +29,7 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 		}
 
 		TextMessage textMsgItem = (TextMessage) msg;
+
 		if (ActivityUtil.IsChattingWithFellow(context, textMsgItem.getSource())) {
 			textMsgItem.setFlag(MessageFlag.READ);
 			try {
@@ -51,8 +54,18 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 			NotificationMgr notificationMgr = new NotificationMgr(context);
 			notificationMgr.notifyNewTextMsg(textMsgItem);
 		}
+
+		RecentMessage recentMsg = new RecentMessage();
+		recentMsg.setSelfId(SelfMgr.getInstance().getId());
+		recentMsg.setFellowId(textMsgItem.getTarget());
+		recentMsg.setMessageType(textMsgItem.getMessageType());
+		recentMsg.setContent(textMsgItem.getContent());
+		recentMsg.setSentTime(textMsgItem.getSentTime());
+		recentMsg.setMessageId(textMsgItem.getId());
+
+		updateRecentMessage(recentMsg);
 	}
-	
+
 	@Override
 	protected boolean shouldNotifyBar() {
 		return true;

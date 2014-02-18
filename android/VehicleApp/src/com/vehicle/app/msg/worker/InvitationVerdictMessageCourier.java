@@ -5,6 +5,8 @@ import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
+import com.vehicle.app.msg.bean.MessageFlag;
+import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
@@ -35,10 +37,10 @@ public class InvitationVerdictMessageCourier extends MessageBaseCourier {
 			@Override
 			protected FollowshipInvitationResultResponse doInBackground(Void... arg0) {
 				// TODO Auto-generated method stub
-				
-				if(!SelfMgr.getInstance().isDriver())
+
+				if (!SelfMgr.getInstance().isDriver())
 					return null;
-				
+
 				FollowshipInvitationResultResponse resp = null;
 				try {
 					VehicleWebClient webClient = new VehicleWebClient();
@@ -60,10 +62,24 @@ public class InvitationVerdictMessageCourier extends MessageBaseCourier {
 					System.out.println("invitation verdict sent successful:" + JsonUtil.toJsonString(msg));
 
 					try {
+						msg.setFlag(MessageFlag.SELF);
+
 						DBManager dbManager = new DBManager(context);
 						dbManager.insertInvitationVerdictMessage(msg);
 					} catch (Exception e) {
 						e.printStackTrace();
+					}
+
+					if (InvitationVerdict.ACCEPTED.equals(msg.getVerdict())) {
+						RecentMessage recentMsg = new RecentMessage();
+						recentMsg.setSelfId(SelfMgr.getInstance().getId());
+						recentMsg.setFellowId(msg.getTarget());
+						recentMsg.setMessageType(msg.getMessageType());
+						recentMsg.setContent("");
+						recentMsg.setSentTime(msg.getSentTime());
+						recentMsg.setMessageId(msg.getInvitationId());
+
+						updateRecentMessage(recentMsg);
 					}
 				} else {
 					System.out.println(String.format("invitation verdict %s send failed with:%s",
@@ -78,4 +94,5 @@ public class InvitationVerdictMessageCourier extends MessageBaseCourier {
 			asyncTask.execute();
 		}
 	}
+
 }

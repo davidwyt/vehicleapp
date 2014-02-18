@@ -36,12 +36,10 @@ public class NearbyFellowListActivity extends Activity {
 
 	private BaseAdapter mAdapter;
 
-	public static final String KEY_NEARBYFELLOWS = "com.vehicle.app.key.nearbyfellows";
-
 	private NearbyFellowsRefreshTask mFellowsRefreshTask = null;
 
 	@SuppressWarnings("rawtypes")
-	private List<?> mListFellows = new ArrayList();
+	private List mListFellows = new ArrayList();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -84,21 +82,23 @@ public class NearbyFellowListActivity extends Activity {
 
 		});
 
-		this.mPullRefreshListView.setOnItemClickListener(new OnItemClickListener() {
+		this.mPullRefreshListView.getRefreshableView().setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				Object user = mListFellows.get(position);
+				Object user = mListFellows.get(position-1);
 				if (SelfMgr.getInstance().isDriver() && user instanceof Vendor) {
 					Vendor vendor = (Vendor) user;
 					Intent intent = new Intent(getApplicationContext(), VendorInfoActivity.class);
-					intent.putExtra(VendorInfoActivity.KEY_NEARBYVENDORID, vendor.getId());
+					intent.putExtra(VendorInfoActivity.KEY_VENDORID, vendor.getId());
+					intent.putExtra(VendorInfoActivity.KEY_ISNEARBY, true);
 					startActivity(intent);
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
 					Driver driver = (Driver) user;
 					Intent intent = new Intent(getApplicationContext(), DriverInfoActivity.class);
-					intent.putExtra(DriverInfoActivity.KEY_NEARBYDRIVERID, driver.getId());
+					intent.putExtra(DriverInfoActivity.KEY_DRIVERID, driver.getId());
+					intent.putExtra(DriverInfoActivity.KEY_ISNEARBY, true);
 					startActivity(intent);
 				}
 			}
@@ -117,18 +117,17 @@ public class NearbyFellowListActivity extends Activity {
 		pageNum = 1;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	private void initData() {
 		this.mListFellows.clear();
 
-		Bundle bundle = this.getIntent().getExtras();
-		if (null != bundle) {
-			List fellows = (List<?>) bundle.getSerializable(KEY_NEARBYFELLOWS);
-			this.mListFellows.addAll(fellows);
+		if (SelfMgr.getInstance().isDriver()) {
+			this.mListFellows.addAll(SelfMgr.getInstance().getNearbyVendors());
+		} else {
+			this.mListFellows.addAll(SelfMgr.getInstance().getNearbyDrivers());
 		}
 
 		this.mAdapter.notifyDataSetChanged();
-		// this.mPullRefreshListView.setse
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.vehicle.app.utils;
 import java.util.List;
 
 import com.vehicle.app.activities.ChatActivity;
+import com.vehicle.app.activities.RecentContactListActivity;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -22,5 +23,9 @@ public class ActivityUtil {
 		return ChatActivity.class.getCanonicalName().equals(getTopActivity(context))
 				&& ChatActivity.getCurrentFellowId().equals(id);
 	}
-	
+
+	public static boolean isRecentMsgTop(Context context) {
+		return RecentContactListActivity.class.getCanonicalName().equals(getTopActivity(context));
+	}
+
 }

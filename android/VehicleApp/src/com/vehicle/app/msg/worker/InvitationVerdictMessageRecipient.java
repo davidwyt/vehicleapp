@@ -2,8 +2,11 @@ package com.vehicle.app.msg.worker;
 
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.NotificationMgr;
+import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
+import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
+import com.vehicle.app.msg.bean.RecentMessage;
 
 import android.content.Context;
 
@@ -28,6 +31,18 @@ public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 			dbManager.insertInvitationVerdictMessage(msg);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+
+		if (InvitationVerdict.ACCEPTED.equals(msg.getVerdict())) {
+			RecentMessage recentMsg = new RecentMessage();
+			recentMsg.setSelfId(SelfMgr.getInstance().getId());
+			recentMsg.setFellowId(msg.getTarget());
+			recentMsg.setMessageType(msg.getMessageType());
+			recentMsg.setContent("");
+			recentMsg.setSentTime(msg.getSentTime());
+			recentMsg.setMessageId(msg.getInvitationId());
+
+			updateRecentMessage(recentMsg);
 		}
 
 		if (shouldNotifyBar()) {

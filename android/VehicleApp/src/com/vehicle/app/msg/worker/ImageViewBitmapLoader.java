@@ -33,6 +33,7 @@ public class ImageViewBitmapLoader {
 		Bitmap bm = null;
 		InputStream is = null;
 		BufferedInputStream bis = null;
+		System.out.println("urllllllllll:" + url);
 		try {
 			URLConnection conn = new URL(url).openConnection();
 			conn.connect();

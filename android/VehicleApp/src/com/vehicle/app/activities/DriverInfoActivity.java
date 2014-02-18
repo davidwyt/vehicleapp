@@ -11,6 +11,7 @@ import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -35,7 +36,8 @@ public class DriverInfoActivity extends Activity {
 
 	private Driver mDriver;
 
-	public static final String KEY_NEARBYDRIVERID = "com.vehicle.app.key.nearbydriver.id";
+	public static final String KEY_DRIVERID = "com.vehicle.app.key.driver.id";
+	public static final String KEY_ISNEARBY = "com.vehicle.app.key.driver.isnearby";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -77,18 +79,24 @@ public class DriverInfoActivity extends Activity {
 	}
 
 	private void connectDriver() {
-		
-		if(null == this.mDriver)
+
+		if (null == this.mDriver)
 			return;
-		
-		FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
-		msg.setFlag(MessageFlag.READ);
-		msg.setId("");
-		msg.setSource(SelfMgr.getInstance().getId());
-		msg.setTarget(this.mDriver.getId());
-		
-		IMessageCourier msgCourier = new FollowshipInvMessageCourier(this.getApplicationContext());
-		msgCourier.dispatch(msg);
+
+		if (SelfMgr.getInstance().isVendorFellow(this.mDriver.getId())) {
+			Intent intent = new Intent(this, ChatActivity.class);
+			intent.putExtra(ChatActivity.KEY_FELLOWID, this.mDriver.getId());
+			this.startActivity(intent);
+		} else {
+			FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
+			msg.setFlag(MessageFlag.SELF);
+			msg.setId("");
+			msg.setSource(SelfMgr.getInstance().getId());
+			msg.setTarget(this.mDriver.getId());
+
+			IMessageCourier msgCourier = new FollowshipInvMessageCourier(this.getApplicationContext());
+			msgCourier.dispatch(msg);
+		}
 	}
 
 	private void initData() {
@@ -97,9 +105,13 @@ public class DriverInfoActivity extends Activity {
 			return;
 		}
 
-		String driverId = bundle.getString(KEY_NEARBYDRIVERID);
-
-		this.mDriver = SelfMgr.getInstance().getNearbyDriver(driverId);
+		String driverId = bundle.getString(KEY_DRIVERID);
+		boolean isNearby = bundle.getBoolean(KEY_ISNEARBY);
+		if (isNearby) {
+			this.mDriver = SelfMgr.getInstance().getNearbyDriver(driverId);
+		} else {
+			this.mDriver = SelfMgr.getInstance().getVendorFellowDetail(driverId);
+		}
 
 		if (null == mDriver) {
 			return;
@@ -107,12 +119,12 @@ public class DriverInfoActivity extends Activity {
 
 		this.mTvTitleName.setText(this.mDriver.getAlias());
 		this.mTvName.setText(this.mDriver.getAlias());
-		
+
 		this.mTvAge.setText(this.mDriver.getBirthday());
 		this.mTvSex.setText(this.mDriver.getSex());
 		this.mTvPerInfo.setText(this.mDriver.getIntroduction());
 		this.mTvCarInfo.setText("");
-		
+
 		String url = mDriver.getAvatar();
 		Bitmap bitmap = BitmapCache.getInstance().get(url);
 
