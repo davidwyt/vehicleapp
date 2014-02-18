@@ -93,6 +93,14 @@ public class TextMessageCourier extends MessageBaseCourier {
 					context.sendBroadcast(msgIntent);
 
 					System.out.println("send msg success:" + resp.getMsgId());
+				} else {
+					if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_LOCATION) {
+						Intent msgIntent = new Intent(Constants.ACTION_LOCMESSAGE_SENTFAILED);
+						context.sendBroadcast(msgIntent);
+					} else {
+						Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTFAILED);
+						context.sendBroadcast(msgIntent);
+					}
 				}
 			}
 

@@ -14,21 +14,24 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-
 
 public class HttpUtil {
 
 	public static <T> T PostJson(String url, Object entity, Class<T> t) {
 
-		HttpClient httpclient = new DefaultHttpClient();
+		final HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
 
+		HttpClient httpclient = new DefaultHttpClient(httpParams);
 		String resp = "";
 		HttpResponse response = null;
 
 		try {
 			HttpPost httppost = new HttpPost(url);
-
 			if (null != entity) {
 				StringEntity strBody = new StringEntity(JsonUtil.toJsonString(entity), "UTF-8");
 				strBody.setContentType("application/json");
@@ -68,7 +71,10 @@ public class HttpUtil {
 
 	public static <T> T GetJson(String url, Class<T> t) {
 
-		HttpClient httpclient = new DefaultHttpClient();
+		final HttpParams httpParams = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
+
+		HttpClient httpclient = new DefaultHttpClient(httpParams);
 
 		String resp = "";
 		HttpResponse response = null;

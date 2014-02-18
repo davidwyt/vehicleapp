@@ -27,11 +27,13 @@ public class DBManager {
 	private final static String SQL_TEXTMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?)) ORDER BY `SENTTIME` ASC;";
 	private final static String SQL_TEXTMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `TEXTMESSAGE` WHERE `FLAG` = ? AND `SOURCE` = ? AND `TARGET` = ? ORDER BY `SENTTIME` ASC;";
 	private final static String SQL_TEXTMESSAGE_FLAGUPDATE = "UPDATE `TEXTMESSAGE` SET `FLAG`= ? WHERE `SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?;";
+	private final static String SQL_TEXTMESSAGE_DELETEALL = "DELETE FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?));";
 
 	private final static String SQL_FILEMESSAGE_INSERT = "INSERT INTO `FILEMESSAGE` (`TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?, ?);";
 	private final static String SQL_FILEMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?)) ORDER BY `SENTTIME` ASC;";
 	private final static String SQL_FILEMESSAGE_FLAGSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `FILEMESSAGE` WHERE `FLAG` = ? AND `SOURCE` = ? AND `TARGET` = ? ORDER BY `SENTTIME` ASC;";
 	private final static String SQL_FILEMESSAGE_FLAGUPDATE = "UPDATE `FILEMESSAGE` SET `FLAG`= ? WHERE `SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?;";
+	private final static String SQL_FILEMESSAGE_DELETEALL = "DELETE FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?));";
 
 	private final static String SQL_INVVERDICTMESSAGE_INSERT = "INSERT INTO `INVITATIONVERDICT`(`INVITATIONID`, `SOURCE`, `TARGET`, `VERDICT`, `FLAG`) VALUES(?, ?, ?, ?, ?);";
 	private final static String SQL_INVVERDICTMESSAGE_ALLSELECT = "SELECT `INVITATIONID`, `SOURCE`, `TARGET`, `VERDICT`, `FLAG` WHERE `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?);";
@@ -49,9 +51,58 @@ public class DBManager {
 	private final static String SQL_RECENTMSG_ALLDELETE = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ?;";
 	private final static String SQL_RECENTMSG_ONESELECT = "SELECT `SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME` FROM `RECENTMESSAGE` WHERE `SELFID` = ? AND `FELLOWID` = ?;";
 	private final static String SQL_RECENTMSG_ALLSELECT = "SELECT `SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME` FROM `RECENTMESSAGE` WHERE `SELFID` = ? ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_RECENTMSG_DELETEALL = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ? AND `FELLOWID` = ?;";
 
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);
+	}
+
+	public void deleteAllMessages(String selfId, String fellowId) {
+		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
+		try {
+			db.beginTransaction();
+
+			SQLiteStatement deleteTextMsgStmt = db.compileStatement(SQL_TEXTMESSAGE_DELETEALL);
+			deleteTextMsgStmt.clearBindings();
+
+			deleteTextMsgStmt.bindString(1, selfId);
+			deleteTextMsgStmt.bindString(2, fellowId);
+			deleteTextMsgStmt.bindString(3, MessageFlag.SELF.toString());
+			deleteTextMsgStmt.bindString(4, fellowId);
+			deleteTextMsgStmt.bindString(5, selfId);
+			deleteTextMsgStmt.bindString(6, MessageFlag.UNREAD.toString());
+			deleteTextMsgStmt.bindString(7, MessageFlag.READ.toString());
+
+			deleteTextMsgStmt.executeUpdateDelete();
+
+			SQLiteStatement deleteFileMsgStmt = db.compileStatement(SQL_FILEMESSAGE_DELETEALL);
+			deleteFileMsgStmt.clearBindings();
+
+			deleteFileMsgStmt.bindString(1, selfId);
+			deleteFileMsgStmt.bindString(2, fellowId);
+			deleteFileMsgStmt.bindString(3, MessageFlag.SELF.toString());
+			deleteFileMsgStmt.bindString(4, fellowId);
+			deleteFileMsgStmt.bindString(5, selfId);
+			deleteFileMsgStmt.bindString(6, MessageFlag.UNREAD.toString());
+			deleteFileMsgStmt.bindString(7, MessageFlag.READ.toString());
+
+			deleteFileMsgStmt.executeUpdateDelete();
+
+			SQLiteStatement deleteRecentMsgStmt = db.compileStatement(SQL_RECENTMSG_DELETEALL);
+			deleteRecentMsgStmt.clearBindings();
+
+			deleteRecentMsgStmt.bindString(1, selfId);
+			deleteRecentMsgStmt.bindString(2, fellowId);
+
+			deleteFileMsgStmt.executeUpdateDelete();
+
+			db.endTransaction();
+		} finally {
+			if (null != db) {
+				db.close();
+			}
+		}
 	}
 
 	public void insertTextMessage(String id, String source, String target, String content, long sentTime,
@@ -529,7 +580,7 @@ public class DBManager {
 				throw new IllegalStateException(String.format("wrong number of recent message for %s and %s", selfId,
 						fellowId));
 			}
-			
+
 			if (update) {
 				SQLiteStatement updateStmt = db.compileStatement(SQL_RECENTMSG_UPDATE);
 				updateStmt.clearBindings();
@@ -551,7 +602,7 @@ public class DBManager {
 				insertStmt.bindLong(6, sentTime);
 				insertStmt.executeInsert();
 			}
-			
+
 			db.endTransaction();
 		} finally {
 			if (null != db)

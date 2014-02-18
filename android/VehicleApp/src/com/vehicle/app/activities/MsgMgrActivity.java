@@ -1,7 +1,18 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.bean.Driver;
+import com.vehicle.app.bean.Vendor;
+import com.vehicle.app.db.DBManager;
+import com.vehicle.app.mgrs.BitmapCache;
+import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
+
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +30,11 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 	private ImageView mIVHead;
 	private TextView mTVName;
 
+	private Object mFellow;
+	private String mFellowId;
+
+	public final static String KEY_FELLOWID = "com.vehicle.app.msgmgr.fellowid";
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -27,7 +43,6 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		this.setContentView(R.layout.activity_msgmgr);
 
 		initView();
-		initData();
 	}
 
 	private void initView() {
@@ -45,12 +60,47 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 	}
 
 	private void initData() {
+		Intent intent = this.getIntent();
+		Bundle bundle = intent.getExtras();
+
+		String name = "";
+		String url = "";
+
+		if (null != bundle) {
+			mFellowId = bundle.getString(KEY_FELLOWID);
+			if (SelfMgr.getInstance().isDriver()) {
+				this.mFellow = SelfMgr.getInstance().getFavVendorDetail(mFellowId);
+				if (null != this.mFellow) {
+					name = ((Vendor) mFellow).getName();
+					url = ((Vendor) mFellow).getAvatar();
+				}
+			} else {
+				this.mFellow = SelfMgr.getInstance().getVendorFellowDetail(mFellowId);
+				if (null != this.mFellow) {
+					name = ((Driver) mFellow).getAlias();
+					url = ((Driver) mFellow).getAvatar();
+				}
+			}
+		}
+
+		this.mTVName.setText(name);
+
+		Bitmap bitmap = BitmapCache.getInstance().get(url);
+
+		if (null != bitmap) {
+			mIVHead.setImageBitmap(bitmap);
+		} else {
+			mIVHead.setTag(R.id.TAGKEY_BITMAP_URL, url);
+			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(mIVHead);
+			loader.load();
+		}
 
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
+		initData();
 	}
 
 	@Override
@@ -66,9 +116,40 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		} else if (R.id.msgmgr_favmsg == view.getId()) {
 
 		} else if (R.id.msgmgr_clearmsg == view.getId()) {
-
+			attemptDeleteMsg();
 		} else {
 			System.err.println("invalid id of clicked button in msgmgr form");
 		}
+	}
+
+	private void attemptDeleteMsg() {
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+		alertDialogBuilder.setTitle(this.getResources().getString(R.string.alert_zh));
+
+		alertDialogBuilder
+				.setMessage(getResources().getString(R.string.clearmsg_confirmtxt))
+				.setCancelable(false)
+				.setPositiveButton(getResources().getString(R.string.positive_zh),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								clearMessage();
+							}
+						})
+				.setNegativeButton(getResources().getString(R.string.negative_zh),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+
+		AlertDialog alertDialog = alertDialogBuilder.create();
+
+		alertDialog.show();
+	}
+
+	private void clearMessage() {
+		DBManager dbMgr = new DBManager(this.getApplicationContext());
+		dbMgr.deleteAllMessages(SelfMgr.getInstance().getId(), mFellowId);
 	}
 }

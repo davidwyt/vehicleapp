@@ -21,7 +21,7 @@ public class LocationUtil {
 		if (null == location) {
 			location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		}
-		
+
 		return location;
 	}
 }

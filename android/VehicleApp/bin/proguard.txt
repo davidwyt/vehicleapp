@@ -1,20 +1,24 @@
-# view AndroidManifest.xml #generated:175
+# view AndroidManifest.xml #generated:179
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:142
+# view AndroidManifest.xml #generated:146
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:100
+# view AndroidManifest.xml #generated:104
 -keep class cn.jpush.android.service.DownloadService { <init>(...); }
 
-# view AndroidManifest.xml #generated:120
+# view AndroidManifest.xml #generated:124
 -keep class cn.jpush.android.service.PushReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:107
+# view AndroidManifest.xml #generated:111
 -keep class cn.jpush.android.service.PushService { <init>(...); }
 
-# view AndroidManifest.xml #generated:88
+# view AndroidManifest.xml #generated:92
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
+
+# view res/layout/activity_camera.xml #generated:91
+# view res/layout/activity_location.xml #generated:7
+-keep class com.amap.api.maps.MapView { <init>(...); }
 
 # view res/layout/activity_myfellowlist.xml #generated:16
 # view res/layout/activity_nearbyfellowlist.xml #generated:16
@@ -24,7 +28,7 @@
 # view AndroidManifest.xml #generated:47
 -keep class com.vehicle.app.activities.BeginActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:56
+# view AndroidManifest.xml #generated:86
 -keep class com.vehicle.app.activities.ChatActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:76
@@ -39,10 +43,16 @@
 # view AndroidManifest.xml #generated:78
 -keep class com.vehicle.app.activities.GroupmsgNavActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:56
+-keep class com.vehicle.app.activities.LocationActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:54
 -keep class com.vehicle.app.activities.LoginActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:145
+# view AndroidManifest.xml #generated:88
+-keep class com.vehicle.app.activities.MapCameraActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:149
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }
 
 # view AndroidManifest.xml #generated:82

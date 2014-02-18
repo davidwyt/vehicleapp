@@ -1,6 +1,12 @@
 package com.vehicle.app.msg.bean;
 
-public class SimpleLocation {
+import java.io.Serializable;
+
+public class SimpleLocation implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8710168035526740604L;
 	private double longitude;
 	private double latitude;
 

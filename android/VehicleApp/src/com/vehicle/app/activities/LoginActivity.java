@@ -3,6 +3,7 @@ package com.vehicle.app.activities;
 import com.vehicle.app.bean.SelfDriver;
 import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
@@ -226,6 +227,8 @@ public class LoginActivity extends Activity {
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
+	
+	
 
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
@@ -235,7 +238,9 @@ public class LoginActivity extends Activity {
 		@Override
 		protected WebCallBaseResult doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
-
+			
+			LocationUtil.getCurLocation(getApplicationContext());
+			
 			WebCallBaseResult result = null;
 			try {
 				// Simulate network access.

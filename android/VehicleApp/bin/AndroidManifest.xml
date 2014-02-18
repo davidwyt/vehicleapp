@@ -53,7 +53,7 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.LoginActivity" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.ChatActivity" >
+        <activity android:name="com.vehicle.app.activities.LocationActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.SettingActivity" >
         </activity>
@@ -82,6 +82,10 @@
         <activity android:name="com.vehicle.app.activities.MsgMgrActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.MyFellowListActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.ChatActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.MapCameraActivity" >
         </activity>
 
         <!-- Required SDK核心功能 -->

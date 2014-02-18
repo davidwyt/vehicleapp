@@ -27,9 +27,7 @@ import com.vehicle.app.msg.worker.PictureMessageCourier;
 import com.vehicle.app.msg.worker.TextMessageCourier;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
-import com.vehicle.app.utils.LocationUtil;
 
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,6 +57,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChatActivity extends Activity implements OnClickListener {
 
@@ -67,9 +66,10 @@ public class ChatActivity extends Activity implements OnClickListener {
 	public static final String KEY_EXTRAS = "extras";
 
 	public static final String KEY_FELLOWID = "com.vehicle.app.chat.fellowId";
-	
+
 	private static final int REQUESTCODE_CAPTURE_IMAGE = 0x00000001;
 	private static final int REQUESTCODE_BROWSE_ALBUM = 0x00000002;
+	private static final int REQUESTCODE_CAPTURE_LOCATION = 0x00000003;
 
 	private Button mBtnSend;
 	private Button mBtnBack;
@@ -90,8 +90,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private final static int[] CHATPLUS_ICONS = { R.drawable.icon_chatplus_camera, R.drawable.icon_chatplus_gallery,
 			R.drawable.icon_chatplus_location };
 
-	private final static String[] CHATPLUS_FUNS = { "camera", "gallery", "location" };
-	
+	private static String[] CHATPLUS_FUNS = new String[3];
+
 	public final static String ACTIVITYNAME = "com.vehicle.app.activities.ChatActivity";
 
 	private Driver mDriver;
@@ -103,6 +103,10 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_chat);
+
+		CHATPLUS_FUNS[0] = this.getResources().getString(R.string.camera_zh);
+		CHATPLUS_FUNS[1] = this.getResources().getString(R.string.gallery_zh);
+		CHATPLUS_FUNS[2] = this.getResources().getString(R.string.location_zh);
 
 		initView();
 	}
@@ -176,7 +180,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 					browseImage();
 					break;
 				case 2:
-					sendLocationMsg();
+					locate();
 					break;
 				}
 
@@ -216,6 +220,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		case REQUESTCODE_BROWSE_ALBUM:
 			onBrowseAlbum(resultCode, data);
 			break;
+		case REQUESTCODE_CAPTURE_LOCATION:
+			onLocate(resultCode, data);
+			break;
 		default:
 			System.out.println("invalid requestcode :" + requestCode + " in chat activity");
 		}
@@ -236,6 +243,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		filter.addAction(Constants.ACTION_TEXTMESSAGE_SENTOK);
 		filter.addAction(Constants.ACTION_FILEMSG_RECEIVED);
 		filter.addAction(Constants.ACTION_FILEMSG_SENTOK);
+		filter.addAction(Constants.ACTION_TEXTMESSAGE_SENTFAILED);
+		filter.addAction(Constants.ACTION_FILEMESSAGE_SENTFAILED);
+		filter.addAction(Constants.ACTION_LOCMESSAGE_SENTFAILED);
 
 		registerReceiver(messageReceiver, filter);
 	}
@@ -305,6 +315,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private void save() {
 		Intent intent = new Intent();
+		intent.putExtra(MsgMgrActivity.KEY_FELLOWID, mFellowId);
 		intent.setClass(getApplicationContext(), MsgMgrActivity.class);
 		this.startActivity(intent);
 	}
@@ -319,6 +330,12 @@ public class ChatActivity extends Activity implements OnClickListener {
 		intent.setType("image/*");
 
 		startActivityForResult(intent, REQUESTCODE_BROWSE_ALBUM);
+	}
+
+	private void locate() {
+		Intent intent = new Intent(this, LocationActivity.class);
+
+		this.startActivityForResult(intent, REQUESTCODE_CAPTURE_LOCATION);
 	}
 
 	private void onCaptureImage(int resultCode, Intent data) {
@@ -386,6 +403,16 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	private void onLocate(int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "location received!", Toast.LENGTH_SHORT).show();
+
+		if (Activity.RESULT_OK == resultCode) {
+			SimpleLocation location = (SimpleLocation) data.getSerializableExtra(LocationActivity.KEY_LOCATION);
+			sendLocationMsg(location);
+		}
+	}
+
 	private void sendTextMsg() {
 
 		String content = mEditTextContent.getText().toString();
@@ -428,24 +455,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private void sendLocationMsg() {
-		Location location = null;
-		try {
-			location = LocationUtil.getCurLocation(getApplicationContext());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		SimpleLocation simLocation = new SimpleLocation();
-
-		if (null == location) {
-			System.err.println("can't get location");
-			simLocation.setLatitude(34.56789);
-			simLocation.setLongitude(56.12345);
-		} else {
-			simLocation.setLatitude(location.getLatitude());
-			simLocation.setLongitude(location.getLongitude());
-		}
+	private void sendLocationMsg(SimpleLocation simLocation) {
 
 		String content = JsonUtil.toJsonString(simLocation);
 
@@ -456,8 +466,14 @@ public class ChatActivity extends Activity implements OnClickListener {
 		entity.setFlag(MessageFlag.SELF);
 		entity.setMessageType(IMessageItem.MESSAGE_TYPE_LOCATION);
 
-		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext());
-		msgCourier.dispatch(entity);
+		this.mDataArrays.add(entity);
+		this.mAdapter.notifyDataSetChanged();
+
+		/**
+		 * IMessageCourier msgCourier = new
+		 * TextMessageCourier(this.getApplicationContext());
+		 * msgCourier.dispatch(entity);
+		 */
 	}
 
 	private void back() {
@@ -482,6 +498,15 @@ public class ChatActivity extends Activity implements OnClickListener {
 				onNewFileReceived(intent);
 			} else if (Constants.ACTION_FILEMSG_SENTOK.equals(action)) {
 				onNewFileSent(intent);
+			} else if (Constants.ACTION_TEXTMESSAGE_SENTFAILED.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_textmsgfailed),
+						Toast.LENGTH_SHORT).show();
+			} else if (Constants.ACTION_FILEMESSAGE_SENTFAILED.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_picmsgfailed),
+						Toast.LENGTH_SHORT).show();
+			} else if (Constants.ACTION_LOCMESSAGE_SENTFAILED.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_locmsgfailed),
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 
