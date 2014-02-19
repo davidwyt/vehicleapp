@@ -3,7 +3,6 @@ package com.vehicle.imserver.utils;
 import java.util.Map;
 
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
-import com.vehicle.service.bean.Notifications;
 
 import cn.jpush.api.DeviceEnum;
 import cn.jpush.api.ErrorCodeEnum;

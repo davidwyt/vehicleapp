@@ -7,6 +7,7 @@ import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
+import com.vehicle.service.bean.MessageOne2MultiRequest;
 import com.vehicle.service.bean.MessageOne2OneRequest;
 import com.vehicle.service.bean.OfflineAckRequest;
 import com.vehicle.service.bean.OfflineMessageRequest;
@@ -20,6 +21,8 @@ public interface MessageService {
 	public List<RespMessage> sendOfflineMsgs(OfflineMessageRequest omReq) throws PersistenceException;
 	public void SendMessage2Followees(MessageOne2FolloweesRequest msgRequest)
 			throws PersistenceException, PushMessageFailedException;
+	
+	public void sendMessage2Multi(MessageOne2MultiRequest req) throws PersistenceException, PushMessageFailedException;
 
 	public void SendMessage2Followers(MessageOne2FollowersRequest msgRequest)
 			throws PersistenceException, PushMessageFailedException;

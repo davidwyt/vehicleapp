@@ -22,6 +22,7 @@ import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.FileFetchRequest;
+import com.vehicle.service.bean.FileMultiTransmissionRequest;
 import com.vehicle.service.bean.FileTransmissionRequest;
 import com.vehicle.service.bean.INotification;
 import com.vehicle.service.bean.NewFileNotification;
@@ -54,7 +55,8 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		} catch (IOException e) {
 			throw e;
 		}
-
+		
+		
 		FileTransmission fileTran = RequestDaoUtil.toFileTransmission(request,
 				filePath,token);
 		
@@ -125,5 +127,60 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 
 	public void setOfflineMessageDao(OfflineMessageDao offlineMessageDao) {
 		this.offlineMessageDao = offlineMessageDao;
+	}
+
+	@Override
+	public FileTransmission SendFile2Multi(
+			FileMultiTransmissionRequest request, InputStream input)
+			throws IOException, PushNotificationFailedException,
+			PersistenceException {
+		String fileName=UUID.randomUUID().toString();
+		String filePath = FileUtil.GenPathForFileTransmission("",
+				request.getFileName(),fileName);
+
+		System.out.println("upload file:" + filePath);
+
+		try {
+			FileUtil.SaveFile(filePath, input);
+		} catch (IOException e) {
+			throw e;
+		}
+		
+		String[] targets=request.getTargets().split(",");
+		FileTransmission fileTran=null;
+		for(int i=0;i<targets.length;i++){
+			FileTransmissionRequest fReq=new FileTransmissionRequest();
+			fReq.setFileName(request.getFileName());
+			fReq.setSource(request.getSource());
+			fReq.setTarget(targets[i]);
+			String token=UUID.randomUUID().toString();
+			fileTran = RequestDaoUtil.toFileTransmission(fReq,
+					filePath,token);
+			try {
+				fileTransmissionDao.AddFileTranmission(fileTran);
+			} catch (Exception e) {
+				throw new PersistenceException(e.getMessage(), e);
+			}
+
+			INotification notification = new NewFileNotification(
+					fileTran.getSource(), fileTran.getTarget(), fileTran.getToken(), request.getFileName());
+				Message msg=new Message();
+				msg.setContent(token);
+				msg.setId(GUIDUtil.genNewGuid());
+				msg.setMessageType(MessageType.IMAGE.ordinal());
+				msg.setSentTime(System.currentTimeMillis());
+				msg.setTarget(notification.getTarget());
+				msg.setSource(notification.getSource());
+
+			try{
+				JPushUtil.getInstance().SendNotification(fileTran.getTarget(),
+					notification.getTitle(), JsonUtil.toJsonString(notification));
+				messageDao.save(msg);
+			}catch(PushNotificationFailedException e){
+				offlineMessageDao.save(new OfflineMessage(msg));
+				throw e;
+			}
+		}
+		return fileTran;
 	}
 }

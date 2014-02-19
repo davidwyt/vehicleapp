@@ -1,34 +1,36 @@
 package com.vehicle.service.bean;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class RangeRequest implements IRequest {
 	
-	private double startX;
-	private double endX;
-	private double startY;
-	private double endY;
-	public double getStartX() {
-		return startX;
+	private double centerX;
+	private double centerY;
+	private int range;
+	
+	@XmlElement
+	public double getCenterX() {
+		return centerX;
 	}
-	public void setStartX(double startX) {
-		this.startX = startX;
+	public void setCenterX(double centerX) {
+		this.centerX = centerX;
 	}
-	public double getEndX() {
-		return endX;
+	
+	@XmlElement
+	public double getCenterY() {
+		return centerY;
 	}
-	public void setEndX(double endX) {
-		this.endX = endX;
+	public void setCenterY(double centerY) {
+		this.centerY = centerY;
 	}
-	public double getStartY() {
-		return startY;
+	@XmlElement
+	public int getRange() {
+		return range;
 	}
-	public void setStartY(double startY) {
-		this.startY = startY;
-	}
-	public double getEndY() {
-		return endY;
-	}
-	public void setEndY(double endY) {
-		this.endY = endY;
+	public void setRange(int range) {
+		this.range = range;
 	}
 
 }

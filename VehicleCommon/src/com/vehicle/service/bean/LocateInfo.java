@@ -7,7 +7,7 @@ public class LocateInfo {
 	private String ownerId;
 	private double locateX;
 	private double locateY;
-	private Date time;
+	private long time;
 	
 	public String getOwnerId() {
 		return ownerId;
@@ -27,10 +27,10 @@ public class LocateInfo {
 	public void setLocateY(double locateY) {
 		this.locateY = locateY;
 	}
-	public Date getTime() {
+	public long getTime() {
 		return time;
 	}
-	public void setTime(Date time) {
+	public void setTime(long time) {
 		this.time = time;
 	}
 	

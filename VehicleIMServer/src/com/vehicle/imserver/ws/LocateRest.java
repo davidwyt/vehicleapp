@@ -1,6 +1,5 @@
 package com.vehicle.imserver.ws;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,7 @@ import com.vehicle.imserver.utils.LocateUtil;
 import com.vehicle.service.bean.AddLocateRequest;
 import com.vehicle.service.bean.AddLocateResponse;
 import com.vehicle.service.bean.LocateInfo;
-import com.vehicle.service.bean.OfflineAckRequest;
+import com.vehicle.service.bean.RangeInfo;
 import com.vehicle.service.bean.RangeRequest;
 import com.vehicle.service.bean.RangeResponse;
 
@@ -30,7 +29,7 @@ public class LocateRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response range(@Context HttpServletRequest request,
 			RangeRequest rangeReq) {
-		List<LocateInfo> list=LocateUtil.getInstance().getByRange(rangeReq.getStartX(), rangeReq.getStartY(), rangeReq.getEndX(), rangeReq.getEndY());
+		List<RangeInfo> list=LocateUtil.getInstance().get(rangeReq.getCenterX(), rangeReq.getCenterY(), rangeReq.getRange());
 		RangeResponse resp=new RangeResponse();
 		resp.setList(list);
 		return Response.status(Status.OK).entity(resp).build();
@@ -47,7 +46,7 @@ public class LocateRest {
 		info.setLocateX(addReq.getLocateX());
 		info.setLocateY(addReq.getLocateY());
 		info.setOwnerId(addReq.getId());
-		info.setTime(new Date());
+		info.setTime(System.currentTimeMillis());
 		LocateUtil.getInstance().add(info);
 		return Response.status(Status.OK).entity(resp).build();
 	}

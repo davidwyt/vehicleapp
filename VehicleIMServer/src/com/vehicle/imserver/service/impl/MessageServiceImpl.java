@@ -21,6 +21,7 @@ import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
+import com.vehicle.service.bean.MessageOne2MultiRequest;
 import com.vehicle.service.bean.MessageOne2OneRequest;
 import com.vehicle.service.bean.Notifications;
 import com.vehicle.service.bean.OfflineAckRequest;
@@ -163,6 +164,21 @@ public class MessageServiceImpl implements MessageService {
 		// TODO Auto-generated method stub
 		String target=req.getId();
 		this.getOfflineMessageDao().deleteOffline(target);
+	}
+
+	@Override
+	public void sendMessage2Multi(MessageOne2MultiRequest req) throws PersistenceException, PushMessageFailedException {
+		// TODO Auto-generated method stub
+		System.out.println(req.toString());
+
+		String source = req.getSource();
+		List<String> multi = new ArrayList<String>();
+		String[] temps=req.getTargets().split(",");
+		for(int i=0;i<temps.length;i++){
+			multi.add(temps[i]);
+		}
+
+		PersistentAndSendMessageList(source, multi, req.getContent());
 	}
 
 }

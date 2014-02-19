@@ -22,6 +22,8 @@ import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FolloweesResponse;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
 import com.vehicle.service.bean.MessageOne2FollowersResponse;
+import com.vehicle.service.bean.MessageOne2MultiRequest;
+import com.vehicle.service.bean.MessageOne2MultiResponse;
 import com.vehicle.service.bean.MessageOne2OneRequest;
 import com.vehicle.service.bean.MessageOne2OneResponse;
 import com.vehicle.service.bean.OfflineAckRequest;
@@ -162,6 +164,56 @@ public class MessageRest {
 
 	}
 
+	@POST
+	@Path("one2multi")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response SendMessage2Multie(@Context HttpServletRequest request,
+			MessageOne2MultiRequest msgRequest) {
+		MessageOne2MultiResponse msgResp=new MessageOne2MultiResponse();
+		if (null == msgRequest
+				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
+				|| StringUtil.isEmptyOrNull(msgRequest.getContent())) {
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
+			msgResp.setErrorMsg(String
+					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
+
+			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
+		}
+		try {
+			messageService.sendMessage2Multi(msgRequest);
+			return Response.status(Status.OK).entity(msgResp).build();
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			msgResp.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					msgRequest.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
+		} catch (PushMessageFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			msgResp.setErrorCode(ErrorCodes.MESSAGE_JPUSH_ERRCODE);
+			msgResp.setErrorMsg(String.format(ErrorCodes.MESSAGE_JPUSH_ERRMSG,
+					e.getMessage(), msgRequest.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			msgResp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(msgResp).build();
+		}
+	}
 	@POST
 	@Path("one2followees")
 	@Consumes(MediaType.APPLICATION_JSON)

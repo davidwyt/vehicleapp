@@ -26,6 +26,8 @@ import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
 import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileFetchResponse;
+import com.vehicle.service.bean.FileMultiTransmissionRequest;
+import com.vehicle.service.bean.FileMultiTransmissionResponse;
 import com.vehicle.service.bean.FileTransmissionRequest;
 import com.vehicle.service.bean.FileTransmissionResponse;
 
@@ -68,6 +70,77 @@ public class FileTransmissionRest {
 
 		try {
 			FileTransmission fileTran = fileTransmissionService.SendFile(fileRequest, input);
+			resp.setSentTime(fileTran.getTransmissionTime());
+			resp.setToken(fileTran.getToken());
+			
+			return Response.status(Status.OK).entity(resp).build();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.FILETRAN_FILESAVE_ERRCODE);
+			resp.setErrorMsg(String.format(ErrorCodes.FILETRAN_FILESAVE_ERRMSG,
+					fileName));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+		} catch (PushNotificationFailedException e) {
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.NOTIFICATION_PUSHFAILED_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.NOTIFICATION_PUSHFAILED_ERRMSG, "new file",
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					fileRequest.toString()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			resp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		}
+	}
+	
+	@POST
+	@Path("sendtomulti/source={source}&&targets={targets}&&fileName={fileName}")
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response TransmitFileToMulti(@Context HttpServletRequest request,
+			InputStream input, @PathParam("source") String source,
+			@PathParam("targets") String targets,
+			@PathParam("fileName") String fileName) {
+		FileMultiTransmissionResponse resp = new FileMultiTransmissionResponse();
+		
+		if (StringUtil.isEmptyOrNull(source)
+				|| StringUtil.isEmptyOrNull(targets)
+				|| StringUtil.isEmptyOrNull(fileName) || null == input) {
+			resp.setErrorCode(ErrorCodes.FILETRAN_INVALID_ERRCODE);
+			resp.setErrorMsg(ErrorCodes.FILETRAN_INVALID_ERRMSG);
+
+			return Response.status(Status.BAD_REQUEST).entity(resp).build();
+		}
+
+		FileMultiTransmissionRequest fileRequest = new FileMultiTransmissionRequest();
+		fileRequest.setSource(source);
+		fileRequest.setTargets(targets);
+		fileRequest.setFileName(fileName);
+
+		try {
+			FileTransmission fileTran = fileTransmissionService.SendFile2Multi(fileRequest, input);
 			resp.setSentTime(fileTran.getTransmissionTime());
 			resp.setToken(fileTran.getToken());
 			

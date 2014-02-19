@@ -8,11 +8,15 @@ import com.vehicle.imserver.service.exception.FileTransmissionNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
 import com.vehicle.service.bean.FileFetchRequest;
+import com.vehicle.service.bean.FileMultiTransmissionRequest;
 import com.vehicle.service.bean.FileTransmissionRequest;
 
 public interface FileTransmissionService {
 	
 	public FileTransmission SendFile(FileTransmissionRequest request,
+			InputStream input) throws IOException, PushNotificationFailedException, PersistenceException;
+	
+	public FileTransmission SendFile2Multi(FileMultiTransmissionRequest request,
 			InputStream input) throws IOException, PushNotificationFailedException, PersistenceException;
 	
 	public String FetchFile(FileFetchRequest request) throws FileTransmissionNotFoundException, PersistenceException;
