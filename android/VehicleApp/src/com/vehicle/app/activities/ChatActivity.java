@@ -131,8 +131,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		chatPlusPopup();
 
-		System.out.println("iddddddddddddd:" + mFellowId);
-
 		mAdapter = new ChatMsgViewAdapter(this.getApplicationContext(), mDataArrays);
 		this.mMsgList.setAdapter(mAdapter);
 	}
@@ -268,14 +266,11 @@ public class ChatActivity extends Activity implements OnClickListener {
 		if (null != bundle) {
 			mFellowId = bundle.getString(KEY_FELLOWID);
 			
-			System.out.println("fellow:" + mFellowId);
-			
 			TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
 
 			if (SelfMgr.getInstance().isDriver()) {
 				this.mVendor = SelfMgr.getInstance().getFavVendorDetail(mFellowId);
 				
-				System.out.println("vendor null:" + (null == mVendor));
 				if (null != this.mVendor) {
 					tvFellow.setText(this.mVendor.getName());
 				}

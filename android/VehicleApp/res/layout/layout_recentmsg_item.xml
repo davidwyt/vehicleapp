@@ -15,16 +15,6 @@
         android:background="@drawable/contact_list_minus_btn_normal"
         android:focusable="false" />
 
-    <TextView
-        android:id="@+id/useritem_tv_lastmessagetime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:ellipsize="end"
-        android:gravity="right"
-        android:singleLine="true"
-        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/useritem_tv_username"
@@ -32,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/useritem_iv_userhead"
         android:layout_marginLeft="16dp"
-        android:layout_toLeftOf="@id/useritem_tv_lastmessagetime"
         android:layout_toRightOf="@id/useritem_iv_userhead"
+        android:text="name"
         android:ellipsize="end"
         android:singleLine="true"
         android:textSize="20sp" />
@@ -49,4 +39,16 @@
         android:singleLine="true"
         android:textSize="18sp" />
 
+        <TextView
+        android:id="@+id/useritem_tv_lastmessagetime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/useritem_tv_lastmessage"
+        android:ellipsize="end"
+        android:gravity="right"
+        android:text="time"
+        android:singleLine="true"
+        android:textSize="15sp" />
+    
 </RelativeLayout>

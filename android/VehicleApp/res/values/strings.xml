@@ -50,4 +50,16 @@
 	<string name="tip_followfailed">关注商家失败，请检查网络连接</string>
 	<string name="tip_invitationsuccess">关注请求发送成功</string>
 	<string name="tip_invitationfailed">关注请求发送失败，请确保网络连接正常</string>
+	<string name="project_zh">所做项目:</string>
+	<string name="shopname_zh">商户名:</string>
+	<string name="zh_repair">修理</string>
+	<string name="zh_beauty">美容</string>
+	<string name="zh_maintain">保养</string>
+	<string name="zh_wash">洗车</string>
+	<string name="zh_price">价格</string>
+	<string name="zh_technology">技术</string>
+	<string name="zh_efficiency">效率</string>
+	<string name="zh_reception">接待</string>
+	<string name="zh_environment">环境</string>
+	<string name="zh_comment_hint">狠狠的表扬或者唾弃它吧</string>
 </resources>

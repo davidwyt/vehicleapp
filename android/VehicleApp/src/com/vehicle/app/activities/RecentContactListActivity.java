@@ -112,14 +112,16 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				Object user = mAdapter.getItem(position - 1);
+				Object item = mAdapter.getItem(position - 1);
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), ChatActivity.class);
 
-				if (SelfMgr.getInstance().isDriver() && user instanceof Vendor) {
-					intent.putExtra(ChatActivity.KEY_FELLOWID, ((Vendor) user).getId());
-				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
-					intent.putExtra(ChatActivity.KEY_FELLOWID, ((Driver) user).getId());
+				RecentMessage msg = (RecentMessage) item;
+
+				if (SelfMgr.getInstance().isDriver()) {
+					intent.putExtra(ChatActivity.KEY_FELLOWID, msg.getFellowId());
+				} else if (!SelfMgr.getInstance().isDriver()) {
+					intent.putExtra(ChatActivity.KEY_FELLOWID, msg.getFellowId());
 				}
 
 				RecentContactListActivity.this.startActivity(intent);

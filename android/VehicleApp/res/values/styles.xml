@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -75,7 +75,15 @@
 
     <style name="chatpluspopupwin_animation">
         <item name="android:windowEnterAnimation">@anim/chatplus_enter</item>
-          <item name="android:windowExitAnimation">@anim/chatplus_exit</item>
+        <item name="android:windowExitAnimation">@anim/chatplus_exit</item>
+    </style>
+
+    <style name="VendorRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/layer_list_ratingbar</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:maxHeight">96dp</item>
+        <item name="android:minWidth">24dp</item>
+        <item name="android:maxWidth">96dp</item>
     </style>
 
 </resources>

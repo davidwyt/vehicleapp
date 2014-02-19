@@ -1,19 +1,19 @@
-# view AndroidManifest.xml #generated:179
+# view AndroidManifest.xml #generated:181
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:146
+# view AndroidManifest.xml #generated:148
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:104
+# view AndroidManifest.xml #generated:106
 -keep class cn.jpush.android.service.DownloadService { <init>(...); }
 
-# view AndroidManifest.xml #generated:124
+# view AndroidManifest.xml #generated:126
 -keep class cn.jpush.android.service.PushReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:111
+# view AndroidManifest.xml #generated:113
 -keep class cn.jpush.android.service.PushService { <init>(...); }
 
-# view AndroidManifest.xml #generated:92
+# view AndroidManifest.xml #generated:94
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
 
 # view res/layout/activity_camera.xml #generated:91
@@ -25,7 +25,7 @@
 # view res/layout/activity_recentcontactlist.xml #generated:32
 -keep class com.handmark.pulltorefresh.library.PullToRefreshListView { <init>(...); }
 
-# view AndroidManifest.xml #generated:47
+# view AndroidManifest.xml #generated:90
 -keep class com.vehicle.app.activities.BeginActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:86
@@ -52,7 +52,7 @@
 # view AndroidManifest.xml #generated:88
 -keep class com.vehicle.app.activities.MapCameraActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:149
+# view AndroidManifest.xml #generated:151
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }
 
 # view AndroidManifest.xml #generated:82
@@ -84,6 +84,9 @@
 
 # view AndroidManifest.xml #generated:74
 -keep class com.vehicle.app.activities.VendorInfoActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:47
+-keep class com.vehicle.app.activities.VendorRatingActivity { <init>(...); }
 
 # view res/layout/activity_nearbymain.xml #generated:53
 # view res/layout/activity_recentcontactlist.xml #generated:24

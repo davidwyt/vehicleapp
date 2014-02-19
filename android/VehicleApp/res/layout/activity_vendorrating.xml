@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    tools:context="com.vehicle.app.activities.VendorRatingActivity" >
+
+    <ScrollView
+        android:id="@+id/vendorrating_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray" >
+
+        <LinearLayout
+            android:id="@+id/vendorrating_titleId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/vendorrating_goback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:background="@drawable/selector_btn_gobak" />
+
+                <ImageView
+                    android:id="@+id/vendorrating_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:contentDescription="@string/title"
+                    android:src="@drawable/icon_title_vendorrating" >
+                </ImageView>
+
+                <LinearLayout
+                    android:id="@+id/rating_vendorname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/vendorrating_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/shopname_zh"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" >
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/vendorrating_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="20sp" >
+                    </TextView>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/rating_vendorname"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/icon_divider" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp" >
+
+                <TextView
+                    android:id="@+id/vendorrating_tv_project"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/project_zh"
+                    android:textColor="@color/blue"
+                    android:textSize="18sp" />
+
+                <RadioGroup
+                    android:id="@+id/vendorrating_project_radiogroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/vendorrating_tv_project"
+                    android:layout_below="@id/vendorrating_tv_project"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/rd_vehiclerepair"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/zh_repair" >
+                    </RadioButton>
+
+                    <RadioButton
+                        android:id="@+id/rd_vehiclebeauty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/zh_beauty" >
+                    </RadioButton>
+
+                    <RadioButton
+                        android:id="@+id/rd_vehiclemaintain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/zh_maintain" >
+                    </RadioButton>
+
+                    <RadioButton
+                        android:id="@+id/rd_vehiclewash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/zh_wash" >
+                    </RadioButton>
+                </RadioGroup>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp" >
+
+                <LinearLayout
+                    android:id="@+id/ll_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/zh_price"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" >
+                    </TextView>
+
+                    <RatingBar
+                        android:id="@+id/ratingbar_price"
+                        style="@style/VendorRatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="false"
+                        android:stepSize="1.0"
+                        android:numStars="5"
+                        android:rating="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_tech"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/ll_price"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/zh_technology"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" >
+                    </TextView>
+
+                    <RatingBar
+                        android:id="@+id/ratingbar_technology"
+                        style="@style/VendorRatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:stepSize="1.0"
+                        android:isIndicator="false"
+                        android:numStars="5"
+                        android:rating="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_efficiency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/ll_price"
+                    android:layout_below="@id/ll_price"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/zh_efficiency"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" >
+                    </TextView>
+
+                    <RatingBar
+                        android:id="@+id/ratingbar_efficiency"
+                        style="@style/VendorRatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="false"
+                        android:stepSize="1.0"
+                        android:numStars="5"
+                        android:rating="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_reception"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/ll_tech"
+                    android:layout_alignTop="@id/ll_efficiency"
+                    android:layout_below="@id/ll_tech"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/zh_reception"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" >
+                    </TextView>
+
+                    <RatingBar
+                        android:id="@+id/ratingbar_reception"
+                        style="@style/VendorRatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="false"
+                        android:stepSize="1.0"
+                        android:numStars="5"
+                        android:rating="5" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_environment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/ll_efficiency"
+                    android:layout_below="@id/ll_efficiency"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:text="@string/zh_environment"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" >
+                    </TextView>
+
+                    <RatingBar
+                        android:id="@+id/ratingbar_environment"
+                        style="@style/VendorRatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:isIndicator="false"
+                        android:stepSize="1.0"
+                        android:numStars="5"
+                        android:rating="5" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/vendorrating_et_comment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:gravity="left|top"
+                android:minLines="4"
+                android:hint="@string/zh_comment_hint"
+                android:inputType="textMultiLine"
+                android:textColor="@color/black" />
+            
+            <Button 
+                android:id="@+id/vendorrating_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                android:text="submitttttttttt">
+            </Button>
+        </LinearLayout>
+    </ScrollView>
+
+</merge>
