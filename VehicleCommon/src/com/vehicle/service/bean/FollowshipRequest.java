@@ -4,31 +4,27 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class FollowshipRequest implements IRequest{
-	
+public class FollowshipRequest implements IRequest {
+
 	private String follower;
 	private String followee;
-	
+
 	@XmlElement
-	public String getFollower()
-	{
+	public String getFollower() {
 		return this.follower;
 	}
-	
-	public void setFollower(String follower)
-	{
+
+	public void setFollower(String follower) {
 		this.follower = follower;
 	}
-	
+
 	@XmlElement
-	public String getFollowee()
-	{
+	public String getFollowee() {
 		return this.followee;
 	}
-	
-	public void setFollowee(String followee)
-	{
+
+	public void setFollowee(String followee) {
 		this.followee = followee;
 	}
-	
+
 }

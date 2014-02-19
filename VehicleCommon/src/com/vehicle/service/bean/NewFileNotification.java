@@ -1,8 +1,5 @@
 package com.vehicle.service.bean;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class NewFileNotification implements INotification {
 
 	private String token;
@@ -12,11 +9,12 @@ public class NewFileNotification implements INotification {
 	private long sentTime;
 
 	public NewFileNotification(String source, String target, String token,
-			String fileName) {
+			String fileName, long sentTime) {
 		this.source = source;
 		this.target = target;
 		this.token = token;
 		this.fileName = fileName;
+		this.sentTime = sentTime;
 	}
 
 	public long getSentTime() {
@@ -75,11 +73,4 @@ public class NewFileNotification implements INotification {
 		this.fileName = name;
 	}
 
-	@Override
-	public Map<String, Object> getExtras() {
-		// TODO Auto-generated method stub
-		Map<String, Object> extras = new HashMap<String, Object>();
-		extras.put("token", token);
-		return extras;
-	}
 }

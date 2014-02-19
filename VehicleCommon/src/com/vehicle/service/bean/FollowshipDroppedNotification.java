@@ -1,7 +1,5 @@
 package com.vehicle.service.bean;
 
-import java.util.Map;
-
 public class FollowshipDroppedNotification implements INotification{
 
 	private String source;
@@ -46,9 +44,4 @@ public class FollowshipDroppedNotification implements INotification{
 		this.target = target;
 	}
 
-	@Override
-	public Map<String, Object> getExtras() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

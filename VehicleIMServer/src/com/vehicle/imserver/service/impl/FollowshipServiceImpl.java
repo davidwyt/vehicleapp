@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
-import com.vehicle.imserver.dao.bean.FollowshipInvitationStatus;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
 import com.vehicle.imserver.dao.interfaces.FollowshipInvitationDao;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
@@ -120,7 +119,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 	}
 
 	@Override
-	public void InviteFollowship(FollowshipInvitationRequest invitationRequest)
+	public FollowshipInvitation InviteFollowship(FollowshipInvitationRequest invitationRequest)
 			throws PushNotificationFailedException, PersistenceException {
 
 		// should verify if the member has followed the shop first
@@ -132,7 +131,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 		invitation.setReqTime(new Date().getTime());
 		invitation.setSource(invitationRequest.getShopId());
 		invitation.setTarget(invitationRequest.getMemberId());
-		invitation.setStatus(FollowshipInvitationStatus.REQUESTED);
+		invitation.setStatus(FollowshipInvitation.STATUS_REQUESTED);
 
 		try {
 			this.followshipInvitationDao.AddFollowshipInvitation(invitation);
@@ -144,9 +143,12 @@ public class FollowshipServiceImpl implements FollowshipService {
 		notification.setSource(invitationRequest.getMemberId());
 		notification.setTarget(invitationRequest.getShopId());
 		notification.setInvitationId(invitationId);
+		notification.setInviteTime(invitation.getReqTime());
 
 		JPushUtil.getInstance().SendNotification(notification.getTarget(),
 				notification.getTitle(), JsonUtil.toJsonString(notification));
+		
+		return invitation;
 	}
 
 	@Override
@@ -165,8 +167,8 @@ public class FollowshipServiceImpl implements FollowshipService {
 					"the invitation:%s not exist", invitationId));
 		}
 
-		if (FollowshipInvitationStatus.ACCEPTED == invitation.getStatus()
-				|| FollowshipInvitationStatus.REJECTED == invitation
+		if (FollowshipInvitation.STATUS_ACCEPTED == invitation.getStatus()
+				|| FollowshipInvitation.STATUS_REJECTED == invitation
 						.getStatus()) {
 			throw new FollowshipInvitationProcessedAlreadyException(
 					String.format("the invitation:%s has been processed",
@@ -180,7 +182,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 					.setSource(invitation.getTarget());
 			((FollowshipInvitationAcceptNotification) notification)
 					.setTarget(invitation.getSource());
-			invitation.setStatus(FollowshipInvitationStatus.ACCEPTED);
+			invitation.setStatus(FollowshipInvitation.STATUS_ACCEPTED);
 
 		} else {
 			notification = new FollowshipInvitationRejectNotification();
@@ -188,7 +190,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 					.setSource(invitation.getTarget());
 			((FollowshipInvitationRejectNotification) notification)
 					.setTarget(invitation.getSource());
-			invitation.setStatus(FollowshipInvitationStatus.REJECTED);
+			invitation.setStatus(FollowshipInvitation.STATUS_REJECTED);
 		}
 
 		try {

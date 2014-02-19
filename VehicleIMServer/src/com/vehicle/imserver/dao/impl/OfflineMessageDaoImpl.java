@@ -18,7 +18,6 @@ public class OfflineMessageDaoImpl extends BaseDaoImpl<OfflineMessage> implement
 		// TODO Auto-generated method stub
 		Session session = this.getSession();
 		
-		
 		Query query = session.createQuery(Contants.HQL_SELECT_OFFLINE);
 		query.setString("target", target);
 		query.setDate("senttime", time);

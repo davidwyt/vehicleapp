@@ -10,28 +10,27 @@ import org.apache.commons.io.IOUtils;
 
 public class FileUtil {
 
-	public static String GenPathForFileTransmission(String root, String fileName,String token)
-	{
-		String[] temps=fileName.split("\\.");
-		String name=token+"."+temps[temps.length-1];
-		return AppendPath(AppendPath(root, Contants.FILE_TRANSMISSION_ROOTPATH), name);
+	public static String GenPathForFileTransmission(String root,
+			String fileName, String token) {
+		String[] temps = fileName.split("\\.");
+		String name = token + "." + temps[temps.length - 1];
+
+		return AppendPath(AppendPath(root, Contants.getFileRootPath()), name);
 	}
-	
-	public static String AppendPath(String part1, String part2)
-	{
+
+	public static String AppendPath(String part1, String part2) {
 		String path = part1;
-		if(!path.isEmpty() && !path.endsWith(File.separator))
-		{
+		if (!path.isEmpty() && !path.endsWith(File.separator)) {
 			path += File.separator;
 		}
-		
+
 		path += part2;
-		
+
 		return path;
 	}
-	
-	public static void SaveFile(String path, InputStream input) throws IOException
-	{
+
+	public static void SaveFile(String path, InputStream input)
+			throws IOException {
 		OutputStream outStream = new FileOutputStream(path);
 		IOUtils.copy(input, outStream);
 	}

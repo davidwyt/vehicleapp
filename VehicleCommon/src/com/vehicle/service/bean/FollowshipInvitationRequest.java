@@ -4,30 +4,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class FollowshipInvitationRequest implements IRequest{
-	
+public class FollowshipInvitationRequest implements IRequest {
+
 	private String memberId;
 	private String shopId;
-	
+
 	@XmlElement
-	public String getMemberId()
-	{
+	public String getMemberId() {
 		return this.memberId;
 	}
-	
-	public void setMemberId(String memberId)
-	{
+
+	public void setMemberId(String memberId) {
 		this.memberId = memberId;
 	}
-	
+
 	@XmlElement
-	public String getShopId()
-	{
+	public String getShopId() {
 		return this.shopId;
 	}
-	
-	public void setShopId(String shopId)
-	{
+
+	public void setShopId(String shopId) {
 		this.shopId = shopId;
 	}
 }

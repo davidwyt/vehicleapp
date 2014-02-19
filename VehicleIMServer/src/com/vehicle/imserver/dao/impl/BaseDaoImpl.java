@@ -18,7 +18,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 	
 	public Session getSession() {  
         return sessionFactory.getCurrentSession();  
-    }  
+    }
 	
 	public void delete(Serializable id) {
 		T obj = this.load(id);
@@ -30,7 +30,8 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 	}
 
 	public Serializable save(T obj) {
-		return (Serializable) getSession().save(obj);
+		Serializable ret = (Serializable) getSession().save(obj);
+		return ret;
 	}
 
 	public void saveOrUpdate(T obj) {

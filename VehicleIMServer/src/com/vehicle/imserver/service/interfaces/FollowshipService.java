@@ -2,6 +2,7 @@ package com.vehicle.imserver.service.interfaces;
 
 import java.util.List;
 
+import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.service.exception.FollowshipAlreadyExistException;
 import com.vehicle.imserver.service.exception.FollowshipInvitationNotExistException;
 import com.vehicle.imserver.service.exception.FollowshipInvitationProcessedAlreadyException;
@@ -37,7 +38,7 @@ public interface FollowshipService {
 			FollowshipDroppedRequest followshipDroppedRequest)
 			throws PushNotificationFailedException;
 
-	public void InviteFollowship(FollowshipInvitationRequest invitationRequest)
+	public FollowshipInvitation InviteFollowship(FollowshipInvitationRequest invitationRequest)
 			throws PushNotificationFailedException, PersistenceException;
 
 	public void InvitedFollowshipResult(
