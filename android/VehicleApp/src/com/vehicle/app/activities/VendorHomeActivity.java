@@ -1,7 +1,7 @@
 package com.vehicle.app.activities;
 
-import com.vehicle.app.adapter.ImagePageAdapter;
-import com.vehicle.app.adapter.TestFragmentAdapter;
+import com.vehicle.app.adapter.VendorImagePageAdapter;
+import com.vehicle.app.adapter.VendorInfoFragmentAdapter;
 
 import com.viewpagerindicator.TitlePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator.IndicatorStyle;
@@ -15,11 +15,11 @@ import android.view.Window;
 
 public class VendorHomeActivity extends FragmentActivity {
 
-	TestFragmentAdapter mTileAdapter;
+	VendorInfoFragmentAdapter mTileAdapter;
 	ViewPager mTilePager;
 	TitlePageIndicator mTileIndicator;
 
-	ImagePageAdapter mImgAdapter;
+	VendorImagePageAdapter mImgAdapter;
 	ViewPager mImgPager;
 	UnderlinePageIndicator mImgIndicator;
 
@@ -30,7 +30,7 @@ public class VendorHomeActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.setContentView(R.layout.activity_vendorhome);
 
-		mTileAdapter = new TestFragmentAdapter(getSupportFragmentManager());
+		mTileAdapter = new VendorInfoFragmentAdapter(getSupportFragmentManager());
 
 		mTilePager = (ViewPager) findViewById(R.id.vendorhome_pager);
 		mTilePager.setAdapter(mTileAdapter);
@@ -42,7 +42,7 @@ public class VendorHomeActivity extends FragmentActivity {
 
 		mTileIndicator = indicator;
 
-		mImgAdapter = new ImagePageAdapter(getSupportFragmentManager());
+		mImgAdapter = new VendorImagePageAdapter(getSupportFragmentManager());
 		mImgPager = (ViewPager) this.findViewById(R.id.vendorhome_imagepager);
 		mImgPager.setAdapter(mImgAdapter);
 		

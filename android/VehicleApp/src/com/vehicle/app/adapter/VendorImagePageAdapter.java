@@ -1,12 +1,14 @@
 package com.vehicle.app.adapter;
 
+import com.vehicle.app.fragments.ImagePageFragment;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class ImagePageAdapter extends FragmentPagerAdapter{
+public class VendorImagePageAdapter extends FragmentPagerAdapter{
 
-	public ImagePageAdapter(FragmentManager fm) {
+	public VendorImagePageAdapter(FragmentManager fm) {
 		super(fm);
 		// TODO Auto-generated constructor stub
 	}

@@ -2,6 +2,7 @@ package com.vehicle.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.vehicle.app.utils.Constants;
@@ -50,6 +51,9 @@ public class Driver implements Serializable {
 	private String lastMessage;
 	private Date lastMessageTime;
 	private double distance;
+	
+	@SerializedName("Review.list")
+	private List<Comment> reviews;
 
 	public String getId() {
 		return this.id;

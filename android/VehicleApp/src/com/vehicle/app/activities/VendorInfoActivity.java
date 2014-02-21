@@ -164,16 +164,15 @@ public class VendorInfoActivity extends Activity {
 			loader.load();
 		}
 
-		this.mTvScore.setText(Float.toString(mVendor.getScore()));
-		this.mTvEfficiency.setText(Float.toString(mVendor.getEfficiencyScore()));
-		this.mTvEnvironment.setText(Float.toString(mVendor.getEnvironmentScore()));
-		this.mTvPrice.setText(Float.toString(mVendor.getPriceScore()));
-		this.mTvReception.setText(Float.toString(mVendor.getReceptionScore()));
-		this.mTvTechnology.setText(Float.toString(mVendor.getTechnologyScore()));
+		this.mTvScore.setText(Double.toString(mVendor.getScore()));
+		this.mTvEfficiency.setText(Double.toString(mVendor.getEfficiencyScore()));
+		this.mTvEnvironment.setText(Double.toString(mVendor.getEnvironmentScore()));
+		this.mTvPrice.setText(Double.toString(mVendor.getPriceScore()));
+		this.mTvReception.setText(Double.toString(mVendor.getReceptionScore()));
+		this.mTvTechnology.setText(Double.toString(mVendor.getTechnologyScore()));
 
 		this.mTvAddr.setText(mVendor.getAddress());
 		this.mTvMobileNum.setText(mVendor.getMobile());
-
 	}
 
 	@Override

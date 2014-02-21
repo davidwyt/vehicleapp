@@ -38,6 +38,7 @@ public class VehicleWebClient {
 	private final static String URL_VENDOR_LOGIN = "business/businessLogin?userName=%s&pass=%s";
 	private final static String URL_VENDOR_REGISTER = "business/businessCreate?userName=%s&pass=%s&email=%s";
 	private final static String URL_VENDOR_VIEW = "business/businessView?memberId=%s";
+	private final static String URL_VENDOR_SPECVIEW = "business/businessMulList?memberId=%s";
 	private final static String URL_VENDORLIST_VIEW = "business/businessListView?memberId=%s";
 	private final static String URL_VENDORFELLOWS_VIEW = "business/businessFavoriteList?shopId=%s";
 
@@ -100,6 +101,13 @@ public class VehicleWebClient {
 
 	public VendorViewResult VendorView(String vendorId) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_VENDOR_VIEW);
+		url = String.format(url, vendorId);
+
+		return HttpUtil.GetJson(url, VendorViewResult.class);
+	}
+
+	public VendorViewResult VendorSpecView(String vendorId) {
+		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_VENDOR_SPECVIEW);
 		url = String.format(url, vendorId);
 
 		return HttpUtil.GetJson(url, VendorViewResult.class);

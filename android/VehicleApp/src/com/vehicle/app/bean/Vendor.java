@@ -2,15 +2,13 @@ package com.vehicle.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.vehicle.app.utils.Constants;
 
 public class Vendor implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1239603827677527705L;
 
 	@SerializedName("id")
@@ -26,22 +24,22 @@ public class Vendor implements Serializable {
 	@SerializedName("view_total")
 	private String viewTotal;
 
-	private float score;
+	private double score;
 
 	@SerializedName("price")
-	private float priceScore;
+	private double priceScore;
 
 	@SerializedName("technology")
-	private float technologyScore;
+	private double technologyScore;
 
 	@SerializedName("efficiency")
-	private float efficiencyScore;
+	private double efficiencyScore;
 
 	@SerializedName("receive")
-	private float receptionScore;
+	private double receptionScore;
 
 	@SerializedName("environment")
-	private float environmentScore;
+	private double environmentScore;
 
 	private String cas;
 	private String address;
@@ -69,6 +67,15 @@ public class Vendor implements Serializable {
 	private Date lastMessageTime;
 
 	private String distance;
+
+	@SerializedName("BusinessSpecials.list")
+	private List<VendorCoupon> coupons;
+
+	@SerializedName("Review.list")
+	private List<Comment> reviews;
+
+	@SerializedName("BusinessActivity.list")
+	private List<VendorPromotion> promotions;
 
 	public String getId() {
 		return this.id;
@@ -114,51 +121,51 @@ public class Vendor implements Serializable {
 		this.viewTotal = num;
 	}
 
-	public float getScore() {
+	public double getScore() {
 		return this.score;
 	}
 
-	public void setScore(float score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
 
-	public float getPriceScore() {
+	public double getPriceScore() {
 		return this.priceScore;
 	}
 
-	public void setPriceScore(float price) {
+	public void setPriceScore(double price) {
 		this.priceScore = price;
 	}
 
-	public float getTechnologyScore() {
+	public double getTechnologyScore() {
 		return this.technologyScore;
 	}
 
-	public void setTechnologyScore(float tech) {
+	public void setTechnologyScore(double tech) {
 		this.technologyScore = tech;
 	}
 
-	public float getEfficiencyScore() {
+	public double getEfficiencyScore() {
 		return this.efficiencyScore;
 	}
 
-	public void setEfficiencyScore(float eff) {
+	public void setEfficiencyScore(double eff) {
 		this.efficiencyScore = eff;
 	}
 
-	public float getReceptionScore() {
+	public double getReceptionScore() {
 		return this.receptionScore;
 	}
 
-	public void setReceptioncore(float rev) {
+	public void setReceptioncore(double rev) {
 		this.receptionScore = rev;
 	}
 
-	public float getEnvironmentScore() {
+	public double getEnvironmentScore() {
 		return this.environmentScore;
 	}
 
-	public void setEnvironmentScore(float env) {
+	public void setEnvironmentScore(double env) {
 		this.environmentScore = env;
 	}
 
@@ -258,4 +265,27 @@ public class Vendor implements Serializable {
 		this.distance = distance;
 	}
 
+	public List<VendorCoupon> getCoupons() {
+		return this.coupons;
+	}
+
+	public void setCoupons(List<VendorCoupon> coupons) {
+		this.coupons = coupons;
+	}
+
+	public List<Comment> getReviews() {
+		return this.reviews;
+	}
+
+	public void setReviews(List<Comment> reviews) {
+		this.reviews = reviews;
+	}
+
+	public List<VendorPromotion> getPromotions() {
+		return this.promotions;
+	}
+
+	public void setPromotioms(List<VendorPromotion> promotions) {
+		this.promotions = promotions;
+	}
 }

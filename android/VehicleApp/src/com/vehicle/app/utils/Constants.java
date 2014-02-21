@@ -30,6 +30,14 @@ public class Constants {
 	public static final LatLng CHENGDU = new LatLng(30.679879, 104.064855);// 成都市经纬度
 	public static final LatLng XIAN = new LatLng(34.341568, 108.940174);// 西安市经纬度
 	public static final LatLng ZHENGZHOU = new LatLng(34.7466, 113.625367);// 郑州市经纬度
-	
+
 	public static final String COMMA = ",";
+
+	public static final String IMGNAME_DIVIDER = "|";
+
+	public static final String MIDDLEIMG_PATH = "http://www.ac0086.com/uploads/pics/m/";
+
+	public static String getMiddleVendorImg(String name) {
+		return URLUtil.UrlAppend(MIDDLEIMG_PATH, name);
+	}
 }

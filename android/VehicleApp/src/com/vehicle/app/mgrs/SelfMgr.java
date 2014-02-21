@@ -199,6 +199,10 @@ public class SelfMgr {
 		}
 	}
 
+	public void updateNearbyVendor(Vendor vendor) {
+		this.mNearbyVendorMap.put(vendor.getId(), vendor);
+	}
+
 	public void updateNearbyDrivers(Collection<Driver> drivers) {
 		synchronized (this.mNearbyDriverMap) {
 			this.mNearbyDriverMap.clear();

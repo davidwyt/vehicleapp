@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/commentitem_iv_userhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/contact_list_minus_btn_normal"
+        android:focusable="false" />
+
+    <TextView
+        android:id="@+id/commentitem_tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/commentitem_iv_userhead"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/commentitem_iv_userhead"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="name"
+        android:textSize="20sp" />
+
+    <RatingBar
+        android:id="@+id/ratingbar_score"
+        style="@style/VendorRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/commentitem_tv_username"
+        android:layout_alignLeft="@id/commentitem_tv_username"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:rating="5" />
+
+    <TextView
+        android:id="@+id/commentitem_tv_reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/ratingbar_score"
+        android:layout_alignLeft="@id/ratingbar_score"
+        android:ellipsize="end"
+        android:singleLine="false"
+        android:layout_marginRight="8dp"
+        android:text="time"
+        android:textSize="15sp" />
+
+</RelativeLayout>

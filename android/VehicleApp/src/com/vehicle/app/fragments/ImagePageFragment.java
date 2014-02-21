@@ -1,4 +1,4 @@
-package com.vehicle.app.adapter;
+package com.vehicle.app.fragments;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.os.Bundle;

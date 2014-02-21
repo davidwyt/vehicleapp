@@ -25,8 +25,8 @@
 -keep class com.amap.api.maps.MapView { <init>(...); }
 
 # view res/layout/activity_myfellowlist.xml #generated:16
-# view res/layout/activity_nearbyfellowlist.xml #generated:16
-# view res/layout/activity_recentcontactlist.xml #generated:32
+# view res/layout/activity_nearbyfellowlist.xml #generated:47
+# view res/layout/activity_recentcontactlist.xml #generated:36
 -keep class com.handmark.pulltorefresh.library.PullToRefreshListView { <init>(...); }
 
 # view AndroidManifest.xml #generated:90
@@ -96,7 +96,7 @@
 -keep class com.vehicle.app.activities.VendorRatingActivity { <init>(...); }
 
 # view res/layout/activity_nearbymain.xml #generated:53
-# view res/layout/activity_recentcontactlist.xml #generated:24
+# view res/layout/activity_recentcontactlist.xml #generated:28
 -keep class com.vehicle.app.layout.BottomBarLayout { <init>(...); }
 
 # view res/layout/activity_vendorhome.xml #generated:29

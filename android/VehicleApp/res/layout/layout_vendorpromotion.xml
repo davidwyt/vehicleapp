@@ -20,25 +20,25 @@
                 android:layout_weight="1.0"
                 android:gravity="center"
                 android:padding="3dp"
-                android:text="折扣"
+                android:text="名称"
                 android:textSize="18sp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:gravity="center"
-                android:padding="3dp"
-                android:text="折扣范围"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
+                android:layout_weight="0.5"
                 android:gravity="center"
                 android:padding="3dp"
                 android:text="有效期"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:padding="3dp"
+                android:text="查看详情"
                 android:textSize="18sp" />
 
         </LinearLayout>
@@ -49,7 +49,7 @@
             android:background="@color/black" />
 
         <TableLayout
-            android:id="@+id/table_coupon"
+            android:id="@+id/table_promotion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white" >
