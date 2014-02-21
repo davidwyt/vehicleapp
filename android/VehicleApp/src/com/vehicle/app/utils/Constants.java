@@ -15,7 +15,8 @@ public class Constants {
 	public static final String ACTION_FOLLOWSHIP_FAILED = "com.vehicle.app.action.followship.failed";
 	public static final String ACTION_INVITATION_SUCCESS = "com.vehicle.app.action.invitation.success";
 	public static final String ACTION_INVITATION_FAILED = "com.vehicle.app.action.invitation.failed";
-
+	public static final String ACTION_VENDORCOMMENT_SUCCESS = "com.vehicle.app.action.vendorcomment.success";
+	public static final String ACTION_VENDORCOMMENT_FAILED = "com.vehicle.app.action.vendorcomment.failed";
 	public static final String ACTION_RECENTMSG_UPDATE = "com.vehicle.app.action.recentmsgupdate";
 
 	public static String SERVERURL = "http://10.0.2.2:8080/VehicleIMServer/rest";
@@ -29,4 +30,6 @@ public class Constants {
 	public static final LatLng CHENGDU = new LatLng(30.679879, 104.064855);// 成都市经纬度
 	public static final LatLng XIAN = new LatLng(34.341568, 108.940174);// 西安市经纬度
 	public static final LatLng ZHENGZHOU = new LatLng(34.7466, 113.625367);// 郑州市经纬度
+	
+	public static final String COMMA = ",";
 }

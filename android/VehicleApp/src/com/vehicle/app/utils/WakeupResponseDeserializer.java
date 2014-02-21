@@ -59,7 +59,7 @@ public class WakeupResponseDeserializer implements JsonDeserializer<WakeupRespon
 				invitationList = jdc.deserialize(invitationsElement, listType);
 			}
 		}
-		
+
 		resp.setNewInvitations(invitationList);
 
 		return resp;

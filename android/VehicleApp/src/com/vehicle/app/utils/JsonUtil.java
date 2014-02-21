@@ -7,6 +7,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vehicle.service.bean.RangeResponse;
 import com.vehicle.service.bean.WakeupResponse;
 
 public class JsonUtil {
@@ -14,7 +15,7 @@ public class JsonUtil {
 	private static Gson getCustomGson() {
 
 		Gson gson = new GsonBuilder().registerTypeAdapter(WakeupResponse.class, new WakeupResponseDeserializer())
-				.create();
+				.registerTypeAdapter(RangeResponse.class, new RangeResponseDeserializer()).create();
 		return gson;
 	}
 

@@ -24,6 +24,7 @@ import com.vehicle.imserver.service.exception.PushNotificationFailedException;
 import com.vehicle.imserver.service.interfaces.FileTransmissionService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
+import com.vehicle.service.bean.CommentFileResponse;
 import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileFetchResponse;
 import com.vehicle.service.bean.FileMultiTransmissionRequest;
@@ -33,15 +34,16 @@ import com.vehicle.service.bean.FileTransmissionResponse;
 
 @Path("fileTransmission")
 public class FileTransmissionRest {
-	
+
 	FileTransmissionService fileTransmissionService;
-	
-	public FileTransmissionService getFileTransmissionService(){
+
+	public FileTransmissionService getFileTransmissionService() {
 		return this.fileTransmissionService;
 	}
-	
-	public void setFileTransmissionService(FileTransmissionService fileTransmissionService){
-		this.fileTransmissionService=fileTransmissionService;
+
+	public void setFileTransmissionService(
+			FileTransmissionService fileTransmissionService) {
+		this.fileTransmissionService = fileTransmissionService;
 	}
 
 	@POST
@@ -53,7 +55,7 @@ public class FileTransmissionRest {
 			@PathParam("target") String target,
 			@PathParam("fileName") String fileName) {
 		FileTransmissionResponse resp = new FileTransmissionResponse();
-		
+
 		if (StringUtil.isEmptyOrNull(source)
 				|| StringUtil.isEmptyOrNull(target)
 				|| StringUtil.isEmptyOrNull(fileName) || null == input) {
@@ -69,10 +71,11 @@ public class FileTransmissionRest {
 		fileRequest.setFileName(fileName);
 
 		try {
-			FileTransmission fileTran = fileTransmissionService.SendFile(fileRequest, input);
+			FileTransmission fileTran = fileTransmissionService.SendFile(
+					fileRequest, input);
 			resp.setSentTime(fileTran.getTransmissionTime());
 			resp.setToken(fileTran.getToken());
-			
+
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -82,7 +85,8 @@ public class FileTransmissionRest {
 			resp.setErrorMsg(String.format(ErrorCodes.FILETRAN_FILESAVE_ERRMSG,
 					fileName));
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
 		} catch (PushNotificationFailedException e) {
 			e.printStackTrace();
 
@@ -114,7 +118,7 @@ public class FileTransmissionRest {
 					.build();
 		}
 	}
-	
+
 	@POST
 	@Path("sendtomulti/source={source}&&targets={targets}&&fileName={fileName}")
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
@@ -124,7 +128,7 @@ public class FileTransmissionRest {
 			@PathParam("targets") String targets,
 			@PathParam("fileName") String fileName) {
 		FileMultiTransmissionResponse resp = new FileMultiTransmissionResponse();
-		
+
 		if (StringUtil.isEmptyOrNull(source)
 				|| StringUtil.isEmptyOrNull(targets)
 				|| StringUtil.isEmptyOrNull(fileName) || null == input) {
@@ -140,10 +144,11 @@ public class FileTransmissionRest {
 		fileRequest.setFileName(fileName);
 
 		try {
-			FileTransmission fileTran = fileTransmissionService.SendFile2Multi(fileRequest, input);
+			FileTransmission fileTran = fileTransmissionService.SendFile2Multi(
+					fileRequest, input);
 			resp.setSentTime(fileTran.getTransmissionTime());
 			resp.setToken(fileTran.getToken());
-			
+
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -153,7 +158,8 @@ public class FileTransmissionRest {
 			resp.setErrorMsg(String.format(ErrorCodes.FILETRAN_FILESAVE_ERRMSG,
 					fileName));
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
 		} catch (PushNotificationFailedException e) {
 			e.printStackTrace();
 
@@ -199,7 +205,7 @@ public class FileTransmissionRest {
 
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
-		
+
 		FileFetchRequest fileReq = new FileFetchRequest();
 		fileReq.setToken(token);
 
@@ -209,13 +215,13 @@ public class FileTransmissionRest {
 			File file = new File(path);
 			if (file.exists()) {
 				String mt = new MimetypesFileTypeMap().getContentType(file);
-				
+
 				return Response.ok(file, mt).build();
 			} else {
 				resp.setErrorCode(ErrorCodes.FILEFETCH_NOTFOUND_ERRCODE);
 				resp.setErrorMsg(String.format(
 						ErrorCodes.FILEFETCH_NOTFOUND_ERRMSG, path));
-				
+
 				return Response.status(Status.NOT_FOUND).entity(resp).build();
 			}
 		} catch (FileTransmissionNotFoundException e) {
@@ -247,6 +253,38 @@ public class FileTransmissionRest {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
 					.build();
 		}
+	}
 
+	@POST
+	@Path("commentfile/fileName={fileName}")
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response TransmitCommentFile(@Context HttpServletRequest request,
+			InputStream input, @PathParam("fileName") String fileName) {
+
+		CommentFileResponse resp = new CommentFileResponse();
+
+		if (StringUtil.isEmptyOrNull(fileName) || null == input) {
+			resp.setErrorCode(ErrorCodes.FILETRAN_INVALID_ERRCODE);
+			resp.setErrorMsg(ErrorCodes.FILETRAN_INVALID_ERRMSG);
+
+			return Response.status(Status.BAD_REQUEST).entity(resp).build();
+		}
+
+		try {
+			resp.setFileName(fileTransmissionService.SendCommentFile(input,
+					fileName));
+			return Response.status(Status.OK).entity(resp).build();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			resp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		}
 	}
 }

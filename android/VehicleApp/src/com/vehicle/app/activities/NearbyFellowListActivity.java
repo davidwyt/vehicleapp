@@ -2,6 +2,7 @@ package com.vehicle.app.activities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -11,6 +12,7 @@ import com.vehicle.app.adapter.NearbyFellowsViewAdapter;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.web.bean.NearbyDriverListViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
@@ -150,8 +152,15 @@ public class NearbyFellowListActivity extends Activity {
 					VehicleWebClient client = new VehicleWebClient();
 					return client.NearbyVendorListView(1, -1, -1, pageNum, 121.56, 31.24, 4, 1, -1, -1);
 				} else {
-					VehicleWebClient client = new VehicleWebClient();
-					return client.NearbyDriverListView(1, 121.56, 31.24);
+					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(121.56, 31.24, 30);
+					
+					NearbyDriverListViewResult result = new NearbyDriverListViewResult();
+					result.setCode(WebCallBaseResult.CODE_SUCCESS);
+					result.setResult(nearbyDrivers);
+					
+					return result;
+					//VehicleWebClient client = new VehicleWebClient();
+					//return client.NearbyDriverListView(1, 121.56, 31.24);
 				}
 
 			} catch (Exception e) {

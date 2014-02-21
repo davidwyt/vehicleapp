@@ -1,27 +1,27 @@
 package com.vehicle.app.web.bean;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import com.vehicle.app.bean.Driver;
 
 public class NearbyDriverListViewResult extends WebCallBaseResult {
 
-	private Map<String, List<Driver>> result;
+	private Map<String, Driver> result;
 
 	@Override
-	public List<Driver> getInfoBean() {
+	public Collection<Driver> getInfoBean() {
 		// TODO Auto-generated method stub
-		return result.get("NearbyDriver.list");
+		return this.result.values();
 	}
 
 	@Override
-	public Map<String, List<Driver>> getResult() {
+	public Map<String, Driver> getResult() {
 		// TODO Auto-generated method stub
 		return this.result;
 	}
 
-	public void setResult(Map<String, List<Driver>> result) {
+	public void setResult(Map<String, Driver> result) {
 		this.result = result;
 	}
 }

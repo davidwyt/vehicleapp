@@ -1,7 +1,18 @@
 package com.vehicle.app.activities;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import com.vehicle.app.bean.Driver;
+import com.vehicle.app.bean.Vendor;
+import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.StringUtil;
+
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,11 +55,49 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 	public void onClick(View view) {
 		if (R.id.nav_allfellows == view.getId()) {
 
+			List<String> ids = new ArrayList<String>();
+
+			if (SelfMgr.getInstance().isDriver()) {
+				Collection<Vendor> vendors = SelfMgr.getInstance().getFavVendorDetailMap().values();
+				for (Vendor vendor : vendors) {
+					ids.add(vendor.getId());
+				}
+
+			} else {
+				Collection<Driver> drivers = SelfMgr.getInstance().getVendorFellowDetailMap().values();
+				for (Driver driver : drivers) {
+					ids.add(driver.getId());
+				}
+			}
+			
+			Intent intent = new Intent(this, ChatActivity.class);
+			intent.putExtra(ChatActivity.KEY_FELLOWID, StringUtil.JointString(ids, Constants.COMMA));
+			intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
+			this.startActivity(intent);
 		} else if (R.id.nav_allnearby == view.getId()) {
 
+			List<String> ids = new ArrayList<String>();
+
+			if (SelfMgr.getInstance().isDriver()) {
+				Collection<Vendor> vendors = SelfMgr.getInstance().getNearbyVendors();
+
+				for (Vendor vendor : vendors) {
+					ids.add(vendor.getId());
+				}
+
+			} else {
+				Collection<Driver> drivers = SelfMgr.getInstance().getNearbyDrivers();
+				for (Driver driver : drivers) {
+					ids.add(driver.getId());
+				}
+			}
+
+			Intent intent = new Intent(this, ChatActivity.class);
+			intent.putExtra(ChatActivity.KEY_FELLOWID, StringUtil.JointString(ids, Constants.COMMA));
+			intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
+			this.startActivity(intent);
 		} else {
 			System.err.println("not the valid button id in the groupmsgNav Form");
 		}
 	}
-
 }

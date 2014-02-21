@@ -197,6 +197,7 @@ public class VendorInfoActivity extends Activity {
 		if (SelfMgr.getInstance().isFavoriteVendor(this.mVendor.getId())) {
 			Intent intent = new Intent(this, ChatActivity.class);
 			intent.putExtra(ChatActivity.KEY_FELLOWID, this.mVendor.getId());
+			intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 			this.startActivity(intent);
 		} else {
 			FollowshipMessage msg = new FollowshipMessage();

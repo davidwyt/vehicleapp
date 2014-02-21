@@ -13,7 +13,7 @@ public class TextMessage implements IMessageItem, Parcelable {
 	private String content;
 	private MessageFlag flag;
 	private int msgType;
-
+	
 	public String getId() {
 		return this.id;
 	}

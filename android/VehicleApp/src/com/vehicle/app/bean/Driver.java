@@ -49,7 +49,7 @@ public class Driver implements Serializable {
 
 	private String lastMessage;
 	private Date lastMessageTime;
-	private String distance;
+	private double distance;
 
 	public String getId() {
 		return this.id;
@@ -199,11 +199,11 @@ public class Driver implements Serializable {
 		this.lastMessageTime = lastMsgDate;
 	}
 
-	public String getDistance() {
+	public double getDistance() {
 		return this.distance;
 	}
 
-	public void setDistance(String dis) {
+	public void setDistance(double dis) {
 		this.distance = dis;
 	}
 

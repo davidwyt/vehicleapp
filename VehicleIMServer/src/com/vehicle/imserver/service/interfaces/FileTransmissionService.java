@@ -20,5 +20,7 @@ public interface FileTransmissionService {
 			InputStream input) throws IOException, PushNotificationFailedException, PersistenceException;
 	
 	public String FetchFile(FileFetchRequest request) throws FileTransmissionNotFoundException, PersistenceException;
+	
+	public String SendCommentFile(InputStream input, String fileName) throws IOException;
 
 }

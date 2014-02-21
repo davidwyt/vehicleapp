@@ -62,4 +62,6 @@
 	<string name="zh_reception">接待</string>
 	<string name="zh_environment">环境</string>
 	<string name="zh_comment_hint">狠狠的表扬或者唾弃它吧</string>
+	<string name="tip_commentsuccess">评论商家成功</string>
+	<string name="tip_commentfailed">评论商户失败，请检查网络连接</string>
 </resources>

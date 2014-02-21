@@ -1,5 +1,6 @@
 package com.vehicle.imserver.ws;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,14 +45,14 @@ public class MessageRest {
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
 	}
-	
+
 	@POST
 	@Path("offlineAck")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response offlineAck(@Context HttpServletRequest request,
 			OfflineAckRequest omReq) {
-		OfflineAckResponse oar=new OfflineAckResponse();
+		OfflineAckResponse oar = new OfflineAckResponse();
 		if (null == omReq || StringUtil.isEmptyOrNull(omReq.getId())) {
 			oar.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
 			oar.setErrorMsg(String.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
@@ -68,10 +69,10 @@ public class MessageRest {
 					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
 					omReq.toString()));
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(oar).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(oar)
+					.build();
 		}
-		
+
 	}
 
 	@POST
@@ -98,10 +99,10 @@ public class MessageRest {
 					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
 					omReq.toString()));
 
-			return Response.status(Status.INTERNAL_SERVER_ERROR)
-					.entity(omr).build();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(omr)
+					.build();
 		}
-		
+
 	}
 
 	@POST
@@ -170,7 +171,7 @@ public class MessageRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response SendMessage2Multie(@Context HttpServletRequest request,
 			MessageOne2MultiRequest msgRequest) {
-		MessageOne2MultiResponse msgResp=new MessageOne2MultiResponse();
+		MessageOne2MultiResponse msgResp = new MessageOne2MultiResponse();
 		if (null == msgRequest
 				|| StringUtil.isEmptyOrNull(msgRequest.getSource())
 				|| StringUtil.isEmptyOrNull(msgRequest.getContent())) {
@@ -181,6 +182,7 @@ public class MessageRest {
 			return Response.status(Status.BAD_REQUEST).entity(msgResp).build();
 		}
 		try {
+			msgResp.setMsgSentTime(new Date().getTime());
 			messageService.sendMessage2Multi(msgRequest);
 			return Response.status(Status.OK).entity(msgResp).build();
 		} catch (PersistenceException e) {
@@ -214,6 +216,7 @@ public class MessageRest {
 					.entity(msgResp).build();
 		}
 	}
+
 	@POST
 	@Path("one2followees")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -309,7 +312,7 @@ public class MessageRest {
 			return Response.status(Status.INTERNAL_SERVER_ERROR)
 					.entity(msgResp).build();
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 
 			msgResp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);

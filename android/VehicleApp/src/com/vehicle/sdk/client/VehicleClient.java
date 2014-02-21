@@ -10,6 +10,9 @@ import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.URLUtil;
+import com.vehicle.service.bean.AddLocateRequest;
+import com.vehicle.service.bean.AddLocateResponse;
+import com.vehicle.service.bean.FileMultiTransmissionResponse;
 import com.vehicle.service.bean.FileTransmissionResponse;
 import com.vehicle.service.bean.FolloweesResponse;
 import com.vehicle.service.bean.FollowersResponse;
@@ -23,6 +26,10 @@ import com.vehicle.service.bean.FollowshipInvitationResultRequest;
 import com.vehicle.service.bean.FollowshipInvitationResultResponse;
 import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
+import com.vehicle.service.bean.MessageOne2MultiRequest;
+import com.vehicle.service.bean.MessageOne2MultiResponse;
+import com.vehicle.service.bean.RangeRequest;
+import com.vehicle.service.bean.RangeResponse;
 import com.vehicle.service.bean.WakeupRequest;
 import com.vehicle.service.bean.WakeupResponse;
 import com.vehicle.service.bean.MessageACKRequest;
@@ -36,7 +43,8 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
-	//private static String URL_DEFAULTSERVERROOT = "http://103.21.140.232:81/VehicleIMServer/rest";
+	// private static String URL_DEFAULTSERVERROOT =
+	// "http://103.21.140.232:81/VehicleIMServer/rest";
 	private static String URL_DEFAULTSERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
@@ -44,10 +52,12 @@ public class VehicleClient {
 	private static final String URL_MESSAGE_ACK = "ack";
 	private static final String URL_MESSAGE_ONE2FOLLOWERS = "one2followers";
 	private static final String URL_MESSAGE_ONE2FOLLOWEES = "one2followees";
+	private static final String URL_MESSAGE_ONE2MULTI = "one2multi";
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
 	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
 	private static final String URL_FILETRANSMISSION_FETCH = "fetch/%s";
+	private static final String URL_FILEMULTITRANSMISSION_SEND = "sendtomulti/source=%s&&targets=%s&&fileName=%s";
 
 	private static final String URL_FOLLOWSHIP_ROOT = "followship";
 	private static final String URL_FOLLOWSHIP_FOLLOW = "follow";
@@ -61,6 +71,10 @@ public class VehicleClient {
 
 	private static final String URL_LOGIN_ROOT = "login";
 	private static final String URL_LOGIN_LOGIN = "wakeup";
+
+	private static final String URL_LOCATE_ROOT = "locate";
+	private static final String URL_LOCATE_RANGE = "range";
+	private static final String URL_LOCATE_UPDATE = "add";
 
 	private String URL_SERVERROOT;
 	private String source;
@@ -110,6 +124,34 @@ public class VehicleClient {
 		return HttpUtil.PostJson(url, request, MessageOne2OneResponse.class);
 	}
 
+	public MessageOne2MultiResponse SendMultiLocationMessage(String targets, String content) {
+		MessageOne2MultiRequest request = new MessageOne2MultiRequest();
+		request.setSource(source);
+		request.setTargets(targets);
+		request.setContent(content);
+		request.setMessageType(IMessageItem.MESSAGE_TYPE_LOCATION);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_ONE2MULTI);
+
+		System.out.println("url:------------" + url);
+
+		return HttpUtil.PostJson(url, request, MessageOne2MultiResponse.class);
+	}
+
+	public MessageOne2MultiResponse SendMultiTextMessage(String targets, String content) {
+		MessageOne2MultiRequest request = new MessageOne2MultiRequest();
+		request.setSource(source);
+		request.setTargets(targets);
+		request.setContent(content);
+		request.setMessageType(IMessageItem.MESSAGE_TYPE_TEXT);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_ONE2MULTI);
+
+		System.out.println("url:------------" + url);
+
+		return HttpUtil.PostJson(url, request, MessageOne2MultiResponse.class);
+	}
+
 	public void AckMessage(String msgId) {
 		MessageACKRequest request = new MessageACKRequest();
 		request.setMsgId(msgId);
@@ -146,7 +188,15 @@ public class VehicleClient {
 				String.format(URL_FILETRANSMISSION_SEND, source, target, file.getName()));
 
 		return HttpUtil.UploadFile(url, filePath, FileTransmissionResponse.class);
-		// JerseyUtil.UploadFile(url, filePath);
+	}
+
+	public FileMultiTransmissionResponse SendMultiFile(String targets, String filePath) {
+		File file = new File(filePath);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
+				String.format(URL_FILEMULTITRANSMISSION_SEND, source, targets, file.getName()));
+
+		return HttpUtil.UploadFile(url, filePath, FileMultiTransmissionResponse.class);
 	}
 
 	public InputStream FetchFile(String token, String filePath) {
@@ -263,6 +313,30 @@ public class VehicleClient {
 		request.setId(id);
 
 		WakeupResponse response = HttpUtil.PostJson(url, request, WakeupResponse.class);
+		return response;
+	}
+
+	public RangeResponse NearbyDrivers(double centerX, double centerY, int range) {
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOCATE_ROOT, URL_LOCATE_RANGE);
+
+		RangeRequest request = new RangeRequest();
+		request.setCenterX(centerX);
+		request.setCenterY(centerY);
+		request.setRange(range);
+
+		RangeResponse response = HttpUtil.PostJson(url, request, RangeResponse.class);
+		return response;
+	}
+
+	public AddLocateResponse UpdateLocation(String id, double locationX, double locationY) {
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOCATE_ROOT, URL_LOCATE_UPDATE);
+
+		AddLocateRequest request = new AddLocateRequest();
+		request.setId(id);
+		request.setLocateX(locationX);
+		request.setLocateY(locationY);
+
+		AddLocateResponse response = HttpUtil.PostJson(url, request, AddLocateResponse.class);
 		return response;
 	}
 }

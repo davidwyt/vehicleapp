@@ -1,11 +1,9 @@
 package com.vehicle.sdk.client;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.vehicle.app.bean.Driver;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.utils.URLUtil;
@@ -26,6 +24,7 @@ import com.vehicle.app.web.bean.VendorListViewResult;
 import com.vehicle.app.web.bean.VendorLoginResult;
 import com.vehicle.app.web.bean.VendorRegisterResult;
 import com.vehicle.app.web.bean.VendorViewResult;
+import com.vehicle.app.web.bean.WebCallBaseResult;
 
 public class VehicleWebClient {
 
@@ -80,7 +79,7 @@ public class VehicleWebClient {
 
 	public DriverListViewResult DriverListView(List<String> drivers) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_DRIVERLIST_VIEW);
-		String params = StringUtil.JointString(drivers, ",");
+		String params = StringUtil.JointString(drivers, Constants.COMMA);
 		url = String.format(url, params);
 
 		return HttpUtil.GetJson(url, DriverListViewResult.class);
@@ -108,7 +107,7 @@ public class VehicleWebClient {
 
 	public VendorListViewResult VendorListView(List<String> vendors) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_VENDORLIST_VIEW);
-		String params = StringUtil.JointString(vendors, ",");
+		String params = StringUtil.JointString(vendors, Constants.COMMA);
 		url = String.format(url, params);
 
 		return HttpUtil.GetJson(url, VendorListViewResult.class);
@@ -156,11 +155,11 @@ public class VehicleWebClient {
 		return HttpUtil.GetJson(url, CommentListViewResult.class);
 	}
 
-	public AddCommentResult AddComment(String driverId, String vendorId, String reviews, float priceScore,
-			float technologyScore, float efficiencyScore, float receptionScore, int mainProjectId) {
+	public AddCommentResult AddComment(String driverId, String vendorId, String reviews, double priceScore,
+			double technologyScore, double efficiencyScore, double receptionScore, double envScore, int mainProjectId) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_COMMENTS_ADD);
 		url = String.format(url, driverId, vendorId, reviews, priceScore, technologyScore, efficiencyScore,
-				receptionScore, mainProjectId);
+				receptionScore, envScore, mainProjectId);
 
 		return HttpUtil.PostJson(url, null, AddCommentResult.class);
 	}
@@ -181,15 +180,10 @@ public class VehicleWebClient {
 		driverIds.add("18727");
 
 		DriverListViewResult driverListResult = DriverListView(driverIds);
-		List<Driver> driverList = new ArrayList<Driver>();
-		driverList.addAll(driverListResult.getInfoBean().values());
-
-		Map<String, List<Driver>> result = new HashMap<String, List<Driver>>();
-		result.put("NearbyDriver.list", driverList);
 
 		NearbyDriverListViewResult nearbyDriverListResult = new NearbyDriverListViewResult();
-		nearbyDriverListResult.setCode(10000);
-		nearbyDriverListResult.setResult(result);
+		nearbyDriverListResult.setCode(WebCallBaseResult.CODE_SUCCESS);
+		nearbyDriverListResult.setResult(driverListResult.getInfoBean());
 
 		return nearbyDriverListResult;
 	}

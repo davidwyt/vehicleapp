@@ -2,7 +2,7 @@ package com.vehicle.app.web.bean;
 
 public abstract class WebCallBaseResult {
 
-	private static final int CODE_SUCCESS = 10000;
+	public static final int CODE_SUCCESS = 10000;
 
 	private int code;
 	private String message;

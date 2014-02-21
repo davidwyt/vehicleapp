@@ -262,6 +262,7 @@ public class LoginActivity extends Activity {
 					}
 
 					SelfMgr.getInstance().refreshFellows();
+					SelfMgr.getInstance().refreshNearby();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

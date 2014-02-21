@@ -18,6 +18,15 @@ public class FileUtil {
 		return AppendPath(AppendPath(root, Contants.getFileRootPath()), name);
 	}
 
+	public static String GenPathForCommentFile(String root, String fileName,
+			String token, int type) {
+		String[] temps = fileName.split("\\.");
+		String name = token + "." + temps[temps.length - 1];
+
+		return AppendPath(AppendPath(root, Contants.getImgSourcePath(type)),
+				name);
+	}
+
 	public static String AppendPath(String part1, String part2) {
 		String path = part1;
 		if (!path.isEmpty() && !path.endsWith(File.separator)) {
@@ -28,7 +37,7 @@ public class FileUtil {
 
 		return path;
 	}
-
+	
 	public static void SaveFile(String path, InputStream input)
 			throws IOException {
 		OutputStream outStream = new FileOutputStream(path);

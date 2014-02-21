@@ -1,14 +1,8 @@
 package com.vehicle.app.activities;
 
-import java.util.List;
-
-import com.vehicle.app.bean.Driver;
-import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
-import com.vehicle.app.web.bean.WebCallBaseResult;
-import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
@@ -104,7 +98,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	}
 
 	private void openChatList() {
-		
+
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), RecentContactListActivity.class);
 		startActivity(intent);
@@ -172,56 +166,30 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		}
 	}
 
-	private class NearbySearchTask extends AsyncTask<Void, Void, WebCallBaseResult> {
+	private class NearbySearchTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
-		protected WebCallBaseResult doInBackground(Void... params) {
+		protected Void doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
 
 			try {
-				// Simulate network access.
-				if (SelfMgr.getInstance().isDriver()) {
-					VehicleWebClient client = new VehicleWebClient();
-					return client.NearbyVendorListView(1, -1, -1, 1, 121.56, 31.24, 4, 1, -1, -1);
-				} else {
-					VehicleWebClient client = new VehicleWebClient();
-					return client.NearbyDriverListView(1, 121.56, 31.24);
-				}
-
+				SelfMgr.getInstance().refreshNearby();
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
 			}
+
+			return null;
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
-		protected void onPostExecute(final WebCallBaseResult result) {
+		protected void onPostExecute(Void result) {
 			mSearchTask = null;
 			showProgress(false);
 
-			if (null == result) {
-				System.err.println("can not search nearby fellows");
-				return;
-			}
+			Intent intent = new Intent();
+			intent.setClass(getApplicationContext(), NearbyFellowListActivity.class);
+			startActivity(intent);
 
-			if (result.isSuccess()) {
-				List<?> fellows = null;
-				if (SelfMgr.getInstance().isDriver()) {
-					fellows = (List<?>) result.getInfoBean();
-					SelfMgr.getInstance().updateNearbyVendors((List<Vendor>) fellows);
-				} else {
-					fellows = (List<?>) result.getInfoBean();
-					SelfMgr.getInstance().updateNearbyDrivers((List<Driver>) fellows);
-				}
-
-				Intent intent = new Intent();
-				intent.setClass(getApplicationContext(), NearbyFellowListActivity.class);
-				startActivity(intent);
-
-			} else {
-				System.out.println("earch nearby fellows failed:" + result.getCode() + "----" + result.getMessage());
-			}
 		}
 
 		@Override

@@ -4,30 +4,26 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class MessageOne2OneResponse extends BaseResponse{
-	
+public class MessageOne2OneResponse extends BaseResponse {
+
 	private String msgId;
 	private long msgSentTime;
-	
-	public void setMsgId(String id)
-	{
+
+	public void setMsgId(String id) {
 		msgId = id;
 	}
-	
+
 	@XmlElement
-	public String getMsgId()
-	{
+	public String getMsgId() {
 		return this.msgId;
 	}
-	
-	public void setMsgSentTime(long date)
-	{
+
+	public void setMsgSentTime(long date) {
 		this.msgSentTime = date;
 	}
-	
+
 	@XmlElement
-	public long getMsgSentTime()
-	{
+	public long getMsgSentTime() {
 		return this.msgSentTime;
 	}
 }

@@ -34,9 +34,6 @@ public class MapCameraActivity extends Activity implements OnClickListener, Canc
 		init();
 	}
 
-	/**
-	 * 初始化AMap对象
-	 */
 	private void init() {
 		if (aMap == null) {
 			aMap = mapView.getMap();

@@ -93,6 +93,7 @@ public class DriverInfoActivity extends Activity {
 		if (SelfMgr.getInstance().isVendorFellow(this.mDriver.getId())) {
 			Intent intent = new Intent(this, ChatActivity.class);
 			intent.putExtra(ChatActivity.KEY_FELLOWID, this.mDriver.getId());
+			intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 			this.startActivity(intent);
 		} else {
 			FollowshipInvitationMessage msg = new FollowshipInvitationMessage();

@@ -28,22 +28,22 @@ public class Comment implements Serializable{
 	@SerializedName("main_project_id")
 	private int mainProjectId;
 
-	private float score;
+	private double score;
 
 	@SerializedName("price")
-	private float priceScore;
+	private double priceScore;
 
 	@SerializedName("technology")
-	private float technologyScore;
+	private double technologyScore;
 
 	@SerializedName("efficiency")
-	private float efficiencyScore;
+	private double efficiencyScore;
 
 	@SerializedName("receive")
-	private float receptionScore;
+	private double receptionScore;
 
 	@SerializedName("environment")
-	private float environmentScore;
+	private double environmentScore;
 
 	@SerializedName("add_date")
 	private String addedDate;
@@ -106,51 +106,51 @@ public class Comment implements Serializable{
 		this.mainProjectId = id;
 	}
 
-	public float getScore() {
+	public double getScore() {
 		return this.score;
 	}
 
-	public void setFloat(float score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
 
-	public float getPriceScore() {
+	public double getPriceScore() {
 		return this.priceScore;
 	}
 
-	public void setPriceScore(float priceScore) {
+	public void setPriceScore(double priceScore) {
 		this.priceScore = priceScore;
 	}
 
-	public float getTechnologyScore() {
+	public double getTechnologyScore() {
 		return this.technologyScore;
 	}
 
-	public void setTechnologyScore(float s) {
+	public void setTechnologyScore(double s) {
 		this.technologyScore = s;
 	}
 
-	public float getEfficiencyScore() {
+	public double getEfficiencyScore() {
 		return this.efficiencyScore;
 	}
 
-	public void setEfficiencyScore(float score) {
+	public void setEfficiencyScore(double score) {
 		this.efficiencyScore = score;
 	}
 
-	public float getReceptionScore() {
+	public double getReceptionScore() {
 		return this.receptionScore;
 	}
 
-	public void setReceptionScore(float reception) {
+	public void setReceptionScore(double reception) {
 		this.receptionScore = reception;
 	}
 
-	public float getEnvironmentScore() {
+	public double getEnvironmentScore() {
 		return this.environmentScore;
 	}
 
-	public void setEnvironmentScore(float socre) {
+	public void setEnvironmentScore(double score) {
 		this.environmentScore = score;
 	}
 

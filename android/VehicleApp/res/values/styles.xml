@@ -75,7 +75,7 @@
 
     <style name="chatpluspopupwin_animation">
         <item name="android:windowEnterAnimation">@anim/chatplus_enter</item>
-        <item name="android:windowExitAnimation">@anim/chatplus_exit</item>
+                <item name="android:windowExitAnimation">@anim/chatplus_exit</item>
     </style>
 
     <style name="VendorRatingBar" parent="@android:style/Widget.RatingBar">
@@ -84,6 +84,17 @@
         <item name="android:maxHeight">96dp</item>
         <item name="android:minWidth">24dp</item>
         <item name="android:maxWidth">96dp</item>
+    </style>
+
+    <style name="CustomTitlePageIndicator">
+        <item name="android:background">#18FF0000</item>
+        <item name="footerColor">#0011CD</item>
+        <item name="footerLineHeight">3dp</item>
+        <item name="footerIndicatorHeight">3dp</item>
+        <item name="footerIndicatorStyle">underline</item>
+        <item name="android:textColor">#FBBD28</item>
+        <item name="selectedColor">#0444FD</item>
+        <item name="selectedBold">true</item>
     </style>
 
 </resources>

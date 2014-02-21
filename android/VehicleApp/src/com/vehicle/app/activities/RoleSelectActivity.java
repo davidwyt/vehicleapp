@@ -52,7 +52,7 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 
 		if (R.id.roleselect_driver == view.getId()) {
 
-			SelfMgr.getInstance().clear();
+			SelfMgr.getInstance().clearFellows();
 			SelfMgr.getInstance().setIsDriver(true);
 
 			Intent intent = new Intent();
@@ -61,7 +61,7 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 
 		} else if (R.id.roleselect_shop == view.getId()) {
 
-			SelfMgr.getInstance().clear();
+			SelfMgr.getInstance().clearFellows();
 			SelfMgr.getInstance().setIsDriver(false);
 
 			Intent intent = new Intent();

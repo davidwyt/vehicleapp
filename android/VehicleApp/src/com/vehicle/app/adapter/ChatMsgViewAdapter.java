@@ -36,7 +36,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		this.data = data;
 		mInflater = LayoutInflater.from(context);
 		this.context = context;
-
 	}
 
 	public synchronized void addChatItem(IMessageItem item) {

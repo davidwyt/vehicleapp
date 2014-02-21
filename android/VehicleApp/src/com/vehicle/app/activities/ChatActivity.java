@@ -23,7 +23,7 @@ import com.vehicle.app.msg.bean.ImageMessage;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.msg.worker.IMessageCourier;
-import com.vehicle.app.msg.worker.PictureMessageCourier;
+import com.vehicle.app.msg.worker.ImageMessageCourier;
 import com.vehicle.app.msg.worker.TextMessageCourier;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
@@ -66,10 +66,15 @@ public class ChatActivity extends Activity implements OnClickListener {
 	public static final String KEY_EXTRAS = "extras";
 
 	public static final String KEY_FELLOWID = "com.vehicle.app.chat.fellowId";
+	public static final String KEY_CHATSTYLE = "com.vehicle.app.chat.key.style";
 
 	private static final int REQUESTCODE_CAPTURE_IMAGE = 0x00000001;
 	private static final int REQUESTCODE_BROWSE_ALBUM = 0x00000002;
 	private static final int REQUESTCODE_CAPTURE_LOCATION = 0x00000003;
+
+	public static final int CHAT_STYLE_2ONE = 0;
+	public static final int CHAT_STYLE_2NEARBY = 1;
+	public static final int CHAT_STYLE_2FELLOWS = 2;
 
 	private Button mBtnSend;
 	private Button mBtnBack;
@@ -80,10 +85,14 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private ChatMsgViewAdapter mAdapter;
 	private ListView mMsgList;
 
+	private View mTitleView;
+
 	private BroadcastReceiver messageReceiver;
 	private List<IMessageItem> mDataArrays = new ArrayList<IMessageItem>();
 
 	private static String mFellowId = "18726";
+
+	private int mChatStyle = 1;
 
 	private PopupWindow chatPlusPopup;
 
@@ -128,6 +137,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		mEditTextContent.setCursorVisible(true);
+
+		mTitleView = (View) this.findViewById(R.id.chat_title);
 
 		chatPlusPopup();
 
@@ -260,36 +271,65 @@ public class ChatActivity extends Activity implements OnClickListener {
 		unregisterMessageReceiver();
 	}
 
-	private void initData() {
+	private void updateTitle() {
+		TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
 
-		Bundle bundle = this.getIntent().getExtras();
-		if (null != bundle) {
-			mFellowId = bundle.getString(KEY_FELLOWID);
-			
-			TextView tvFellow = (TextView) this.findViewById(R.id.chat_tv_fellowalias);
+		if (CHAT_STYLE_2ONE == mChatStyle) {
+			this.mTitleView.setBackgroundResource(R.drawable.icon_bakground);
 
 			if (SelfMgr.getInstance().isDriver()) {
 				this.mVendor = SelfMgr.getInstance().getFavVendorDetail(mFellowId);
-				
+				tvFellow.setVisibility(View.VISIBLE);
 				if (null != this.mVendor) {
 					tvFellow.setText(this.mVendor.getName());
 				}
 			} else {
 				this.mDriver = SelfMgr.getInstance().getVendorFellowDetail(mFellowId);
+				tvFellow.setVisibility(View.VISIBLE);
 				if (null != this.mDriver) {
 					tvFellow.setText(this.mDriver.getAlias());
 				}
 			}
+		} else if (CHAT_STYLE_2NEARBY == mChatStyle) {
+			tvFellow.setVisibility(View.INVISIBLE);
+
+			if (SelfMgr.getInstance().isDriver()) {
+				this.mTitleView.setBackgroundResource(R.drawable.icon_title_groupmsgnearbyvendors);
+			} else {
+				this.mTitleView.setBackgroundResource(R.drawable.icon_title_groupmsgnearbydrivers);
+			}
+		} else if (CHAT_STYLE_2FELLOWS == mChatStyle) {
+			tvFellow.setVisibility(View.INVISIBLE);
+
+			if (SelfMgr.getInstance().isDriver()) {
+				this.mTitleView.setBackgroundResource(R.drawable.icon_title_groupmsgdriverfellows);
+			} else {
+				this.mTitleView.setBackgroundResource(R.drawable.icon_title_groupmsgvendorfellows);
+			}
+		} else {
+
+		}
+	}
+
+	private void initData() {
+
+		Bundle bundle = this.getIntent().getExtras();
+		if (null != bundle) {
+			mFellowId = bundle.getString(KEY_FELLOWID);
+			mChatStyle = bundle.getInt(KEY_CHATSTYLE);
+			updateTitle();
 		}
 
-		DBManager dbMgr = new DBManager(this.getApplicationContext());
+		if (CHAT_STYLE_2ONE == this.mChatStyle) {
+			DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-		List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
+			List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
 
-		this.mDataArrays.clear();
-		this.mDataArrays.addAll(msgList);
-		this.mAdapter.notifyDataSetChanged();
-		mMsgList.setSelection(mMsgList.getCount() - 1);
+			this.mDataArrays.clear();
+			this.mDataArrays.addAll(msgList);
+			this.mAdapter.notifyDataSetChanged();
+			mMsgList.setSelection(mMsgList.getCount() - 1);
+		}
 	}
 
 	public void onClick(View view) {
@@ -428,7 +468,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 			entity.setContent(content);
 			entity.setFlag(MessageFlag.SELF);
 			entity.setMessageType(IMessageItem.MESSAGE_TYPE_TEXT);
-			IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext());
+			IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(),
+					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(entity);
 		}
 	}
@@ -449,7 +490,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			System.out.println("send file " + filePath + " null:" + (null == picItem.getContent()));
 
-			IMessageCourier msgCourier = new PictureMessageCourier(this.getApplicationContext());
+			IMessageCourier msgCourier = new ImageMessageCourier(this.getApplicationContext(),
+					CHAT_STYLE_2ONE != this.mChatStyle);
+			
 			msgCourier.dispatch(picItem);
 		} else {
 			System.out.println("selected file not exist:" + filePath);
@@ -467,14 +510,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		entity.setFlag(MessageFlag.SELF);
 		entity.setMessageType(IMessageItem.MESSAGE_TYPE_LOCATION);
 
-		this.mDataArrays.add(entity);
-		this.mAdapter.notifyDataSetChanged();
-
-		/**
-		 * IMessageCourier msgCourier = new
-		 * TextMessageCourier(this.getApplicationContext());
-		 * msgCourier.dispatch(entity);
-		 */
+		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(),
+				CHAT_STYLE_2ONE != this.mChatStyle);
+		msgCourier.dispatch(entity);
 	}
 
 	private void back() {

@@ -21,11 +21,10 @@ import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.sdk.client.VehicleClient;
 
-public class PictureMessageRecipient extends MessageBaseRecipient {
+public class ImageMessageRecipient extends MessageBaseRecipient {
 
-	public PictureMessageRecipient(Context context) {
+	public ImageMessageRecipient(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

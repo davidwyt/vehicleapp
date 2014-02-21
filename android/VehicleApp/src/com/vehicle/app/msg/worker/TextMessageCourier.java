@@ -14,13 +14,17 @@ import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.sdk.client.VehicleClient;
+import com.vehicle.service.bean.BaseResponse;
+import com.vehicle.service.bean.MessageOne2MultiResponse;
 import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class TextMessageCourier extends MessageBaseCourier {
 
-	public TextMessageCourier(Context context) {
+	private boolean isGroupChat = false;
+
+	public TextMessageCourier(Context context, boolean isGroupChat) {
 		super(context);
-		// TODO Auto-generated constructor stub
+		this.isGroupChat = isGroupChat;
 	}
 
 	@Override
@@ -33,22 +37,30 @@ public class TextMessageCourier extends MessageBaseCourier {
 
 		final TextMessage msg = (TextMessage) item;
 
-		AsyncTask<Void, Void, MessageOne2OneResponse> sendAsync = new AsyncTask<Void, Void, MessageOne2OneResponse>() {
+		AsyncTask<Void, Void, BaseResponse> sendAsync = new AsyncTask<Void, Void, BaseResponse>() {
 
 			@Override
-			protected MessageOne2OneResponse doInBackground(Void... params) {
+			protected BaseResponse doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 
 				System.out.println("In Send Async Task.................");
-				MessageOne2OneResponse resp = null;
+				BaseResponse resp = null;
 				try {
 
 					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
 
 					if (IMessageItem.MESSAGE_TYPE_TEXT == msg.getMessageType()) {
-						resp = client.SendTextMessage(msg.getTarget(), msg.getContent());
+						if (isGroupChat) {
+							resp = client.SendMultiTextMessage(msg.getTarget(), msg.getContent());
+						} else {
+							resp = client.SendTextMessage(msg.getTarget(), msg.getContent());
+						}
 					} else if (IMessageItem.MESSAGE_TYPE_LOCATION == msg.getMessageType()) {
-						resp = client.SendLocationMessage(msg.getTarget(), msg.getContent());
+						if (isGroupChat) {
+							resp = client.SendLocationMessage(msg.getTarget(), msg.getContent());
+						} else {
+							resp = client.SendTextMessage(msg.getTarget(), msg.getContent());
+						}
 					}
 
 				} catch (Exception e) {
@@ -59,40 +71,48 @@ public class TextMessageCourier extends MessageBaseCourier {
 			}
 
 			@Override
-			protected void onPostExecute(MessageOne2OneResponse resp) {
+			protected void onPostExecute(BaseResponse resp) {
 				if (null != resp && resp.isSucess()) {
 
-					msg.setId(resp.getMsgId());
-					msg.setSentTime(resp.getMsgSentTime());
-					msg.setFlag(MessageFlag.SELF);
+					if (isGroupChat) {
+						MessageOne2MultiResponse multiResp = (MessageOne2MultiResponse) resp;
+						msg.setSentTime(multiResp.getMsgSentTime());
+					} else {
 
-					try {
-						DBManager dbMgr = new DBManager(context);
-						dbMgr.insertTextMessage(msg);
+						MessageOne2OneResponse oneResp = (MessageOne2OneResponse) resp;
+						msg.setId(oneResp.getMsgId());
+						msg.setSentTime(oneResp.getMsgSentTime());
+						msg.setFlag(MessageFlag.SELF);
 
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+						try {
+							DBManager dbMgr = new DBManager(context);
+							dbMgr.insertTextMessage(msg);
 
-					try {
-						RecentMessage recentMsg = new RecentMessage();
-						recentMsg.setSelfId(SelfMgr.getInstance().getId());
-						recentMsg.setFellowId(msg.getTarget());
-						recentMsg.setMessageType(msg.getMessageType());
-						recentMsg.setContent(msg.getContent());
-						recentMsg.setSentTime(msg.getSentTime());
-						recentMsg.setMessageId(msg.getId());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 
-						updateRecentMessage(recentMsg);
-					} catch (Exception e) {
-						e.printStackTrace();
+						try {
+							RecentMessage recentMsg = new RecentMessage();
+							recentMsg.setSelfId(SelfMgr.getInstance().getId());
+							recentMsg.setFellowId(msg.getTarget());
+							recentMsg.setMessageType(msg.getMessageType());
+							recentMsg.setContent(msg.getContent());
+							recentMsg.setSentTime(msg.getSentTime());
+							recentMsg.setMessageId(msg.getId());
+
+							updateRecentMessage(recentMsg);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						System.out.println("send msg success:" + oneResp.getMsgId());
 					}
 
 					Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
 					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, msg);
 					context.sendBroadcast(msgIntent);
 
-					System.out.println("send msg success:" + resp.getMsgId());
 				} else {
 					if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_LOCATION) {
 						Intent msgIntent = new Intent(Constants.ACTION_LOCMESSAGE_SENTFAILED);

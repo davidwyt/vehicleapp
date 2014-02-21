@@ -4,8 +4,6 @@ import java.util.Vector;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.vehicle.app.adapter.RecentContactListViewAdapter;
-import com.vehicle.app.bean.Driver;
-import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.RecentMessage;
@@ -120,8 +118,10 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 				if (SelfMgr.getInstance().isDriver()) {
 					intent.putExtra(ChatActivity.KEY_FELLOWID, msg.getFellowId());
+					intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 				} else if (!SelfMgr.getInstance().isDriver()) {
 					intent.putExtra(ChatActivity.KEY_FELLOWID, msg.getFellowId());
+					intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 				}
 
 				RecentContactListActivity.this.startActivity(intent);

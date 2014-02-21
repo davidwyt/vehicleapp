@@ -13,11 +13,17 @@ import com.vehicle.app.bean.SelfDriver;
 import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorFellow;
+import com.vehicle.app.web.bean.DriverListViewResult;
+import com.vehicle.app.web.bean.NearbyVendorListViewResult;
+import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
+import com.vehicle.service.bean.RangeInfo;
+import com.vehicle.service.bean.RangeResponse;
 
 public class SelfMgr {
 
 	private SelfMgr() {
+
 		mFavVendorVector = new Vector<FavoriteVendor>();
 		mVendorFellowVector = new Vector<VendorFellow>();
 
@@ -228,6 +234,52 @@ public class SelfMgr {
 		return this.mFavVendorDetailMap.get(id);
 	}
 
+	public synchronized void refreshNearby() {
+		this.clearNearby();
+
+		if (mIsDriver) {
+			VehicleWebClient client = new VehicleWebClient();
+			NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, 121.56, 31.24, 4, 1, -1, -1);
+
+			List<Vendor> vendors = result.getInfoBean();
+			for (Vendor vendor : vendors) {
+				this.mNearbyVendorMap.put(vendor.getId(), vendor);
+			}
+		} else {
+			this.mNearbyDriverMap.putAll(this.searchNearbyDrivers(121.56, 31.24, 30));
+		}
+	}
+
+	public Map<String, Driver> searchNearbyDrivers(double centerX, double centerY, int range) {
+		try {
+			VehicleClient client = new VehicleClient(this.getId());
+			RangeResponse resp = client.NearbyDrivers(121.56, 31.24, 30);
+			List<RangeInfo> infos = resp.getList();
+
+			List<String> driverIds = new ArrayList<String>();
+			for (RangeInfo info : infos) {
+				driverIds.add(info.getOwnerId());
+			}
+
+			if (null != infos && infos.size() > 0) {
+				VehicleWebClient webClient = new VehicleWebClient();
+
+				DriverListViewResult result = webClient.DriverListView(driverIds);
+				Map<String, Driver> drivers = result.getInfoBean();
+				for (RangeInfo info : infos) {
+					Driver driver = drivers.get(info.getOwnerId());
+					driver.setDistance(info.getDistance());
+				}
+
+				return drivers;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public synchronized void refreshFellows() {
 		VehicleWebClient webClient = new VehicleWebClient();
 
@@ -257,14 +309,16 @@ public class SelfMgr {
 		}
 	}
 
-	public void clear() {
+	public void clearFellows() {
 		this.mFavVendorDetailMap.clear();
 		this.mFavVendorVector.clear();
 
-		this.mNearbyDriverMap.clear();
-		this.mNearbyVendorMap.clear();
-
 		this.mVendorFellowDetailMap.clear();
 		this.mVendorFellowVector.clear();
+	}
+
+	public void clearNearby() {
+		this.mNearbyDriverMap.clear();
+		this.mNearbyVendorMap.clear();
 	}
 }
