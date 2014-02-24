@@ -95,8 +95,9 @@ public class DBManager {
 			deleteRecentMsgStmt.bindString(1, selfId);
 			deleteRecentMsgStmt.bindString(2, fellowId);
 
-			deleteFileMsgStmt.executeUpdateDelete();
+			deleteRecentMsgStmt.executeUpdateDelete();
 
+			db.setTransactionSuccessful();
 			db.endTransaction();
 		} finally {
 			if (null != db) {
@@ -607,7 +608,7 @@ public class DBManager {
 		} finally {
 			if (null != db)
 				db.endTransaction();
-				db.close();
+			db.close();
 		}
 	}
 

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.vehicle.app.activities.BeginActivity" >
+
+    <RelativeLayout
+        android:id="@+id/activity_moreapp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/moreapp_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/icon_bakground" >
+
+            <Button
+                android:id="@+id/moreapp_btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/selector_btn_gobak" />
+
+            <TextView
+                android:id="@+id/moreapp_tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="相关应用"
+                android:textColor="@color/white"
+                android:textSize="22sp" >
+            </TextView>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/moreapp_thisicon"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_below="@id/moreapp_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/selector_log_this" >
+        </ImageView>
+
+        <TextView
+            android:id="@+id/moreapp_thistext"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/moreapp_thisicon"
+            android:layout_alignLeft="@id/moreapp_thisicon"
+            android:gravity="center"
+            android:text="天下车商"
+            android:textColor="@color/black"
+            android:textSize="14sp" >
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/moreapp_thistext"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/moreapp_lt"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="32dp"
+                    android:src="@drawable/selector_log_lt" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="轮胎家"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/moreapp_jy"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="32dp"
+                    android:src="@drawable/selector_log_jy" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="道路救援"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/moreapp_gas"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="32dp"
+                    android:src="@drawable/selector_log_gas" >
+                </ImageView>
+
+                <TextView
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="加油站"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" >
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</merge>

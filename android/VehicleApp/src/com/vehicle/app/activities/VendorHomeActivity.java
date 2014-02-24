@@ -9,6 +9,7 @@ import junit.framework.Assert;
 
 import com.vehicle.app.adapter.VendorImagePageAdapter;
 import com.vehicle.app.adapter.VendorDetailFragmentAdapter;
+import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
@@ -70,14 +71,20 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 	private Button mBtnBak;
 	private Button mBtnFollow;
+	private View mBottomBar;
 
 	private TextView mTvName;
 
+	public static final int PERSPECTIVE_SELF = 1;
+	public static final int PERSPECTIVE_NEARBY = 2;
+	public static final int PERSPECTIVE_FELLOW = 3;
+
+	public static final String KEY_PERSPECTIVE = "com.vehicle.app.key.vendorhomeactivity.pers";
+
 	public static final String KEY_VENDORID = "com.vehicle.app.key.vendorhomeactivity.vendor.id";
-	public static final String KEY_ISNEARBY = "com.vehicle.app.key.vendorhomeactivity.vendor.isnearby";
 	public static final String KEY_NEARBYVENDORS = "com.vehicle.app.key.vendorhomeactivity.nearbyvendors";
 
-	private boolean isNearby;
+	private int mPerspective;
 
 	private ArrayList<String> mNearbyVendors;
 	private int mCurIndex;
@@ -138,6 +145,8 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 		this.mVendorFormView = this.findViewById(R.id.vendorhome_form);
 		this.mVendorStatusView = this.findViewById(R.id.vendorhome_status);
 		this.mVendorStatusMessageView = (TextView) this.findViewById(R.id.vendorhome_status_message);
+
+		mBottomBar = this.findViewById(R.id.vendorbar);
 	}
 
 	@Override
@@ -152,14 +161,25 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 	private void initData() {
 		Bundle bundle = this.getIntent().getExtras();
 		if (null != bundle) {
-			isNearby = bundle.getBoolean(KEY_ISNEARBY);
-			String vendorId = bundle.getString(KEY_VENDORID);
+			this.mPerspective = bundle.getInt(KEY_PERSPECTIVE);
+			updateView(mPerspective);
+
 			VendorDetail vendor = null;
-			updateView();
+			if (PERSPECTIVE_SELF == this.mPerspective) {
 
-			if (isNearby) {
+				VendorDetail selfDetail = new VendorDetail();
+				SelfVendor selfVendor = SelfMgr.getInstance().getSelfVendor();
+
+				selfDetail.setVendor(selfVendor);
+				selfDetail.setCoupons(selfVendor.getCoupons());
+				selfDetail.setPromotions(selfVendor.getPromotions());
+				selfDetail.setImgs(selfVendor.getImgs());
+				selfDetail.setReviews(selfVendor.getComments());
+
+				vendor = selfDetail;
+			} else if (PERSPECTIVE_NEARBY == this.mPerspective) {
 				this.mNearbyVendors = bundle.getStringArrayList(KEY_NEARBYVENDORS);
-
+				String vendorId = bundle.getString(KEY_VENDORID);
 				if (null != this.mNearbyVendors) {
 					int index = -1;
 					for (int i = 0; i < this.mNearbyVendors.size(); i++) {
@@ -172,9 +192,11 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 					Assert.assertEquals(index >= 0, true);
 
 					this.mCurIndex = index;
+
+					vendor = SelfMgr.getInstance().getNearbyVendorDetail(vendorId);
 				}
-				vendor = SelfMgr.getInstance().getNearbyVendorDetail(vendorId);
-			} else {
+			} else if (PERSPECTIVE_FELLOW == this.mPerspective) {
+				String vendorId = bundle.getString(KEY_VENDORID);
 				vendor = SelfMgr.getInstance().getFavVendorDetail(vendorId);
 			}
 
@@ -182,23 +204,28 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 		}
 	}
 
-	private void updateView() {
-		if (this.isNearby) {
+	private void updateView(int pers) {
+
+		this.mBtnFollow.setVisibility(PERSPECTIVE_SELF == pers ? View.GONE : View.VISIBLE);
+
+		this.mBottomBar.setVisibility(PERSPECTIVE_SELF == pers ? View.GONE : View.VISIBLE);
+
+		if (PERSPECTIVE_NEARBY == pers) {
 			this.mBtnFollow.setBackgroundResource(R.drawable.selector_btn_follow);
+
 			this.mBtnShake.setVisibility(View.VISIBLE);
 			this.mBtnNext.setVisibility(View.VISIBLE);
 
 			this.mBtnYelp.setBackgroundResource(R.drawable.selector_button_vendorbar_yelp);
 			this.mBtnEcc.setBackgroundResource(R.drawable.selector_button_vendorbar_ecc);
-
-		} else {
+		} else if (PERSPECTIVE_FELLOW == pers) {
 			this.mBtnFollow.setBackgroundResource(R.drawable.selector_btn_msg);
+
 			this.mBtnShake.setVisibility(View.GONE);
 			this.mBtnNext.setVisibility(View.GONE);
 
 			this.mBtnYelp.setBackgroundResource(R.drawable.selector_button_vendorbar_longyelp);
 			this.mBtnEcc.setBackgroundResource(R.drawable.selector_button_vendorbar_longecc);
-
 		}
 	}
 
@@ -278,10 +305,10 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 	}
 
 	private void shake() {
-		Assert.assertEquals(true, isNearby);
-		if (!isNearby) {
+		Assert.assertEquals(PERSPECTIVE_NEARBY, mPerspective);
+
+		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
-		}
 
 		TextMessage entity = new TextMessage();
 		entity.setSource(SelfMgr.getInstance().getId());
@@ -295,10 +322,10 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 	private void gotoNext() {
 
-		Assert.assertEquals(true, isNearby);
-		if (!this.isNearby) {
+		Assert.assertEquals(PERSPECTIVE_NEARBY, mPerspective);
+
+		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
-		}
 
 		mCurIndex++;
 		if (mCurIndex >= this.mNearbyVendors.size()) {
@@ -328,7 +355,12 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 	private void follow() {
 
-		if (this.isNearby) {
+		Assert.assertEquals(true, this.mPerspective != PERSPECTIVE_SELF);
+
+		if (this.mPerspective == PERSPECTIVE_SELF)
+			return;
+
+		if (this.mPerspective == PERSPECTIVE_NEARBY) {
 			String curId = this.mNearbyVendors.get(mCurIndex);
 
 			if (SelfMgr.getInstance().isFavoriteVendor(curId)) {
@@ -345,7 +377,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 				IMessageCourier courier = new FollowshipMessageCourier(this.getApplicationContext());
 				courier.dispatch(msg);
 			}
-		} else {
+		} else if (mPerspective == PERSPECTIVE_FELLOW) {
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), ChatActivity.class);
 

@@ -13,54 +13,54 @@ public class Vendor implements Serializable {
 	@SerializedName("id")
 	private String id;
 
-	private String name;
+	protected String name;
 
-	private String avatar;
+	protected String avatar;
 
 	@SerializedName("review_total")
-	private String reviewTotal;
+	protected String reviewTotal;
 
 	@SerializedName("view_total")
-	private String viewTotal;
+	protected String viewTotal;
 
-	private double score;
+	protected double score;
 
 	@SerializedName("price")
-	private double priceScore;
+	protected double priceScore;
 
 	@SerializedName("technology")
-	private double technologyScore;
+	protected double technologyScore;
 
 	@SerializedName("efficiency")
-	private double efficiencyScore;
+	protected double efficiencyScore;
 
 	@SerializedName("receive")
-	private double receptionScore;
+	protected double receptionScore;
 
 	@SerializedName("environment")
-	private double environmentScore;
+	protected double environmentScore;
 
-	private String cas;
-	private String address;
+	protected String cas;
+	protected String address;
 
 	@SerializedName("tel")
-	private String telePhone;
+	protected String telePhone;
 
-	private String mobile;
+	protected String mobile;
 
 	@SerializedName("cityCode")
-	private String cityCode;
+	protected String cityCode;
 
 	@SerializedName("point_x")
-	private float pointX;
+	protected float pointX;
 
 	@SerializedName("point_y")
-	private float pointY;
+	protected float pointY;
 
 	@SerializedName("answer_time")
-	private String answerTime;
+	protected String answerTime;
 
-	private String introduction;
+	protected String introduction;
 
 	private String lastMessage;
 	private Date lastMessageTime;

@@ -9,19 +9,19 @@ package com.handmark.pulltorefresh.extras.viewpager;
 public final class R {
 	public static final class id {
 		public static final int pullFromStart = 0x7f060006;
-		public static final int pull_to_refresh_progress = 0x7f060119;
+		public static final int pull_to_refresh_progress = 0x7f060134;
 		public static final int rotate = 0x7f06000c;
 		public static final int both = 0x7f060008;
 		public static final int webview = 0x7f06000f;
-		public static final int pull_to_refresh_text = 0x7f06011a;
+		public static final int pull_to_refresh_text = 0x7f060135;
 		public static final int pullDownFromTop = 0x7f06000a;
 		public static final int gridview = 0x7f06000e;
 		public static final int pullUpFromBottom = 0x7f06000b;
 		public static final int scrollview = 0x7f060010;
 		public static final int pullFromEnd = 0x7f060007;
-		public static final int pull_to_refresh_image = 0x7f060118;
-		public static final int pull_to_refresh_sub_text = 0x7f06011b;
-		public static final int fl_inner = 0x7f060117;
+		public static final int pull_to_refresh_image = 0x7f060133;
+		public static final int pull_to_refresh_sub_text = 0x7f060136;
+		public static final int fl_inner = 0x7f060132;
 		public static final int viewpager = 0x7f060011;
 		public static final int flip = 0x7f06000d;
 		public static final int disabled = 0x7f060005;
@@ -42,9 +42,9 @@ public final class R {
 		public static final int pull_to_refresh_from_bottom_release_label = 0x7f0c0004;
 	}
 	public static final class layout {
-		public static final int pull_to_refresh_header_horizontal = 0x7f030030;
-		public static final int pull_to_refresh_header_vertical = 0x7f030031;
-		public static final int need_this_for_maven = 0x7f03002d;
+		public static final int pull_to_refresh_header_horizontal = 0x7f030032;
+		public static final int pull_to_refresh_header_vertical = 0x7f030033;
+		public static final int need_this_for_maven = 0x7f03002f;
 	}
 	public static final class styleable {
 		public static final int PullToRefresh_ptrDrawableStart = 7;
@@ -69,10 +69,10 @@ public final class R {
 		public static final int PullToRefresh_ptrHeaderSubTextColor = 3;
 	}
 	public static final class drawable {
-		public static final int indicator_bg_top = 0x7f020095;
-		public static final int indicator_bg_bottom = 0x7f020094;
+		public static final int indicator_bg_top = 0x7f0200a1;
+		public static final int indicator_bg_bottom = 0x7f0200a0;
 		public static final int default_ptr_flip = 0x7f02000a;
-		public static final int indicator_arrow = 0x7f020093;
+		public static final int indicator_arrow = 0x7f02009f;
 		public static final int default_ptr_rotate = 0x7f02000b;
 	}
 	public static final class attr {

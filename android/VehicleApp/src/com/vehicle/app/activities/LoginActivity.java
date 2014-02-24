@@ -1,10 +1,19 @@
 package com.vehicle.app.activities;
 
+import java.io.InputStream;
+import java.util.List;
+
 import com.vehicle.app.bean.SelfDriver;
 import com.vehicle.app.bean.SelfVendor;
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.bean.VendorImage;
+import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
+import com.vehicle.app.web.bean.VendorImgViewResult;
+import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
@@ -15,6 +24,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -254,16 +265,41 @@ public class LoginActivity extends Activity {
 				if (null != result && result.isSuccess()) {
 					if (SelfMgr.getInstance().isDriver()) {
 						SelfDriver self = (SelfDriver) result.getInfoBean();
-						
+
 						VehicleWebClient webClient = new VehicleWebClient();
 						result = webClient.CarListView(self.getId());
-						self.setCars(((CarListViewResult)result).getInfoBean());
-						
+						self.setCars(((CarListViewResult) result).getInfoBean());
+
 						SelfMgr.getInstance().setSelfDriver(self);
-						
+
 					} else {
 						SelfVendor self = (SelfVendor) result.getInfoBean();
+						VehicleWebClient webClient = new VehicleWebClient();
+						VendorImgViewResult imgResult = webClient.VendorImgView(self.getId());
+						if (null != imgResult) {
+							self.setImgs(imgResult.getInfoBean());
+
+							List<VendorImage> imgs = imgResult.getInfoBean();
+							if (null != imgs) {
+								for (VendorImage img : imgs) {
+									String imgUrl = img.getSrc();
+									InputStream input = HttpUtil.DownloadFile(imgUrl);
+									Bitmap bitmap = BitmapFactory.decodeStream(input);
+									BitmapCache.getInstance().put(imgUrl, bitmap);
+								}
+							}
+						}
+
+						VendorSpecViewResult specView = webClient.VendorSpecView(self.getId());
+						if (null != specView && null != specView.getInfoBean()) {
+							VendorDetail detail = specView.getInfoBean();
+							self.setComments(detail.getReviews());
+							self.setCoupons(detail.getCoupons());
+							self.setPromotions(detail.getPromotions());
+						}
+
 						SelfMgr.getInstance().setSelfVendor(self);
+
 					}
 
 				}

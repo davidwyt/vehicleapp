@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DriverInfoActivity extends Activity {
+public class DriverInfoOldActivity extends Activity {
 
 	private Button mBtnBack;
 	private Button mBtnConnect;
@@ -58,7 +58,7 @@ public class DriverInfoActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				DriverInfoActivity.this.onBackPressed();
+				DriverInfoOldActivity.this.onBackPressed();
 			}
 		});
 

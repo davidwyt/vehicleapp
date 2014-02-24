@@ -110,6 +110,7 @@ public class NearbyFellowListActivity extends Activity {
 
 		this.mPullRefreshListView.getRefreshableView().setOnItemClickListener(new OnItemClickListener() {
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
@@ -119,9 +120,15 @@ public class NearbyFellowListActivity extends Activity {
 					attempViewFellow(vendor.getId());
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
 					Driver driver = (Driver) user;
-					Intent intent = new Intent(getApplicationContext(), DriverInfoActivity.class);
-					intent.putExtra(DriverInfoActivity.KEY_DRIVERID, driver.getId());
-					intent.putExtra(DriverInfoActivity.KEY_ISNEARBY, true);
+					Intent intent = new Intent(getApplicationContext(), DriverHomeActivity.class);
+					intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_NEARBY);
+					intent.putExtra(DriverHomeActivity.KEY_DRIVERINFOID, driver.getId());
+					ArrayList<String> ids = new ArrayList<String>();
+					for (Driver driver2 : (List<Driver>) mListFellows) {
+						ids.add(driver2.getId());
+					}
+
+					intent.putStringArrayListExtra(DriverHomeActivity.KEY_DRIVERINFO_NEARBYS, ids);
 					startActivity(intent);
 				}
 			}
@@ -161,6 +168,7 @@ public class NearbyFellowListActivity extends Activity {
 		Collections.sort(mListFellows, comparator);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private class DistanceComparator implements Comparator {
 
 		@Override
@@ -252,7 +260,7 @@ public class NearbyFellowListActivity extends Activity {
 
 			intent.putStringArrayListExtra(VendorHomeActivity.KEY_NEARBYVENDORS, ids);
 		}
-		intent.putExtra(VendorHomeActivity.KEY_ISNEARBY, true);
+		intent.putExtra(VendorHomeActivity.KEY_PERSPECTIVE, VendorHomeActivity.PERSPECTIVE_NEARBY);
 		startActivity(intent);
 	}
 
@@ -369,23 +377,20 @@ public class NearbyFellowListActivity extends Activity {
 
 						SelfMgr.getInstance().updateNearbyVendorDetail(vendor);
 						/**
-						List<Comment> comments = vendor.getReviews();
-						if (null != comments && comments.size() > 0) {
-							for (Comment comment : comments) {
-								String imgs = comment.getImgNamesM();
-								String[] names = imgs.split(Constants.IMGNAME_DIVIDER);
-
-								for (String name : names) {
-									if (null != name && name.length() > 0) {
-										String imgUrl = Constants.getMiddleVendorImg(name);
-										InputStream input = HttpUtil.DownloadFile(imgUrl);
-										Bitmap bitmap = BitmapFactory.decodeStream(input);
-										BitmapCache.getInstance().put(imgUrl, bitmap);
-									}
-								}
-							}
-						}
-						*/
+						 * List<Comment> comments = vendor.getReviews(); if
+						 * (null != comments && comments.size() > 0) { for
+						 * (Comment comment : comments) { String imgs =
+						 * comment.getImgNamesM(); String[] names =
+						 * imgs.split(Constants.IMGNAME_DIVIDER);
+						 * 
+						 * for (String name : names) { if (null != name &&
+						 * name.length() > 0) { String imgUrl =
+						 * Constants.getMiddleVendorImg(name); InputStream input
+						 * = HttpUtil.DownloadFile(imgUrl); Bitmap bitmap =
+						 * BitmapFactory.decodeStream(input);
+						 * BitmapCache.getInstance().put(imgUrl, bitmap); } } }
+						 * }
+						 */
 					} else {
 						return null;
 					}

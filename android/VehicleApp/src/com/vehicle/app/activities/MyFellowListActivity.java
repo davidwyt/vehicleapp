@@ -65,13 +65,13 @@ public class MyFellowListActivity extends Activity {
 					Vendor vendor = (Vendor) user;
 					Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
 					intent.putExtra(VendorHomeActivity.KEY_VENDORID, vendor.getId());
-					intent.putExtra(VendorHomeActivity.KEY_ISNEARBY, false);
+					intent.putExtra(VendorHomeActivity.KEY_PERSPECTIVE, VendorHomeActivity.PERSPECTIVE_FELLOW);
 					startActivity(intent);
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
 					Driver driver = (Driver) user;
-					Intent intent = new Intent(getApplicationContext(), DriverInfoActivity.class);
-					intent.putExtra(DriverInfoActivity.KEY_DRIVERID, driver.getId());
-					intent.putExtra(DriverInfoActivity.KEY_ISNEARBY, false);
+					Intent intent = new Intent(getApplicationContext(), DriverHomeActivity.class);
+					intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_FELLOW);
+					intent.putExtra(DriverHomeActivity.KEY_DRIVERINFOID, driver.getId());
 					startActivity(intent);
 				}
 			}

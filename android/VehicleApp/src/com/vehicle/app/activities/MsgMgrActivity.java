@@ -18,6 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MsgMgrActivity extends Activity implements OnClickListener {
 
@@ -138,7 +139,14 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 	}
 
 	private void clearMessage() {
-		DBManager dbMgr = new DBManager(this.getApplicationContext());
-		dbMgr.deleteAllMessages(SelfMgr.getInstance().getId(), mFellowId);
+		try {
+			DBManager dbMgr = new DBManager(this.getApplicationContext());
+			dbMgr.deleteAllMessages(SelfMgr.getInstance().getId(), mFellowId);
+
+			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_deletegroupmsgsuccess),
+					Toast.LENGTH_LONG).show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

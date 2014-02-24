@@ -88,7 +88,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			openChatList();
 		} else if (R.id.bar_rabtn_setting == checkedId) {
 			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), SettingsActivity.class);
+			intent.setClass(getApplicationContext(), SettingHomeActivity.class);
 			this.startActivity(intent);
 		}
 	}

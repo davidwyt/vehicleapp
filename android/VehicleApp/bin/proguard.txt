@@ -2,22 +2,22 @@
 # view res/layout/activity_vendorhome.xml #generated:89
 -keep class android.support.v4.view.ViewPager { <init>(...); }
 
-# view AndroidManifest.xml #generated:187
+# view AndroidManifest.xml #generated:191
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:154
+# view AndroidManifest.xml #generated:158
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:112
+# view AndroidManifest.xml #generated:116
 -keep class cn.jpush.android.service.DownloadService { <init>(...); }
 
-# view AndroidManifest.xml #generated:132
+# view AndroidManifest.xml #generated:136
 -keep class cn.jpush.android.service.PushReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:119
+# view AndroidManifest.xml #generated:123
 -keep class cn.jpush.android.service.PushService { <init>(...); }
 
-# view AndroidManifest.xml #generated:100
+# view AndroidManifest.xml #generated:104
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
 
 # view res/layout/activity_camera.xml #generated:91
@@ -29,14 +29,20 @@
 # view res/layout/activity_recentcontactlist.xml #generated:36
 -keep class com.handmark.pulltorefresh.library.PullToRefreshListView { <init>(...); }
 
+# view AndroidManifest.xml #generated:98
+-keep class com.vehicle.app.activities.AboutActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:47
 -keep class com.vehicle.app.activities.BeginActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:86
 -keep class com.vehicle.app.activities.ChatActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:70
+-keep class com.vehicle.app.activities.DriverHomeActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:76
--keep class com.vehicle.app.activities.DriverInfoActivity { <init>(...); }
+-keep class com.vehicle.app.activities.DriverInfoOldActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:60
 -keep class com.vehicle.app.activities.DriverRegisterActivity { <init>(...); }
@@ -56,7 +62,7 @@
 # view AndroidManifest.xml #generated:88
 -keep class com.vehicle.app.activities.MapCameraActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:157
+# view AndroidManifest.xml #generated:161
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }
 
 # view AndroidManifest.xml #generated:82
@@ -77,11 +83,11 @@
 # view AndroidManifest.xml #generated:62
 -keep class com.vehicle.app.activities.RecentContactListActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:100
+-keep class com.vehicle.app.activities.RelativeAppsActivity { <init>(...); }
+
 # view AndroidManifest.xml #generated:68
 -keep class com.vehicle.app.activities.RoleSelectActivity { <init>(...); }
-
-# view AndroidManifest.xml #generated:70
--keep class com.vehicle.app.activities.SelfDriverInfoActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:72
 -keep class com.vehicle.app.activities.SelfVendorInfoActivity { <init>(...); }
@@ -90,7 +96,7 @@
 -keep class com.vehicle.app.activities.SettingActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:94
--keep class com.vehicle.app.activities.SettingsActivity { <init>(...); }
+-keep class com.vehicle.app.activities.SettingHomeActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:90
 -keep class com.vehicle.app.activities.VendorHomeActivity { <init>(...); }
@@ -103,7 +109,7 @@
 
 # view res/layout/activity_nearbymain.xml #generated:53
 # view res/layout/activity_recentcontactlist.xml #generated:28
-# view res/layout/activity_settings.xml #generated:52
+# view res/layout/activity_settinghome.xml #generated:52
 -keep class com.vehicle.app.layout.BottomBarLayout { <init>(...); }
 
 # view res/layout/activity_vendorrating.xml #generated:86

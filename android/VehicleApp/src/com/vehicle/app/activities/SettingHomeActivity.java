@@ -20,7 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-public class SettingsActivity extends Activity implements OnCheckedChangeListener, OnClickListener {
+public class SettingHomeActivity extends Activity implements OnCheckedChangeListener, OnClickListener {
 
 	private CommentsViewTask mCommentsViewTask;
 	private FellowViewTask mFellowViewTask;
@@ -35,6 +35,11 @@ public class SettingsActivity extends Activity implements OnCheckedChangeListene
 	private ImageView mIVMyComments;
 	private ImageView mIVLogout;
 
+	private ImageView mIVReturnFirst;
+	private ImageView mIVAbout;
+	private ImageView mIVApps;
+	private ImageView mIVAdvice;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -42,7 +47,7 @@ public class SettingsActivity extends Activity implements OnCheckedChangeListene
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		setContentView(R.layout.activity_settings);
+		setContentView(R.layout.activity_settinghome);
 
 		initView();
 	}
@@ -94,6 +99,18 @@ public class SettingsActivity extends Activity implements OnCheckedChangeListene
 
 		this.mIVLogout = (ImageView) this.findViewById(R.id.settings_logout);
 		this.mIVLogout.setOnClickListener(this);
+
+		this.mIVReturnFirst = (ImageView) this.findViewById(R.id.settings_returnfirst);
+		this.mIVReturnFirst.setOnClickListener(this);
+
+		this.mIVAbout = (ImageView) this.findViewById(R.id.settings_about);
+		this.mIVAbout.setOnClickListener(this);
+
+		this.mIVAdvice = (ImageView) this.findViewById(R.id.settings_advice);
+		this.mIVAdvice.setOnClickListener(this);
+
+		this.mIVApps = (ImageView) this.findViewById(R.id.settings_moreapp);
+		this.mIVApps.setOnClickListener(this);
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -195,10 +212,12 @@ public class SettingsActivity extends Activity implements OnCheckedChangeListene
 
 	private void openMyInfo() {
 		if (SelfMgr.getInstance().isDriver()) {
-			Intent intent = new Intent(this, SelfDriverInfoActivity.class);
+			Intent intent = new Intent(this, DriverHomeActivity.class);
+			intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_SELF);
 			this.startActivity(intent);
 		} else {
-			Intent intent = new Intent(this, SelfVendorInfoActivity.class);
+			Intent intent = new Intent(this, VendorHomeActivity.class);
+			intent.putExtra(VendorHomeActivity.KEY_PERSPECTIVE, VendorHomeActivity.PERSPECTIVE_SELF);
 			this.startActivity(intent);
 		}
 	}
@@ -232,7 +251,29 @@ public class SettingsActivity extends Activity implements OnCheckedChangeListene
 	}
 
 	private void logout() {
+		this.finish();
+		Intent intent = new Intent(this, BeginActivity.class);
+		this.startActivity(intent);
+	}
 
+	private void about() {
+		Intent intent = new Intent(this, AboutActivity.class);
+		this.startActivity(intent);
+	}
+
+	private void advice() {
+
+	}
+
+	private void moreApp() {
+		Intent intent = new Intent(this, RelativeAppsActivity.class);
+		this.startActivity(intent);
+	}
+
+	private void returnFirst() {
+		this.finish();
+		Intent intent = new Intent(this, BeginActivity.class);
+		this.startActivity(intent);
 	}
 
 	@Override
@@ -251,6 +292,19 @@ public class SettingsActivity extends Activity implements OnCheckedChangeListene
 		case R.id.settings_logout:
 			logout();
 			break;
+		case R.id.settings_about:
+			about();
+			break;
+		case R.id.settings_advice:
+			advice();
+			break;
+		case R.id.settings_moreapp:
+			moreApp();
+			break;
+		case R.id.settings_returnfirst:
+			returnFirst();
+			break;
 		}
 	}
+
 }
