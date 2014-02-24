@@ -137,7 +137,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		// TODO Auto-generated method stub
 		if (R.id.bar_rabtn_setting == checkedId) {
 			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), SettingActivity.class);
+			intent.setClass(getApplicationContext(), SettingsActivity.class);
 			this.startActivity(intent);
 		} else if (R.id.bar_rabtn_middle == checkedId) {
 			Intent intent = new Intent();

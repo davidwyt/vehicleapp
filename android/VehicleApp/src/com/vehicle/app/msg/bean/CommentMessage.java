@@ -1,5 +1,7 @@
 package com.vehicle.app.msg.bean;
 
+import java.util.List;
+
 public class CommentMessage implements IMessageItem {
 
 	private String selfId;
@@ -18,6 +20,8 @@ public class CommentMessage implements IMessageItem {
 	private double environmentScore;
 
 	private String comment;
+
+	private List<String> imgPaths;
 
 	public int getMainProjectId() {
 		return this.mainProjectId;
@@ -119,4 +123,11 @@ public class CommentMessage implements IMessageItem {
 
 	}
 
+	public List<String> getImgPaths() {
+		return this.imgPaths;
+	}
+
+	public void setImgPaths(List<String> paths) {
+		this.imgPaths = paths;
+	}
 }

@@ -53,20 +53,23 @@ public class MessageServiceImpl implements MessageService {
 
 	private void PersistentAndSendMessage(Message msg)
 			throws PersistenceException, PushMessageFailedException {
-		
 
 		MessageResult androidMsgResult = null;
-		MessageResult iosMsgResult=null;
+		MessageResult iosMsgResult = null;
 		try {
 			androidMsgResult = JPushUtil.getInstance().SendAndroidMessage(
-					msg.getTarget(), Notifications.NewMessage.toString(), JsonUtil.toJsonString(msg));
-			iosMsgResult=JPushUtil.getInstance().SendIOSMessage(msg.getTarget(), "chat", JsonUtil.toJsonString(msg));
+					msg.getTarget(), Notifications.NewMessage.toString(),
+					JsonUtil.toJsonString(msg));
+			iosMsgResult = JPushUtil.getInstance().SendIOSMessage(
+					msg.getTarget(), "chat", JsonUtil.toJsonString(msg));
 		} catch (Exception e) {
 			throw new PushMessageFailedException(e);
 		}
 
-		if (null != androidMsgResult&&null!=iosMsgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == androidMsgResult.getErrcode()||ErrorCodeEnum.NOERROR.value() == iosMsgResult.getErrcode()) {
+		if (null != androidMsgResult && null != iosMsgResult) {
+			if (ErrorCodeEnum.NOERROR.value() == androidMsgResult.getErrcode()
+					|| ErrorCodeEnum.NOERROR.value() == iosMsgResult
+							.getErrcode()) {
 				try {
 					messageDao.InsertMessage(msg);
 				} catch (Exception e) {
@@ -74,10 +77,14 @@ public class MessageServiceImpl implements MessageService {
 				}
 			} else {
 				offlineMessageDao.save(new OfflineMessage(msg));
-				if (ErrorCodeEnum.NOERROR.value() != androidMsgResult.getErrcode())
-					throw new PushMessageFailedException(androidMsgResult.getErrmsg());
-				if (ErrorCodeEnum.NOERROR.value() != iosMsgResult.getErrcode())
-					throw new PushMessageFailedException(iosMsgResult.getErrmsg());
+				/**
+				 * if (ErrorCodeEnum.NOERROR.value() !=
+				 * androidMsgResult.getErrcode()) throw new
+				 * PushMessageFailedException(androidMsgResult.getErrmsg()); if
+				 * (ErrorCodeEnum.NOERROR.value() != iosMsgResult.getErrcode())
+				 * throw new
+				 * PushMessageFailedException(iosMsgResult.getErrmsg());
+				 */
 			}
 		} else {
 			throw new PushMessageFailedException("no push result");
@@ -132,7 +139,7 @@ public class MessageServiceImpl implements MessageService {
 
 		PersistentAndSendMessageList(source, followers, msgRequest.getContent());
 	}
-	
+
 	public OfflineMessageDao getOfflineMessageDao() {
 		return offlineMessageDao;
 	}
@@ -142,12 +149,14 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public List<RespMessage> sendOfflineMsgs(OfflineMessageRequest omReq)throws PersistenceException{
+	public List<RespMessage> sendOfflineMsgs(OfflineMessageRequest omReq)
+			throws PersistenceException {
 		// TODO Auto-generated method stub
-		List<OfflineMessage> list=this.getOfflineMessageDao().getOffline(omReq.getTarget(), new Date(omReq.getSince()));
-		List<RespMessage> ret=new ArrayList<RespMessage>();
-		for(int i=0;i<list.size();i++){
-			RespMessage r=new RespMessage();
+		List<OfflineMessage> list = this.getOfflineMessageDao().getOffline(
+				omReq.getTarget(), new Date(omReq.getSince()));
+		List<RespMessage> ret = new ArrayList<RespMessage>();
+		for (int i = 0; i < list.size(); i++) {
+			RespMessage r = new RespMessage();
 			r.setContent(list.get(i).getContent());
 			r.setId(list.get(i).getId());
 			r.setSentTime(list.get(i).getSentTime());
@@ -160,21 +169,22 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	@Override
-	public void offlineAck(OfflineAckRequest req) throws PersistenceException  {
+	public void offlineAck(OfflineAckRequest req) throws PersistenceException {
 		// TODO Auto-generated method stub
-		String target=req.getId();
+		String target = req.getId();
 		this.getOfflineMessageDao().deleteOffline(target);
 	}
 
 	@Override
-	public void sendMessage2Multi(MessageOne2MultiRequest req) throws PersistenceException, PushMessageFailedException {
+	public void sendMessage2Multi(MessageOne2MultiRequest req)
+			throws PersistenceException, PushMessageFailedException {
 		// TODO Auto-generated method stub
 		System.out.println(req.toString());
 
 		String source = req.getSource();
 		List<String> multi = new ArrayList<String>();
-		String[] temps=req.getTargets().split(",");
-		for(int i=0;i<temps.length;i++){
+		String[] temps = req.getTargets().split(",");
+		for (int i = 0; i < temps.length; i++) {
 			multi.add(temps[i]);
 		}
 

@@ -1,14 +1,13 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.bean.Driver;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.worker.FollowshipInvMessageCourier;
 import com.vehicle.app.msg.worker.IMessageCourier;
-import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
@@ -16,7 +15,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -118,7 +116,7 @@ public class DriverInfoActivity extends Activity {
 		if (isNearby) {
 			this.mDriver = SelfMgr.getInstance().getNearbyDriver(driverId);
 		} else {
-			this.mDriver = SelfMgr.getInstance().getVendorFellowDetail(driverId);
+			this.mDriver = SelfMgr.getInstance().getVendorFellow(driverId);
 		}
 
 		if (null == mDriver) {
@@ -134,15 +132,7 @@ public class DriverInfoActivity extends Activity {
 		this.mTvCarInfo.setText("");
 
 		String url = mDriver.getAvatar();
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
-
-		if (null != bitmap) {
-			mIvHead.setImageBitmap(bitmap);
-		} else {
-			mIvHead.setTag(R.id.TAGKEY_BITMAP_URL, url);
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(mIvHead);
-			loader.load();
-		}
+		ImageUtil.RenderImageView(url, mIvHead, -1, -1);
 	}
 
 	private void registerMessageReceiver() {

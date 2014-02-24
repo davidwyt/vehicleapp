@@ -44,7 +44,7 @@
         android:icon="@drawable/logo1"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.vehicle.app.activities.VendorHomeActivity" >
+        <activity android:name="com.vehicle.app.activities.BeginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -87,9 +87,13 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.MapCameraActivity" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.BeginActivity" >
+        <activity android:name="com.vehicle.app.activities.VendorHomeActivity" >
         </activity>
-                <activity android:name="com.vehicle.app.activities.VendorRatingActivity" >
+        <activity android:name="com.vehicle.app.activities.VendorRatingActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.SettingsActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.MyCommentsActivity" >
         </activity>
 
         <!-- Required SDK核心功能 -->

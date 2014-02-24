@@ -31,7 +31,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	private TextView mTextViewSearchNearbyStatus;
 
 	private Button mButtonNearby;
-	private Button mButtonNearbyList;
 	private Button mButtonGroupMsg;
 
 	private NearbySearchTask mSearchTask;
@@ -50,9 +49,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 
 		this.mButtonNearby = (Button) this.findViewById(R.id.nearbymain_roundnearby);
 		this.mButtonNearby.setOnClickListener(this);
-
-		this.mButtonNearbyList = (Button) this.findViewById(R.id.nearbymain_nearbylist);
-		this.mButtonNearbyList.setOnClickListener(this);
 
 		this.mButtonGroupMsg = (Button) this.findViewById(R.id.nearbymain_groupmsg);
 		this.mButtonGroupMsg.setOnClickListener(this);
@@ -92,7 +88,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			openChatList();
 		} else if (R.id.bar_rabtn_setting == checkedId) {
 			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), SettingActivity.class);
+			intent.setClass(getApplicationContext(), SettingsActivity.class);
 			this.startActivity(intent);
 		}
 	}
@@ -102,7 +98,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), RecentContactListActivity.class);
 		startActivity(intent);
-
 	}
 
 	@Override
@@ -110,11 +105,14 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		// TODO Auto-generated method stub
 		if (R.id.nearbymain_roundnearby == view.getId()) {
 			searchNearby();
-		} else if (R.id.nearbymain_nearbylist == view.getId()) {
-
 		} else if (R.id.nearbymain_groupmsg == view.getId()) {
-
+			startGroupMsg();
 		}
+	}
+
+	private void startGroupMsg() {
+		Intent intent = new Intent(this, GroupmsgNavActivity.class);
+		this.startActivity(intent);
 	}
 
 	private void searchNearby() {

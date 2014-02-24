@@ -2,6 +2,8 @@ package com.vehicle.app.activities;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -10,15 +12,16 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.vehicle.app.adapter.NearbyFellowsViewAdapter;
-import com.vehicle.app.bean.Comment;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.web.bean.NearbyDriverListViewResult;
-import com.vehicle.app.web.bean.VendorViewResult;
+import com.vehicle.app.web.bean.VendorImgViewResult;
+import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
@@ -84,7 +87,7 @@ public class NearbyFellowListActivity extends Activity {
 			this.mTitle.setImageResource(R.drawable.icon_nearbydriverstitle);
 		}
 
-		mPullRefreshListView.setMode(Mode.PULL_FROM_END);
+		mPullRefreshListView.setMode(Mode.DISABLED);
 
 		this.mPullRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 
@@ -147,7 +150,55 @@ public class NearbyFellowListActivity extends Activity {
 			this.mListFellows.addAll(SelfMgr.getInstance().getNearbyDrivers());
 		}
 
+		sortNearby();
+
 		this.mAdapter.notifyDataSetChanged();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void sortNearby() {
+		DistanceComparator comparator = new DistanceComparator();
+		Collections.sort(mListFellows, comparator);
+	}
+
+	private class DistanceComparator implements Comparator {
+
+		@Override
+		public int compare(Object arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			if (arg0 instanceof Vendor) {
+				Vendor vendor1 = (Vendor) arg0;
+				Vendor vendor2 = (Vendor) arg1;
+
+				String dis1 = vendor1.getDistance();
+				String dis2 = vendor2.getDistance();
+
+				if (dis1.length() > "千米".length()) {
+					dis1 = dis1.substring(0, dis1.length() - "千米".length());
+				}
+
+				if (dis2.length() > "千米".length()) {
+					dis2 = dis2.substring(0, dis2.length() - "千米".length());
+				}
+
+				double value1 = Double.parseDouble(dis1);
+				double value2 = Double.parseDouble(dis2);
+
+				return Double.compare(value1, value2);
+			} else {
+				Driver driver1 = (Driver) arg0;
+				Driver driver2 = (Driver) arg1;
+
+				if (driver1.getDistance() < driver2.getDistance()) {
+					return -1;
+				} else if (driver1.getDistance() > driver2.getDistance()) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		}
+
 	}
 
 	@Override
@@ -188,7 +239,32 @@ public class NearbyFellowListActivity extends Activity {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	private void startVendorHome(String id) {
+		Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
+		intent.putExtra(VendorHomeActivity.KEY_VENDORID, id);
+
+		if (null != this.mListFellows) {
+			ArrayList<String> ids = new ArrayList<String>();
+			for (Vendor vendor : (List<Vendor>) this.mListFellows) {
+				ids.add(vendor.getId());
+			}
+
+			intent.putStringArrayListExtra(VendorHomeActivity.KEY_NEARBYVENDORS, ids);
+		}
+		intent.putExtra(VendorHomeActivity.KEY_ISNEARBY, true);
+		startActivity(intent);
+	}
+
 	private void attempViewFellow(String id) {
+
+		if (SelfMgr.getInstance().isDriver()) {
+			if (SelfMgr.getInstance().isNearbyVendorDetailExist(id)) {
+				startVendorHome(id);
+				return;
+			}
+		}
+
 		if (null != this.mViewFellowTask)
 			return;
 
@@ -288,10 +364,11 @@ public class NearbyFellowListActivity extends Activity {
 					result = webClient.VendorSpecView(fellowId);
 
 					if (null != result && result.isSuccess()) {
-						VendorViewResult vendorView = (VendorViewResult) result;
-						Vendor vendor = vendorView.getInfoBean();
+						VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
+						VendorDetail vendor = vendorView.getInfoBean();
 
-						SelfMgr.getInstance().updateNearbyVendor(vendor);
+						SelfMgr.getInstance().updateNearbyVendorDetail(vendor);
+						/**
 						List<Comment> comments = vendor.getReviews();
 						if (null != comments && comments.size() > 0) {
 							for (Comment comment : comments) {
@@ -308,7 +385,26 @@ public class NearbyFellowListActivity extends Activity {
 								}
 							}
 						}
+						*/
+					} else {
+						return null;
 					}
+
+					result = webClient.VendorImgView(fellowId);
+					if (null != result && result.isSuccess()) {
+						VendorDetail vendor = SelfMgr.getInstance().getNearbyVendorDetail(fellowId);
+						List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
+						if (null != imgs) {
+							for (VendorImage img : imgs) {
+								String imgUrl = img.getSrc();
+								InputStream input = HttpUtil.DownloadFile(imgUrl);
+								Bitmap bitmap = BitmapFactory.decodeStream(input);
+								BitmapCache.getInstance().put(imgUrl, bitmap);
+							}
+						}
+						vendor.setImgs(imgs);
+					}
+
 				} else {
 
 				}
@@ -326,11 +422,7 @@ public class NearbyFellowListActivity extends Activity {
 			showProgress(false);
 
 			if (null != result && result.isSuccess()) {
-
-				Intent intent = new Intent(getApplicationContext(), VendorInfoActivity.class);
-				intent.putExtra(VendorInfoActivity.KEY_VENDORID, fellowId);
-				intent.putExtra(VendorInfoActivity.KEY_ISNEARBY, true);
-				startActivity(intent);
+				startVendorHome(fellowId);
 			} else {
 				Toast.makeText(NearbyFellowListActivity.this,
 						getResources().getString(R.string.tip_viewnearbyvendorfailed), Toast.LENGTH_LONG).show();

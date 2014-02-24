@@ -6,12 +6,10 @@ import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
+import com.vehicle.app.utils.ImageUtil;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,18 +95,7 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 
 		tvDistance.setText(distance);
 
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
-
-		if (null != bitmap) {
-			ivHead.setImageBitmap(Bitmap.createScaledBitmap(bitmap, ICON_WIDTH, ICON_HEIGHT, true));
-		} else {
-			ivHead.setTag(R.id.TAGKEY_BITMAP_URL, url);
-			ivHead.setTag(R.id.TAGKEY_BITMAP_WIDTH, ICON_WIDTH);
-			ivHead.setTag(R.id.TAGKEY_BITMAP_HEIGHT, ICON_HEIGHT);
-
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(ivHead);
-			loader.load();
-		}
+		ImageUtil.RenderImageView(url, ivHead, ICON_WIDTH, ICON_HEIGHT);
 
 		return view;
 	}

@@ -4,40 +4,39 @@ import com.google.gson.annotations.SerializedName;
 
 public class VendorPromotion {
 
-	@SerializedName("activity_id")
-	private String id;
+	@SerializedName("specials_id")
+	private String specialsId;
 
-	@SerializedName("title")
-	private String title;
+	private String discount;
 
-	@SerializedName("content")
-	private String content;
+	@SerializedName("discount_range")
+	private String discountRange;
 
 	@SerializedName("expire_date")
 	private String expireDate;
 
-	public String getId() {
-		return this.id;
+	public String getSpecialsId() {
+		return this.specialsId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setSpecialsId(String id) {
+		this.specialsId = id;
 	}
 
-	public String getTitle() {
-		return this.title;
+	public String getDiscount() {
+		return this.discount;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setDiscount(String discount) {
+		this.discount = discount;
 	}
 
-	public String getContent() {
-		return this.content;
+	public String getDiscountRange() {
+		return this.discountRange;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setDiscountRange(String range) {
+		this.discountRange = range;
 	}
 
 	public String getExpireDate() {

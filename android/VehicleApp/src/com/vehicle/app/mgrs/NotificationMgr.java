@@ -5,6 +5,7 @@ import cn.edu.sjtu.vehicleapp.R;
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.activities.FollowshipInvitationActivity;
 import com.vehicle.app.activities.SettingActivity;
+import com.vehicle.app.activities.SettingsActivity;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
 import com.vehicle.app.msg.bean.ImageMessage;
@@ -96,7 +97,7 @@ public class NotificationMgr {
 				.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
 				.setTicker(ticker);
 
-		Intent resultIntent = new Intent(context, SettingActivity.class);
+		Intent resultIntent = new Intent(context, SettingsActivity.class);
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		notificationBuilder.setContentIntent(resultPendingIntent);

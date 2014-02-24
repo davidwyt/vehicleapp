@@ -60,12 +60,12 @@ public class MyFellowListActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
-				Object user = mListFellows.get(position-1);
+				Object user = mListFellows.get(position - 1);
 				if (SelfMgr.getInstance().isDriver() && user instanceof Vendor) {
 					Vendor vendor = (Vendor) user;
-					Intent intent = new Intent(getApplicationContext(), VendorInfoActivity.class);
-					intent.putExtra(VendorInfoActivity.KEY_VENDORID, vendor.getId());
-					intent.putExtra(VendorInfoActivity.KEY_ISNEARBY, false);
+					Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
+					intent.putExtra(VendorHomeActivity.KEY_VENDORID, vendor.getId());
+					intent.putExtra(VendorHomeActivity.KEY_ISNEARBY, false);
 					startActivity(intent);
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
 					Driver driver = (Driver) user;
@@ -93,9 +93,9 @@ public class MyFellowListActivity extends Activity {
 		this.mListFellows.clear();
 
 		if (SelfMgr.getInstance().isDriver()) {
-			this.mListFellows.addAll(SelfMgr.getInstance().getFavVendorDetailMap().values());
+			this.mListFellows.addAll(SelfMgr.getInstance().getFavVendorMap().values());
 		} else {
-			this.mListFellows.addAll(SelfMgr.getInstance().getVendorFellowDetailMap().values());
+			this.mListFellows.addAll(SelfMgr.getInstance().getVendorFellowMap().values());
 		}
 
 		this.mAdapter.notifyDataSetChanged();

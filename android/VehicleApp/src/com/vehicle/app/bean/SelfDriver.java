@@ -1,11 +1,12 @@
 package com.vehicle.app.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.vehicle.app.utils.Constants;
 
-public class SelfDriver implements Serializable{
+public class SelfDriver implements Serializable {
 
 	/**
 	 * 
@@ -51,6 +52,18 @@ public class SelfDriver implements Serializable{
 	private String introduction;
 
 	private String sid;
+
+	private List<Car> cars;
+
+	private List<Comment> comments;
+
+	public List<Car> getCars() {
+		return this.cars;
+	}
+
+	public void setCars(List<Car> cars) {
+		this.cars = cars;
+	}
 
 	public String getId() {
 		return this.id;
@@ -191,7 +204,7 @@ public class SelfDriver implements Serializable{
 	public void setTelephone(String tel) {
 		this.telephone = tel;
 	}
-	
+
 	public String getViewTotal() {
 		return this.viewTotal;
 	}
@@ -214,5 +227,13 @@ public class SelfDriver implements Serializable{
 
 	public void setSid(String sid) {
 		this.sid = sid;
+	}
+
+	public List<Comment> getComments() {
+		return this.comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

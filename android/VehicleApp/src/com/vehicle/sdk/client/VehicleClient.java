@@ -12,6 +12,7 @@ import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.URLUtil;
 import com.vehicle.service.bean.AddLocateRequest;
 import com.vehicle.service.bean.AddLocateResponse;
+import com.vehicle.service.bean.CommentFileResponse;
 import com.vehicle.service.bean.FileMultiTransmissionResponse;
 import com.vehicle.service.bean.FileTransmissionResponse;
 import com.vehicle.service.bean.FolloweesResponse;
@@ -56,6 +57,7 @@ public class VehicleClient {
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
 	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
+	private static final String URL_FILETRANSMISSION_COMMENTIMG = "commentfile/fileName=%s";
 	private static final String URL_FILETRANSMISSION_FETCH = "fetch/%s";
 	private static final String URL_FILEMULTITRANSMISSION_SEND = "sendtomulti/source=%s&&targets=%s&&fileName=%s";
 
@@ -338,5 +340,14 @@ public class VehicleClient {
 
 		AddLocateResponse response = HttpUtil.PostJson(url, request, AddLocateResponse.class);
 		return response;
+	}
+
+	public CommentFileResponse UploadCommentImg(String filePath) {
+		File file = new File(filePath);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
+				String.format(URL_FILETRANSMISSION_COMMENTIMG, file.getName()));
+
+		return HttpUtil.UploadFile(url, filePath, CommentFileResponse.class);
 	}
 }

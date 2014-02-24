@@ -36,51 +36,58 @@
                 </ImageView>
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/blue" >
+            </View>
+
             <RelativeLayout
+                style="@style/DriverInfoFormContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
                 <ImageView
-                    android:id="@+id/selfdriverinfo_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/driverinfo_icon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:layout_marginTop="16dp"
-                    android:contentDescription="@string/title"
-                    android:background="@drawable/chat_info" />
+                    android:contentDescription="@string/title" />
 
                 <TextView
-                    android:id="@+id/selfdriverinfo_name"
+                    android:id="@+id/driverinfo_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/driverinfo_icon"
                     android:layout_marginLeft="16dp"
-                    android:layout_alignTop="@id/selfdriverinfo_icon"
-                    android:layout_toRightOf="@id/selfdriverinfo_icon"
+                    android:layout_toRightOf="@id/driverinfo_icon"
                     android:ellipsize="end"
                     android:singleLine="true"
-                    android:text="我的名字" >
+                    android:text="我的名字"
+                    android:textColor="@color/black" >
                 </TextView>
 
                 <TextView
-                    android:id="@+id/selfdriverinfo_age"
+                    android:id="@+id/driverinfo_age"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/selfdriverinfo_name"
-                    android:layout_alignLeft="@id/selfdriverinfo_name"
+                    android:layout_alignLeft="@id/driverinfo_name"
+                    android:layout_below="@id/driverinfo_name"
                     android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@id/selfdriverinfo_icon"
+                    android:layout_toRightOf="@id/driverinfo_icon"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="年龄：1999" >
                 </TextView>
 
                 <TextView
-                    android:id="@+id/selfdriverinfo_sex"
+                    android:id="@+id/driverinfo_sex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/driverinfo_name"
                     android:layout_below="@id/driverinfo_age"
-                    android:layout_alignLeft="@id/selfdriverinfo_name"
                     android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@id/selfdriverinfo_icon"
+                    android:layout_toRightOf="@id/driverinfo_icon"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="性别：男" >
@@ -90,7 +97,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical" >
 
                 <TextView
@@ -99,15 +108,14 @@
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="个人信息："
-                    android:textColor="@color/blue"
+                    android:textColor="@color/black"
                     android:textSize="22sp" >
                 </TextView>
 
                 <TextView
-                    android:id="@+id/selfdriver_driverinfo"
+                    android:id="@+id/driver_driverinfo"
                     android:layout_width="match_parent"
                     android:layout_height="92dp"
-                    android:layout_marginRight="32dp"
                     android:layout_marginTop="8dp"
                     android:background="@color/white"
                     android:gravity="center"
@@ -121,6 +129,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical" >
 
@@ -130,23 +140,75 @@
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="爱车信息："
-                    android:textColor="@color/blue"
+                    android:textColor="@color/black"
                     android:textSize="22sp" >
                 </TextView>
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/selfdriver_carinfo"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="92dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:maxLines="5"
-                    android:singleLine="false"
-                    android:text="我是谁我是谁我是谁谁谁谁谁谁是事实上事实上是"
-                    android:textSize="22sp" >
-                </TextView>
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.8"
+                        android:gravity="center"
+                        android:text="品牌"
+                        android:singleLine="true"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
+                        android:text="购买年月"
+                        android:singleLine="true"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:gravity="center"
+                        android:text="车型"
+                        android:singleLine="true"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="车牌号"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="2dp"
+                    android:background="@color/black" />
+
+                <TableLayout
+                    android:id="@+id/table_cars"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white" >
+                </TableLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

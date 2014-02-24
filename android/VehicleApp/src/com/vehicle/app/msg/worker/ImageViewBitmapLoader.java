@@ -82,7 +82,7 @@ public class ImageViewBitmapLoader {
 				result = loadBitmap(url);
 			}
 
-			return loadBitmap(url);
+			return result;
 		}
 
 		@Override

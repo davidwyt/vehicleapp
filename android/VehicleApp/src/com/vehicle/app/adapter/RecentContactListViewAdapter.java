@@ -7,18 +7,16 @@ import java.util.Vector;
 
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.RecentMessage;
-import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
+import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,14 +78,14 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 
 		if (SelfMgr.getInstance().isDriver()) {
 
-			Vendor vendor = SelfMgr.getInstance().getFavVendorDetail(msg.getFellowId());
+			Vendor vendor = SelfMgr.getInstance().getFavVendor(msg.getFellowId());
 			if (null != vendor) {
 				alias = vendor.getName();
 				url = vendor.getAvatar();
 			}
 
 		} else {
-			Driver driver = SelfMgr.getInstance().getVendorFellowDetail(msg.getFellowId());
+			Driver driver = SelfMgr.getInstance().getVendorFellow(msg.getFellowId());
 			if (null != driver) {
 				alias = driver.getAlias();
 				url = driver.getAvatar();
@@ -102,18 +100,7 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 
 		tvLastMessageDate.setText(formatLastMessageTime(msg));
 
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
-
-		if (null != bitmap) {
-			ivHead.setImageBitmap(Bitmap.createScaledBitmap(bitmap, ICON_WIDTH, ICON_HEIGHT, true));
-		} else {
-			ivHead.setTag(R.id.TAGKEY_BITMAP_URL, url);
-			ivHead.setTag(R.id.TAGKEY_BITMAP_WIDTH, ICON_WIDTH);
-			ivHead.setTag(R.id.TAGKEY_BITMAP_HEIGHT, ICON_HEIGHT);
-
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(ivHead);
-			loader.load();
-		}
+		ImageUtil.RenderImageView(url, ivHead, ICON_WIDTH, ICON_HEIGHT);
 
 		return view;
 	}

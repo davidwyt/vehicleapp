@@ -4,12 +4,13 @@ import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
 
-import com.vehicle.app.bean.Vendor;
-import com.vehicle.app.bean.VendorPromotion;
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.bean.VendorCoupon;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,26 +21,26 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 @SuppressLint("ValidFragment")
-public class VendorPromotionFragment extends Fragment {
+public class VendorCouponsFragment extends Fragment {
 
-	private Vendor vendor;
+	private VendorDetail vendor;
 
-	public VendorPromotionFragment(Vendor vendor) {
+	public VendorCouponsFragment(VendorDetail vendor) {
 		this.vendor = vendor;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View parent = inflater.inflate(R.layout.layout_vendorpromotion, container, false);
+		View parent = inflater.inflate(R.layout.layout_vendorcoupons, container, false);
 
 		TableLayout table = (TableLayout) parent.findViewById(R.id.table_promotion);
 
-		List<VendorPromotion> promotions = vendor.getPromotions();
+		List<VendorCoupon> coupons = vendor.getCoupons();
 
-		if (null != promotions) {
-			for (int i = 0; i < promotions.size(); i++) {
+		if (null != coupons) {
+			for (int i = 0; i < coupons.size(); i++) {
 
-				VendorPromotion promotion = promotions.get(i);
+				VendorCoupon coupon = coupons.get(i);
 
 				TableRow row = new TableRow(getActivity());
 
@@ -50,22 +51,24 @@ public class VendorPromotionFragment extends Fragment {
 				TableRow.LayoutParams nameLayout = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,
 						1.0f);
 				TextView name = new TextView(getActivity());
+				name.setGravity(Gravity.CENTER);
 				name.setLayoutParams(nameLayout);
-				name.setText(promotion.getTitle());
+				name.setText(coupon.getTitle());
 				row.addView(name);
 
 				TextView date = new TextView(getActivity());
 
 				TableRow.LayoutParams dateLayout = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,
 						0.5f);
-				name.setLayoutParams(dateLayout);
-				date.setText(promotion.getContent());
+				date.setLayoutParams(dateLayout);
+				date.setText(coupon.getExpireDate());
+				date.setGravity(Gravity.CENTER);
 				row.addView(date);
 
 				ImageView img = new ImageView(getActivity());
 				TableRow.LayoutParams imgLayout = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,
 						0.5f);
-				name.setLayoutParams(imgLayout);
+				img.setLayoutParams(imgLayout);
 
 				img.setImageResource(R.drawable.icon_viewdetail);
 
@@ -84,6 +87,8 @@ public class VendorPromotionFragment extends Fragment {
 				table.addView(row, 2 * i);
 
 				TableRow.LayoutParams dividerLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
+				dividerLayout.topMargin = 2;
+				
 				View divider = new View(getActivity());
 				divider.setLayoutParams(dividerLayout);
 				divider.setBackgroundColor(getResources().getColor(R.color.azure));

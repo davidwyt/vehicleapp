@@ -8,12 +8,10 @@ import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.FavoriteVendor;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorFellow;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
+import com.vehicle.app.utils.ImageUtil;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +76,7 @@ public class MyFellowsViewAdapter extends BaseAdapter {
 
 			name = driver.getAlias();
 			feature = driver.getIntroduction();
-			VendorFellow vfellow = SelfMgr.getInstance().getVendorFellow(driver.getId());
+			VendorFellow vfellow = SelfMgr.getInstance().getSimpleVendorFellow(driver.getId());
 			if (null != vfellow) {
 				addedTime = vfellow.getAddedDate();
 			}
@@ -89,7 +87,7 @@ public class MyFellowsViewAdapter extends BaseAdapter {
 			Vendor vendor = (Vendor) fellow;
 			name = vendor.getName();
 			feature = vendor.getAddress();
-			FavoriteVendor favVendor = SelfMgr.getInstance().getFavVendor(vendor.getId());
+			FavoriteVendor favVendor = SelfMgr.getInstance().getSimpleFavVendor(vendor.getId());
 			if (null != favVendor) {
 				addedTime = favVendor.getAddedDate();
 			}
@@ -105,18 +103,7 @@ public class MyFellowsViewAdapter extends BaseAdapter {
 
 		tvAddedTime.setText(addedTime);
 
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
-
-		if (null != bitmap) {
-			ivHead.setImageBitmap(Bitmap.createScaledBitmap(bitmap, ICON_WIDTH, ICON_HEIGHT, true));
-		} else {
-			ivHead.setTag(R.id.TAGKEY_BITMAP_URL, url);
-			ivHead.setTag(R.id.TAGKEY_BITMAP_WIDTH, ICON_WIDTH);
-			ivHead.setTag(R.id.TAGKEY_BITMAP_HEIGHT, ICON_HEIGHT);
-
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(ivHead);
-			loader.load();
-		}
+		ImageUtil.RenderImageView(url, ivHead, ICON_WIDTH, ICON_HEIGHT);
 
 		return view;
 	}

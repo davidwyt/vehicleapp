@@ -3,11 +3,10 @@ package com.vehicle.app.fragments;
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.bean.Vendor;
-import com.vehicle.app.mgrs.BitmapCache;
-import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.utils.ImageUtil;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,10 +19,10 @@ import android.widget.TextView;
 @SuppressLint("ValidFragment")
 public final class VendorDetailFragment extends Fragment {
 
-	private Vendor vendor;
+	private VendorDetail vendorDetail;
 
-	public VendorDetailFragment(Vendor vendor) {
-		this.vendor = vendor;
+	public VendorDetailFragment(VendorDetail vendor) {
+		this.vendorDetail = vendor;
 	}
 
 	@Override
@@ -32,18 +31,13 @@ public final class VendorDetailFragment extends Fragment {
 
 		ImageView ivHead = (ImageView) parent.findViewById(R.id.vendor_icon);
 
-		String url = vendor.getAvatar();
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
+		Vendor vendor = vendorDetail.getVendor();
 
-		if (null != bitmap) {
-			ivHead.setImageBitmap(bitmap);
-		} else {
-			ivHead.setTag(R.id.TAGKEY_BITMAP_URL, url);
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(ivHead);
-			loader.load();
-		}
+		String url = vendor.getAvatar();
+		ImageUtil.RenderImageView(url, ivHead, -1, -1);
 
 		TextView tvName = (TextView) parent.findViewById(R.id.vendor_name);
+		tvName.getPaint().setFakeBoldText(true);
 		tvName.setText(vendor.getName());
 
 		TextView tvBusinessTime = (TextView) parent.findViewById(R.id.vendor_businesstime);

@@ -2,7 +2,6 @@ package com.vehicle.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.vehicle.app.utils.Constants;
@@ -67,15 +66,6 @@ public class Vendor implements Serializable {
 	private Date lastMessageTime;
 
 	private String distance;
-
-	@SerializedName("BusinessSpecials.list")
-	private List<VendorCoupon> coupons;
-
-	@SerializedName("Review.list")
-	private List<Comment> reviews;
-
-	@SerializedName("BusinessActivity.list")
-	private List<VendorPromotion> promotions;
 
 	public String getId() {
 		return this.id;
@@ -263,29 +253,5 @@ public class Vendor implements Serializable {
 
 	public void setDistance(String distance) {
 		this.distance = distance;
-	}
-
-	public List<VendorCoupon> getCoupons() {
-		return this.coupons;
-	}
-
-	public void setCoupons(List<VendorCoupon> coupons) {
-		this.coupons = coupons;
-	}
-
-	public List<Comment> getReviews() {
-		return this.reviews;
-	}
-
-	public void setReviews(List<Comment> reviews) {
-		this.reviews = reviews;
-	}
-
-	public List<VendorPromotion> getPromotions() {
-		return this.promotions;
-	}
-
-	public void setPromotioms(List<VendorPromotion> promotions) {
-		this.promotions = promotions;
 	}
 }
