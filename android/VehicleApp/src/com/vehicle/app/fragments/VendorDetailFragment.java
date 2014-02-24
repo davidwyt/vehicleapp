@@ -67,7 +67,7 @@ public final class VendorDetailFragment extends Fragment {
 		tvPrice.setText(vendor.getPriceScore() + "");
 
 		TextView tvMobile = (TextView) parent.findViewById(R.id.vendor_mobilenum);
-		tvMobile.setText(vendor.getMobile());
+		tvMobile.setText(vendor.getMobile() + " " + vendor.getTelephone());
 
 		TextView tvAddr = (TextView) parent.findViewById(R.id.vendor_address);
 		tvAddr.setText(vendor.getAddress());
@@ -84,8 +84,14 @@ public final class VendorDetailFragment extends Fragment {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				try {
-					Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel://" + vendor.getMobile()));
-					startActivity(intent);
+					String phone = vendor.getMobile();
+					if (null == phone || phone.isEmpty()) {
+						phone = vendor.getTelephone();
+					}
+					if (null != phone && !phone.isEmpty()) {
+						Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel://" + phone));
+						startActivity(intent);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
