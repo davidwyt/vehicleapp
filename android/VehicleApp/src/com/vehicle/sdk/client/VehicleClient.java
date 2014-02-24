@@ -29,6 +29,8 @@ import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
 import com.vehicle.service.bean.MessageOne2MultiRequest;
 import com.vehicle.service.bean.MessageOne2MultiResponse;
+import com.vehicle.service.bean.OfflineMessageRequest;
+import com.vehicle.service.bean.OfflineMessageResponse;
 import com.vehicle.service.bean.RangeRequest;
 import com.vehicle.service.bean.RangeResponse;
 import com.vehicle.service.bean.WakeupRequest;
@@ -54,6 +56,7 @@ public class VehicleClient {
 	private static final String URL_MESSAGE_ONE2FOLLOWERS = "one2followers";
 	private static final String URL_MESSAGE_ONE2FOLLOWEES = "one2followees";
 	private static final String URL_MESSAGE_ONE2MULTI = "one2multi";
+	private static final String URL_MESSAGE_OFFLINE = "offline";
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
 	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
@@ -96,6 +99,15 @@ public class VehicleClient {
 
 	public VehicleClient(String source) {
 		this(URL_DEFAULTSERVERROOT, source);
+	}
+
+	public OfflineMessageResponse GetOfflineMessage(String id, long since) {
+		OfflineMessageRequest request = new OfflineMessageRequest();
+		request.setTarget(id);
+		request.setSince(since);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_OFFLINE);
+		return HttpUtil.PostJson(url, request, OfflineMessageResponse.class);
 	}
 
 	public MessageOne2OneResponse SendLocationMessage(String target, String content) {

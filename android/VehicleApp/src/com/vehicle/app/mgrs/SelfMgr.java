@@ -14,9 +14,11 @@ import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorFellow;
+import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
 import com.vehicle.app.web.bean.FavVendorListViewResult;
+import com.vehicle.app.web.bean.NearbyDriverListViewResult;
 import com.vehicle.app.web.bean.NearbyVendorListViewResult;
 import com.vehicle.app.web.bean.VendorFellowListViewResult;
 import com.vehicle.app.web.bean.VendorListViewResult;
@@ -299,10 +301,15 @@ public class SelfMgr {
 				}
 			}
 		} else {
-			Map<String, Driver> result = this.searchNearbyDrivers(121.56, 31.24, 30);
-			if (null != result) {
-				this.mNearbyDriverMap.putAll(result);
-			}
+			VehicleWebClient client = new VehicleWebClient();
+			NearbyDriverListViewResult result = client.NearbyDriverListView(1, 121.56, 31.24);
+			this.mNearbyDriverMap.putAll(result.getResult());
+			
+			/**
+			 * Map<String, Driver> result = this.searchNearbyDrivers(121.56,
+			 * 31.24, 30); if (null != result) {
+			 * this.mNearbyDriverMap.putAll(result); }
+			 */
 		}
 	}
 
@@ -397,8 +404,16 @@ public class SelfMgr {
 			}
 
 			DriverListViewResult driverResult = webClient.DriverListView(driverIds);
-			if (null != driverResult && null != driverResult.getInfoBean())
+			if (null != driverResult && null != driverResult.getInfoBean()) {
+				Map<String, Driver> drivers = driverResult.getInfoBean();
+				for (Driver driver : drivers.values()) {
+					CarListViewResult carResult = webClient.CarListView(driver.getId());
+					if (null != carResult && null != carResult.getInfoBean()) {
+						driver.setCars(carResult.getInfoBean());
+					}
+				}
 				this.mVendorFellowMap.putAll(driverResult.getInfoBean());
+			}
 		}
 	}
 

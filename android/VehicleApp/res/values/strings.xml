@@ -82,5 +82,18 @@
     <string name="tip_vendorfellowexits">该车主已经关注你了，无需重新发送邀请</string>
     <string name="tip_about1">  【爱车帮汽车服务商和车主即时通讯移动手机app应用软件】简称“爱车帮” 是天下车商网为车主提供的即时通讯工具，车主可以查询附近的汽车服务商信息，可以和商户进行一对一或者一对多的即时信息交流。</string>
     <string name="tip_about2">  天下车商网是上海孚嘉信息科技有限公司建设的汽车后市场平台网站。为车主提供多个城市的汽车服务和汽车服务商信息。同时为商户提供推广服务。</string>
-
+    <string name="tip_getdriverinfofailed">获得车主信息失败</string>
+    <string name="tip_advicetitle">  感谢你的意见和建议，这将极大的帮助我们改善服务。</string>
+    <string name="tip_advicepromt">请输入您的反馈意见</string>
+    <string name="zh_email">邮箱：</string>
+    <string name="zh_phone">电话：</string>
+    <string name="tip_ecctitle">  感谢您报告商户的错误信息，我们将回复邮件发送至您填写的邮箱中。</string>
+    <string name="tip_eccpromt">请输入错误信息或修改意见</string>
+    <string name="tip_phonenull">电话不能为空</string>
+    <string name="tip_emailnull">邮箱不能为空</string>
+    <string name="tip_contentnull">反馈内容不能为空</string>
+    <string name="tip_emailinvalid">邮箱格式不正确</string>
+	<string name="tip_advicesuccess">反馈意见发送成功</string>
+	<string name="tip_advicefailed">反馈意见发送失败，请检查网络连接</string>
+	<string name="tip_advicefailed2">反馈意见发送失败，错误信息为：%s</string>
 </resources>

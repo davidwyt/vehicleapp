@@ -11,6 +11,7 @@ import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.utils.URLUtil;
 import com.vehicle.app.web.bean.AddCommentResult;
 import com.vehicle.app.web.bean.AddFavVendorResult;
+import com.vehicle.app.web.bean.AdviceResult;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
@@ -57,6 +58,9 @@ public class VehicleWebClient {
 	private final static String URL_COMMENTS_ADD = "review/reviewCreate2?memberId=%s&shopId=%s&reviews=%s&price=%s&technology=%s&efficiency=%s&receive=%s&environment=%s&mainProjectId=%s&imgNames=%s";
 
 	private final static String URL_NEARBYVENDORLIST_VIEW = "member/memberBusinessProject2List?cityId=%s&areaId=%s&streetId=%s&pageId=%s&centerx=%s&centery=%s&range=%s&projectType=%s&projectId=%s&sort=%s";
+
+	private final static String URL_ADVICE_CREATE = "suggest/suggestCreate?memberId=%s&tel=%s&email=%s&content=%s";
+	private final static String URL_ECC_CREATE = "correction/correctionCreate?&memberId=%s&shopId=%s&email=%s&content=%s";
 
 	public VehicleWebClient() {
 
@@ -216,5 +220,24 @@ public class VehicleWebClient {
 		nearbyDriverListResult.setResult(driverListResult.getInfoBean());
 
 		return nearbyDriverListResult;
+	}
+
+	public AdviceResult CreateAdvice(String memberId, String email, String phone, String content)
+			throws UnsupportedEncodingException {
+		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_ADVICE_CREATE);
+
+		url = String.format(url, memberId, phone, URLEncoder.encode(email, "UTF-8"),
+				URLEncoder.encode(content, "UTF-8"));
+
+		return HttpUtil.PostJson(url, null, AdviceResult.class);
+	}
+
+	public AdviceResult CreateECC(String memberId, String shopId, String email, String content)
+			throws UnsupportedEncodingException {
+		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_ECC_CREATE);
+
+		url = String.format(url, memberId, shopId, URLEncoder.encode(email, "UTF-8"),
+				URLEncoder.encode(content, "UTF-8"));
+		return HttpUtil.PostJson(url, null, AdviceResult.class);
 	}
 }

@@ -299,9 +299,9 @@ public class LoginActivity extends Activity {
 						}
 
 						SelfMgr.getInstance().setSelfVendor(self);
-
 					}
 
+					SelfMgr.getInstance().refreshFellows();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

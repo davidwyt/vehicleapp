@@ -87,7 +87,7 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_driverinfo);
+		setContentView(R.layout.activity_driverhome);
 		initView();
 	}
 
@@ -115,6 +115,9 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 		this.mTitleIV = (ImageView) this.findViewById(R.id.driverinfo_title_nameiv);
 		this.mBottomBar = this.findViewById(R.id.driverinfo_bottombar);
 
+		mDriverFormView = this.findViewById(R.id.driverinfo_form);
+		mDriverStatusView = this.findViewById(R.id.driverinfo_status);
+		mDriverStatusMessageView = (TextView) this.findViewById(R.id.driverinfo_status_message);
 	}
 
 	private void updateView(int pers) {
@@ -309,6 +312,7 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 		Intent intent = new Intent(this, ChatActivity.class);
 		intent.putExtra(ChatActivity.KEY_FELLOWID, this.mDriverId);
 		intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
+		this.startActivity(intent);
 	}
 
 	@Override
@@ -398,8 +402,11 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 				driver.setCars(carListResult.getInfoBean());
 				setViewData(driver);
 				mDriverId = driverId;
-			} else {
 
+				System.out.println("new driverIdddddd:" + mDriverId);
+			} else {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_getdriverinfofailed),
+						Toast.LENGTH_LONG).show();
 			}
 		}
 

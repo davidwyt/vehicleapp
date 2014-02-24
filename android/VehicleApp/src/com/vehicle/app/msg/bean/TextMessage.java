@@ -1,6 +1,5 @@
 package com.vehicle.app.msg.bean;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,7 +12,7 @@ public class TextMessage implements IMessageItem, Parcelable {
 	private String content;
 	private MessageFlag flag;
 	private int msgType;
-	
+
 	public String getId() {
 		return this.id;
 	}
@@ -120,7 +119,7 @@ public class TextMessage implements IMessageItem, Parcelable {
 	@Override
 	public int getMessageType() {
 		// TODO Auto-generated method stub
-		return IMessageItem.MESSAGE_TYPE_TEXT;
+		return this.msgType;
 	}
 
 }

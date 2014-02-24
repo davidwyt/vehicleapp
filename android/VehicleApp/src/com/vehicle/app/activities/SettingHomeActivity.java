@@ -40,6 +40,8 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 	private ImageView mIVApps;
 	private ImageView mIVAdvice;
 
+	private TextView mTVFellowTip;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -111,6 +113,14 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 
 		this.mIVApps = (ImageView) this.findViewById(R.id.settings_moreapp);
 		this.mIVApps.setOnClickListener(this);
+
+		this.mTVFellowTip = (TextView) this.findViewById(R.id.settings_fellowtip);
+
+		if (SelfMgr.getInstance().isDriver()) {
+			this.mTVFellowTip.setText("我关注的商家");
+		} else {
+			this.mTVFellowTip.setText("关注我的车主");
+		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -262,7 +272,8 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 	}
 
 	private void advice() {
-
+		Intent intent = new Intent(this, AdviceActivity.class);
+		this.startActivity(intent);
 	}
 
 	private void moreApp() {

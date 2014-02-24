@@ -284,6 +284,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 			yelp();
 			break;
 		case R.id.vendorbar_ecc:
+			ecc();
 			break;
 		case R.id.vendorbar_next:
 			gotoNext();
@@ -295,6 +296,13 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 			follow();
 			break;
 		}
+	}
+
+	private void ecc() {
+		Intent intent = new Intent(this, EccActivity.class);
+
+		intent.putExtra(EccActivity.KEY_FELLOWID, this.mCurVendorDetail.getVendor().getId());
+		this.startActivity(intent);
 	}
 
 	private void yelp() {
