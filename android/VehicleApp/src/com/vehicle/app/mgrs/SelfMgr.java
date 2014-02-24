@@ -290,32 +290,35 @@ public class SelfMgr {
 
 	public synchronized void refreshNearby(double longitude, double latitude) {
 		this.clearNearby();
+		try {
+			if (mIsDriver) {
+				VehicleWebClient client = new VehicleWebClient();
 
-		if (mIsDriver) {
-			VehicleWebClient client = new VehicleWebClient();
+				NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, longitude, latitude, 4,
+						1, -1, -1);
 
-			NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, longitude, latitude, 4, 1,
-					-1, -1);
-
-			if (null != result) {
-				List<Vendor> vendors = result.getInfoBean();
-				if (null != vendors) {
-					for (Vendor vendor : vendors) {
-						this.mNearbyVendorMap.put(vendor.getId(), vendor);
+				if (null != result) {
+					List<Vendor> vendors = result.getInfoBean();
+					if (null != vendors) {
+						for (Vendor vendor : vendors) {
+							this.mNearbyVendorMap.put(vendor.getId(), vendor);
+						}
 					}
 				}
+			} else {
+				/**
+				 * VehicleWebClient client = new VehicleWebClient();
+				 * NearbyDriverListViewResult result =
+				 * client.NearbyDriverListView(1, longitude, latitude);
+				 * this.mNearbyDriverMap.putAll(result.getResult());
+				 */
+				Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude, 30);
+				if (null != result) {
+					this.mNearbyDriverMap.putAll(result);
+				}
 			}
-		} else {
-			/**
-			 * VehicleWebClient client = new VehicleWebClient();
-			 * NearbyDriverListViewResult result =
-			 * client.NearbyDriverListView(1, longitude, latitude);
-			 * this.mNearbyDriverMap.putAll(result.getResult());
-			 */
-			Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude, 30);
-			if (null != result) {
-				this.mNearbyDriverMap.putAll(result);
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -358,82 +361,90 @@ public class SelfMgr {
 	}
 
 	public synchronized void refreshFellows() {
-		VehicleWebClient webClient = new VehicleWebClient();
+		try {
+			VehicleWebClient webClient = new VehicleWebClient();
 
-		if (mIsDriver) {
-			this.mFavVendorSimpleVector.clear();
-			this.mFavVendorMap.clear();
-			this.mFavVendorDetailMap.clear();
+			if (mIsDriver) {
+				this.mFavVendorSimpleVector.clear();
+				this.mFavVendorMap.clear();
+				this.mFavVendorDetailMap.clear();
 
-			FavVendorListViewResult result = webClient.FavVendorListView(getId());
-			if (null == result)
-				return;
+				FavVendorListViewResult result = webClient.FavVendorListView(getId());
+				if (null == result)
+					return;
 
-			List<FavoriteVendor> favVendors = result.getInfoBean();
-			if (null == favVendors)
-				return;
+				List<FavoriteVendor> favVendors = result.getInfoBean();
+				if (null == favVendors)
+					return;
 
-			this.mFavVendorSimpleVector.addAll(favVendors);
+				this.mFavVendorSimpleVector.addAll(favVendors);
 
-			List<String> vendorIds = new ArrayList<String>();
-			for (FavoriteVendor vendor : this.mFavVendorSimpleVector) {
-				vendorIds.add(vendor.getId());
-			}
-
-			VendorListViewResult vendorResult = webClient.VendorListView(vendorIds);
-			if (null == vendorResult)
-				return;
-
-			Map<String, Vendor> vendorMap = vendorResult.getInfoBean();
-			if (null != vendorMap)
-				this.mFavVendorMap.putAll(vendorMap);
-
-			for (String id : vendorIds) {
-				VendorSpecViewResult vendorSpecResult = webClient.VendorSpecView(id);
-				if (null != vendorSpecResult && null != vendorSpecResult.getInfoBean())
-					this.mFavVendorDetailMap.put(id, vendorSpecResult.getInfoBean());
-			}
-
-		} else {
-			this.mVendorFellowSimpleVector.clear();
-			this.mVendorFellowMap.clear();
-			VendorFellowListViewResult result = webClient.VendorFellowListView(getId());
-
-			if (null == result || null == result.getInfoBean())
-				return;
-
-			this.mVendorFellowSimpleVector.addAll(result.getInfoBean());
-
-			List<String> driverIds = new ArrayList<String>();
-			for (VendorFellow fellow : this.mVendorFellowSimpleVector) {
-				driverIds.add(fellow.getId());
-			}
-
-			DriverListViewResult driverResult = webClient.DriverListView(driverIds);
-			if (null != driverResult && null != driverResult.getInfoBean()) {
-				Map<String, Driver> drivers = driverResult.getInfoBean();
-				for (Driver driver : drivers.values()) {
-					CarListViewResult carResult = webClient.CarListView(driver.getId());
-					if (null != carResult && null != carResult.getInfoBean()) {
-						driver.setCars(carResult.getInfoBean());
-					}
+				List<String> vendorIds = new ArrayList<String>();
+				for (FavoriteVendor vendor : this.mFavVendorSimpleVector) {
+					vendorIds.add(vendor.getId());
 				}
-				this.mVendorFellowMap.putAll(driverResult.getInfoBean());
+
+				VendorListViewResult vendorResult = webClient.VendorListView(vendorIds);
+				if (null == vendorResult)
+					return;
+
+				Map<String, Vendor> vendorMap = vendorResult.getInfoBean();
+				if (null != vendorMap)
+					this.mFavVendorMap.putAll(vendorMap);
+
+				for (String id : vendorIds) {
+					VendorSpecViewResult vendorSpecResult = webClient.VendorSpecView(id);
+					if (null != vendorSpecResult && null != vendorSpecResult.getInfoBean())
+						this.mFavVendorDetailMap.put(id, vendorSpecResult.getInfoBean());
+				}
+
+			} else {
+				this.mVendorFellowSimpleVector.clear();
+				this.mVendorFellowMap.clear();
+				VendorFellowListViewResult result = webClient.VendorFellowListView(getId());
+
+				if (null == result || null == result.getInfoBean())
+					return;
+
+				this.mVendorFellowSimpleVector.addAll(result.getInfoBean());
+
+				List<String> driverIds = new ArrayList<String>();
+				for (VendorFellow fellow : this.mVendorFellowSimpleVector) {
+					driverIds.add(fellow.getId());
+				}
+
+				DriverListViewResult driverResult = webClient.DriverListView(driverIds);
+				if (null != driverResult && null != driverResult.getInfoBean()) {
+					Map<String, Driver> drivers = driverResult.getInfoBean();
+					for (Driver driver : drivers.values()) {
+						CarListViewResult carResult = webClient.CarListView(driver.getId());
+						if (null != carResult && null != carResult.getInfoBean()) {
+							driver.setCars(carResult.getInfoBean());
+						}
+					}
+					this.mVendorFellowMap.putAll(driverResult.getInfoBean());
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	public void refreshComments() {
-		VehicleWebClient webClient = new VehicleWebClient();
+		try {
+			VehicleWebClient webClient = new VehicleWebClient();
 
-		if (mIsDriver) {
-			CommentListViewResult result = webClient.CommenListView(this.mSelfDriver.getId());
-			if (null != result && null != result.getInfoBean())
-				this.mSelfDriver.setComments(result.getInfoBean());
-		} else {
-			VendorSpecViewResult result = webClient.VendorSpecView(this.mSelfVendor.getId());
-			if (null != result && null != result.getResult())
-				this.mSelfVendor.setComments(result.getResult().getReviews());
+			if (mIsDriver) {
+				CommentListViewResult result = webClient.CommenListView(this.mSelfDriver.getId());
+				if (null != result && null != result.getInfoBean())
+					this.mSelfDriver.setComments(result.getInfoBean());
+			} else {
+				VendorSpecViewResult result = webClient.VendorSpecView(this.mSelfVendor.getId());
+				if (null != result && null != result.getResult())
+					this.mSelfVendor.setComments(result.getResult().getReviews());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

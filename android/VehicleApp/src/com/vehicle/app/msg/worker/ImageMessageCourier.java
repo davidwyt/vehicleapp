@@ -44,12 +44,16 @@ public class ImageMessageCourier extends MessageBaseCourier {
 				// TODO Auto-generated method stub
 				BaseResponse resp = null;
 
-				if (isGroupChat) {
-					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-					resp = vClient.SendMultiFile(picMessage.getTarget(), picMessage.getPath());
-				} else {
-					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-					resp = vClient.SendFile(picMessage.getTarget(), picMessage.getPath());
+				try {
+					if (isGroupChat) {
+						VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
+						resp = vClient.SendMultiFile(picMessage.getTarget(), picMessage.getPath());
+					} else {
+						VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
+						resp = vClient.SendFile(picMessage.getTarget(), picMessage.getPath());
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				return resp;
 			}
@@ -95,8 +99,10 @@ public class ImageMessageCourier extends MessageBaseCourier {
 
 					Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
 					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMessage);
-					//msgIntent.putExtra(ChatActivity.KEY_FELLOWID, picMessage.getSource());
-					//msgIntent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
+					// msgIntent.putExtra(ChatActivity.KEY_FELLOWID,
+					// picMessage.getSource());
+					// msgIntent.putExtra(ChatActivity.KEY_CHATSTYLE,
+					// ChatActivity.CHAT_STYLE_2ONE);
 					context.sendBroadcast(msgIntent);
 				} else {
 					Intent msgIntent = new Intent(Constants.ACTION_FILEMESSAGE_SENTFAILED);

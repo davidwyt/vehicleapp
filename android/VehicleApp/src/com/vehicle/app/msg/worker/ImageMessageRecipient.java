@@ -42,34 +42,40 @@ public class ImageMessageRecipient extends MessageBaseRecipient {
 			protected Boolean doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 
-				VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
+				try {
+					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
 
-				String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-						+ Environment.DIRECTORY_PICTURES + File.separator + "Received";
+					String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+							+ Environment.DIRECTORY_PICTURES + File.separator + "Received";
 
-				File dir = new File(path);
-				if (!dir.exists()) {
-					dir.mkdirs();
+					File dir = new File(path);
+					if (!dir.exists()) {
+						dir.mkdirs();
+					}
+
+					String filePath = path + File.separator + picMsgItem.getName();
+
+					System.out.println("fetch file to:" + filePath);
+
+					InputStream fileStream = vClient.FetchFile(picMsgItem.getToken(), filePath);
+					if (null == fileStream) {
+						System.out.println("fetch file failed:" + picMsgItem.getToken());
+						return false;
+					}
+
+					File file = new File(filePath);
+					System.out.println("file: " + filePath + " exist:" + file.exists());
+
+					picMsgItem.setContent(BitmapFactory.decodeFile(filePath));
+					picMsgItem.setPath(filePath);
+
+					System.out.println("content null :" + (null == picMsgItem.getContent()));
+					return true;
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 
-				String filePath = path + File.separator + picMsgItem.getName();
-
-				System.out.println("fetch file to:" + filePath);
-
-				InputStream fileStream = vClient.FetchFile(picMsgItem.getToken(), filePath);
-				if (null == fileStream) {
-					System.out.println("fetch file failed:" + picMsgItem.getToken());
-					return false;
-				}
-
-				File file = new File(filePath);
-				System.out.println("file: " + filePath + " exist:" + file.exists());
-
-				picMsgItem.setContent(BitmapFactory.decodeFile(filePath));
-				picMsgItem.setPath(filePath);
-
-				System.out.println("content null :" + (null == picMsgItem.getContent()));
-				return true;
+				return false;
 			}
 
 			@Override
@@ -107,7 +113,7 @@ public class ImageMessageRecipient extends MessageBaseRecipient {
 					NotificationMgr notificationMgr = new NotificationMgr(context);
 					notificationMgr.notifyNewFileMsg(picMsgItem);
 				}
-				
+
 				try {
 					RecentMessage recentMsg = new RecentMessage();
 					recentMsg.setSelfId(SelfMgr.getInstance().getId());
