@@ -92,11 +92,15 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 		mRecentMsgVector.clear();
 
-		DBManager dbMgr = new DBManager(this.getApplicationContext());
+		try {
+			DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-		mRecentMsgVector.addAll(dbMgr.queryRecentMessage(SelfMgr.getInstance().getId()));
+			mRecentMsgVector.addAll(dbMgr.queryRecentMessage(SelfMgr.getInstance().getId()));
 
-		this.mAdapter.notifyDataSetChanged();
+			this.mAdapter.notifyDataSetChanged();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void initView() {

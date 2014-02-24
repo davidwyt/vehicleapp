@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.LocateUtil;
 import com.vehicle.service.bean.AddLocateRequest;
 import com.vehicle.service.bean.AddLocateResponse;
@@ -41,6 +42,8 @@ public class LocateRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response add(@Context HttpServletRequest request,
 			AddLocateRequest addReq) {
+		System.out.println("receive request locatettttttttttt :" + JsonUtil.toJsonString(addReq));
+		
 		AddLocateResponse resp=new AddLocateResponse();
 		LocateInfo info=new LocateInfo();
 		info.setLocateX(addReq.getLocateX());

@@ -2,6 +2,8 @@ package com.vehicle.app.activities;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.vehicle.app.bean.SelfDriver;
 import com.vehicle.app.bean.SelfVendor;
@@ -15,6 +17,7 @@ import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
+import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -26,6 +29,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -240,6 +244,33 @@ public class LoginActivity extends Activity {
 		}
 	}
 
+	private void startUpdateLocation() {
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+					Location loc = LocationUtil.getCurLocation(getApplicationContext());
+					double lat, lnt;
+					if (null == loc) {
+						lat = 31.24;
+						lnt = 121.56;
+					} else {
+						lat = loc.getLatitude();
+						lnt = loc.getLongitude();
+					}
+					client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 500, 10000);
+	}
+
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
@@ -324,6 +355,7 @@ public class LoginActivity extends Activity {
 
 			if (result.isSuccess()) {
 				// finish();
+				startUpdateLocation();
 
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 

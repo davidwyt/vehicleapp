@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import android.location.Location;
+
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.FavoriteVendor;
 import com.vehicle.app.bean.SelfDriver;
@@ -14,6 +16,7 @@ import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorFellow;
+import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
@@ -285,12 +288,14 @@ public class SelfMgr {
 		return this.mFavVendorMap.get(id);
 	}
 
-	public synchronized void refreshNearby() {
+	public synchronized void refreshNearby(double longitude, double latitude) {
 		this.clearNearby();
 
 		if (mIsDriver) {
 			VehicleWebClient client = new VehicleWebClient();
-			NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, 121.56, 31.24, 4, 1, -1, -1);
+
+			NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, longitude, latitude, 4, 1,
+					-1, -1);
 
 			if (null != result) {
 				List<Vendor> vendors = result.getInfoBean();
@@ -301,15 +306,16 @@ public class SelfMgr {
 				}
 			}
 		} else {
-			VehicleWebClient client = new VehicleWebClient();
-			NearbyDriverListViewResult result = client.NearbyDriverListView(1, 121.56, 31.24);
-			this.mNearbyDriverMap.putAll(result.getResult());
-			
 			/**
-			 * Map<String, Driver> result = this.searchNearbyDrivers(121.56,
-			 * 31.24, 30); if (null != result) {
-			 * this.mNearbyDriverMap.putAll(result); }
+			 * VehicleWebClient client = new VehicleWebClient();
+			 * NearbyDriverListViewResult result =
+			 * client.NearbyDriverListView(1, longitude, latitude);
+			 * this.mNearbyDriverMap.putAll(result.getResult());
 			 */
+			Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude, 30);
+			if (null != result) {
+				this.mNearbyDriverMap.putAll(result);
+			}
 		}
 	}
 

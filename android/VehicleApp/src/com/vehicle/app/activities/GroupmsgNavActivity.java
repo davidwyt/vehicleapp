@@ -8,6 +8,7 @@ import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.utils.StringUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -16,6 +17,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -162,7 +164,16 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 
 			try {
 				if (isNearby) {
-					SelfMgr.getInstance().refreshNearby();
+					Location loc = LocationUtil.getCurLocation(getApplicationContext());
+					double latitude, longtitude;
+					if (null == loc) {
+						latitude = 31.24;
+						longtitude = 121.56;
+					} else {
+						latitude = loc.getLatitude();
+						longtitude = loc.getLongitude();
+					}
+					SelfMgr.getInstance().refreshNearby(longtitude, latitude);
 				} else {
 					SelfMgr.getInstance().refreshFellows();
 				}

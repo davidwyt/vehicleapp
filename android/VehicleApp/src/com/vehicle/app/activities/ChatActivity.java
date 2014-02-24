@@ -321,14 +321,18 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		if (CHAT_STYLE_2ONE == this.mChatStyle) {
-			DBManager dbMgr = new DBManager(this.getApplicationContext());
+			try {
+				DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-			List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
+				List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
 
-			this.mDataArrays.clear();
-			this.mDataArrays.addAll(msgList);
-			this.mAdapter.notifyDataSetChanged();
-			mMsgList.setSelection(mMsgList.getCount() - 1);
+				this.mDataArrays.clear();
+				this.mDataArrays.addAll(msgList);
+				this.mAdapter.notifyDataSetChanged();
+				mMsgList.setSelection(mMsgList.getCount() - 1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

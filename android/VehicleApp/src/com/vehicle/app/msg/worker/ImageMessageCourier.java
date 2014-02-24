@@ -95,6 +95,8 @@ public class ImageMessageCourier extends MessageBaseCourier {
 
 					Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
 					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMessage);
+					//msgIntent.putExtra(ChatActivity.KEY_FELLOWID, picMessage.getSource());
+					//msgIntent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 					context.sendBroadcast(msgIntent);
 				} else {
 					Intent msgIntent = new Intent(Constants.ACTION_FILEMESSAGE_SENTFAILED);

@@ -53,6 +53,8 @@ public class NotificationMgr {
 				.setTicker(ticker);
 
 		Intent resultIntent = new Intent(context, ChatActivity.class);
+		resultIntent.putExtra(ChatActivity.KEY_FELLOWID, msg.getSource());
+		resultIntent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		notificationBuilder.setContentIntent(resultPendingIntent);
@@ -76,6 +78,8 @@ public class NotificationMgr {
 				.setTicker(ticker);
 
 		Intent resultIntent = new Intent(context, ChatActivity.class);
+		resultIntent.putExtra(ChatActivity.KEY_FELLOWID, msg.getSource());
+		resultIntent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		notificationBuilder.setContentIntent(resultPendingIntent);

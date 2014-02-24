@@ -20,9 +20,13 @@ public abstract class MessageBaseCourier implements IMessageCourier {
 	public void updateRecentMessage(RecentMessage recentMsg) {
 		// TODO Auto-generated method stub
 
-		DBManager dbMgr = new DBManager(context.getApplicationContext());
-		dbMgr.insertOrUpdateRecentMessage(recentMsg);
-
+		try {
+			DBManager dbMgr = new DBManager(context.getApplicationContext());
+			dbMgr.insertOrUpdateRecentMessage(recentMsg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		if (ActivityUtil.isRecentMsgTop(context)) {
 			Intent msgIntent = new Intent(Constants.ACTION_RECENTMSG_UPDATE);
 			msgIntent.putExtra(RecentContactListActivity.KEY_RECENTMSG, recentMsg);

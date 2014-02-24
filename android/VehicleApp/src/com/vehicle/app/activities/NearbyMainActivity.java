@@ -4,6 +4,7 @@ import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.OfflineMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
+import com.vehicle.app.utils.LocationUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
@@ -11,6 +12,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -175,7 +177,16 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			// TODO: attempt authentication against a network service.
 
 			try {
-				SelfMgr.getInstance().refreshNearby();
+				Location loc = LocationUtil.getCurLocation(getApplicationContext());
+				double latitude, longtitude;
+				if (null == loc) {
+					latitude = 31.24;
+					longtitude = 121.56;
+				} else {
+					latitude = loc.getLatitude();
+					longtitude = loc.getLongitude();
+				}
+				SelfMgr.getInstance().refreshNearby(longtitude, latitude);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

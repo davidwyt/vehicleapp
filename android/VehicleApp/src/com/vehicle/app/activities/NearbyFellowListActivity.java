@@ -298,6 +298,7 @@ public class NearbyFellowListActivity extends Activity {
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
+					
 					return client.NearbyVendorListView(1, -1, -1, pageNum, 121.56, 31.24, 4, 1, -1, -1);
 				} else {
 					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(121.56, 31.24, 30);
