@@ -16,7 +16,7 @@ public class AboutActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.setContentView(R.layout.activity_about);
-
+		
 		Button bak = (Button) this.findViewById(R.id.about_btn_back);
 		bak.setOnClickListener(new OnClickListener() {
 

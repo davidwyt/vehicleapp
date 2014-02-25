@@ -19,6 +19,7 @@ import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.HttpUtil;
+import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.NearbyDriverListViewResult;
 import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
@@ -33,6 +34,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -87,7 +89,10 @@ public class NearbyFellowListActivity extends Activity {
 			this.mTitle.setImageResource(R.drawable.icon_nearbydriverstitle);
 		}
 
-		mPullRefreshListView.setMode(Mode.DISABLED);
+		if (SelfMgr.getInstance().isDriver())
+			mPullRefreshListView.setMode(Mode.PULL_FROM_END);
+		else
+			mPullRefreshListView.setMode(Mode.DISABLED);
 
 		this.mPullRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 
@@ -97,7 +102,8 @@ public class NearbyFellowListActivity extends Activity {
 
 			@Override
 			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-				Toast.makeText(NearbyFellowListActivity.this, "Pull Up!", Toast.LENGTH_SHORT).show();
+				// Toast.makeText(NearbyFellowListActivity.this, "Pull Up!",
+				// Toast.LENGTH_SHORT).show();
 
 				if (null != mFellowsRefreshTask)
 					return;
@@ -298,8 +304,17 @@ public class NearbyFellowListActivity extends Activity {
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
-					
-					return client.NearbyVendorListView(1, -1, -1, pageNum, 121.56, 31.24, 4, 1, -1, -1);
+
+					Location loc = LocationUtil.getCurLocation(getApplicationContext());
+					double latitude, longtitude;
+					if (null == loc) {
+						latitude = 31.24;
+						longtitude = 121.56;
+					} else {
+						latitude = loc.getLatitude();
+						longtitude = loc.getLongitude();
+					}
+					return client.NearbyVendorListView(1, -1, -1, pageNum, longtitude, latitude, 6, 1, -1, -1);
 				} else {
 					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(121.56, 31.24, 30);
 

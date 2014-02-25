@@ -9,19 +9,19 @@ package com.handmark.pulltorefresh.library;
 public final class R {
 	public static final class id {
 		public static final int pullFromStart = 0x7f060006;
-		public static final int pull_to_refresh_progress = 0x7f06013e;
+		public static final int pull_to_refresh_progress = 0x7f060143;
 		public static final int rotate = 0x7f06000c;
 		public static final int both = 0x7f060008;
 		public static final int webview = 0x7f06000f;
-		public static final int pull_to_refresh_text = 0x7f06013f;
+		public static final int pull_to_refresh_text = 0x7f060144;
 		public static final int pullDownFromTop = 0x7f06000a;
 		public static final int gridview = 0x7f06000e;
 		public static final int pullUpFromBottom = 0x7f06000b;
 		public static final int scrollview = 0x7f060010;
 		public static final int pullFromEnd = 0x7f060007;
-		public static final int pull_to_refresh_image = 0x7f06013d;
-		public static final int pull_to_refresh_sub_text = 0x7f060140;
-		public static final int fl_inner = 0x7f06013c;
+		public static final int pull_to_refresh_image = 0x7f060142;
+		public static final int pull_to_refresh_sub_text = 0x7f060145;
+		public static final int fl_inner = 0x7f060141;
 		public static final int flip = 0x7f06000d;
 		public static final int disabled = 0x7f060005;
 		public static final int manualOnly = 0x7f060009;
@@ -41,8 +41,8 @@ public final class R {
 		public static final int pull_to_refresh_from_bottom_release_label = 0x7f0c0004;
 	}
 	public static final class layout {
-		public static final int pull_to_refresh_header_vertical = 0x7f030035;
-		public static final int pull_to_refresh_header_horizontal = 0x7f030034;
+		public static final int pull_to_refresh_header_vertical = 0x7f030036;
+		public static final int pull_to_refresh_header_horizontal = 0x7f030035;
 	}
 	public static final class styleable {
 		public static final int PullToRefresh_ptrDrawableStart = 7;

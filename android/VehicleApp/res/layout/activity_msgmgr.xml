@@ -62,6 +62,7 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/msgmgr_uprow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
@@ -90,6 +91,7 @@
             </RelativeLayout>
             
             <RelativeLayout
+                android:id="@+id/msgmgr_clearrow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"

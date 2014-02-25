@@ -166,6 +166,7 @@ public class MessageServiceImpl implements MessageService {
 			r.setMessageType(list.get(i).getMessageType());
 			ret.add(r);
 		}
+		
 		return ret;
 	}
 

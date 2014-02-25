@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.StringUtil;
 
 public class Vendor implements Serializable {
 
@@ -176,7 +177,7 @@ public class Vendor implements Serializable {
 	}
 
 	public String getMobile() {
-		return this.mobile;
+		return StringUtil.formatNumber(this.mobile);
 	}
 
 	public void setMobile(String mobile) {
@@ -184,7 +185,7 @@ public class Vendor implements Serializable {
 	}
 
 	public String getTelephone() {
-		return this.telePhone;
+		return StringUtil.formatNumber(this.telePhone);
 	}
 
 	public void setTelephone(String tel) {
@@ -224,7 +225,7 @@ public class Vendor implements Serializable {
 	}
 
 	public String getIntroduction() {
-		return this.introduction;
+		return StringUtil.filterHtml(this.introduction);
 	}
 
 	public void setIntroduction(String intro) {

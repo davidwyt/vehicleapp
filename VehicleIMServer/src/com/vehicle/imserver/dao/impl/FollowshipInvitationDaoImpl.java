@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.dao.interfaces.FollowshipInvitationDao;
@@ -34,6 +37,7 @@ public class FollowshipInvitationDaoImpl extends
 		// TODO Auto-generated method stub
 
 		Session session = this.getSession();
+
 		Query query = session.createQuery(Contants.HQL_SELECT_NEWFOLLOWINV);
 		query.setString("target", memberId);
 		query.setInteger("requested", FollowshipInvitation.STATUS_REQUESTED);
@@ -44,5 +48,29 @@ public class FollowshipInvitationDaoImpl extends
 		List<FollowshipInvitation> invitations = query.list();
 
 		return invitations;
+	}
+
+	@Override
+	public void UpdateNewFollowshipInvitation(String memberId) {
+		Session session = this.getSession();
+
+		Query newUpdate = session
+				.createQuery(Contants.HQL_UPDATE_NEWREQFOLLOWINV);
+		newUpdate.setString("target", memberId);
+		newUpdate
+				.setInteger("requested", FollowshipInvitation.STATUS_REQUESTED);
+		newUpdate.setInteger("received", FollowshipInvitation.STATUS_RECEIVED);
+
+		newUpdate.executeUpdate();
+
+		Query doneUpdate = session
+				.createQuery(Contants.HQL_UPDATE_NEWDONFOLLOWINV);
+		doneUpdate.setString("source", memberId);
+		doneUpdate.setInteger("accepted", FollowshipInvitation.STATUS_ACCEPTED);
+		doneUpdate.setInteger("rejected", FollowshipInvitation.STATUS_REJECTED);
+		doneUpdate.setInteger("done", FollowshipInvitation.STATUS_DONE);
+
+		doneUpdate.executeUpdate();
+		session.flush();
 	}
 }

@@ -26,7 +26,7 @@ public class OfflineMessageCourier extends MessageBaseCourier {
 
 	private void processMessage(RespMessage msg) {
 		if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_TEXT
-				|| msg.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
+				|| msg.getMessageType() == IMessageItem.MESSAGE_TYPE_LOCATION) {
 			TextMessage textMsg = new TextMessage();
 			textMsg.setId(msg.getId());
 			textMsg.setContent(msg.getContent());
@@ -70,6 +70,7 @@ public class OfflineMessageCourier extends MessageBaseCourier {
 					Calendar rightNow = Calendar.getInstance();
 					rightNow.add(Calendar.DAY_OF_MONTH, -10);
 					resp = client.GetOfflineMessage(id, rightNow.getTime().getTime());
+					client.OfflineAck(SelfMgr.getInstance().getId());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

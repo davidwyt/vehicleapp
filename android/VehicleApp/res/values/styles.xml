@@ -81,9 +81,9 @@
     <style name="VendorRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/layer_list_ratingbar</item>
         <item name="android:minHeight">24dp</item>
-        <item name="android:maxHeight">96dp</item>
+        <item name="android:maxHeight">24dp</item>
         <item name="android:minWidth">24dp</item>
-        <item name="android:maxWidth">200dp</item>
+        <item name="android:maxWidth">24dp</item>
     </style>
 
     <style name="CustomTitlePageIndicator">

@@ -55,7 +55,7 @@ public class LoginRest {
 
 		try {
 			List<FollowshipInvitation> newInvitations = this.loginService
-					.getNewInvitations(loginRequest);
+					.ShakeNewInvitations(loginRequest);
 			loginResponse.setNewInvitations(newInvitations);
 
 			return Response.status(Status.OK).entity(loginResponse).build();

@@ -3,8 +3,6 @@ package com.vehicle.app.activities;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.vehicle.sdk.client.VehicleClient;
-
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

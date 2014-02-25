@@ -17,6 +17,8 @@ public class Contants {
 	public static final String HQL_SELECT_FOLLOWEES = "SELECT followee FROM com.vehicle.imserver.dao.bean.Followship WHERE follower=:follower";
 	public static final String HQL_DEL_OFFLINE = "DELETE from com.vehicle.imserver.dao.bean.OfflineMessage WHERE target=:target";
 	public static final String HQL_SELECT_NEWFOLLOWINV = "FROM com.vehicle.imserver.dao.bean.FollowshipInvitation WHERE (target=:target and status=:requested) or (source=:source and (status=:accepted or status=:rejected))";
+	public static final String HQL_UPDATE_NEWREQFOLLOWINV = "UPDATE com.vehicle.imserver.dao.bean.FollowshipInvitation SET status=:received WHERE target=:target and status=:requested";
+	public static final String HQL_UPDATE_NEWDONFOLLOWINV = "UPDATE com.vehicle.imserver.dao.bean.FollowshipInvitation SET status=:done WHERE source=:source and (status=:accepted or status=:rejected)";
 
 	public static final int SMALLIMG_WIDTH = 150;
 	public static final int SMALLIMG_HEIGHT = 150;
@@ -83,7 +85,7 @@ public class Contants {
 		} else {
 			path = FILE_COMMENT_ROOTPATH_LINUX;
 		}
-		
+
 		if (IMG_TYPE_SMALL == type) {
 			path = FileUtil.AppendPath(path, "s");
 		} else if (IMG_TYPE_MIDDLE == type) {
@@ -94,7 +96,7 @@ public class Contants {
 			throw new IllegalArgumentException("what the hell of img type:"
 					+ type);
 		}
-		
+
 		return FileUtil.AppendPath(path, name);
 	}
 

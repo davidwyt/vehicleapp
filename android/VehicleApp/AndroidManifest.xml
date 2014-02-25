@@ -104,6 +104,8 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.EccActivity" >
         </activity>
+        <activity android:name="com.vehicle.app.activities.ImgViewActivity" >
+        </activity>
 
         <service
             android:name="com.vehicle.app.activities.UpdateLocationService"

@@ -67,7 +67,17 @@ public final class VendorDetailFragment extends Fragment {
 		tvPrice.setText(vendor.getPriceScore() + "");
 
 		TextView tvMobile = (TextView) parent.findViewById(R.id.vendor_mobilenum);
-		tvMobile.setText(vendor.getMobile() + " " + vendor.getTelephone());
+		String strPhone = "";
+		if (null != vendor.getMobile() && !vendor.getMobile().isEmpty() && !vendor.getMobile().equalsIgnoreCase("null")) {
+			strPhone += vendor.getMobile();
+		}
+
+		if (null != vendor.getTelephone() && !vendor.getTelephone().isEmpty()
+				&& !vendor.getTelephone().equalsIgnoreCase("null")) {
+			strPhone += vendor.getTelephone();
+		}
+
+		tvMobile.setText(strPhone);
 
 		TextView tvAddr = (TextView) parent.findViewById(R.id.vendor_address);
 		tvAddr.setText(vendor.getAddress());
@@ -75,10 +85,10 @@ public final class VendorDetailFragment extends Fragment {
 		TextView tvIntro = (TextView) parent.findViewById(R.id.vendor_introduction);
 		tvIntro.setText(vendor.getIntroduction());
 
-		TextView tvDial = (TextView) parent.findViewById(R.id.vendor_dialphone);
-		TextView tvMapLoc = (TextView) parent.findViewById(R.id.vendor_locatepos);
+		View vDial = parent.findViewById(R.id.vendor_phonelayout);
+		View tvMapLoc = parent.findViewById(R.id.vendor_addresslayout);
 
-		tvDial.setOnClickListener(new OnClickListener() {
+		vDial.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {

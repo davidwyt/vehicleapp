@@ -227,6 +227,7 @@
         </View>
 
         <LinearLayout
+            android:id="@+id/vendor_phonelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -263,6 +264,7 @@
         </View>
 
         <LinearLayout
+            android:id="@+id/vendor_addresslayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"

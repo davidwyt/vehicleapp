@@ -60,4 +60,38 @@ public class StringUtil {
 		}
 		return false;
 	}
+
+	private final static String regxpForHtml = "<([^>]*)>";
+
+	public static String filterHtml(String str) {
+		if (null == str)
+			return null;
+
+		Pattern pattern = Pattern.compile(regxpForHtml);
+		Matcher matcher = pattern.matcher(str);
+		StringBuffer sb = new StringBuffer();
+		boolean result1 = matcher.find();
+		while (result1) {
+			matcher.appendReplacement(sb, "");
+			result1 = matcher.find();
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
+	}
+
+	public static String formatNumber(String str) {
+		if (null == str)
+			return str;
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			if (c >= '0' && c <= '9') {
+				sb.append(c);
+			}
+		}
+
+		return sb.toString();
+	}
 }

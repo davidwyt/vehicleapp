@@ -201,7 +201,7 @@ public class VehicleWebClient {
 	public NearbyVendorListViewResult NearbyVendorListView(int cityId, int areaId, int streetId, int pageId,
 			double centerX, double centerY, int range, int projectType, int projectId, int sort) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_NEARBYVENDORLIST_VIEW);
-		url = String.format(url, cityId, areaId, streetId, pageId, centerX, centerY, range, projectType, projectId,
+		url = String.format(url, cityId, areaId, streetId, pageId, centerX, centerY, 6, projectType, projectId,
 				sort);
 
 		return HttpUtil.GetJson(url, NearbyVendorListViewResult.class);

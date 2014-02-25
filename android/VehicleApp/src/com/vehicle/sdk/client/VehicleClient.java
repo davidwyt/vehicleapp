@@ -29,6 +29,8 @@ import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
 import com.vehicle.service.bean.MessageOne2MultiRequest;
 import com.vehicle.service.bean.MessageOne2MultiResponse;
+import com.vehicle.service.bean.OfflineAckRequest;
+import com.vehicle.service.bean.OfflineAckResponse;
 import com.vehicle.service.bean.OfflineMessageRequest;
 import com.vehicle.service.bean.OfflineMessageResponse;
 import com.vehicle.service.bean.RangeRequest;
@@ -46,9 +48,9 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
-	private static String URL_DEFAULTSERVERROOT = "http://103.21.140.232:81/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
-	// "http://10.0.2.2:8080/VehicleIMServer/rest";
+	// "http://103.21.140.232:81/VehicleIMServer/rest";
+	private static String URL_DEFAULTSERVERROOT = "http://192.168.16.104:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -57,6 +59,7 @@ public class VehicleClient {
 	private static final String URL_MESSAGE_ONE2FOLLOWEES = "one2followees";
 	private static final String URL_MESSAGE_ONE2MULTI = "one2multi";
 	private static final String URL_MESSAGE_OFFLINE = "offline";
+	private static final String URL_MESSAGE_OFFLINEACK = "offlineAck";
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
 	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
@@ -108,6 +111,14 @@ public class VehicleClient {
 
 		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_OFFLINE);
 		return HttpUtil.PostJson(url, request, OfflineMessageResponse.class);
+	}
+
+	public OfflineAckResponse OfflineAck(String id) {
+		OfflineAckRequest request = new OfflineAckRequest();
+		request.setId(id);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_OFFLINEACK);
+		return HttpUtil.PostJson(url, request, OfflineAckResponse.class);
 	}
 
 	public MessageOne2OneResponse SendLocationMessage(String target, String content) {

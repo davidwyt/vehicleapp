@@ -1,9 +1,6 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.msg.worker.IMessageCourier;
-import com.vehicle.app.msg.worker.OfflineMessageCourier;
-import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.utils.LocationUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -66,11 +63,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		this.mViewSearchNearbyStatus = this.findViewById(R.id.nearbysearch_status);
 		this.mTextViewSearchNearbyStatus = (TextView) this.findViewById(R.id.nearbysearch_status_message);
 
-		IMessageCourier courier = new WakeupMessageCourier(this.getApplicationContext());
-		courier.dispatch(null);
-
-		IMessageCourier offCourier = new OfflineMessageCourier(this.getApplicationContext());
-		offCourier.dispatch(null);
 	}
 
 	@Override

@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -324,16 +326,34 @@ public class ChatActivity extends Activity implements OnClickListener {
 			try {
 				DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-				List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
+				List<TextMessage> textMsgs = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
+				List<ImageMessage> fileList = dbMgr.queryAllFileMessage(SelfMgr.getInstance().getId(), mFellowId);
+
+				List<IMessageItem> msgs = new ArrayList<IMessageItem>();
+				msgs.addAll(fileList);
+				msgs.addAll(textMsgs);
+
+				sortMsg(msgs);
 
 				this.mDataArrays.clear();
-				this.mDataArrays.addAll(msgList);
+				this.mDataArrays.addAll(msgs);
 				this.mAdapter.notifyDataSetChanged();
 				mMsgList.setSelection(mMsgList.getCount() - 1);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void sortMsg(List<IMessageItem> msgs) {
+		Collections.sort(msgs, new Comparator<IMessageItem>() {
+
+			@Override
+			public int compare(IMessageItem item1, IMessageItem item2) {
+				// TODO Auto-generated method stub
+				return Long.compare(item1.getSentTime(), item2.getSentTime());
+			}
+		});
 	}
 
 	public void onClick(View view) {
@@ -502,6 +522,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 					CHAT_STYLE_2ONE != this.mChatStyle);
 
 			msgCourier.dispatch(picItem);
+
+			addToMsgList(picItem);
 		} else {
 			System.out.println("selected file not exist:" + filePath);
 		}
@@ -527,6 +549,17 @@ public class ChatActivity extends Activity implements OnClickListener {
 		finish();
 	}
 
+	private void addToMsgList(IMessageItem msg) {
+		try {
+			//mAdapter.addChatItem(msg);
+			this.mDataArrays.add(msg);
+			mAdapter.notifyDataSetChanged();
+			mMsgList.setSelection(mMsgList.getCount() - 1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	class ChatMessageReceiver extends BroadcastReceiver {
 
 		@Override
@@ -581,7 +614,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			addToMsgList(msg);
+			// addToMsgList(msg);
 		}
 
 		private void onNewFileReceived(Intent intent) {
@@ -598,14 +631,5 @@ public class ChatActivity extends Activity implements OnClickListener {
 			addToMsgList(msg);
 		}
 
-		private void addToMsgList(IMessageItem msg) {
-			try {
-				mAdapter.addChatItem(msg);
-				mAdapter.notifyDataSetChanged();
-				mMsgList.setSelection(mMsgList.getCount() - 1);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }

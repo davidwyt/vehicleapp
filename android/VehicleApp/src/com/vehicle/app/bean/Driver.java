@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.StringUtil;
 
 public class Driver implements Serializable {
 
@@ -64,7 +65,7 @@ public class Driver implements Serializable {
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
-	
+
 	public List<Car> getCars() {
 		return this.cars;
 	}
@@ -177,7 +178,7 @@ public class Driver implements Serializable {
 	}
 
 	public String getMobile() {
-		return this.mobile;
+		return StringUtil.formatNumber(this.mobile);
 	}
 
 	public void setMobile(String mobile) {
@@ -185,7 +186,7 @@ public class Driver implements Serializable {
 	}
 
 	public String getTelephone() {
-		return this.telephone;
+		return StringUtil.formatNumber(this.telephone);
 	}
 
 	public void setTelephone(String tel) {
@@ -201,7 +202,7 @@ public class Driver implements Serializable {
 	}
 
 	public String getIntroduction() {
-		return this.introduction;
+		return StringUtil.filterHtml(this.introduction);
 	}
 
 	public void setIntroduction(String intro) {

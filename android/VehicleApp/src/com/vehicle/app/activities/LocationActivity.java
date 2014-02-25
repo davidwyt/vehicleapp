@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import cn.edu.sjtu.vehicleapp.R;
 
@@ -23,7 +22,6 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.vehicle.app.msg.bean.SimpleLocation;
-import com.vehicle.app.utils.JsonUtil;
 
 public class LocationActivity extends Activity implements LocationSource, AMapLocationListener {
 	private AMap aMap;
@@ -42,10 +40,10 @@ public class LocationActivity extends Activity implements LocationSource, AMapLo
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_location);
-		
+
 		mapView = (MapView) findViewById(R.id.location_map);
 		mapView.onCreate(savedInstanceState);
-		
+
 		init();
 	}
 
@@ -66,15 +64,22 @@ public class LocationActivity extends Activity implements LocationSource, AMapLo
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				Toast.makeText(LocationActivity.this, JsonUtil.toJsonString(LocationActivity.this.location),
-						Toast.LENGTH_SHORT).show();
 				/**
-				 * Intent intent = new Intent(); intent.putExtra(KEY_LOCATION,
-				 * location); setResult(Activity.RESULT_OK, intent); finish();
+				 * Toast.makeText(LocationActivity.this,
+				 * JsonUtil.toJsonString(LocationActivity.this.location),
+				 * Toast.LENGTH_SHORT).show();
 				 */
+
+				Intent intent = new Intent();
+				intent.putExtra(KEY_LOCATION, location);
+				setResult(Activity.RESULT_OK, intent);
+				finish();
+
 			}
 
 		});
+
+		this.okButton.setVisibility(View.INVISIBLE);
 	}
 
 	private void setUpMap() {
@@ -95,7 +100,6 @@ public class LocationActivity extends Activity implements LocationSource, AMapLo
 	@Override
 	protected void onStart() {
 		super.onStart();
-		okButton.setEnabled(false);
 		location = new SimpleLocation();
 	}
 
@@ -169,7 +173,7 @@ public class LocationActivity extends Activity implements LocationSource, AMapLo
 			location.setLatitude(aLocation.getLatitude());
 			location.setLongitude(aLocation.getLongitude());
 
-			okButton.setEnabled(true);
+			okButton.setVisibility(View.VISIBLE);
 		}
 	}
 

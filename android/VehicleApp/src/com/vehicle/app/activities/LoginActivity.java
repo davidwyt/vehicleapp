@@ -11,6 +11,9 @@ import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.worker.IMessageCourier;
+import com.vehicle.app.msg.worker.OfflineMessageCourier;
+import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
@@ -332,7 +335,15 @@ public class LoginActivity extends Activity {
 						SelfMgr.getInstance().setSelfVendor(self);
 					}
 
+					IMessageCourier courier = new WakeupMessageCourier(getApplicationContext());
+					courier.dispatch(null);
+
+					IMessageCourier offCourier = new OfflineMessageCourier(getApplicationContext());
+					offCourier.dispatch(null);
+
 					SelfMgr.getInstance().refreshFellows();
+					
+					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -294,7 +294,7 @@ public class SelfMgr {
 			if (mIsDriver) {
 				VehicleWebClient client = new VehicleWebClient();
 
-				NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, longitude, latitude, 4,
+				NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, longitude, latitude, 6,
 						1, -1, -1);
 
 				if (null != result) {

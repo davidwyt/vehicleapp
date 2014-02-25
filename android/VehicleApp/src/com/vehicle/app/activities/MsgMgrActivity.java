@@ -23,8 +23,6 @@ import android.widget.Toast;
 public class MsgMgrActivity extends Activity implements OnClickListener {
 
 	private Button mBtnBack;
-	private Button mBtnFavMsg;
-	private Button mBtnClearMsg;
 
 	private ImageView mIVHead;
 	private TextView mTVName;
@@ -48,11 +46,8 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		this.mBtnBack = (Button) this.findViewById(R.id.msgmgr_goback);
 		this.mBtnBack.setOnClickListener(this);
 
-		this.mBtnFavMsg = (Button) this.findViewById(R.id.msgmgr_favmsg);
-		this.mBtnFavMsg.setOnClickListener(this);
-
-		this.mBtnClearMsg = (Button) this.findViewById(R.id.msgmgr_clearmsg);
-		this.mBtnClearMsg.setOnClickListener(this);
+		this.findViewById(R.id.msgmgr_clearrow).setOnClickListener(this);
+		this.findViewById(R.id.msgmgr_uprow).setOnClickListener(this);
 
 		this.mIVHead = (ImageView) this.findViewById(R.id.msgmgr_head);
 		this.mTVName = (TextView) this.findViewById(R.id.msgmgr_fellowname);
@@ -103,9 +98,9 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		if (R.id.msgmgr_goback == view.getId()) {
 			this.onBackPressed();
-		} else if (R.id.msgmgr_favmsg == view.getId()) {
+		} else if (R.id.msgmgr_uprow == view.getId()) {
 
-		} else if (R.id.msgmgr_clearmsg == view.getId()) {
+		} else if (R.id.msgmgr_clearrow == view.getId()) {
 			attemptDeleteMsg();
 		} else {
 			System.err.println("invalid id of clicked button in msgmgr form");

@@ -101,7 +101,7 @@
                             android:layout_weight="1.0"
                             android:background="@drawable/selector_button_repair"
                             android:button="@null"
-                            android:checked="true" >
+                             >
                         </RadioButton>
 
                         <RadioButton
@@ -170,10 +170,10 @@
                         android:layout_height="wrap_content"
                         android:isIndicator="false"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="3"
                         android:stepSize="1.0" />
                 </LinearLayout>
-
+           
                 <LinearLayout
                     android:id="@+id/ll_tech"
                     android:layout_width="wrap_content"
@@ -199,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:isIndicator="false"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="3"
                         android:stepSize="1.0" />
                 </LinearLayout>
 
@@ -228,7 +228,7 @@
                         android:layout_height="wrap_content"
                         android:isIndicator="false"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="3"
                         android:stepSize="1.0" />
                 </LinearLayout>
 
@@ -258,7 +258,7 @@
                         android:layout_height="wrap_content"
                         android:isIndicator="false"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="3"
                         android:stepSize="1.0" />
                 </LinearLayout>
 
@@ -287,7 +287,7 @@
                         android:layout_height="wrap_content"
                         android:isIndicator="false"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="3"
                         android:stepSize="1.0" />
                 </LinearLayout>
             </RelativeLayout>
