@@ -97,7 +97,7 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	private void PersistentAndSendMessageList(String source,
-			List<String> targets, String content) throws PersistenceException,
+			List<String> targets, String content,int msgType) throws PersistenceException,
 			PushMessageFailedException {
 
 		Date now = new Date();
@@ -107,6 +107,7 @@ public class MessageServiceImpl implements MessageService {
 			msg.setTarget(target);
 			msg.setContent(content);
 			msg.setSentTime(now.getTime());
+			msg.setMessageType(msgType);
 			msg.setId(UUID.randomUUID().toString());
 
 			PersistentAndSendMessage(msg);
@@ -120,7 +121,7 @@ public class MessageServiceImpl implements MessageService {
 		String source = msgRequest.getSource();
 		List<String> followees = followshipDao.GetFollowees(source);
 
-		PersistentAndSendMessageList(source, followees, msgRequest.getContent());
+//		PersistentAndSendMessageList(source, followees, msgRequest.getContent());
 	}
 
 	public void SendMessage2Followers(MessageOne2FollowersRequest msgRequest)
@@ -130,7 +131,7 @@ public class MessageServiceImpl implements MessageService {
 		String source = msgRequest.getSource();
 		List<String> followers = followshipDao.GetFollowers(source);
 
-		PersistentAndSendMessageList(source, followers, msgRequest.getContent());
+//		PersistentAndSendMessageList(source, followers, msgRequest.getContent());
 	}
 	
 	public OfflineMessageDao getOfflineMessageDao() {
@@ -178,7 +179,7 @@ public class MessageServiceImpl implements MessageService {
 			multi.add(temps[i]);
 		}
 
-		PersistentAndSendMessageList(source, multi, req.getContent());
+		PersistentAndSendMessageList(source, multi, req.getContent(),req.getMessageType());
 	}
 
 }

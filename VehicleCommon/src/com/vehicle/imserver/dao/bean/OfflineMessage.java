@@ -25,6 +25,7 @@ public class OfflineMessage {
 		this.target=om.getTarget();
 		this.sentTime=om.getSentTime();
 		this.content=om.getContent();
+		this.messageType=om.getMessageType();
 	}
 	
 	@Id
