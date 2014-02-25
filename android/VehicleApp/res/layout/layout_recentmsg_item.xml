@@ -15,7 +15,6 @@
         android:background="@drawable/contact_list_minus_btn_normal"
         android:focusable="false" />
 
-
     <TextView
         android:id="@+id/useritem_tv_username"
         android:layout_width="wrap_content"
@@ -26,7 +25,7 @@
         android:text="name"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/useritem_tv_lastmessage"
@@ -37,7 +36,7 @@
         android:layout_toRightOf="@id/useritem_iv_userhead"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
         <TextView
         android:id="@+id/useritem_tv_lastmessagetime"

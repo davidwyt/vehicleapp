@@ -4,11 +4,8 @@ import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Comment implements Serializable{
+public class Comment implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 9055830979975028796L;
 
 	@SerializedName("review_id")
@@ -49,6 +46,10 @@ public class Comment implements Serializable{
 	private String addedDate;
 
 	private String reviews;
+
+	private String imgNamesS;
+	private String imgNamesM;
+	private String imgNamesL;
 
 	public String getReviewId() {
 		return this.reviewId;
@@ -168,5 +169,29 @@ public class Comment implements Serializable{
 
 	public void setReviews(String reviews) {
 		this.reviews = reviews;
+	}
+
+	public String getImgNamesS() {
+		return this.imgNamesS;
+	}
+
+	public void setImgNamesS(String names) {
+		this.imgNamesS = names;
+	}
+
+	public String getImgNamesM() {
+		return this.imgNamesM;
+	}
+
+	public void setImgNamesM(String names) {
+		this.imgNamesM = names;
+	}
+
+	public String getImgNamesL() {
+		return this.imgNamesL;
+	}
+
+	public void setImgNamesL(String names) {
+		this.imgNamesL = names;
 	}
 }

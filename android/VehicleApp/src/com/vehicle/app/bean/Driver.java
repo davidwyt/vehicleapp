@@ -2,6 +2,7 @@ package com.vehicle.app.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 import com.vehicle.app.utils.Constants;
@@ -14,42 +15,63 @@ public class Driver implements Serializable {
 	private static final long serialVersionUID = 6645547105668102215L;
 
 	@SerializedName("member_id")
-	private String id;
+	protected String id;
 
 	@SerializedName("nick_name")
-	private String alias;
+	protected String alias;
 
-	private String email;
+	protected String email;
 
 	@SerializedName("last_log_date")
-	private String lastLoginDate;
+	protected String lastLoginDate;
 
 	@SerializedName("log_count")
-	private String logCount;
+	protected String logCount;
 
-	private String name;
-	private String sex;
-	private String avatar;
-	private String city;
-	private String province;
-	private String address;
+	protected String name;
+	protected String sex;
+	protected String avatar;
+	protected String city;
+	protected String province;
+	protected String address;
 
 	@SerializedName("zip_code")
-	private String zipCode;
+	protected String zipCode;
 
-	private String birthday;
+	protected String birthday;
 
-	private String mobile;
-	private String telephone;
+	protected String mobile;
+	protected String telephone;
 
 	@SerializedName("view_total")
-	private String viewTotal;
+	protected String viewTotal;
 
-	private String introduction;
+	protected String introduction;
 
 	private String lastMessage;
 	private Date lastMessageTime;
 	private double distance;
+
+	@SerializedName("Review.list")
+	protected List<Comment> comments;
+
+	protected List<Car> cars;
+
+	public List<Comment> getComments() {
+		return this.comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+	
+	public List<Car> getCars() {
+		return this.cars;
+	}
+
+	public void setCars(List<Car> cars) {
+		this.cars = cars;
+	}
 
 	public String getId() {
 		return this.id;
@@ -108,7 +130,10 @@ public class Driver implements Serializable {
 	}
 
 	public String getAvatar() {
-		return this.avatar;
+		if (null == avatar || avatar.isEmpty()) {
+			return Constants.URL_DEFAULTICON;
+		} else
+			return this.avatar;
 	}
 
 	public void setAvatar(String avatar) {

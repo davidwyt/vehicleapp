@@ -36,6 +36,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -44,7 +45,7 @@
         android:icon="@drawable/logo1"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.vehicle.app.activities.VendorHomeActivity" >
+        <activity android:name="com.vehicle.app.activities.BeginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,13 +68,13 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.RoleSelectActivity" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.SelfDriverInfoActivity" >
+        <activity android:name="com.vehicle.app.activities.DriverHomeActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.SelfVendorInfoActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.VendorInfoActivity" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.DriverInfoActivity" >
+        <activity android:name="com.vehicle.app.activities.DriverInfoOldActivity" >
         </activity>
         <activity android:name="com.vehicle.app.activities.GroupmsgNavActivity" >
         </activity>
@@ -87,10 +88,28 @@
         </activity>
         <activity android:name="com.vehicle.app.activities.MapCameraActivity" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.BeginActivity" >
+        <activity android:name="com.vehicle.app.activities.VendorHomeActivity" >
         </activity>
-                <activity android:name="com.vehicle.app.activities.VendorRatingActivity" >
+        <activity android:name="com.vehicle.app.activities.VendorRatingActivity" >
         </activity>
+        <activity android:name="com.vehicle.app.activities.SettingHomeActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.MyCommentsActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.AboutActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.RelativeAppsActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.AdviceActivity" >
+        </activity>
+        <activity android:name="com.vehicle.app.activities.EccActivity" >
+        </activity>
+
+        <service
+            android:name="com.vehicle.app.activities.UpdateLocationService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
 
         <!-- Required SDK核心功能 -->
         <activity

@@ -12,6 +12,7 @@ import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.URLUtil;
 import com.vehicle.service.bean.AddLocateRequest;
 import com.vehicle.service.bean.AddLocateResponse;
+import com.vehicle.service.bean.CommentFileResponse;
 import com.vehicle.service.bean.FileMultiTransmissionResponse;
 import com.vehicle.service.bean.FileTransmissionResponse;
 import com.vehicle.service.bean.FolloweesResponse;
@@ -28,6 +29,8 @@ import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
 import com.vehicle.service.bean.MessageOne2MultiRequest;
 import com.vehicle.service.bean.MessageOne2MultiResponse;
+import com.vehicle.service.bean.OfflineMessageRequest;
+import com.vehicle.service.bean.OfflineMessageResponse;
 import com.vehicle.service.bean.RangeRequest;
 import com.vehicle.service.bean.RangeResponse;
 import com.vehicle.service.bean.WakeupRequest;
@@ -43,9 +46,9 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
+	private static String URL_DEFAULTSERVERROOT = "http://103.21.140.232:81/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
-	// "http://103.21.140.232:81/VehicleIMServer/rest";
-	private static String URL_DEFAULTSERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
+	// "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -53,9 +56,11 @@ public class VehicleClient {
 	private static final String URL_MESSAGE_ONE2FOLLOWERS = "one2followers";
 	private static final String URL_MESSAGE_ONE2FOLLOWEES = "one2followees";
 	private static final String URL_MESSAGE_ONE2MULTI = "one2multi";
+	private static final String URL_MESSAGE_OFFLINE = "offline";
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
 	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
+	private static final String URL_FILETRANSMISSION_COMMENTIMG = "commentfile/fileName=%s";
 	private static final String URL_FILETRANSMISSION_FETCH = "fetch/%s";
 	private static final String URL_FILEMULTITRANSMISSION_SEND = "sendtomulti/source=%s&&targets=%s&&fileName=%s";
 
@@ -94,6 +99,15 @@ public class VehicleClient {
 
 	public VehicleClient(String source) {
 		this(URL_DEFAULTSERVERROOT, source);
+	}
+
+	public OfflineMessageResponse GetOfflineMessage(String id, long since) {
+		OfflineMessageRequest request = new OfflineMessageRequest();
+		request.setTarget(id);
+		request.setSince(since);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_MESSAGE_ROOT, URL_MESSAGE_OFFLINE);
+		return HttpUtil.PostJson(url, request, OfflineMessageResponse.class);
 	}
 
 	public MessageOne2OneResponse SendLocationMessage(String target, String content) {
@@ -338,5 +352,14 @@ public class VehicleClient {
 
 		AddLocateResponse response = HttpUtil.PostJson(url, request, AddLocateResponse.class);
 		return response;
+	}
+
+	public CommentFileResponse UploadCommentImg(String filePath) {
+		File file = new File(filePath);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
+				String.format(URL_FILETRANSMISSION_COMMENTIMG, file.getName()));
+
+		return HttpUtil.UploadFile(url, filePath, CommentFileResponse.class);
 	}
 }

@@ -8,62 +8,59 @@ import com.vehicle.app.utils.Constants;
 
 public class Vendor implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1239603827677527705L;
 
 	@SerializedName("id")
 	private String id;
 
-	private String name;
+	protected String name;
 
-	private String avatar;
+	protected String avatar;
 
 	@SerializedName("review_total")
-	private String reviewTotal;
+	protected String reviewTotal;
 
 	@SerializedName("view_total")
-	private String viewTotal;
+	protected String viewTotal;
 
-	private float score;
+	protected double score;
 
 	@SerializedName("price")
-	private float priceScore;
+	protected double priceScore;
 
 	@SerializedName("technology")
-	private float technologyScore;
+	protected double technologyScore;
 
 	@SerializedName("efficiency")
-	private float efficiencyScore;
+	protected double efficiencyScore;
 
 	@SerializedName("receive")
-	private float receptionScore;
+	protected double receptionScore;
 
 	@SerializedName("environment")
-	private float environmentScore;
+	protected double environmentScore;
 
-	private String cas;
-	private String address;
+	protected String cas;
+	protected String address;
 
 	@SerializedName("tel")
-	private String telePhone;
+	protected String telePhone;
 
-	private String mobile;
+	protected String mobile;
 
 	@SerializedName("cityCode")
-	private String cityCode;
+	protected String cityCode;
 
 	@SerializedName("point_x")
-	private float pointX;
+	protected float pointX;
 
 	@SerializedName("point_y")
-	private float pointY;
+	protected float pointY;
 
 	@SerializedName("answer_time")
-	private String answerTime;
+	protected String answerTime;
 
-	private String introduction;
+	protected String introduction;
 
 	private String lastMessage;
 	private Date lastMessageTime;
@@ -114,51 +111,51 @@ public class Vendor implements Serializable {
 		this.viewTotal = num;
 	}
 
-	public float getScore() {
+	public double getScore() {
 		return this.score;
 	}
 
-	public void setScore(float score) {
+	public void setScore(double score) {
 		this.score = score;
 	}
 
-	public float getPriceScore() {
+	public double getPriceScore() {
 		return this.priceScore;
 	}
 
-	public void setPriceScore(float price) {
+	public void setPriceScore(double price) {
 		this.priceScore = price;
 	}
 
-	public float getTechnologyScore() {
+	public double getTechnologyScore() {
 		return this.technologyScore;
 	}
 
-	public void setTechnologyScore(float tech) {
+	public void setTechnologyScore(double tech) {
 		this.technologyScore = tech;
 	}
 
-	public float getEfficiencyScore() {
+	public double getEfficiencyScore() {
 		return this.efficiencyScore;
 	}
 
-	public void setEfficiencyScore(float eff) {
+	public void setEfficiencyScore(double eff) {
 		this.efficiencyScore = eff;
 	}
 
-	public float getReceptionScore() {
+	public double getReceptionScore() {
 		return this.receptionScore;
 	}
 
-	public void setReceptioncore(float rev) {
+	public void setReceptioncore(double rev) {
 		this.receptionScore = rev;
 	}
 
-	public float getEnvironmentScore() {
+	public double getEnvironmentScore() {
 		return this.environmentScore;
 	}
 
-	public void setEnvironmentScore(float env) {
+	public void setEnvironmentScore(double env) {
 		this.environmentScore = env;
 	}
 
@@ -257,5 +254,4 @@ public class Vendor implements Serializable {
 	public void setDistance(String distance) {
 		this.distance = distance;
 	}
-
 }

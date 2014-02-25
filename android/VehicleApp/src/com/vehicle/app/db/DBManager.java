@@ -50,7 +50,7 @@ public class DBManager {
 	private final static String SQL_RECENTMSG_ONEDELETE = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ? AND `FELLOWID` = ?;";
 	private final static String SQL_RECENTMSG_ALLDELETE = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ?;";
 	private final static String SQL_RECENTMSG_ONESELECT = "SELECT `SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME` FROM `RECENTMESSAGE` WHERE `SELFID` = ? AND `FELLOWID` = ?;";
-	private final static String SQL_RECENTMSG_ALLSELECT = "SELECT `SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME` FROM `RECENTMESSAGE` WHERE `SELFID` = ? ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_RECENTMSG_ALLSELECT = "SELECT `SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME` FROM `RECENTMESSAGE` WHERE `SELFID` = ? ORDER BY `SENTTIME` DESC;";
 	private final static String SQL_RECENTMSG_DELETEALL = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ? AND `FELLOWID` = ?;";
 
 	public DBManager(Context context) {
@@ -95,8 +95,9 @@ public class DBManager {
 			deleteRecentMsgStmt.bindString(1, selfId);
 			deleteRecentMsgStmt.bindString(2, fellowId);
 
-			deleteFileMsgStmt.executeUpdateDelete();
+			deleteRecentMsgStmt.executeUpdateDelete();
 
+			db.setTransactionSuccessful();
 			db.endTransaction();
 		} finally {
 			if (null != db) {
@@ -607,7 +608,7 @@ public class DBManager {
 		} finally {
 			if (null != db)
 				db.endTransaction();
-				db.close();
+			db.close();
 		}
 	}
 

@@ -486,7 +486,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
                 //If we are within the selected bounds draw the selected text
                 if (currentPage && currentSelected) {
                 	
-                	mPaintText.setTextSize(32);
+                	mPaintText.setTextSize(28);
                 	
                     mPaintText.setColor(mColorSelected);
                     mPaintText.setAlpha((int)((mColorSelected >>> 24) * selectedPercent));

@@ -1,44 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/white"
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="120dp"
-        android:orientation="vertical" >
+        android:id="@+id/vendorhome_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vendorhome_imagepager"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
 
-        <com.viewpagerindicator.UnderlinePageIndicator
-            android:id="@+id/vendorhome_imageindicator"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp" />
+        <TextView
+            android:id="@+id/vendorhome_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/login_progress_signing_in"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/azure" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/vendorhome_form"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <com.viewpagerindicator.TitlePageIndicator
-            android:id="@+id/vendorhome_indicator"
-            style="@style/CustomTitlePageIndicator"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dip" />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vendorhome_pager"
+        <RelativeLayout
+            android:id="@+id/vendorhome_title"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" >
-        </android.support.v4.view.ViewPager>
+            android:layout_weight="0.8"
+            android:background="@drawable/icon_bakground" >
+
+            <Button
+                android:id="@+id/vendortitle_btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/selector_btn_gobak" />
+
+            <Button
+                android:id="@+id/vendortitle_btn_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/selector_btn_follow" />
+
+            <TextView
+                android:id="@+id/vendortitle_tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_toLeftOf="@id/vendortitle_btn_follow"
+                android:layout_toRightOf="@id/vendortitle_btn_back"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="20sp" >
+            </TextView>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/vendorhome_img"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.0"
+            android:orientation="vertical" >
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vendorhome_imagepager"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.viewpagerindicator.UnderlinePageIndicator
+                android:id="@+id/vendorhome_imageindicator"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6.0"
+            android:orientation="vertical" >
+
+            <com.viewpagerindicator.TitlePageIndicator
+                android:id="@+id/vendorhome_indicator"
+                style="@style/CustomTitlePageIndicator"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dip" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vendorhome_pager"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" >
+            </android.support.v4.view.ViewPager>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/vendorbar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.8"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/vendorbar_shake"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@drawable/selector_button_vendorbar_shake" />
+
+            <Button
+                android:id="@+id/vendorbar_yelp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@drawable/selector_button_vendorbar_yelp" />
+
+            <Button
+                android:id="@+id/vendorbar_ecc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@drawable/selector_button_vendorbar_ecc" >
+            </Button>
+
+            <Button
+                android:id="@+id/vendorbar_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:background="@drawable/selector_button_vendorbar_next" >
+            </Button>
+        </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

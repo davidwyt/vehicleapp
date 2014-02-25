@@ -79,20 +79,11 @@
                 </Button>
 
                 <Button
-                    android:id="@+id/nearbymain_nearbylist"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/selector_button_nearbylist" >
-                </Button>
-
-                <Button
                     android:id="@+id/nearbymain_groupmsg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="32dp"
                     android:background="@drawable/selector_button_groupmsg" >
                 </Button>
             </LinearLayout>

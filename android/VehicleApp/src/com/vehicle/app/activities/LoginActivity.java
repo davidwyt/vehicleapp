@@ -1,10 +1,23 @@
 package com.vehicle.app.activities;
 
+import java.io.InputStream;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.vehicle.app.bean.SelfDriver;
 import com.vehicle.app.bean.SelfVendor;
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.bean.VendorImage;
+import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.LocationUtil;
+import com.vehicle.app.web.bean.CarListViewResult;
+import com.vehicle.app.web.bean.VendorImgViewResult;
+import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
+import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -14,6 +27,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -227,8 +243,33 @@ public class LoginActivity extends Activity {
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
-	
-	
+
+	private void startUpdateLocation() {
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+					Location loc = LocationUtil.getCurLocation(getApplicationContext());
+					double lat, lnt;
+					if (null == loc) {
+						lat = 31.24;
+						lnt = 121.56;
+					} else {
+						lat = loc.getLatitude();
+						lnt = loc.getLongitude();
+					}
+					client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		Timer timer = new Timer();
+		timer.schedule(task, 500, 10000);
+	}
 
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
@@ -238,9 +279,9 @@ public class LoginActivity extends Activity {
 		@Override
 		protected WebCallBaseResult doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
-			
+
 			LocationUtil.getCurLocation(getApplicationContext());
-			
+
 			WebCallBaseResult result = null;
 			try {
 				// Simulate network access.
@@ -255,17 +296,47 @@ public class LoginActivity extends Activity {
 				if (null != result && result.isSuccess()) {
 					if (SelfMgr.getInstance().isDriver()) {
 						SelfDriver self = (SelfDriver) result.getInfoBean();
+
+						VehicleWebClient webClient = new VehicleWebClient();
+						result = webClient.CarListView(self.getId());
+						self.setCars(((CarListViewResult) result).getInfoBean());
+
 						SelfMgr.getInstance().setSelfDriver(self);
+
 					} else {
 						SelfVendor self = (SelfVendor) result.getInfoBean();
+						VehicleWebClient webClient = new VehicleWebClient();
+						VendorImgViewResult imgResult = webClient.VendorImgView(self.getId());
+						if (null != imgResult) {
+							self.setImgs(imgResult.getInfoBean());
+
+							List<VendorImage> imgs = imgResult.getInfoBean();
+							if (null != imgs) {
+								for (VendorImage img : imgs) {
+									String imgUrl = img.getSrc();
+									InputStream input = HttpUtil.DownloadFile(imgUrl);
+									Bitmap bitmap = BitmapFactory.decodeStream(input);
+									BitmapCache.getInstance().put(imgUrl, bitmap);
+								}
+							}
+						}
+
+						VendorSpecViewResult specView = webClient.VendorSpecView(self.getId());
+						if (null != specView && null != specView.getInfoBean()) {
+							VendorDetail detail = specView.getInfoBean();
+							self.setComments(detail.getReviews());
+							self.setCoupons(detail.getCoupons());
+							self.setPromotions(detail.getPromotions());
+						}
+
 						SelfMgr.getInstance().setSelfVendor(self);
 					}
 
 					SelfMgr.getInstance().refreshFellows();
-					SelfMgr.getInstance().refreshNearby();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				return null;
 			}
 
 			return result;
@@ -284,6 +355,7 @@ public class LoginActivity extends Activity {
 
 			if (result.isSuccess()) {
 				// finish();
+				startUpdateLocation();
 
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 

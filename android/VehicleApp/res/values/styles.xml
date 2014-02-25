@@ -83,7 +83,7 @@
         <item name="android:minHeight">24dp</item>
         <item name="android:maxHeight">96dp</item>
         <item name="android:minWidth">24dp</item>
-        <item name="android:maxWidth">96dp</item>
+        <item name="android:maxWidth">200dp</item>
     </style>
 
     <style name="CustomTitlePageIndicator">

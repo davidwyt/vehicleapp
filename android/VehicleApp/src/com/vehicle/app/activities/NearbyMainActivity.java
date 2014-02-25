@@ -2,7 +2,9 @@ package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.worker.IMessageCourier;
+import com.vehicle.app.msg.worker.OfflineMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
+import com.vehicle.app.utils.LocationUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
@@ -10,6 +12,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +34,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	private TextView mTextViewSearchNearbyStatus;
 
 	private Button mButtonNearby;
-	private Button mButtonNearbyList;
 	private Button mButtonGroupMsg;
 
 	private NearbySearchTask mSearchTask;
@@ -51,9 +53,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		this.mButtonNearby = (Button) this.findViewById(R.id.nearbymain_roundnearby);
 		this.mButtonNearby.setOnClickListener(this);
 
-		this.mButtonNearbyList = (Button) this.findViewById(R.id.nearbymain_nearbylist);
-		this.mButtonNearbyList.setOnClickListener(this);
-
 		this.mButtonGroupMsg = (Button) this.findViewById(R.id.nearbymain_groupmsg);
 		this.mButtonGroupMsg.setOnClickListener(this);
 
@@ -69,6 +68,9 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 
 		IMessageCourier courier = new WakeupMessageCourier(this.getApplicationContext());
 		courier.dispatch(null);
+
+		IMessageCourier offCourier = new OfflineMessageCourier(this.getApplicationContext());
+		offCourier.dispatch(null);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			openChatList();
 		} else if (R.id.bar_rabtn_setting == checkedId) {
 			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), SettingActivity.class);
+			intent.setClass(getApplicationContext(), SettingHomeActivity.class);
 			this.startActivity(intent);
 		}
 	}
@@ -102,7 +104,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), RecentContactListActivity.class);
 		startActivity(intent);
-
 	}
 
 	@Override
@@ -110,11 +111,14 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		// TODO Auto-generated method stub
 		if (R.id.nearbymain_roundnearby == view.getId()) {
 			searchNearby();
-		} else if (R.id.nearbymain_nearbylist == view.getId()) {
-
 		} else if (R.id.nearbymain_groupmsg == view.getId()) {
-
+			startGroupMsg();
 		}
+	}
+
+	private void startGroupMsg() {
+		Intent intent = new Intent(this, GroupmsgNavActivity.class);
+		this.startActivity(intent);
 	}
 
 	private void searchNearby() {
@@ -173,7 +177,16 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			// TODO: attempt authentication against a network service.
 
 			try {
-				SelfMgr.getInstance().refreshNearby();
+				Location loc = LocationUtil.getCurLocation(getApplicationContext());
+				double latitude, longtitude;
+				if (null == loc) {
+					latitude = 31.24;
+					longtitude = 121.56;
+				} else {
+					latitude = loc.getLatitude();
+					longtitude = loc.getLongitude();
+				}
+				SelfMgr.getInstance().refreshNearby(longtitude, latitude);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

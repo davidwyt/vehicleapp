@@ -3,16 +3,14 @@ package com.vehicle.app.activities;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.db.DBManager;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
+import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MsgMgrActivity extends Activity implements OnClickListener {
 
@@ -69,13 +68,13 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		if (null != bundle) {
 			mFellowId = bundle.getString(KEY_FELLOWID);
 			if (SelfMgr.getInstance().isDriver()) {
-				this.mFellow = SelfMgr.getInstance().getFavVendorDetail(mFellowId);
+				this.mFellow = SelfMgr.getInstance().getFavVendor(mFellowId);
 				if (null != this.mFellow) {
 					name = ((Vendor) mFellow).getName();
 					url = ((Vendor) mFellow).getAvatar();
 				}
 			} else {
-				this.mFellow = SelfMgr.getInstance().getVendorFellowDetail(mFellowId);
+				this.mFellow = SelfMgr.getInstance().getVendorFellow(mFellowId);
 				if (null != this.mFellow) {
 					name = ((Driver) mFellow).getAlias();
 					url = ((Driver) mFellow).getAvatar();
@@ -85,16 +84,7 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 
 		this.mTVName.setText(name);
 
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
-
-		if (null != bitmap) {
-			mIVHead.setImageBitmap(bitmap);
-		} else {
-			mIVHead.setTag(R.id.TAGKEY_BITMAP_URL, url);
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(mIVHead);
-			loader.load();
-		}
-
+		ImageUtil.RenderImageView(url, mIVHead, -1, -1);
 	}
 
 	@Override
@@ -149,7 +139,18 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 	}
 
 	private void clearMessage() {
-		DBManager dbMgr = new DBManager(this.getApplicationContext());
-		dbMgr.deleteAllMessages(SelfMgr.getInstance().getId(), mFellowId);
+		try {
+			try {
+				DBManager dbMgr = new DBManager(this.getApplicationContext());
+				dbMgr.deleteAllMessages(SelfMgr.getInstance().getId(), mFellowId);
+
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_deletegroupmsgsuccess),
+						Toast.LENGTH_LONG).show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

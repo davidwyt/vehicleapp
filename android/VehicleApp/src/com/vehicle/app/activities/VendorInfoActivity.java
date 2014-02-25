@@ -3,14 +3,13 @@ package com.vehicle.app.activities;
 import java.util.Date;
 
 import com.vehicle.app.bean.Vendor;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.FollowshipMessage;
 import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.worker.FollowshipMessageCourier;
 import com.vehicle.app.msg.worker.IMessageCourier;
-import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
@@ -18,7 +17,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -140,7 +138,7 @@ public class VendorInfoActivity extends Activity {
 		if (isNearby) {
 			mVendor = SelfMgr.getInstance().getNearbyVendor(vendorId);
 		} else {
-			this.mVendor = SelfMgr.getInstance().getFavVendorDetail(vendorId);
+			this.mVendor = SelfMgr.getInstance().getFavVendor(vendorId);
 		}
 
 		if (null == mVendor) {
@@ -153,27 +151,17 @@ public class VendorInfoActivity extends Activity {
 		this.mTvBusinessTime.setText(mVendor.getAnswerTime());
 
 		String url = mVendor.getAvatar();
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
+		ImageUtil.RenderImageView(url, mIvhead, -1, -1);
 
-		if (null != bitmap) {
-			mIvhead.setImageBitmap(bitmap);
-		} else {
-			mIvhead.setTag(R.id.TAGKEY_BITMAP_URL, url);
-
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(mIvhead);
-			loader.load();
-		}
-
-		this.mTvScore.setText(Float.toString(mVendor.getScore()));
-		this.mTvEfficiency.setText(Float.toString(mVendor.getEfficiencyScore()));
-		this.mTvEnvironment.setText(Float.toString(mVendor.getEnvironmentScore()));
-		this.mTvPrice.setText(Float.toString(mVendor.getPriceScore()));
-		this.mTvReception.setText(Float.toString(mVendor.getReceptionScore()));
-		this.mTvTechnology.setText(Float.toString(mVendor.getTechnologyScore()));
+		this.mTvScore.setText(Double.toString(mVendor.getScore()));
+		this.mTvEfficiency.setText(Double.toString(mVendor.getEfficiencyScore()));
+		this.mTvEnvironment.setText(Double.toString(mVendor.getEnvironmentScore()));
+		this.mTvPrice.setText(Double.toString(mVendor.getPriceScore()));
+		this.mTvReception.setText(Double.toString(mVendor.getReceptionScore()));
+		this.mTvTechnology.setText(Double.toString(mVendor.getTechnologyScore()));
 
 		this.mTvAddr.setText(mVendor.getAddress());
 		this.mTvMobileNum.setText(mVendor.getMobile());
-
 	}
 
 	@Override

@@ -2,12 +2,14 @@ package com.vehicle.app.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextPaint;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import android.widget.BaseAdapter;
@@ -20,10 +22,13 @@ import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
 
+import com.vehicle.app.activities.MapCameraActivity;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.msg.bean.TextMessage;
+import com.vehicle.app.utils.JsonUtil;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
 
@@ -60,7 +65,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		IMessageItem entity = data.get(position);
 		if (entity instanceof TextMessage) {
 
-			TextMessage msg = (TextMessage) entity;
+			final TextMessage msg = (TextMessage) entity;
 
 			if (SelfMgr.getInstance().IsSelf(msg.getSource())) {
 				if (convertView == null || R.id.chatitem_msg_left != convertView.getId()) {
@@ -80,7 +85,29 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			tvUserName.setText(msg.getSource());
 
 			TextView tvContent = (TextView) convertView.findViewById(R.id.chatmsg_tv_chatcontent);
-			tvContent.setText(msg.getContent());
+			if (IMessageItem.MESSAGE_TYPE_TEXT == msg.getMessageType()) {
+				tvContent.setText(msg.getContent());
+				tvContent.setOnClickListener(null);
+			} else if (IMessageItem.MESSAGE_TYPE_LOCATION == msg.getMessageType()) {
+				tvContent.setBackgroundResource(R.drawable.icon_location);
+				tvContent.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						try {
+							Intent intent = new Intent(context, MapCameraActivity.class);
+							SimpleLocation loc = JsonUtil.fromJson(msg.getContent(), SimpleLocation.class);
+
+							intent.putExtra(MapCameraActivity.KEY_POSITION, loc);
+							context.startActivity(intent);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+
 		} else if (entity instanceof ImageMessage) {
 			ImageMessage pic = (ImageMessage) entity;
 

@@ -1,10 +1,15 @@
 package com.vehicle.app.msg.worker;
 
+import java.util.List;
+
+import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.CommentMessage;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.web.bean.AddCommentResult;
+import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
+import com.vehicle.service.bean.CommentFileResponse;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,10 +41,33 @@ public class VendorCommentMessageCourier extends MessageBaseCourier {
 				// TODO Auto-generated method stub
 				AddCommentResult result = null;
 				try {
+					String imgNames = "";
+
+					List<String> imgPaths = msg.getImgPaths();
+					if (null != imgPaths) {
+						for (int i = 0; i < imgPaths.size(); i++) {
+							String path = imgPaths.get(i);
+
+							VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+							CommentFileResponse resp = client.UploadCommentImg(path);
+							if (null != resp && resp.isSucess()) {
+								String name = resp.getFileName();
+								imgNames += name;
+								if (i != imgPaths.size() - 1) {
+									imgNames += Constants.IMGNAME_DIVIDER;
+								}
+							} else {
+								throw new Exception("upload img failed");
+							}
+						}
+					}
+
+					System.out.println("img:" + imgNames);
+
 					VehicleWebClient client = new VehicleWebClient();
 					result = client.AddComment(msg.getSource(), msg.getTarget(), msg.getComment(), msg.getPriceScore(),
 							msg.getTechnologyScore(), msg.getEfficiencyScore(), msg.getReceptionScore(),
-							msg.getEnvironmentScore(), msg.getMainProjectId());
+							msg.getEnvironmentScore(), msg.getMainProjectId(), imgNames);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -68,5 +96,4 @@ public class VendorCommentMessageCourier extends MessageBaseCourier {
 			asyncTask.execute();
 		}
 	}
-
 }

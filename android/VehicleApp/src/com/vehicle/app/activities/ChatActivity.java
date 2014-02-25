@@ -278,13 +278,13 @@ public class ChatActivity extends Activity implements OnClickListener {
 			this.mTitleView.setBackgroundResource(R.drawable.icon_bakground);
 
 			if (SelfMgr.getInstance().isDriver()) {
-				this.mVendor = SelfMgr.getInstance().getFavVendorDetail(mFellowId);
+				this.mVendor = SelfMgr.getInstance().getFavVendor(mFellowId);
 				tvFellow.setVisibility(View.VISIBLE);
 				if (null != this.mVendor) {
 					tvFellow.setText(this.mVendor.getName());
 				}
 			} else {
-				this.mDriver = SelfMgr.getInstance().getVendorFellowDetail(mFellowId);
+				this.mDriver = SelfMgr.getInstance().getVendorFellow(mFellowId);
 				tvFellow.setVisibility(View.VISIBLE);
 				if (null != this.mDriver) {
 					tvFellow.setText(this.mDriver.getAlias());
@@ -321,14 +321,18 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		if (CHAT_STYLE_2ONE == this.mChatStyle) {
-			DBManager dbMgr = new DBManager(this.getApplicationContext());
+			try {
+				DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-			List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
+				List<TextMessage> msgList = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
 
-			this.mDataArrays.clear();
-			this.mDataArrays.addAll(msgList);
-			this.mAdapter.notifyDataSetChanged();
-			mMsgList.setSelection(mMsgList.getCount() - 1);
+				this.mDataArrays.clear();
+				this.mDataArrays.addAll(msgList);
+				this.mAdapter.notifyDataSetChanged();
+				mMsgList.setSelection(mMsgList.getCount() - 1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -380,6 +384,10 @@ public class ChatActivity extends Activity implements OnClickListener {
 	}
 
 	private void onCaptureImage(int resultCode, Intent data) {
+
+		if (Activity.RESULT_OK != resultCode) {
+			return;
+		}
 
 		if (Activity.RESULT_OK == resultCode) {
 			String sdState = Environment.getExternalStorageState();
@@ -492,7 +500,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			IMessageCourier msgCourier = new ImageMessageCourier(this.getApplicationContext(),
 					CHAT_STYLE_2ONE != this.mChatStyle);
-			
+
 			msgCourier.dispatch(picItem);
 		} else {
 			System.out.println("selected file not exist:" + filePath);

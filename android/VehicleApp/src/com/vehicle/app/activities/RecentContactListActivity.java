@@ -92,11 +92,15 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 		mRecentMsgVector.clear();
 
-		DBManager dbMgr = new DBManager(this.getApplicationContext());
+		try {
+			DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-		mRecentMsgVector.addAll(dbMgr.queryRecentMessage(SelfMgr.getInstance().getId()));
+			mRecentMsgVector.addAll(dbMgr.queryRecentMessage(SelfMgr.getInstance().getId()));
 
-		this.mAdapter.notifyDataSetChanged();
+			this.mAdapter.notifyDataSetChanged();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void initView() {
@@ -137,7 +141,7 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		// TODO Auto-generated method stub
 		if (R.id.bar_rabtn_setting == checkedId) {
 			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), SettingActivity.class);
+			intent.setClass(getApplicationContext(), SettingHomeActivity.class);
 			this.startActivity(intent);
 		} else if (R.id.bar_rabtn_middle == checkedId) {
 			Intent intent = new Intent();

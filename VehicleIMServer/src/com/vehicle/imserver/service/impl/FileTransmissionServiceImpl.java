@@ -186,7 +186,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 				messageDao.save(msg);
 			} catch (PushNotificationFailedException e) {
 				offlineMessageDao.save(new OfflineMessage(msg));
-				throw e;
+				// throw e;
 			}
 		}
 		return fileTran;

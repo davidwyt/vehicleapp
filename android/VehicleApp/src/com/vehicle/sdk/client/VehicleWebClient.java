@@ -1,5 +1,7 @@
 package com.vehicle.sdk.client;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.utils.URLUtil;
 import com.vehicle.app.web.bean.AddCommentResult;
 import com.vehicle.app.web.bean.AddFavVendorResult;
+import com.vehicle.app.web.bean.AdviceResult;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
@@ -20,9 +23,11 @@ import com.vehicle.app.web.bean.NearbyDriverListViewResult;
 import com.vehicle.app.web.bean.NearbyVendorListViewResult;
 import com.vehicle.app.web.bean.RemoveFavVendorResult;
 import com.vehicle.app.web.bean.VendorFellowListViewResult;
+import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorListViewResult;
 import com.vehicle.app.web.bean.VendorLoginResult;
 import com.vehicle.app.web.bean.VendorRegisterResult;
+import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.VendorViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 
@@ -38,6 +43,8 @@ public class VehicleWebClient {
 	private final static String URL_VENDOR_LOGIN = "business/businessLogin?userName=%s&pass=%s";
 	private final static String URL_VENDOR_REGISTER = "business/businessCreate?userName=%s&pass=%s&email=%s";
 	private final static String URL_VENDOR_VIEW = "business/businessView?memberId=%s";
+	private final static String URL_VENDOR_SPECVIEW = "business/businessMulList?memberId=%s";
+	private final static String URL_VENDOR_IMGVIEW = "business/businessImagesList?memberId=%s";
 	private final static String URL_VENDORLIST_VIEW = "business/businessListView?memberId=%s";
 	private final static String URL_VENDORFELLOWS_VIEW = "business/businessFavoriteList?shopId=%s";
 
@@ -48,9 +55,12 @@ public class VehicleWebClient {
 	private final static String URL_FAVSHOPS_REMOVE = "favorite/favoriteDel?memberId=%s&shopId=%s";
 
 	private final static String URL_COMMENTS_VIEW = "personal/personalReviewList?memberId=%s";
-	private final static String URL_COMMENTS_ADD = "review/reviewCreate?memberId=%s&shopId=%s&reviews=%s&price=%s&technology=%s&efficiency=%s&receive=%s&environment=%s&mainProjectId=%s";
+	private final static String URL_COMMENTS_ADD = "review/reviewCreate2?memberId=%s&shopId=%s&reviews=%s&price=%s&technology=%s&efficiency=%s&receive=%s&environment=%s&mainProjectId=%s&imgNames=%s";
 
 	private final static String URL_NEARBYVENDORLIST_VIEW = "member/memberBusinessProject2List?cityId=%s&areaId=%s&streetId=%s&pageId=%s&centerx=%s&centery=%s&range=%s&projectType=%s&projectId=%s&sort=%s";
+
+	private final static String URL_ADVICE_CREATE = "suggest/suggestCreate?memberId=%s&tel=%s&email=%s&content=%s";
+	private final static String URL_ECC_CREATE = "correction/correctionCreate?&memberId=%s&shopId=%s&email=%s&content=%s";
 
 	public VehicleWebClient() {
 
@@ -105,6 +115,20 @@ public class VehicleWebClient {
 		return HttpUtil.GetJson(url, VendorViewResult.class);
 	}
 
+	public VendorSpecViewResult VendorSpecView(String vendorId) {
+		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_VENDOR_SPECVIEW);
+		url = String.format(url, vendorId);
+
+		return HttpUtil.GetJson(url, VendorSpecViewResult.class);
+	}
+
+	public VendorImgViewResult VendorImgView(String vendorId) {
+		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_VENDOR_IMGVIEW);
+		url = String.format(url, vendorId);
+
+		return HttpUtil.GetJson(url, VendorImgViewResult.class);
+	}
+
 	public VendorListViewResult VendorListView(List<String> vendors) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_VENDORLIST_VIEW);
 		String params = StringUtil.JointString(vendors, Constants.COMMA);
@@ -156,10 +180,20 @@ public class VehicleWebClient {
 	}
 
 	public AddCommentResult AddComment(String driverId, String vendorId, String reviews, double priceScore,
-			double technologyScore, double efficiencyScore, double receptionScore, double envScore, int mainProjectId) {
+			double technologyScore, double efficiencyScore, double receptionScore, double envScore, int mainProjectId,
+			String imgNames) throws UnsupportedEncodingException {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_COMMENTS_ADD);
-		url = String.format(url, driverId, vendorId, reviews, priceScore, technologyScore, efficiencyScore,
-				receptionScore, envScore, mainProjectId);
+
+		if (null == imgNames || imgNames.length() == 0) {
+			imgNames = Constants.IMGNAME_DIVIDER;
+		}
+
+		url = String.format(url, driverId, vendorId, URLEncoder.encode(reviews, "UTF-8"), priceScore, technologyScore,
+				efficiencyScore, receptionScore, envScore, mainProjectId, URLEncoder.encode(imgNames, "UTF-8"));
+
+		// url = url.replace(" ", "%20");
+
+		System.out.println("url:" + url);
 
 		return HttpUtil.PostJson(url, null, AddCommentResult.class);
 	}
@@ -186,5 +220,24 @@ public class VehicleWebClient {
 		nearbyDriverListResult.setResult(driverListResult.getInfoBean());
 
 		return nearbyDriverListResult;
+	}
+
+	public AdviceResult CreateAdvice(String memberId, String email, String phone, String content)
+			throws UnsupportedEncodingException {
+		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_ADVICE_CREATE);
+
+		url = String.format(url, memberId, phone, URLEncoder.encode(email, "UTF-8"),
+				URLEncoder.encode(content, "UTF-8"));
+
+		return HttpUtil.PostJson(url, null, AdviceResult.class);
+	}
+
+	public AdviceResult CreateECC(String memberId, String shopId, String email, String content)
+			throws UnsupportedEncodingException {
+		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_ECC_CREATE);
+
+		url = String.format(url, memberId, shopId, URLEncoder.encode(email, "UTF-8"),
+				URLEncoder.encode(content, "UTF-8"));
+		return HttpUtil.PostJson(url, null, AdviceResult.class);
 	}
 }

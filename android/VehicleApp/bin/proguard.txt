@@ -1,107 +1,132 @@
-# view res/layout/activity_vendorhome.xml #generated:12
-# view res/layout/activity_vendorhome.xml #generated:36
+# view res/layout/activity_vendorhome.xml #generated:114
+# view res/layout/activity_vendorhome.xml #generated:89
 -keep class android.support.v4.view.ViewPager { <init>(...); }
 
-# view AndroidManifest.xml #generated:183
+# view AndroidManifest.xml #generated:202
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:150
+# view AndroidManifest.xml #generated:169
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:108
+# view AndroidManifest.xml #generated:127
 -keep class cn.jpush.android.service.DownloadService { <init>(...); }
 
-# view AndroidManifest.xml #generated:128
+# view AndroidManifest.xml #generated:147
 -keep class cn.jpush.android.service.PushReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:115
+# view AndroidManifest.xml #generated:134
 -keep class cn.jpush.android.service.PushService { <init>(...); }
 
-# view AndroidManifest.xml #generated:96
+# view AndroidManifest.xml #generated:115
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
 
-# view res/layout/activity_camera.xml #generated:91
+# view res/layout/activity_camera.xml #generated:7
 # view res/layout/activity_location.xml #generated:7
 -keep class com.amap.api.maps.MapView { <init>(...); }
 
 # view res/layout/activity_myfellowlist.xml #generated:16
-# view res/layout/activity_nearbyfellowlist.xml #generated:16
-# view res/layout/activity_recentcontactlist.xml #generated:32
+# view res/layout/activity_nearbyfellowlist.xml #generated:47
+# view res/layout/activity_recentcontactlist.xml #generated:36
 -keep class com.handmark.pulltorefresh.library.PullToRefreshListView { <init>(...); }
 
-# view AndroidManifest.xml #generated:90
+# view AndroidManifest.xml #generated:99
+-keep class com.vehicle.app.activities.AboutActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:103
+-keep class com.vehicle.app.activities.AdviceActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:48
 -keep class com.vehicle.app.activities.BeginActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:86
+# view AndroidManifest.xml #generated:87
 -keep class com.vehicle.app.activities.ChatActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:76
--keep class com.vehicle.app.activities.DriverInfoActivity { <init>(...); }
+# view AndroidManifest.xml #generated:71
+-keep class com.vehicle.app.activities.DriverHomeActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:60
+# view AndroidManifest.xml #generated:77
+-keep class com.vehicle.app.activities.DriverInfoOldActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:61
 -keep class com.vehicle.app.activities.DriverRegisterActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:64
+# view AndroidManifest.xml #generated:105
+-keep class com.vehicle.app.activities.EccActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:65
 -keep class com.vehicle.app.activities.FollowshipInvitationActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:78
+# view AndroidManifest.xml #generated:79
 -keep class com.vehicle.app.activities.GroupmsgNavActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:56
+# view AndroidManifest.xml #generated:57
 -keep class com.vehicle.app.activities.LocationActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:54
+# view AndroidManifest.xml #generated:55
 -keep class com.vehicle.app.activities.LoginActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:88
+# view AndroidManifest.xml #generated:89
 -keep class com.vehicle.app.activities.MapCameraActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:153
+# view AndroidManifest.xml #generated:172
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:82
+# view AndroidManifest.xml #generated:83
 -keep class com.vehicle.app.activities.MsgMgrActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:84
+# view AndroidManifest.xml #generated:97
+-keep class com.vehicle.app.activities.MyCommentsActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:85
 -keep class com.vehicle.app.activities.MyFellowListActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:80
+# view AndroidManifest.xml #generated:81
 -keep class com.vehicle.app.activities.NearbyFellowListActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:66
+# view AndroidManifest.xml #generated:67
 -keep class com.vehicle.app.activities.NearbyMainActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:62
+# view AndroidManifest.xml #generated:63
 -keep class com.vehicle.app.activities.RecentContactListActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:68
+# view AndroidManifest.xml #generated:101
+-keep class com.vehicle.app.activities.RelativeAppsActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:69
 -keep class com.vehicle.app.activities.RoleSelectActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:70
--keep class com.vehicle.app.activities.SelfDriverInfoActivity { <init>(...); }
-
-# view AndroidManifest.xml #generated:72
+# view AndroidManifest.xml #generated:73
 -keep class com.vehicle.app.activities.SelfVendorInfoActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:58
+# view AndroidManifest.xml #generated:59
 -keep class com.vehicle.app.activities.SettingActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:47
+# view AndroidManifest.xml #generated:95
+-keep class com.vehicle.app.activities.SettingHomeActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:108
+-keep class com.vehicle.app.activities.UpdateLocationService { <init>(...); }
+
+# view AndroidManifest.xml #generated:91
 -keep class com.vehicle.app.activities.VendorHomeActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:74
+# view AndroidManifest.xml #generated:75
 -keep class com.vehicle.app.activities.VendorInfoActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:92
+# view AndroidManifest.xml #generated:93
 -keep class com.vehicle.app.activities.VendorRatingActivity { <init>(...); }
 
 # view res/layout/activity_nearbymain.xml #generated:53
-# view res/layout/activity_recentcontactlist.xml #generated:24
+# view res/layout/activity_recentcontactlist.xml #generated:28
+# view res/layout/activity_settinghome.xml #generated:52
 -keep class com.vehicle.app.layout.BottomBarLayout { <init>(...); }
 
-# view res/layout/activity_vendorhome.xml #generated:29
+# view res/layout/activity_vendorrating.xml #generated:86
+-keep class com.vehicle.app.layout.ToggleButtonGroupTableLayout { <init>(...); }
+
+# view res/layout/activity_vendorhome.xml #generated:107
 -keep class com.viewpagerindicator.TitlePageIndicator { <init>(...); }
 
-# view res/layout/activity_vendorhome.xml #generated:18
+# view res/layout/activity_vendorhome.xml #generated:95
 -keep class com.viewpagerindicator.UnderlinePageIndicator { <init>(...); }
 
