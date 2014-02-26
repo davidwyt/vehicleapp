@@ -52,7 +52,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			PushNotificationFailedException, PersistenceException {
 		String token = UUID.randomUUID().toString();
 		String filePath = FileUtil.GenPathForFileTransmission("",
-				request.getFileName(), token);
+				request.getFileName(), token, request.getMsgType());
 
 		System.out.println("upload file:" + filePath);
 
@@ -74,11 +74,11 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		INotification notification = new NewFileNotification(
 				fileTran.getSource(), fileTran.getTarget(),
 				fileTran.getToken(), request.getFileName(),
-				fileTran.getTransmissionTime());
+				fileTran.getTransmissionTime(), fileTran.getMsgType());
 		Message msg = new Message();
 		msg.setContent(token);
 		msg.setId(GUIDUtil.genNewGuid());
-		msg.setMessageType(MessageType.IMAGE.ordinal());
+		msg.setMessageType(fileTran.getMsgType());
 		msg.setSentTime(System.currentTimeMillis());
 		msg.setTarget(notification.getTarget());
 		msg.setSource(notification.getSource());
@@ -142,7 +142,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			PersistenceException {
 		String fileName = UUID.randomUUID().toString();
 		String filePath = FileUtil.GenPathForFileTransmission("",
-				request.getFileName(), fileName);
+				request.getFileName(), fileName, request.getMsgType());
 
 		System.out.println("upload file:" + filePath);
 
@@ -159,6 +159,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			fReq.setFileName(request.getFileName());
 			fReq.setSource(request.getSource());
 			fReq.setTarget(targets[i]);
+			fReq.setMsgType(request.getMsgType());
 			String token = UUID.randomUUID().toString();
 			fileTran = RequestDaoUtil.toFileTransmission(fReq, filePath, token);
 			try {
@@ -170,11 +171,11 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			INotification notification = new NewFileNotification(
 					fileTran.getSource(), fileTran.getTarget(),
 					fileTran.getToken(), request.getFileName(),
-					fileTran.getTransmissionTime());
+					fileTran.getTransmissionTime(), fileTran.getMsgType());
 			Message msg = new Message();
 			msg.setContent(token);
 			msg.setId(GUIDUtil.genNewGuid());
-			msg.setMessageType(MessageType.IMAGE.ordinal());
+			msg.setMessageType(fileTran.getMsgType());
 			msg.setSentTime(System.currentTimeMillis());
 			msg.setTarget(notification.getTarget());
 			msg.setSource(notification.getSource());
@@ -198,7 +199,7 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 
 		String token = UUID.randomUUID().toString();
 		String filePath = FileUtil.GenPathForFileTransmission("", fileName,
-				token);
+				token, MessageType.IMAGE.ordinal());
 
 		System.out.println("upload file:" + filePath);
 

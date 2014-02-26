@@ -120,7 +120,6 @@ public class HttpUtil {
 
 		try {
 			HttpPost httppost = new HttpPost(url);
-
 			FileEntity fileBody = new FileEntity(new File(filePath), "application/octet-stream");
 
 			httppost.setEntity(fileBody);

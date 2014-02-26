@@ -122,6 +122,8 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 			}
 		} else if (IMessageItem.MESSAGE_TYPE_FOLLOW == msg.getMessageType()) {
 			return context.getResources().getString(R.string.format_msg_newfellow);
+		} else if (IMessageItem.MESSAGE_TYPE_AUDIO == msg.getMessageType()) {
+			return context.getResources().getString(R.string.tip_recentaudio);
 		} else {
 			throw new IllegalArgumentException("wrong message type");
 		}

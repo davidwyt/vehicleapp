@@ -2,9 +2,11 @@ package com.vehicle.app.activities;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.location.LocationManagerProxy;
+import com.amap.api.location.LocationProviderProxy;
 import com.vehicle.app.bean.SelfDriver;
 import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.VendorDetail;
@@ -15,7 +17,6 @@ import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.OfflineMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.utils.HttpUtil;
-import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
@@ -248,30 +249,69 @@ public class LoginActivity extends Activity {
 	}
 
 	private void startUpdateLocation() {
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
-					Location loc = LocationUtil.getCurLocation(getApplicationContext());
-					double lat, lnt;
-					if (null == loc) {
-						lat = 31.24;
-						lnt = 121.56;
-					} else {
-						lat = loc.getLatitude();
-						lnt = loc.getLongitude();
-					}
-					client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
 
-		Timer timer = new Timer();
-		timer.schedule(task, 500, 10000);
+		LocationManagerProxy aMapLocationManager = LocationManagerProxy.getInstance(this);
+		aMapLocationManager.requestLocationUpdates(LocationProviderProxy.AMapNetwork, 5000, 10,
+				new AMapLocationListener() {
+
+					@Override
+					public void onLocationChanged(Location loc) {
+						// TODO Auto-generated method stub
+						try {
+							double lat, lnt;
+							if (null == loc) {
+								lat = 31.24;
+								lnt = 121.56;
+							} else {
+								lat = loc.getLatitude();
+								lnt = loc.getLongitude();
+							}
+							VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+							client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onProviderDisabled(String arg0) {
+						// TODO Auto-generated method stub
+					}
+
+					@Override
+					public void onProviderEnabled(String arg0) {
+						// TODO Auto-generated method stub
+					}
+
+					@Override
+					public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onLocationChanged(AMapLocation arg0) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+
+		/**
+		 * TimerTask task = new TimerTask() {
+		 * 
+		 * @Override public void run() { // TODO Auto-generated method stub try
+		 *           { VehicleClient client = new
+		 *           VehicleClient(SelfMgr.getInstance().getId()); Location loc
+		 *           = LocationUtil.getCurLocation(getApplicationContext());
+		 *           double lat, lnt; if (null == loc) { lat = 31.24; lnt =
+		 *           121.56; } else { lat = loc.getLatitude(); lnt =
+		 *           loc.getLongitude(); }
+		 *           client.UpdateLocation(SelfMgr.getInstance().getId(), lnt,
+		 *           lat); } catch (Exception e) { e.printStackTrace(); } } };
+		 * 
+		 *           Timer timer = new Timer(); timer.schedule(task, 500,
+		 *           10000);
+		 */
 	}
 
 	/**
@@ -282,8 +322,6 @@ public class LoginActivity extends Activity {
 		@Override
 		protected WebCallBaseResult doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
-
-			LocationUtil.getCurLocation(getApplicationContext());
 
 			WebCallBaseResult result = null;
 			try {
@@ -342,8 +380,6 @@ public class LoginActivity extends Activity {
 					offCourier.dispatch(null);
 
 					SelfMgr.getInstance().refreshFellows();
-					
-					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -366,8 +402,12 @@ public class LoginActivity extends Activity {
 
 			if (result.isSuccess()) {
 				// finish();
-				startUpdateLocation();
-
+				try {
+					startUpdateLocation();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 
 				finish();

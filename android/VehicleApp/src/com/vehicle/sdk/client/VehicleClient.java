@@ -50,7 +50,9 @@ public class VehicleClient {
 
 	// private static String URL_DEFAULTSERVERROOT =
 	// "http://103.21.140.232:81/VehicleIMServer/rest";
-	private static String URL_DEFAULTSERVERROOT = "http://192.168.16.104:8080/VehicleIMServer/rest";
+	// private static String URL_DEFAULTSERVERROOT =
+	// "http://192.168.16.104:8080/VehicleIMServer/rest";
+	private static String URL_DEFAULTSERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -62,10 +64,10 @@ public class VehicleClient {
 	private static final String URL_MESSAGE_OFFLINEACK = "offlineAck";
 
 	private static final String URL_FILETRANSMISSION_ROOT = "fileTransmission";
-	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s";
+	private static final String URL_FILETRANSMISSION_SEND = "send/source=%s&&target=%s&&fileName=%s&&fileType=%s";
 	private static final String URL_FILETRANSMISSION_COMMENTIMG = "commentfile/fileName=%s";
 	private static final String URL_FILETRANSMISSION_FETCH = "fetch/%s";
-	private static final String URL_FILEMULTITRANSMISSION_SEND = "sendtomulti/source=%s&&targets=%s&&fileName=%s";
+	private static final String URL_FILEMULTITRANSMISSION_SEND = "sendtomulti/source=%s&&targets=%s&&fileName=%s&&fileType=%s";
 
 	private static final String URL_FOLLOWSHIP_ROOT = "followship";
 	private static final String URL_FOLLOWSHIP_FOLLOW = "follow";
@@ -206,20 +208,20 @@ public class VehicleClient {
 		HttpUtil.PostJson(url, request, MessageOne2FolloweesResponse.class);
 	}
 
-	public FileTransmissionResponse SendFile(String target, String filePath) {
+	public FileTransmissionResponse SendFile(String target, String filePath, int type) {
 		File file = new File(filePath);
 
 		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
-				String.format(URL_FILETRANSMISSION_SEND, source, target, file.getName()));
+				String.format(URL_FILETRANSMISSION_SEND, source, target, file.getName(), type));
 
 		return HttpUtil.UploadFile(url, filePath, FileTransmissionResponse.class);
 	}
 
-	public FileMultiTransmissionResponse SendMultiFile(String targets, String filePath) {
+	public FileMultiTransmissionResponse SendMultiFile(String targets, String filePath, int type) {
 		File file = new File(filePath);
 
 		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
-				String.format(URL_FILEMULTITRANSMISSION_SEND, source, targets, file.getName()));
+				String.format(URL_FILEMULTITRANSMISSION_SEND, source, targets, file.getName(), type));
 
 		return HttpUtil.UploadFile(url, filePath, FileMultiTransmissionResponse.class);
 	}
@@ -236,6 +238,21 @@ public class VehicleClient {
 				System.out.println("save file to " + filePath);
 			}
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return input;
+	}
+
+	public InputStream FetchFile(String token) {
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT, URL_FILETRANSMISSION_FETCH);
+		url = String.format(url, token);
+
+		InputStream input = null;
+		try {
+			input = HttpUtil.DownloadFile(url);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

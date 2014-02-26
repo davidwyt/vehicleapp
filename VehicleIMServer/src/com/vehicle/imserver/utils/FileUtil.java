@@ -11,11 +11,12 @@ import org.apache.commons.io.IOUtils;
 public class FileUtil {
 
 	public static String GenPathForFileTransmission(String root,
-			String fileName, String token) {
+			String fileName, String token, int type) {
 		String[] temps = fileName.split("\\.");
 		String name = token + "." + temps[temps.length - 1];
 
-		return AppendPath(AppendPath(root, Contants.getFileRootPath()), name);
+		return AppendPath(AppendPath(root, Contants.getFileRootPath(type)),
+				name);
 	}
 
 	public static String GenPathForCommentFile(String root, String fileName,
@@ -37,9 +38,14 @@ public class FileUtil {
 
 		return path;
 	}
-	
+
 	public static void SaveFile(String path, InputStream input)
 			throws IOException {
+		File file = new File(path);
+		File parent = file.getParentFile();
+		if (!parent.exists()) {
+			parent.mkdirs();
+		}
 		OutputStream outStream = new FileOutputStream(path);
 		IOUtils.copy(input, outStream);
 	}

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
-import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.FileMessage;
 import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.sdk.client.VehicleClient;
@@ -39,16 +39,20 @@ public class OfflineMessageCourier extends MessageBaseCourier {
 			IMessageRecipient recipient = new TextMessageRecipient(context);
 			recipient.receive(textMsg);
 
-		} else if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
-			ImageMessage imgMsg = new ImageMessage();
+		} else if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE
+				|| msg.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
+			FileMessage imgMsg = new FileMessage();
 			imgMsg.setFlag(MessageFlag.UNREAD);
 			imgMsg.setToken(msg.getContent());
 			imgMsg.setSentTime(msg.getSentTime());
 			imgMsg.setSource(msg.getSource());
 			imgMsg.setTarget(msg.getTarget());
-			imgMsg.setName(UUID.randomUUID().toString() + ".png");
+			if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE)
+				imgMsg.setName(UUID.randomUUID().toString() + ".png");
+			else
+				imgMsg.setName(UUID.randomUUID().toString() + ".wav");
 
-			IMessageRecipient recipient = new ImageMessageRecipient(context);
+			IMessageRecipient recipient = new FileMessageRecipient(context);
 			recipient.receive(imgMsg);
 		}
 	}

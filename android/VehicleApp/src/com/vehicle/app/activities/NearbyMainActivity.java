@@ -194,7 +194,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), NearbyFellowListActivity.class);
 			startActivity(intent);
-
 		}
 
 		@Override

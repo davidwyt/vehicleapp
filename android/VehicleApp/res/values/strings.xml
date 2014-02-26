@@ -96,4 +96,5 @@
 	<string name="tip_advicesuccess">反馈意见发送成功</string>
 	<string name="tip_advicefailed">反馈意见发送失败，请检查网络连接</string>
 	<string name="tip_advicefailed2">反馈意见发送失败，错误信息为：%s</string>
+	<string name="tip_recentaudio">一段语音消息</string>
 </resources>

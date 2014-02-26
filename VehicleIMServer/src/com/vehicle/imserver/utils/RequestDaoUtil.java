@@ -20,7 +20,7 @@ public class RequestDaoUtil {
 		fileTran.setToken(token);
 		fileTran.setTransmissionTime(new Date().getTime());
 		fileTran.setPath(path);
-
+		fileTran.setMsgType(request.getMsgType());
 		return fileTran;
 	}
 

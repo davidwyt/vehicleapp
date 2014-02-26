@@ -6,6 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Index;
 
+import org.junit.Assert;
+
 @Entity
 @Table(name = "FILETRANSMISSION", indexes = { @Index(columnList = "SOURCE"),
 		@Index(columnList = "TARGET"), @Index(columnList = "STATUS") })
@@ -21,6 +23,19 @@ public class FileTransmission {
 	private String target;
 	private int status;
 	private long transmissionTime;
+	private int msgType;
+
+	@Column(name = "MSGTYPE")
+	public int getMsgType() {
+		return this.msgType;
+	}
+
+	public void setMsgType(int msgType) {
+		Assert.assertEquals(true,
+				(MessageType.AUDIO.ordinal() == msgType || MessageType.IMAGE
+						.ordinal() == msgType));
+		this.msgType = msgType;
+	}
 
 	@Id
 	@Column(name = "TOKEN")

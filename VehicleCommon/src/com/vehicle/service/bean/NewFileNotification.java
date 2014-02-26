@@ -1,5 +1,7 @@
 package com.vehicle.service.bean;
 
+import com.vehicle.imserver.dao.bean.MessageType;
+
 public class NewFileNotification implements INotification {
 
 	private String token;
@@ -8,13 +10,24 @@ public class NewFileNotification implements INotification {
 	private String fileName;
 	private long sentTime;
 
+	private int msgType = MessageType.IMAGE.ordinal();
+
 	public NewFileNotification(String source, String target, String token,
-			String fileName, long sentTime) {
+			String fileName, long sentTime, int msgType) {
 		this.source = source;
 		this.target = target;
 		this.token = token;
 		this.fileName = fileName;
 		this.sentTime = sentTime;
+		this.msgType = msgType;
+	}
+
+	public int getMsgType() {
+		return this.msgType;
+	}
+
+	public void setMsgType(int type) {
+		this.msgType = type;
 	}
 
 	public long getSentTime() {

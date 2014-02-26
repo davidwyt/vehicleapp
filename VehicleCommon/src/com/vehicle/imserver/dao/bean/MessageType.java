@@ -1,5 +1,5 @@
 package com.vehicle.imserver.dao.bean;
 
 public enum MessageType {
-	PLAIN,IMAGE,LOCATION
+	PLAIN,IMAGE,LOCATION, AUDIO
 }

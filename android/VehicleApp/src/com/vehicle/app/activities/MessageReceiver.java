@@ -2,12 +2,12 @@ package com.vehicle.app.activities;
 
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
-import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.FileMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.msg.worker.FollowshipInvMessageRecipient;
 import com.vehicle.app.msg.worker.IMessageRecipient;
 import com.vehicle.app.msg.worker.InvitationVerdictMessageRecipient;
-import com.vehicle.app.msg.worker.ImageMessageRecipient;
+import com.vehicle.app.msg.worker.FileMessageRecipient;
 import com.vehicle.app.msg.worker.TextMessageRecipient;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.service.bean.FollowshipInvitationAcceptNotification;
@@ -109,10 +109,10 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		System.out.println("receive new file: " + message);
 
-		ImageMessage msg = new ImageMessage();
+		FileMessage msg = new FileMessage();
 		msg.fromRawNotification(newFileNotification);
 
-		IMessageRecipient cpu = new ImageMessageRecipient(context);
+		IMessageRecipient cpu = new FileMessageRecipient(context);
 		cpu.receive(msg);
 	}
 

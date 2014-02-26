@@ -26,7 +26,7 @@ import com.vehicle.app.activities.ImgViewActivity;
 import com.vehicle.app.activities.MapCameraActivity;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
-import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.FileMessage;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.JsonUtil;
@@ -64,7 +64,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		IMessageItem entity = data.get(position);
-		if (entity instanceof TextMessage) {
+		if (entity.getMessageType() == IMessageItem.MESSAGE_TYPE_TEXT) {
 
 			final TextMessage msg = (TextMessage) entity;
 
@@ -107,8 +107,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				});
 			}
 
-		} else if (entity instanceof ImageMessage) {
-			ImageMessage pic = (ImageMessage) entity;
+		} else if (entity.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
+			FileMessage pic = (FileMessage) entity;
 
 			if (SelfMgr.getInstance().IsSelf(pic.getSource())) {
 				convertView = mInflater.inflate(R.layout.chatting_item_pic_left, null);
@@ -153,6 +153,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 					context.startActivity(intent);
 				}
 			});
+		} else if (entity.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
+
 		}
 
 		return convertView;

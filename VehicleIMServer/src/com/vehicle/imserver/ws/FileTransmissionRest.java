@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.vehicle.imserver.dao.bean.FileTransmission;
+import com.vehicle.imserver.dao.bean.MessageType;
 import com.vehicle.imserver.service.exception.FileTransmissionNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
@@ -47,13 +48,15 @@ public class FileTransmissionRest {
 	}
 
 	@POST
-	@Path("send/source={source}&&target={target}&&fileName={fileName}")
+	@Path("send/source={source}&&target={target}&&fileName={fileName}&&fileType={fileType}")
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response TransmitFile(@Context HttpServletRequest request,
 			InputStream input, @PathParam("source") String source,
 			@PathParam("target") String target,
-			@PathParam("fileName") String fileName) {
+			@PathParam("fileName") String fileName,
+			@PathParam("fileType") int fileType) {
+		
 		FileTransmissionResponse resp = new FileTransmissionResponse();
 
 		if (StringUtil.isEmptyOrNull(source)
@@ -65,10 +68,20 @@ public class FileTransmissionRest {
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
 
+		if (fileType != MessageType.AUDIO.ordinal()
+				&& fileType != MessageType.IMAGE.ordinal()) {
+			resp.setErrorCode(ErrorCodes.FILETRAN_INVALIDTYPE_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.FILETRAN_INVALIDFILETYPE_ERRMSG, fileType));
+
+			return Response.status(Status.BAD_REQUEST).entity(resp).build();
+		}
+
 		FileTransmissionRequest fileRequest = new FileTransmissionRequest();
 		fileRequest.setSource(source);
 		fileRequest.setTarget(target);
 		fileRequest.setFileName(fileName);
+		fileRequest.setMsgType(fileType);
 
 		try {
 			FileTransmission fileTran = fileTransmissionService.SendFile(
@@ -120,13 +133,14 @@ public class FileTransmissionRest {
 	}
 
 	@POST
-	@Path("sendtomulti/source={source}&&targets={targets}&&fileName={fileName}")
+	@Path("sendtomulti/source={source}&&targets={targets}&&fileName={fileName}&&fileType={fileType}")
 	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response TransmitFileToMulti(@Context HttpServletRequest request,
 			InputStream input, @PathParam("source") String source,
 			@PathParam("targets") String targets,
-			@PathParam("fileName") String fileName) {
+			@PathParam("fileName") String fileName,
+			@PathParam("fileType") int fileType) {
 		FileMultiTransmissionResponse resp = new FileMultiTransmissionResponse();
 
 		if (StringUtil.isEmptyOrNull(source)
@@ -137,12 +151,22 @@ public class FileTransmissionRest {
 
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
+		
+		if (fileType != MessageType.AUDIO.ordinal()
+				&& fileType != MessageType.IMAGE.ordinal()) {
+			resp.setErrorCode(ErrorCodes.FILETRAN_INVALIDTYPE_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.FILETRAN_INVALIDFILETYPE_ERRMSG, fileType));
+
+			return Response.status(Status.BAD_REQUEST).entity(resp).build();
+		}
 
 		FileMultiTransmissionRequest fileRequest = new FileMultiTransmissionRequest();
 		fileRequest.setSource(source);
 		fileRequest.setTargets(targets);
 		fileRequest.setFileName(fileName);
-
+		fileRequest.setMsgType(fileType);
+		
 		try {
 			FileTransmission fileTran = fileTransmissionService.SendFile2Multi(
 					fileRequest, input);

@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import junit.framework.Assert;
+
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.adapter.ChatMsgViewAdapter;
@@ -21,11 +23,11 @@ import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.MessageFlag;
-import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.FileMessage;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.msg.worker.IMessageCourier;
-import com.vehicle.app.msg.worker.ImageMessageCourier;
+import com.vehicle.app.msg.worker.FileMessageCourier;
 import com.vehicle.app.msg.worker.TextMessageCourier;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
@@ -111,7 +113,6 @@ public class ChatActivity extends Activity implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_chat);
 
@@ -327,7 +328,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 				DBManager dbMgr = new DBManager(this.getApplicationContext());
 
 				List<TextMessage> textMsgs = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
-				List<ImageMessage> fileList = dbMgr.queryAllFileMessage(SelfMgr.getInstance().getId(), mFellowId);
+				List<FileMessage> fileList = dbMgr.queryAllFileMessage(SelfMgr.getInstance().getId(), mFellowId);
 
 				List<IMessageItem> msgs = new ArrayList<IMessageItem>();
 				msgs.addAll(fileList);
@@ -447,7 +448,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		sendFile(filePath);
+		sendFile(filePath, IMessageItem.MESSAGE_TYPE_IMAGE);
 	}
 
 	private void onBrowseAlbum(int resultCode, Intent data) {
@@ -464,7 +465,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 			File file = new File(path);
 			if (file.isFile() && file.exists()) {
-				sendFile(path);
+				sendFile(path, IMessageItem.MESSAGE_TYPE_IMAGE);
 				System.out.println("selected file:" + path);
 			} else {
 				System.out.println("file not exist:" + path);
@@ -502,23 +503,24 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private void sendFile(String filePath) {
+	private void sendFile(String filePath, int type) {
 
+		Assert.assertEquals(true, type == IMessageItem.MESSAGE_TYPE_AUDIO || type == IMessageItem.MESSAGE_TYPE_IMAGE);
 		File file = new File(filePath);
 
 		if (file.isFile() && file.exists()) {
 
-			ImageMessage picItem = new ImageMessage();
+			FileMessage picItem = new FileMessage();
 			picItem.setSource(SelfMgr.getInstance().getId());
 			picItem.setTarget(mFellowId);
 			picItem.setName(file.getName());
 			picItem.setContent(BitmapFactory.decodeFile(filePath));
 			picItem.setFlag(MessageFlag.SELF);
 			picItem.setPath(filePath);
-
+			picItem.setMsgType(type);
 			System.out.println("send file " + filePath + " null:" + (null == picItem.getContent()));
 
-			IMessageCourier msgCourier = new ImageMessageCourier(this.getApplicationContext(),
+			IMessageCourier msgCourier = new FileMessageCourier(this.getApplicationContext(),
 					CHAT_STYLE_2ONE != this.mChatStyle);
 
 			msgCourier.dispatch(picItem);
@@ -551,7 +553,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private void addToMsgList(IMessageItem msg) {
 		try {
-			//mAdapter.addChatItem(msg);
+			// mAdapter.addChatItem(msg);
 			this.mDataArrays.add(msg);
 			mAdapter.notifyDataSetChanged();
 			mMsgList.setSelection(mMsgList.getCount() - 1);
@@ -559,7 +561,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	class ChatMessageReceiver extends BroadcastReceiver {
 
 		@Override
@@ -609,7 +611,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 		}
 
 		private void onNewFileSent(Intent intent) {
-			ImageMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
+			FileMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
 
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
@@ -619,7 +621,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		private void onNewFileReceived(Intent intent) {
 
-			ImageMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
+			FileMessage msg = intent.getParcelableExtra(KEY_MESSAGE);
 
 			System.out.println("file msg:" + JsonUtil.toJsonString(msg));
 

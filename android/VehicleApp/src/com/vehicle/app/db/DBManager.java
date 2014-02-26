@@ -8,7 +8,7 @@ import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
 import com.vehicle.app.msg.bean.MessageFlag;
-import com.vehicle.app.msg.bean.ImageMessage;
+import com.vehicle.app.msg.bean.FileMessage;
 import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 
@@ -29,9 +29,9 @@ public class DBManager {
 	private final static String SQL_TEXTMESSAGE_FLAGUPDATE = "UPDATE `TEXTMESSAGE` SET `FLAG`= ? WHERE `SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?;";
 	private final static String SQL_TEXTMESSAGE_DELETEALL = "DELETE FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?));";
 
-	private final static String SQL_FILEMESSAGE_INSERT = "INSERT INTO `FILEMESSAGE` (`TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`) VALUES(?, ?, ?, ?, ?, ?);";
-	private final static String SQL_FILEMESSAGE_ALLSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?)) ORDER BY `SENTTIME` ASC;";
-	private final static String SQL_FILEMESSAGE_FLAGSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG` FROM `FILEMESSAGE` WHERE `FLAG` = ? AND `SOURCE` = ? AND `TARGET` = ? ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_FILEMESSAGE_INSERT = "INSERT INTO `FILEMESSAGE` (`TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE`) VALUES(?, ?, ?, ?, ?, ?, ?);";
+	private final static String SQL_FILEMESSAGE_ALLSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?)) ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_FILEMESSAGE_FLAGSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `FILEMESSAGE` WHERE `FLAG` = ? AND `SOURCE` = ? AND `TARGET` = ? ORDER BY `SENTTIME` ASC;";
 	private final static String SQL_FILEMESSAGE_FLAGUPDATE = "UPDATE `FILEMESSAGE` SET `FLAG`= ? WHERE `SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?;";
 	private final static String SQL_FILEMESSAGE_DELETEALL = "DELETE FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?));";
 
@@ -227,7 +227,7 @@ public class DBManager {
 	}
 
 	public long insertFileMessage(String id, String source, String target, byte[] content, long sentTime,
-			MessageFlag flag) {
+			MessageFlag flag, int type) {
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
@@ -241,6 +241,7 @@ public class DBManager {
 			insertStmt.bindBlob(4, content);
 			insertStmt.bindLong(5, sentTime);
 			insertStmt.bindString(6, flag.toString());
+			insertStmt.bindLong(7, type);
 			return insertStmt.executeInsert();
 
 		} finally {
@@ -249,11 +250,11 @@ public class DBManager {
 		}
 	}
 
-	public void insertFileMessage(ImageMessage msg) {
+	public void insertFileMessage(FileMessage msg) {
 		ByteArrayOutputStream boas = new ByteArrayOutputStream();
 		msg.getContent().compress(Bitmap.CompressFormat.PNG, 100, boas);
 		insertFileMessage(msg.getToken(), msg.getSource(), msg.getTarget(), boas.toByteArray(), msg.getSentTime(),
-				msg.getFlag());
+				msg.getFlag(), msg.getMessageType());
 	}
 
 	public void updateUnreadFileMessageFlag(String selfId, String fellowId) {
@@ -272,9 +273,9 @@ public class DBManager {
 		}
 	}
 
-	public List<ImageMessage> queryAllFileMessage(String selfId, String fellowId) {
+	public List<FileMessage> queryAllFileMessage(String selfId, String fellowId) {
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
-		List<ImageMessage> messages = new ArrayList<ImageMessage>();
+		List<FileMessage> messages = new ArrayList<FileMessage>();
 
 		try {
 			Cursor cursor = db.rawQuery(
@@ -284,7 +285,7 @@ public class DBManager {
 
 			while (cursor.moveToNext()) {
 
-				ImageMessage msg = new ImageMessage();
+				FileMessage msg = new FileMessage();
 
 				msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
 
@@ -302,6 +303,7 @@ public class DBManager {
 
 				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
+				msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
 				messages.add(msg);
 			}
 		} finally {
@@ -311,10 +313,10 @@ public class DBManager {
 		return messages;
 	}
 
-	public List<ImageMessage> queryUnreadFileMessage(String selfId, String fellowId) {
+	public List<FileMessage> queryUnreadFileMessage(String selfId, String fellowId) {
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
-		List<ImageMessage> messages = new ArrayList<ImageMessage>();
+		List<FileMessage> messages = new ArrayList<FileMessage>();
 
 		try {
 			Cursor cursor = db.rawQuery(SQL_FILEMESSAGE_FLAGSELECT, new String[] { MessageFlag.UNREAD.toString(),
@@ -322,7 +324,7 @@ public class DBManager {
 
 			while (cursor.moveToNext()) {
 
-				ImageMessage msg = new ImageMessage();
+				FileMessage msg = new FileMessage();
 
 				msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
 
@@ -339,7 +341,7 @@ public class DBManager {
 				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
 				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
-
+				msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
 				messages.add(msg);
 			}
 		} finally {
