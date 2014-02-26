@@ -53,8 +53,70 @@ public class DBManager {
 	private final static String SQL_RECENTMSG_ALLSELECT = "SELECT `SELFID`, `FELLOWID`, `MESSAGEID`, `MESSAGETYPE`, `CONTENT`, `SENTTIME` FROM `RECENTMESSAGE` WHERE `SELFID` = ? ORDER BY `SENTTIME` DESC;";
 	private final static String SQL_RECENTMSG_DELETEALL = "DELETE FROM `RECENTMESSAGE` WHERE `SELFID` = ? AND `FELLOWID` = ?;";
 
+	private final static String SQL_TOPMSG_INSERT = "INSERT INTO `TOPMESSAGE`(`HOST`, `TOPMSG`) VALUES(?, ?);";
+	private final static String SQL_TOPMSG_UPDATE = "UPDATE `TOPMESSAGE` SET `TOPMSG` = ? WHERE `HOST` = ?;";
+	private final static String SQL_TOPMSG_SELECT = "SELECT `TOPMSG` FROM `TOPMESSAGE` WHERE `HOST` = ?;";
+
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);
+	}
+
+	public void insertOrUpdateTopMsg(String host, String tops) {
+		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		try {
+			db.beginTransaction();
+
+			Cursor cursor = db.rawQuery(SQL_TOPMSG_SELECT, new String[] { host });
+
+			if (0 >= cursor.getCount()) {
+				SQLiteStatement insertStmt = db.compileStatement(SQL_TOPMSG_INSERT);
+				insertStmt.clearBindings();
+				insertStmt.bindString(1, host);
+				insertStmt.bindString(2, tops);
+				insertStmt.executeInsert();
+			} else {
+				SQLiteStatement updateStmt = db.compileStatement(SQL_TOPMSG_UPDATE);
+				updateStmt.clearBindings();
+				updateStmt.bindString(1, tops);
+				updateStmt.bindString(2, host);
+				updateStmt.executeUpdateDelete();
+			}
+			db.setTransactionSuccessful();
+			db.endTransaction();
+		} finally {
+			try {
+				if (null != db) {
+					db.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public String selectMsgTops(String host) {
+		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		try {
+			db.beginTransaction();
+			
+			Cursor cursor = db.rawQuery(SQL_TOPMSG_SELECT, new String[] { host });
+			
+			if(null == cursor || 0 >= cursor.getCount())
+			{
+				return "";
+			}
+			
+			cursor.moveToFirst();
+			return cursor.getString(cursor.getColumnIndex("TOPMSG"));
+		}finally{
+			try {
+				if (null != db) {
+					db.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void deleteAllMessages(String selfId, String fellowId) {

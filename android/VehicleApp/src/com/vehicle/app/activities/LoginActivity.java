@@ -13,9 +13,11 @@ import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.OfflineMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
+import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.VendorImgViewResult;
@@ -26,16 +28,12 @@ import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import cn.jpush.android.api.JPushInterface;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -206,7 +204,8 @@ public class LoginActivity extends Activity {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
-			showProgress(true);
+			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, true);
+			// showProgress(true);
 			mAuthTask = new UserLoginTask();
 			mAuthTask.execute((Void) null);
 		}
@@ -215,103 +214,95 @@ public class LoginActivity extends Activity {
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-			mLoginStatusView.setVisibility(View.VISIBLE);
-			mLoginStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
+	LocationManagerProxy mAMapLocationManager = null;
+	AMapLocationListener myListener = new MyLocationListener();
 
 	private void startUpdateLocation() {
 
-		LocationManagerProxy aMapLocationManager = LocationManagerProxy.getInstance(this);
-		aMapLocationManager.requestLocationUpdates(LocationProviderProxy.AMapNetwork, 5000, 10,
-				new AMapLocationListener() {
+		if (null != this.mAMapLocationManager) {
+			try {
+				mAMapLocationManager.removeUpdates(myListener);
+				mAMapLocationManager.destory();
+				mAMapLocationManager = null;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
-					@Override
-					public void onLocationChanged(Location loc) {
-						// TODO Auto-generated method stub
-						try {
-							double lat, lnt;
-							if (null == loc) {
-								lat = 31.24;
-								lnt = 121.56;
-							} else {
-								lat = loc.getLatitude();
-								lnt = loc.getLongitude();
-							}
-							VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
-							client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
+		try {
+			mAMapLocationManager = LocationManagerProxy.getInstance(this);
+			this.mAMapLocationManager.setGpsEnable(true);
+			mAMapLocationManager.requestLocationUpdates(LocationProviderProxy.AMapNetwork, 5000, 10, myListener);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-					@Override
-					public void onProviderDisabled(String arg0) {
-						// TODO Auto-generated method stub
-					}
+	private class MyLocationListener implements AMapLocationListener {
 
-					@Override
-					public void onProviderEnabled(String arg0) {
-						// TODO Auto-generated method stub
-					}
+		double lastLat = -1.0d;
+		double lastLnt = -1.0d;
+		long lastUpdateTime = 0;
 
-					@Override
-					public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-						// TODO Auto-generated method stub
+		private void updateLocation(Location loc) {
+			try {
+				// Location loc =
+				// LocationUtil.getCurLocation(getApplicationContext());
+				double lat, lnt;
+				if (null == loc) {
+					lat = 31.24;
+					lnt = 121.56;
+				} else {
+					lat = loc.getLatitude();
+					lnt = loc.getLongitude();
+				}
 
-					}
+				VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+				client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
+				/**
+				 * long cur = new Date().getTime(); if (0 !=
+				 * Double.compare(lastLat, lat) && 0 != Double.compare(lastLnt,
+				 * lnt) || (cur - lastUpdateTime) >= 5 * 60 * 1000) {
+				 * VehicleClient client = new
+				 * VehicleClient(SelfMgr.getInstance().getId());
+				 * client.UpdateLocation(SelfMgr.getInstance().getId(), lnt,
+				 * lat); lastLnt = lnt; lastLat = lat; lastUpdateTime = cur; }
+				 */
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
-					@Override
-					public void onLocationChanged(AMapLocation arg0) {
-						// TODO Auto-generated method stub
+		@Override
+		public void onLocationChanged(Location loc) {
+			// TODO Auto-generated method stub
+			updateLocation(loc);
+		}
 
-					}
-				});
+		@Override
+		public void onProviderDisabled(String arg0) {
+			// TODO Auto-generated method stub
 
-		/**
-		 * TimerTask task = new TimerTask() {
-		 * 
-		 * @Override public void run() { // TODO Auto-generated method stub try
-		 *           { VehicleClient client = new
-		 *           VehicleClient(SelfMgr.getInstance().getId()); Location loc
-		 *           = LocationUtil.getCurLocation(getApplicationContext());
-		 *           double lat, lnt; if (null == loc) { lat = 31.24; lnt =
-		 *           121.56; } else { lat = loc.getLatitude(); lnt =
-		 *           loc.getLongitude(); }
-		 *           client.UpdateLocation(SelfMgr.getInstance().getId(), lnt,
-		 *           lat); } catch (Exception e) { e.printStackTrace(); } } };
-		 * 
-		 *           Timer timer = new Timer(); timer.schedule(task, 500,
-		 *           10000);
-		 */
+		}
+
+		@Override
+		public void onProviderEnabled(String arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onLocationChanged(AMapLocation loc) {
+			// TODO Auto-generated method stub
+			updateLocation(loc);
+		}
 	}
 
 	/**
@@ -392,7 +383,7 @@ public class LoginActivity extends Activity {
 		@Override
 		protected void onPostExecute(final WebCallBaseResult result) {
 			mAuthTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 
 			if (null == result) {
 				mPasswordView.setError(getString(R.string.error_network));
@@ -407,13 +398,16 @@ public class LoginActivity extends Activity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 
-				finish();
+				TopMsgerMgr.getInstance().init(getApplicationContext(), SelfMgr.getInstance().getId());
+
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				LoginActivity.this.startActivity(intent);
+
+				finish();
 
 			} else {
 				mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -424,7 +418,7 @@ public class LoginActivity extends Activity {
 		@Override
 		protected void onCancelled() {
 			mAuthTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 		}
 	}
 }

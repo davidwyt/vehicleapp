@@ -89,6 +89,7 @@ public class FollowshipInvitationActivity extends Activity implements OnClickLis
 			sendInvitationVerdict(false);
 		} else if (R.id.invitation_goback == view.getId()) {
 			this.onBackPressed();
+			this.finish();
 		} else {
 			System.err.println("invalid id of clicked button in followshipinvitation form");
 		}

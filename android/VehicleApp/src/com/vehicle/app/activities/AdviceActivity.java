@@ -38,6 +38,7 @@ public class AdviceActivity extends Activity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				AdviceActivity.this.onBackPressed();
+				finish();
 			}
 		});
 
@@ -62,7 +63,7 @@ public class AdviceActivity extends Activity {
 		final String email = this.mETEmail.getText().toString();
 		final String phone = this.mETPhone.getText().toString();
 
-		if (null == content || content.length() < 10) {
+		if (null == content) {
 			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_contentnull),
 					Toast.LENGTH_LONG).show();
 			return;
@@ -109,6 +110,11 @@ public class AdviceActivity extends Activity {
 				if (null != result && result.isSuccess()) {
 					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_advicesuccess),
 							Toast.LENGTH_LONG).show();
+					
+					mETAdvice.setText("");
+					mETEmail.setText("");
+					mETPhone.setText("");
+					
 				} else {
 					if (null != result) {
 						Toast.makeText(getApplicationContext(),

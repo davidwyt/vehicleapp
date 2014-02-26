@@ -53,5 +53,4 @@ public class LocateRest {
 		LocateUtil.getInstance().add(info);
 		return Response.status(Status.OK).entity(resp).build();
 	}
-
 }

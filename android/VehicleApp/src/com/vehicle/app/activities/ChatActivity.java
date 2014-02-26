@@ -548,6 +548,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	}
 
 	private void back() {
+		this.onBackPressed();
 		finish();
 	}
 

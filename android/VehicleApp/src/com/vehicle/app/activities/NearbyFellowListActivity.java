@@ -18,6 +18,7 @@ import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.NearbyDriverListViewResult;
@@ -27,16 +28,12 @@ import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -219,40 +216,7 @@ public class NearbyFellowListActivity extends Activity {
 	protected void onStop() {
 		super.onStop();
 	}
-
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-			mNearbyStatusView.setVisibility(View.VISIBLE);
-			mNearbyStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mNearbyStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			mNearbyFormView.setVisibility(View.VISIBLE);
-			mNearbyFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mNearbyFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mNearbyStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mNearbyStatusView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	private void startVendorHome(String id) {
 		Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
@@ -287,7 +251,7 @@ public class NearbyFellowListActivity extends Activity {
 		} else {
 		}
 
-		showProgress(true);
+		ActivityUtil.showProgress(getApplicationContext(), mNearbyStatusView, mNearbyFormView, true);
 		mViewFellowTask = new ViewFellowTask();
 		mViewFellowTask.execute(id);
 	}
@@ -440,7 +404,7 @@ public class NearbyFellowListActivity extends Activity {
 		@Override
 		protected void onPostExecute(final WebCallBaseResult result) {
 			mViewFellowTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mNearbyStatusView, mNearbyFormView, false);
 
 			if (null != result && result.isSuccess()) {
 				startVendorHome(fellowId);
@@ -453,7 +417,7 @@ public class NearbyFellowListActivity extends Activity {
 		@Override
 		protected void onCancelled() {
 			mViewFellowTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mNearbyStatusView, mNearbyFormView, false);
 		}
 	}
 }

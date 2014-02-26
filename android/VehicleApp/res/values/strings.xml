@@ -97,4 +97,20 @@
 	<string name="tip_advicefailed">反馈意见发送失败，请检查网络连接</string>
 	<string name="tip_advicefailed2">反馈意见发送失败，错误信息为：%s</string>
 	<string name="tip_recentaudio">一段语音消息</string>
+	<string name="tip_addtotop">置顶站内信</string>
+	<string name="tip_canceltop">取消站内信置顶</string>
+	<string name="tip_myvendors">我关注的商家</string>
+	<string name="tip_mydrivers">关注我的车主</string>
+	<string name="zh_clearmsg">清空站内信</string>
+	<string name="zh_my">我的</string>
+	<string name="zh_myinfo">我的信息</string>
+	<string name="zh_mycomments">我的点评</string>
+	<string name="zh_logout">登录/注销</string>
+	<string name="zh_more">更多</string>
+	<string name="zh_turnback">返回首页</string>
+	<string name="zh_aboutus">关于我们</string>
+	<string name="zh_moreapp">相关应用</string>
+	<string name="zh_advice">意见反馈</string>
+	<string name="tip_commentfailedformat">评论商家失败，错误信息：%s</string>
+	<string name="tip_selectproject">请选择所做的汽车服务</string>
 </resources>

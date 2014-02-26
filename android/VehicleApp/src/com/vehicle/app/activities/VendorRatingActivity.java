@@ -17,7 +17,6 @@ import com.vehicle.app.msg.bean.CommentMessage;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.VendorCommentMessageCourier;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.StringUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
@@ -94,6 +93,7 @@ public class VendorRatingActivity extends Activity implements OnClickListener {
 	private boolean isUploadBtnHidden = false;
 
 	private static final String KEY_UPLOADBTN_HIDDEN = "com.vehicle.app.vendorrating.uploadhidden";
+	public static final String KEY_COMMENT_ERRMSG = "com.vehicle.app.vendorrating.errormsg";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -371,14 +371,21 @@ public class VendorRatingActivity extends Activity implements OnClickListener {
 
 		String comment = this.mComment.getText().toString();
 		comment = comment.trim();
-		if ((!StringUtil.isChinese(comment) && comment.length() < 10)
-				|| (StringUtil.isChinese(comment) && StringUtil.getWordCount(comment) < 10)) {
-			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_vendorcommenttooshort),
+		/**
+		 * if ((!StringUtil.isChinese(comment) && comment.length() < 10) ||
+		 * (StringUtil.isChinese(comment) && StringUtil.getWordCount(comment) <
+		 * 10)) { Toast.makeText(getApplicationContext(),
+		 * getResources().getString(R.string.tip_vendorcommenttooshort),
+		 * Toast.LENGTH_LONG).show(); return; }
+		 */
+
+		int checkId = mRadioGroupProject.getCheckedRadioButtonId();
+		if (-1 == checkId) {
+			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_selectproject),
 					Toast.LENGTH_LONG).show();
 			return;
 		}
 
-		int checkId = mRadioGroupProject.getCheckedRadioButtonId();
 		int mainProjectId = 0;
 		switch (checkId) {
 		case R.id.rd_vehiclerepair:
@@ -469,6 +476,7 @@ public class VendorRatingActivity extends Activity implements OnClickListener {
 
 	private void back() {
 		this.finish();
+		finish();
 	}
 
 	class CommentResultReceiver extends BroadcastReceiver {
@@ -481,8 +489,8 @@ public class VendorRatingActivity extends Activity implements OnClickListener {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_commentsuccess),
 						Toast.LENGTH_LONG).show();
 			} else if (Constants.ACTION_VENDORCOMMENT_FAILED.equals(action)) {
-				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_commentfailed),
-						Toast.LENGTH_LONG).show();
+				String msg = intent.getStringExtra(KEY_COMMENT_ERRMSG);
+				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 			}
 		}
 	}

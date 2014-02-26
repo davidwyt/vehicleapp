@@ -41,6 +41,7 @@ public class EccActivity extends Activity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				EccActivity.this.onBackPressed();
+				finish();
 			}
 		});
 
@@ -72,7 +73,7 @@ public class EccActivity extends Activity {
 		final String content = this.mETAdvice.getText().toString();
 		final String email = this.mETEmail.getText().toString();
 
-		if (null == content || content.length() < 10) {
+		if (null == content) {
 			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_contentnull),
 					Toast.LENGTH_LONG).show();
 			return;
@@ -113,6 +114,10 @@ public class EccActivity extends Activity {
 				if (null != result && result.isSuccess()) {
 					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_advicesuccess),
 							Toast.LENGTH_LONG).show();
+					
+					mETEmail.setText("");
+					mETAdvice.setText("");
+					
 				} else {
 					if (null != result) {
 						Toast.makeText(getApplicationContext(),

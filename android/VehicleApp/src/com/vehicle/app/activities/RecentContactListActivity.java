@@ -1,11 +1,13 @@
 package com.vehicle.app.activities;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.vehicle.app.adapter.RecentContactListViewAdapter;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.Constants;
 
@@ -95,7 +97,22 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		try {
 			DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-			mRecentMsgVector.addAll(dbMgr.queryRecentMessage(SelfMgr.getInstance().getId()));
+			List<RecentMessage> recentMsgs = dbMgr.queryRecentMessage(SelfMgr.getInstance().getId());
+
+			List<String> topMsgs = TopMsgerMgr.getInstance().getTops();
+			for (int i = topMsgs.size() - 1; i >= 0; i--) {
+				String top = topMsgs.get(i);
+				for (int j = 0; j < recentMsgs.size(); j++) {
+					RecentMessage recent = recentMsgs.get(j);
+					if (recent.getFellowId().equals(top)) {
+						recentMsgs.remove(j);
+						recentMsgs.add(0, recent);
+						break;
+					}
+				}
+			}
+
+			mRecentMsgVector.addAll(recentMsgs);
 
 			this.mAdapter.notifyDataSetChanged();
 		} catch (Exception e) {
@@ -152,15 +169,25 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 	private void updateRecentMsg(RecentMessage newMsg) {
 		synchronized (this.mRecentMsgVector) {
+
+			int index = -1;
 			for (RecentMessage message : this.mRecentMsgVector) {
+				index++;
 				if (message.getFellowId().equals(newMsg.getFellowId())
 						&& message.getSelfId().equals(newMsg.getSelfId())) {
-					this.mRecentMsgVector.remove(message);
+					if (TopMsgerMgr.getInstance().isTop(newMsg.getFellowId())) {
+						this.mRecentMsgVector.set(index, newMsg);
+					} else {
+						this.mRecentMsgVector.remove(message);
+					}
+
 					break;
 				}
 			}
 
-			this.mRecentMsgVector.add(0, newMsg);
+			if (!TopMsgerMgr.getInstance().isTop(newMsg.getFellowId())) {
+				this.mRecentMsgVector.add(TopMsgerMgr.getInstance().getTops().size(), newMsg);
+			}
 		}
 
 		this.mAdapter.notifyDataSetChanged();

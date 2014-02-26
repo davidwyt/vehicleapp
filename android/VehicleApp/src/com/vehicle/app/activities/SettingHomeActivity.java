@@ -1,15 +1,13 @@
 package com.vehicle.app.activities;
 
+
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.ActivityUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -114,45 +112,21 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		this.mIVApps = (ImageView) this.findViewById(R.id.settings_moreapp);
 		this.mIVApps.setOnClickListener(this);
 
+		this.findViewById(R.id.settinghome_aboutusrow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_advicerow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_logoutrow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_moreapprow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_mycommrow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_myfellowrow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_myrow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_turnbackrow).setOnClickListener(this);
+
 		this.mTVFellowTip = (TextView) this.findViewById(R.id.settings_fellowtip);
 
 		if (SelfMgr.getInstance().isDriver()) {
-			this.mTVFellowTip.setText("我关注的商家");
+			this.mTVFellowTip.setText(this.getResources().getString(R.string.tip_myvendors));
 		} else {
-			this.mTVFellowTip.setText("关注我的车主");
-		}
-	}
-
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-			this.mViewSettingStatus.setVisibility(View.VISIBLE);
-			mViewSettingStatus.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mViewSettingStatus.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			this.mSettingMainForm.setVisibility(View.VISIBLE);
-			mSettingMainForm.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mSettingMainForm.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mViewSettingStatus.setVisibility(show ? View.VISIBLE : View.GONE);
-			mSettingMainForm.setVisibility(show ? View.GONE : View.VISIBLE);
+			this.mTVFellowTip.setText(this.getResources().getString(R.string.tip_mydrivers));
 		}
 	}
 
@@ -174,8 +148,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		@Override
 		protected void onPostExecute(Void result) {
 			mFellowViewTask = null;
-			showProgress(false);
-
+			ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, false);
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), MyFellowListActivity.class);
 			startActivity(intent);
@@ -184,7 +157,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		@Override
 		protected void onCancelled() {
 			mFellowViewTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, false);
 		}
 	}
 
@@ -206,7 +179,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		@Override
 		protected void onPostExecute(Void result) {
 			mCommentsViewTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, false);
 
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), MyCommentsActivity.class);
@@ -216,7 +189,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		@Override
 		protected void onCancelled() {
 			mCommentsViewTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, false);
 		}
 	}
 
@@ -243,7 +216,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 			this.mTextViewSettingStatus.setText(R.string.status_getvendorfellowlist);
 		}
 
-		showProgress(true);
+		ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, true);
 		this.mFellowViewTask = new FellowViewTask();
 		this.mFellowViewTask.execute((Void) null);
 	}
@@ -255,7 +228,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 
 		this.mTextViewSettingStatus.setText(R.string.tip_retrievecomments);
 
-		showProgress(true);
+		ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, true);
 		this.mCommentsViewTask = new CommentsViewTask();
 		this.mCommentsViewTask.execute((Void) null);
 	}
@@ -264,6 +237,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		this.finish();
 		Intent intent = new Intent(this, BeginActivity.class);
 		this.startActivity(intent);
+		this.finish();
 	}
 
 	private void about() {
@@ -285,6 +259,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		this.finish();
 		Intent intent = new Intent(this, BeginActivity.class);
 		this.startActivity(intent);
+		this.finish();
 	}
 
 	@Override
@@ -292,27 +267,35 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		// TODO Auto-generated method stub
 		switch (view.getId()) {
 		case R.id.settings_myinfo:
+		case R.id.settinghome_myrow:
 			openMyInfo();
 			break;
 		case R.id.settings_myfellows:
+		case R.id.settinghome_myfellowrow:
 			openMyFellows();
 			break;
 		case R.id.settings_mycomments:
+		case R.id.settinghome_mycommrow:
 			openMyComments();
 			break;
 		case R.id.settings_logout:
+		case R.id.settinghome_logoutrow:
 			logout();
 			break;
 		case R.id.settings_about:
+		case R.id.settinghome_aboutusrow:
 			about();
 			break;
 		case R.id.settings_advice:
+		case R.id.settinghome_advicerow:
 			advice();
 			break;
 		case R.id.settings_moreapp:
+		case R.id.settinghome_moreapprow:
 			moreApp();
 			break;
 		case R.id.settings_returnfirst:
+		case R.id.settinghome_turnbackrow:
 			returnFirst();
 			break;
 		}

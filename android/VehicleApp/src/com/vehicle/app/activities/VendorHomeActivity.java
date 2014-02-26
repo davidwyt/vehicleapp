@@ -21,6 +21,7 @@ import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.msg.worker.FollowshipMessageCourier;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.TextMessageCourier;
+import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.web.bean.VendorImgViewResult;
@@ -33,9 +34,6 @@ import com.viewpagerindicator.TitlePageIndicator.IndicatorStyle;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -43,7 +41,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -356,7 +353,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 		mVendorStatusMessageView.setText(R.string.nearbyvendorstatustext);
 
-		showProgress(true);
+		ActivityUtil.showProgress(getApplicationContext(), mVendorStatusView, mVendorFormView, true);
 		mViewFellowTask = new ViewFellowTask();
 		mViewFellowTask.execute(nextId);
 	}
@@ -398,39 +395,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 	private void gobak() {
 		this.onBackPressed();
-	}
-
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-			mVendorStatusView.setVisibility(View.VISIBLE);
-			mVendorStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mVendorStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			mVendorFormView.setVisibility(View.VISIBLE);
-			mVendorFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mVendorFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mVendorStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mVendorStatusView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
+		finish();
 	}
 
 	public class ViewFellowTask extends AsyncTask<String, Void, WebCallBaseResult> {
@@ -493,7 +458,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 		@Override
 		protected void onPostExecute(final WebCallBaseResult result) {
 			mViewFellowTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mVendorStatusView, mVendorFormView, false);
 
 			if (null != result && result.isSuccess()) {
 				setVendorDetail(SelfMgr.getInstance().getNearbyVendorDetail(fellowId));
@@ -506,7 +471,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 		@Override
 		protected void onCancelled() {
 			mViewFellowTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mVendorStatusView, mVendorFormView, false);
 		}
 	}
 

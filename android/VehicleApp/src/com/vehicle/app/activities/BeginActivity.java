@@ -36,7 +36,6 @@ public class BeginActivity extends Activity {
 
 		this.mBaK.setVisibility(View.VISIBLE);
 
-
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 

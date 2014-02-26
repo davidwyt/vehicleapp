@@ -11,6 +11,7 @@ import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.worker.FollowshipInvMessageCourier;
 import com.vehicle.app.msg.worker.IMessageCourier;
+import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.ImageUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
@@ -18,16 +19,12 @@ import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -255,6 +252,7 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 
 	private void bak() {
 		this.onBackPressed();
+		this.finish();
 	}
 
 	private void shake() {
@@ -298,7 +296,7 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 
 		mDriverStatusMessageView.setText(R.string.nearbyvendorstatustext);
 
-		showProgress(true);
+		ActivityUtil.showProgress(getApplicationContext(), mDriverStatusView, mDriverFormView, true);
 		mRefreshTask = new RefreshDriverInfoTask(nextId);
 		mRefreshTask.execute((Void) null);
 	}
@@ -334,39 +332,6 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-			mDriverStatusView.setVisibility(View.VISIBLE);
-			mDriverStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mDriverStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			mDriverFormView.setVisibility(View.VISIBLE);
-			mDriverFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mDriverFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mDriverStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mDriverFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
-
 	public class RefreshDriverInfoTask extends AsyncTask<Void, Void, WebCallBaseResult> {
 
 		String driverId;
@@ -394,7 +359,7 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onPostExecute(final WebCallBaseResult result) {
 			mRefreshTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mDriverStatusView, mDriverFormView, false);
 
 			if (null != result && result.isSuccess()) {
 				CarListViewResult carListResult = (CarListViewResult) result;
@@ -413,7 +378,7 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onCancelled() {
 			mRefreshTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mDriverStatusView, mDriverFormView, false);
 		}
 	}
 

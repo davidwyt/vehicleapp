@@ -4,6 +4,7 @@ import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -51,6 +52,8 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 
 		this.mIVHead = (ImageView) this.findViewById(R.id.msgmgr_head);
 		this.mTVName = (TextView) this.findViewById(R.id.msgmgr_fellowname);
+
+		this.findViewById(R.id.msgmgr_favmsg).setOnClickListener(this);
 	}
 
 	private void initData() {
@@ -80,6 +83,14 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		this.mTVName.setText(name);
 
 		ImageUtil.RenderImageView(url, mIVHead, -1, -1);
+
+		TextView tvOper = (TextView) this.findViewById(R.id.msgmgr_topmsgope);
+		if (TopMsgerMgr.getInstance().isTop(mFellowId)) {
+			tvOper.setText(this.getResources().getString(R.string.tip_canceltop));
+		} else {
+			tvOper.setText(this.getResources().getString(R.string.tip_addtotop));
+		}
+
 	}
 
 	@Override
@@ -98,9 +109,13 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		if (R.id.msgmgr_goback == view.getId()) {
 			this.onBackPressed();
-		} else if (R.id.msgmgr_uprow == view.getId()) {
-
-		} else if (R.id.msgmgr_clearrow == view.getId()) {
+		} else if (R.id.msgmgr_uprow == view.getId() || R.id.msgmgr_favmsg == view.getId()) {
+			if (TopMsgerMgr.getInstance().isTop(mFellowId)) {
+				TopMsgerMgr.getInstance().removeTopMsg(SelfMgr.getInstance().getId(), mFellowId);
+			} else {
+				TopMsgerMgr.getInstance().addTopMsg(SelfMgr.getInstance().getId(), mFellowId);
+			}
+		} else if (R.id.msgmgr_clearrow == view.getId() || R.id.msgmgr_clearmsg == view.getId()) {
 			attemptDeleteMsg();
 		} else {
 			System.err.println("invalid id of clicked button in msgmgr form");

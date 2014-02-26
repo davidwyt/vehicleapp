@@ -26,7 +26,7 @@ public class StringUtil {
 
 		return sb.toString();
 	}
-
+	
 	public static int getWordCount(String string) {
 		Pattern pattern = Pattern.compile("[\\w']+|[\\u3400-\\u4DB5\\u4E00-\\u9FCC]");
 		Matcher matcher = pattern.matcher(string);

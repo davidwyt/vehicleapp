@@ -64,7 +64,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		IMessageItem entity = data.get(position);
-		if (entity.getMessageType() == IMessageItem.MESSAGE_TYPE_TEXT) {
+		if (entity.getMessageType() == IMessageItem.MESSAGE_TYPE_TEXT
+				|| entity.getMessageType() == IMessageItem.MESSAGE_TYPE_LOCATION) {
 
 			final TextMessage msg = (TextMessage) entity;
 

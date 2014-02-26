@@ -7,19 +7,16 @@ import java.util.List;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.utils.StringUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,39 +55,6 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 		mNavFormView = findViewById(R.id.groupmsgnav_form);
 		mNavStatusView = findViewById(R.id.groupmsgnav_status);
 		mNavStatusMessageView = (TextView) findViewById(R.id.groupmsgnav_status_message);
-	}
-
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-			mNavStatusView.setVisibility(View.VISIBLE);
-			mNavStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mNavStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			mNavFormView.setVisibility(View.VISIBLE);
-			mNavFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mNavFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mNavStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mNavFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
 	}
 
 	@Override
@@ -145,7 +109,7 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		showProgress(true);
+		ActivityUtil.showProgress(getApplicationContext(), mNavStatusView, mNavFormView, true);
 		this.mRefreshTask = new RefreshFellowsTask(isNearby);
 		mRefreshTask.execute((Void) null);
 	}
@@ -187,7 +151,7 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onPostExecute(Void result) {
 			mRefreshTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mNavStatusView, mNavFormView, false);
 
 			if (isNearby) {
 				List<String> ids = new ArrayList<String>();
@@ -211,6 +175,8 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 					intent.putExtra(ChatActivity.KEY_FELLOWID, StringUtil.JointString(ids, Constants.COMMA));
 					intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2NEARBY);
 					startActivity(intent);
+					
+					finish();
 				} else {
 					if (SelfMgr.getInstance().isDriver()) {
 						Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_nonearbyvendors),
@@ -242,6 +208,8 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 					intent.putExtra(ChatActivity.KEY_FELLOWID, StringUtil.JointString(ids, Constants.COMMA));
 					intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2FELLOWS);
 					startActivity(intent);
+					
+					finish();
 				} else {
 					if (SelfMgr.getInstance().isDriver()) {
 						Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_nofavvendors),
@@ -258,7 +226,7 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onCancelled() {
 			mRefreshTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mNavStatusView, mNavFormView, false);
 		}
 	}
 }

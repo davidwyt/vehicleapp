@@ -1,17 +1,14 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.LocationUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,6 +38,11 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_nearbymain);
 		initView();
+		startUpdateLocation();
+	}
+
+	private void startUpdateLocation() {
+
 	}
 
 	private void initView() {
@@ -124,42 +126,9 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 			this.mTextViewSearchNearbyStatus.setText(R.string.nearbysearch_dirvers);
 		}
 
-		showProgress(true);
+		ActivityUtil.showProgress(getApplicationContext(), mViewSearchNearbyStatus, mViewNearbyMainForm, true);
 		this.mSearchTask = new NearbySearchTask();
 		mSearchTask.execute((Void) null);
-	}
-
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-			this.mViewSearchNearbyStatus.setVisibility(View.VISIBLE);
-			mViewSearchNearbyStatus.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mViewSearchNearbyStatus.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			this.mViewNearbyMainForm.setVisibility(View.VISIBLE);
-			mViewNearbyMainForm.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mViewNearbyMainForm.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mViewSearchNearbyStatus.setVisibility(show ? View.VISIBLE : View.GONE);
-			mViewNearbyMainForm.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
 	}
 
 	private class NearbySearchTask extends AsyncTask<Void, Void, Void> {
@@ -189,7 +158,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		@Override
 		protected void onPostExecute(Void result) {
 			mSearchTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mViewSearchNearbyStatus, mViewNearbyMainForm, false);
 
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), NearbyFellowListActivity.class);
@@ -199,7 +168,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		@Override
 		protected void onCancelled() {
 			mSearchTask = null;
-			showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mViewSearchNearbyStatus, mViewNearbyMainForm, false);
 		}
 	}
 

@@ -48,11 +48,11 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
+	private static String URL_DEFAULTSERVERROOT = "http://103.21.140.232:81/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
-	// "http://103.21.140.232:81/VehicleIMServer/rest";
+	// "http://192.168.20.20:8080/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
-	// "http://192.168.16.104:8080/VehicleIMServer/rest";
-	private static String URL_DEFAULTSERVERROOT = "http://10.0.2.2:8080/VehicleIMServer/rest";
+	// "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";

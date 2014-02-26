@@ -49,11 +49,9 @@ public class SettingActivity extends Activity {
 	public void onStart() {
 		super.onStart();
 		mFellowViewTask = null;
-		// this.serverET.setText(Constants.SERVERURL);
 	}
 
 	private void initView() {
-		// ((RadioButton)this.findViewById(R.id.bar_rabtn_setting)).setChecked(true);
 
 		this.selfIdET = (EditText) this.findViewById(R.id.setting_selfID);
 		this.herIdET = (EditText) this.findViewById(R.id.setting_herID);

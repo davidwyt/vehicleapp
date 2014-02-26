@@ -58,7 +58,7 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), LoginActivity.class);
 			this.startActivity(intent);
-
+			finish();
 		} else if (R.id.roleselect_shop == view.getId()) {
 
 			SelfMgr.getInstance().clearFellows();
@@ -67,6 +67,7 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), LoginActivity.class);
 			this.startActivity(intent);
+			finish();
 		}
 	}
 }

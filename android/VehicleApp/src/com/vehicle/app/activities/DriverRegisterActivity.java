@@ -1,16 +1,13 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.web.bean.DriverRegisterResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -151,43 +148,12 @@ public class DriverRegisterActivity extends Activity {
 			focusView.requestFocus();
 		} else {
 			this.mRegStatusMsgView.setText(this.getString(R.string.register_progress));
-			this.showProgress(true);
+			ActivityUtil.showProgress(getApplicationContext(), mRegStatusView, mRegFormView, true);
 			this.mRegTask = new RegisterTask();
 			this.mRegTask.execute((Void) null);
 		}
 	}
-
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-
-			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-			this.mRegStatusView.setVisibility(View.VISIBLE);
-			this.mRegStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mRegStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-						}
-					});
-
-			this.mRegFormView.setVisibility(View.VISIBLE);
-			this.mRegFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mRegFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-						}
-					});
-		} else {
-			this.mRegStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			this.mRegFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
-
+	
 	public class RegisterTask extends AsyncTask<Void, Void, DriverRegisterResult> {
 
 		@Override
@@ -210,8 +176,8 @@ public class DriverRegisterActivity extends Activity {
 		protected void onPostExecute(final DriverRegisterResult result) {
 
 			DriverRegisterActivity.this.mRegTask = null;
-			DriverRegisterActivity.this.showProgress(false);
-			
+			ActivityUtil.showProgress(getApplicationContext(), mRegStatusView, mRegFormView, false);
+
 			if(null == result)
 			{
 				mEmailET.setError(getString(R.string.error_network));
@@ -227,9 +193,8 @@ public class DriverRegisterActivity extends Activity {
 
 		@Override
 		protected void onCancelled() {
-
 			DriverRegisterActivity.this.mRegTask = null;
-			DriverRegisterActivity.this.showProgress(false);
+			ActivityUtil.showProgress(getApplicationContext(), mRegStatusView, mRegFormView, false);
 		}
 	}
 }

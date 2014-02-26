@@ -24,6 +24,7 @@ public class AboutActivity extends Activity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				AboutActivity.this.onBackPressed();
+				finish();
 			}
 		});
 	}

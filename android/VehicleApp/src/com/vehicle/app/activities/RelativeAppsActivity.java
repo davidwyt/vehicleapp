@@ -25,6 +25,7 @@ public class RelativeAppsActivity extends Activity implements OnClickListener {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				RelativeAppsActivity.this.onBackPressed();
+				finish();
 			}
 		});
 

@@ -2,6 +2,9 @@ package com.vehicle.app.msg.worker;
 
 import java.util.List;
 
+import cn.edu.sjtu.vehicleapp.R;
+
+import com.vehicle.app.activities.VendorRatingActivity;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.CommentMessage;
 import com.vehicle.app.msg.bean.IMessageItem;
@@ -85,6 +88,9 @@ public class VendorCommentMessageCourier extends MessageBaseCourier {
 					context.sendBroadcast(intent);
 				} else {
 					Intent intent = new Intent(Constants.ACTION_VENDORCOMMENT_FAILED);
+					String msg = null == result ? context.getResources().getString(R.string.tip_commentfailed)
+							: context.getResources().getString(R.string.tip_commentfailedformat, result.getMessage());
+					intent.putExtra(VendorRatingActivity.KEY_COMMENT_ERRMSG, msg);
 					context.sendBroadcast(intent);
 				}
 			}
