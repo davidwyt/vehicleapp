@@ -35,6 +35,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -160,17 +161,27 @@ public class NearbyFellowListActivity extends Activity {
 			this.mListFellows.addAll(SelfMgr.getInstance().getNearbyDrivers());
 		}
 
-		sortNearby();
+		sortNearby(this.mListFellows);
 
 		this.mAdapter.notifyDataSetChanged();
 	}
 
-	@SuppressWarnings("unchecked")
-	private void sortNearby() {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void sortNearby(List fellows) {
 		DistanceComparator comparator = new DistanceComparator();
-		Collections.sort(mListFellows, comparator);
+		Collections.sort(fellows, comparator);
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@SuppressWarnings("rawtypes")
 	private class DistanceComparator implements Comparator {
 
@@ -216,7 +227,7 @@ public class NearbyFellowListActivity extends Activity {
 	protected void onStop() {
 		super.onStop();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void startVendorHome(String id) {
 		Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
@@ -310,12 +321,14 @@ public class NearbyFellowListActivity extends Activity {
 
 				if (SelfMgr.getInstance().isDriver()) {
 					List vendors = (List) result.getInfoBean();
+					sortNearby(vendors);
 					if (null != vendors) {
 						mListFellows.addAll(vendors);
 						SelfMgr.getInstance().addNearbyVendors(vendors);
 					}
 				} else {
 					List drivers = (List) result.getInfoBean();
+					sortNearby(drivers);
 					if (null != drivers) {
 						mListFellows.addAll(drivers);
 						SelfMgr.getInstance().addNearbyDrivers(drivers);

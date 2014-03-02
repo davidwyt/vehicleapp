@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -19,6 +18,7 @@ import com.vehicle.app.msg.bean.FileMessage;
 import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.FileUtil;
 import com.vehicle.sdk.client.VehicleClient;
 
 public class FileMessageRecipient extends MessageBaseRecipient {
@@ -63,10 +63,12 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 						return false;
 					}
 
+					SelfMgr.getInstance().retrieveInfo(picMsgItem.getSource());
+
 					File file = new File(filePath);
 					System.out.println("file: " + filePath + " exist:" + file.exists());
 
-					picMsgItem.setContent(BitmapFactory.decodeFile(filePath));
+					picMsgItem.setContent(FileUtil.ReadInputStream(fileStream));
 					picMsgItem.setPath(filePath);
 
 					System.out.println("content null :" + (null == picMsgItem.getContent()));
@@ -111,7 +113,11 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 					}
 
 					NotificationMgr notificationMgr = new NotificationMgr(context);
-					notificationMgr.notifyNewFileMsg(picMsgItem);
+					if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
+						notificationMgr.notifyNewImgMsg(picMsgItem);
+					} else if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
+						notificationMgr.notifyNewAudioMsg(picMsgItem);
+					}
 				}
 
 				try {

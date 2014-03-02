@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import android.location.Location;
-
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.FavoriteVendor;
 import com.vehicle.app.bean.SelfDriver;
@@ -16,16 +14,16 @@ import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorFellow;
-import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
+import com.vehicle.app.web.bean.DriverViewResult;
 import com.vehicle.app.web.bean.FavVendorListViewResult;
-import com.vehicle.app.web.bean.NearbyDriverListViewResult;
 import com.vehicle.app.web.bean.NearbyVendorListViewResult;
 import com.vehicle.app.web.bean.VendorFellowListViewResult;
 import com.vehicle.app.web.bean.VendorListViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
+import com.vehicle.app.web.bean.VendorViewResult;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
 import com.vehicle.service.bean.RangeInfo;
@@ -462,5 +460,94 @@ public class SelfMgr {
 		this.mNearbyVendorMap.clear();
 
 		this.mNearbyVendorDetailMap.clear();
+	}
+
+	private Map<String, Driver> unknownDriversMap = new Hashtable<String, Driver>();
+	private Map<String, Vendor> unknowsVendorsMap = new Hashtable<String, Vendor>();
+
+	public Driver getDriverInfo(String id) {
+		if (this.mVendorFellowMap.containsKey(id)) {
+			return this.mVendorFellowMap.get(id);
+		}
+
+		if (this.mNearbyDriverMap.containsKey(id)) {
+			return this.mNearbyDriverMap.get(id);
+		}
+
+		if (this.unknownDriversMap.containsKey(id)) {
+			return this.unknownDriversMap.get(id);
+		}
+
+		return null;
+	}
+
+	public void addUnknownDrivers(Map<String, Driver> map) {
+		this.unknownDriversMap.putAll(map);
+	}
+
+	public void addUnknownVendors(Map<String, Vendor> map) {
+		this.unknowsVendorsMap.putAll(map);
+	}
+
+	public Vendor getVendorInfo(String id) {
+		if (this.mFavVendorMap.containsKey(id)) {
+			return this.mFavVendorMap.get(id);
+		}
+
+		if (this.mNearbyVendorMap.containsKey(id)) {
+			return this.mNearbyVendorMap.get(id);
+		}
+
+		if (this.unknowsVendorsMap.containsKey(id)) {
+			return this.unknowsVendorsMap.get(id);
+		}
+
+		return null;
+	}
+
+	public void retrieveInfo(String id) {
+		if (this.isDriver()) {
+			if (null == this.getVendorInfo(id)) {
+				try {
+					VehicleWebClient webClient = new VehicleWebClient();
+					VendorViewResult result = webClient.VendorView(id);
+					if (null != result && result.isSuccess()) {
+						Vendor vendor = result.getInfoBean();
+						this.unknowsVendorsMap.put(vendor.getId(), vendor);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			if (null == this.getDriverInfo(id)) {
+				try {
+					VehicleWebClient webClient = new VehicleWebClient();
+					DriverViewResult result = webClient.DriverView(id);
+					if (null != result && result.isSuccess()) {
+						Driver driver = result.getInfoBean();
+						this.unknownDriversMap.put(driver.getId(), driver);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public String getFellowName(String id) {
+		if (SelfMgr.getInstance().isDriver()) {
+			Vendor vendor = SelfMgr.getInstance().getVendorInfo(id);
+			if (null != vendor) {
+				return vendor.getName();
+			}
+		} else {
+			Driver driver = SelfMgr.getInstance().getDriverInfo(id);
+			if (null != driver) {
+				return driver.getAlias();
+			}
+		}
+
+		return "";
 	}
 }

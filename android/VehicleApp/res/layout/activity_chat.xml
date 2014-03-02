@@ -38,11 +38,11 @@
                 android:id="@+id/chat_tv_fellowalias"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:layout_toLeftOf="@id/chat_btn_save"
                 android:layout_toRightOf="@id/chat_btn_back"
-                android:layout_centerVertical="true"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:singleLine="true"
@@ -60,8 +60,8 @@
 
             <Button
                 android:id="@+id/chat_btn_send"
-                android:layout_width="64dp"
-                android:layout_height="48dp"
+                android:layout_width="48dp"
+                android:layout_height="32dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="8dp"
@@ -69,21 +69,30 @@
 
             <Button
                 android:id="@+id/chat_btn_plus"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginRight="2dp"
                 android:layout_toLeftOf="@id/chat_btn_send"
                 android:background="@drawable/selector_btn_plus" />
 
+            <Button
+                android:id="@+id/chat_btn_voice"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="4dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/selector_btn_voice" />
+
             <EditText
                 android:id="@+id/et_sendmessage"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="8dp"
+                android:layout_height="32dp"
+                android:layout_toRightOf="@id/chat_btn_voice"                
+                android:layout_marginLeft="2dp"
                 android:layout_toLeftOf="@+id/chat_btn_plus"
+                android:layout_alignParentBottom="true"
                 android:background="@drawable/edittext1"
                 android:inputType="text"
                 android:singleLine="true"

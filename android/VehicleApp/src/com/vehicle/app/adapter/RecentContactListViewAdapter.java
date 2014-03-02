@@ -71,6 +71,9 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 		ImageView ivHead = (ImageView) view.findViewById(R.id.useritem_iv_userhead);
 
 		RecentMessage msg = this.recentMsgVecotr.get(pos);
+		if (null == msg) {
+			return view;
+		}
 
 		String alias = "";
 
@@ -78,14 +81,14 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 
 		if (SelfMgr.getInstance().isDriver()) {
 
-			Vendor vendor = SelfMgr.getInstance().getFavVendor(msg.getFellowId());
+			Vendor vendor = SelfMgr.getInstance().getVendorInfo(msg.getFellowId());
 			if (null != vendor) {
 				alias = vendor.getName();
 				url = vendor.getAvatar();
 			}
 
 		} else {
-			Driver driver = SelfMgr.getInstance().getVendorFellow(msg.getFellowId());
+			Driver driver = SelfMgr.getInstance().getDriverInfo(msg.getFellowId());
 			if (null != driver) {
 				alias = driver.getAlias();
 				url = driver.getAvatar();
@@ -134,10 +137,10 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 	private String formatLastMessageTime(RecentMessage msg) {
 		Calendar cal = Calendar.getInstance();
 		Date msgDate = new Date(msg.getSentTime());
-
-		if (msgDate.after(cal.getTime())) {
-			throw new IllegalArgumentException("what a fucking time");
-		}
+		/**
+		 * if (msgDate.after(cal.getTime())) { throw new
+		 * IllegalArgumentException("what a fucking time"); }
+		 */
 
 		if (msgDate.getYear() == cal.get(Calendar.YEAR) && msgDate.getMonth() == cal.get(Calendar.MONTH)
 				&& msgDate.getDate() == cal.get(Calendar.DATE)) {

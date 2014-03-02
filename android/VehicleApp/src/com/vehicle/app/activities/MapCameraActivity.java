@@ -3,6 +3,7 @@ package com.vehicle.app.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -125,5 +126,15 @@ public class MapCameraActivity extends Activity implements OnClickListener, Canc
 
 	@Override
 	public void onFinish() {
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }

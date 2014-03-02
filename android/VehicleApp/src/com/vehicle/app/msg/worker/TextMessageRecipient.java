@@ -2,6 +2,7 @@ package com.vehicle.app.msg.worker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
@@ -28,42 +29,60 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 			throw new IllegalArgumentException("msg is not TextMessageItem");
 		}
 
-		TextMessage textMsgItem = (TextMessage) msg;
+		final TextMessage textMsgItem = (TextMessage) msg;
 
-		if (ActivityUtil.IsChattingWithFellow(context, textMsgItem.getSource())) {
-			textMsgItem.setFlag(MessageFlag.READ);
-			try {
-				DBManager dbManager = new DBManager(context);
-				dbManager.insertTextMessage(textMsgItem);
-			} catch (Exception e) {
-				e.printStackTrace();
+		AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				// TODO Auto-generated method stub
+
+				SelfMgr.getInstance().retrieveInfo(textMsgItem.getSource());
+
+				if (ActivityUtil.IsChattingWithFellow(context, textMsgItem.getSource())) {
+					textMsgItem.setFlag(MessageFlag.READ);
+					try {
+						DBManager dbManager = new DBManager(context);
+						dbManager.insertTextMessage(textMsgItem);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_RECEIVED);
+					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, textMsgItem);
+					context.sendBroadcast(msgIntent);
+				} else {
+					textMsgItem.setFlag(MessageFlag.UNREAD);
+					try {
+						DBManager dbManager = new DBManager(context);
+						dbManager.insertTextMessage(textMsgItem);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					NotificationMgr notificationMgr = new NotificationMgr(context);
+					if (IMessageItem.MESSAGE_TYPE_TEXT == textMsgItem.getMessageType()) {
+						notificationMgr.notifyNewTextMsg(textMsgItem);
+					} else if (IMessageItem.MESSAGE_TYPE_LOCATION == textMsgItem.getMessageType()) {
+						notificationMgr.notifyNewLocationMsg(textMsgItem);
+					}
+				}
+
+				RecentMessage recentMsg = new RecentMessage();
+				recentMsg.setSelfId(SelfMgr.getInstance().getId());
+				recentMsg.setFellowId(textMsgItem.getTarget());
+				recentMsg.setMessageType(textMsgItem.getMessageType());
+				recentMsg.setContent(textMsgItem.getContent());
+				recentMsg.setSentTime(textMsgItem.getSentTime());
+				recentMsg.setMessageId(textMsgItem.getId());
+
+				updateRecentMessage(recentMsg);
+
+				return null;
 			}
+		};
 
-			Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_RECEIVED);
-			msgIntent.putExtra(ChatActivity.KEY_MESSAGE, textMsgItem);
-			context.sendBroadcast(msgIntent);
-		} else {
-			textMsgItem.setFlag(MessageFlag.UNREAD);
-			try {
-				DBManager dbManager = new DBManager(context);
-				dbManager.insertTextMessage(textMsgItem);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			NotificationMgr notificationMgr = new NotificationMgr(context);
-			notificationMgr.notifyNewTextMsg(textMsgItem);
-		}
-
-		RecentMessage recentMsg = new RecentMessage();
-		recentMsg.setSelfId(SelfMgr.getInstance().getId());
-		recentMsg.setFellowId(textMsgItem.getTarget());
-		recentMsg.setMessageType(textMsgItem.getMessageType());
-		recentMsg.setContent(textMsgItem.getContent());
-		recentMsg.setSentTime(textMsgItem.getSentTime());
-		recentMsg.setMessageId(textMsgItem.getId());
-
-		updateRecentMessage(recentMsg);
+		asyncTask.execute((Void) null);
 	}
 
 	@Override

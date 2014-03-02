@@ -11,6 +11,7 @@ import com.vehicle.app.msg.worker.InvitationVerdictMessageCourier;
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -79,6 +80,16 @@ public class FollowshipInvitationActivity extends Activity implements OnClickLis
 		super.onStop();
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public void onClick(View view) {
 		if (R.id.followshipinvitation_shopdetail == view.getId()) {

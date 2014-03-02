@@ -2,10 +2,12 @@ package com.vehicle.app.msg.worker;
 
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.NotificationMgr;
+import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.IMessageItem;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 public class FollowshipInvMessageRecipient extends MessageBaseRecipient {
 
@@ -21,19 +23,37 @@ public class FollowshipInvMessageRecipient extends MessageBaseRecipient {
 			throw new IllegalArgumentException("item not FollowshipInvitationMessage");
 		}
 
-		FollowshipInvitationMessage msg = (FollowshipInvitationMessage) item;
+		final FollowshipInvitationMessage msg = (FollowshipInvitationMessage) item;
 
-		try {
-			DBManager dbManager = new DBManager(context);
-			dbManager.insertFollowshipInvMessage(msg);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		if (shouldNotifyBar()) {
-			NotificationMgr notificationMgr = new NotificationMgr(context);
-			notificationMgr.notifyNewFollowshipInvitationMsg(msg);
-		}
+		AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				// TODO Auto-generated method stub
+
+				SelfMgr.getInstance().retrieveInfo(msg.getSource());
+
+				try {
+					DBManager dbManager = new DBManager(context);
+					dbManager.insertFollowshipInvMessage(msg);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				if (shouldNotifyBar()) {
+					NotificationMgr notificationMgr = new NotificationMgr(context);
+					notificationMgr.notifyNewFollowshipInvitationMsg(msg);
+				}
+			}
+		};
+
+		asyncTask.execute((Void) null);
+
 	}
 
 	@Override

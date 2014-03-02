@@ -1,5 +1,6 @@
 package com.vehicle.app.activities;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -30,8 +32,10 @@ import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.FileMessageCourier;
 import com.vehicle.app.msg.worker.TextMessageCourier;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.JsonUtil;
 
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -48,6 +52,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.format.DateFormat;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -475,7 +480,8 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 	private void onLocate(int resultCode, Intent data) {
 		// TODO Auto-generated method stub
-		Toast.makeText(this, "location received!", Toast.LENGTH_SHORT).show();
+		// Toast.makeText(this, "location received!",
+		// Toast.LENGTH_SHORT).show();
 
 		if (Activity.RESULT_OK == resultCode) {
 			SimpleLocation location = (SimpleLocation) data.getSerializableExtra(LocationActivity.KEY_LOCATION);
@@ -506,6 +512,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private void sendFile(String filePath, int type) {
 
 		Assert.assertEquals(true, type == IMessageItem.MESSAGE_TYPE_AUDIO || type == IMessageItem.MESSAGE_TYPE_IMAGE);
+		if (type != IMessageItem.MESSAGE_TYPE_AUDIO && type != IMessageItem.MESSAGE_TYPE_IMAGE)
+			return;
+
 		File file = new File(filePath);
 
 		if (file.isFile() && file.exists()) {
@@ -514,7 +523,17 @@ public class ChatActivity extends Activity implements OnClickListener {
 			picItem.setSource(SelfMgr.getInstance().getId());
 			picItem.setTarget(mFellowId);
 			picItem.setName(file.getName());
-			picItem.setContent(BitmapFactory.decodeFile(filePath));
+			
+			/**
+			if (type == IMessageItem.MESSAGE_TYPE_IMAGE) {
+				Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+				ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+				bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
+			}
+			*/
+			
+			byte[] bytes = FileUtil.ReadFile(filePath);
+			picItem.setContent(bytes);
 			picItem.setFlag(MessageFlag.SELF);
 			picItem.setPath(filePath);
 			picItem.setMsgType(type);
@@ -634,5 +653,71 @@ public class ChatActivity extends Activity implements OnClickListener {
 			addToMsgList(msg);
 		}
 
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	private MediaRecorder mRecorder = null;
+	private String audioFile = "";
+
+	private void startRecording() {
+		try {
+			audioFile = this.getAudioFilePath();
+
+			mRecorder = new MediaRecorder();
+			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+
+			mRecorder.setOutputFile(audioFile);
+			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			try {
+				mRecorder.prepare();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+			}
+
+			mRecorder.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+	}
+
+	private void stopRecording() {
+		try {
+			if (null != mRecorder) {
+				mRecorder.stop();
+				mRecorder.release();
+				mRecorder = null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+		}
+	}
+
+	private String getAudioFilePath() {
+		String parent = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Audio/";
+		try {
+			File file = new File(parent);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String name = UUID.randomUUID().toString() + ".3gp";
+
+		return parent + name;
 	}
 }

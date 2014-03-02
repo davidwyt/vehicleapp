@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -110,11 +111,11 @@ public class AdviceActivity extends Activity {
 				if (null != result && result.isSuccess()) {
 					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_advicesuccess),
 							Toast.LENGTH_LONG).show();
-					
+
 					mETAdvice.setText("");
 					mETEmail.setText("");
 					mETPhone.setText("");
-					
+
 				} else {
 					if (null != result) {
 						Toast.makeText(getApplicationContext(),
@@ -133,5 +134,15 @@ public class AdviceActivity extends Activity {
 		} else {
 			asyncTask.execute();
 		}
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }

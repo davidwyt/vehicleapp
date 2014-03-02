@@ -78,6 +78,16 @@ public class LoginActivity extends Activity {
 	private Button mRegButton;
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -401,13 +411,11 @@ public class LoginActivity extends Activity {
 
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 
-				TopMsgerMgr.getInstance().init(getApplicationContext(), SelfMgr.getInstance().getId());
-
+				finish();
+				
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				LoginActivity.this.startActivity(intent);
-
-				finish();
 
 			} else {
 				mPasswordView.setError(getString(R.string.error_incorrect_password));

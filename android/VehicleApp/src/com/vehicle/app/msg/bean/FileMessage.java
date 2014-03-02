@@ -2,7 +2,6 @@ package com.vehicle.app.msg.bean;
 
 import com.vehicle.service.bean.NewFileNotification;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,7 +13,7 @@ public class FileMessage implements IMessageItem, Parcelable {
 	private String target;
 	private MessageFlag flag;
 	private long sentTime;
-	private Bitmap content;
+	private byte[] content;
 
 	private int msgType;
 
@@ -87,11 +86,11 @@ public class FileMessage implements IMessageItem, Parcelable {
 		this.sentTime = time;
 	}
 
-	public Bitmap getContent() {
+	public byte[] getContent() {
 		return this.content;
 	}
 
-	public void setContent(Bitmap bitmap) {
+	public void setContent(byte[] bitmap) {
 		this.content = bitmap;
 	}
 

@@ -1,8 +1,9 @@
 package com.vehicle.app.db;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdict;
@@ -16,12 +17,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 public class DBManager {
 
 	private DBHelper mDBHelper;
+
+	private static Lock lock = new ReentrantLock();
 
 	private final static String SQL_TEXTMESSAGE_INSERT = "INSERT INTO `TEXTMESSAGE`(`ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE`) VALUES(?, ?, ?, ?, ?, ?, ?);";
 	private final static String SQL_TEXTMESSAGE_ALLSELECT = "SELECT `ID`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?)) ORDER BY `SENTTIME` ASC;";
@@ -62,7 +63,11 @@ public class DBManager {
 	}
 
 	public void insertOrUpdateTopMsg(String host, String tops) {
+
+		lock.lock();
+
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+
 		try {
 			db.beginTransaction();
 
@@ -82,7 +87,36 @@ public class DBManager {
 				updateStmt.executeUpdateDelete();
 			}
 			db.setTransactionSuccessful();
-			db.endTransaction();
+
+		} finally {
+			try {
+				
+				if (null != db) {
+					db.endTransaction();
+					db.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
+		}
+	}
+
+	public String selectMsgTops(String host) {
+
+		lock.lock();
+
+		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		try {
+			Cursor cursor = db.rawQuery(SQL_TOPMSG_SELECT, new String[] { host });
+
+			if (null == cursor || 0 >= cursor.getCount()) {
+				return "";
+			}
+
+			cursor.moveToFirst();
+			return cursor.getString(cursor.getColumnIndex("TOPMSG"));
 		} finally {
 			try {
 				if (null != db) {
@@ -91,35 +125,14 @@ public class DBManager {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-	}
 
-	public String selectMsgTops(String host) {
-		SQLiteDatabase db = mDBHelper.getWritableDatabase();
-		try {
-			db.beginTransaction();
-			
-			Cursor cursor = db.rawQuery(SQL_TOPMSG_SELECT, new String[] { host });
-			
-			if(null == cursor || 0 >= cursor.getCount())
-			{
-				return "";
-			}
-			
-			cursor.moveToFirst();
-			return cursor.getString(cursor.getColumnIndex("TOPMSG"));
-		}finally{
-			try {
-				if (null != db) {
-					db.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			lock.unlock();
 		}
 	}
 
 	public void deleteAllMessages(String selfId, String fellowId) {
+		lock.lock();
+
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
 		try {
@@ -160,16 +173,25 @@ public class DBManager {
 			deleteRecentMsgStmt.executeUpdateDelete();
 
 			db.setTransactionSuccessful();
-			db.endTransaction();
+
 		} finally {
-			if (null != db) {
-				db.close();
+			try {
+				if (null != db) {
+					db.endTransaction();
+					db.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
+
+			lock.unlock();
 		}
 	}
 
 	public void insertTextMessage(String id, String source, String target, String content, long sentTime,
 			MessageFlag flag, int msgType) {
+
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
@@ -187,7 +209,14 @@ public class DBManager {
 			insertStmt.executeInsert();
 
 		} finally {
-			db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
@@ -197,6 +226,8 @@ public class DBManager {
 	}
 
 	public void updateUnreadTextMessageFlag(String selfId, String fellowId) {
+		lock.lock();
+
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
 		try {
@@ -208,11 +239,20 @@ public class DBManager {
 			updateStmt.bindString(4, MessageFlag.UNREAD.toString());
 			updateStmt.executeUpdateDelete();
 		} finally {
-			db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public List<TextMessage> queryAllTextMessage(String selfId, String fellowId) {
+
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		List<TextMessage> messages = new ArrayList<TextMessage>();
@@ -245,14 +285,22 @@ public class DBManager {
 			}
 
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 
 		return messages;
 	}
 
 	public List<TextMessage> queryUnreadTextMessage(String selfId, String fellowId) {
+
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		List<TextMessage> messages = new ArrayList<TextMessage>();
@@ -282,8 +330,14 @@ public class DBManager {
 				messages.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 		return messages;
 	}
@@ -291,6 +345,7 @@ public class DBManager {
 	public long insertFileMessage(String id, String source, String target, byte[] content, long sentTime,
 			MessageFlag flag, int type) {
 
+		lock.lock();
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
 		try {
@@ -307,19 +362,31 @@ public class DBManager {
 			return insertStmt.executeInsert();
 
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public void insertFileMessage(FileMessage msg) {
+		
+		/**
 		ByteArrayOutputStream boas = new ByteArrayOutputStream();
 		msg.getContent().compress(Bitmap.CompressFormat.PNG, 100, boas);
-		insertFileMessage(msg.getToken(), msg.getSource(), msg.getTarget(), boas.toByteArray(), msg.getSentTime(),
+		*/
+		
+		insertFileMessage(msg.getToken(), msg.getSource(), msg.getTarget(), msg.getContent(), msg.getSentTime(),
 				msg.getFlag(), msg.getMessageType());
 	}
 
 	public void updateUnreadFileMessageFlag(String selfId, String fellowId) {
+		lock.lock();
+
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
 		try {
@@ -331,11 +398,20 @@ public class DBManager {
 			updateStmt.bindString(4, MessageFlag.UNREAD.toString());
 			updateStmt.executeUpdateDelete();
 		} finally {
-			db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public List<FileMessage> queryAllFileMessage(String selfId, String fellowId) {
+		lock.lock();
+
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 		List<FileMessage> messages = new ArrayList<FileMessage>();
 
@@ -357,9 +433,9 @@ public class DBManager {
 
 				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
 
-				Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+				//Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-				msg.setContent(bitmap);
+				msg.setContent(byteArray);
 
 				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
@@ -369,13 +445,21 @@ public class DBManager {
 				messages.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 		return messages;
 	}
 
 	public List<FileMessage> queryUnreadFileMessage(String selfId, String fellowId) {
+
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 		List<FileMessage> messages = new ArrayList<FileMessage>();
@@ -396,9 +480,9 @@ public class DBManager {
 
 				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
 
-				Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+				//Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-				msg.setContent(bitmap);
+				msg.setContent(byteArray);
 
 				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
@@ -407,14 +491,22 @@ public class DBManager {
 				messages.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 		return messages;
 	}
 
 	public void insertInvitationVerdictMessage(String invitationId, String source, String target,
 			InvitationVerdict verdict, MessageFlag flag) {
+
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
@@ -428,7 +520,14 @@ public class DBManager {
 			insertStmt.bindString(5, flag.toString());
 			insertStmt.executeInsert();
 		} finally {
-			db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
@@ -438,6 +537,8 @@ public class DBManager {
 	}
 
 	public void updateUnreadInvitationVerdictMessageFlag(String invitationId) {
+		lock.lock();
+
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
 		try {
@@ -448,11 +549,20 @@ public class DBManager {
 			updateStmt.bindString(3, MessageFlag.UNREAD.toString());
 			updateStmt.executeUpdateDelete();
 		} finally {
-			db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public List<InvitationVerdictMessage> queryAllInvitationVerdictMessage(String selfId) {
+
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		List<InvitationVerdictMessage> messages = new ArrayList<InvitationVerdictMessage>();
@@ -478,13 +588,21 @@ public class DBManager {
 				messages.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 		return messages;
 	}
 
 	public List<InvitationVerdictMessage> queryUnreadInvitationVerdictMessage(String selfId) {
+
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		List<InvitationVerdictMessage> messages = new ArrayList<InvitationVerdictMessage>();
@@ -510,8 +628,13 @@ public class DBManager {
 				messages.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			lock.unlock();
 		}
 		return messages;
 	}
@@ -519,6 +642,7 @@ public class DBManager {
 	public void insertFollowshipInvMessage(String invitationId, String source, String target, long sentTime,
 			MessageFlag flag) {
 
+		lock.lock();
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
 		try {
@@ -531,7 +655,14 @@ public class DBManager {
 			insertStmt.bindString(5, flag.toString());
 			insertStmt.executeInsert();
 		} finally {
-			db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
@@ -540,6 +671,7 @@ public class DBManager {
 	}
 
 	public void updateUnreadFollowshipInvMessageFlag(String invitationId) {
+		lock.lock();
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
 		try {
@@ -550,11 +682,19 @@ public class DBManager {
 			updateStmt.bindString(3, MessageFlag.UNREAD.toString());
 			updateStmt.executeUpdateDelete();
 		} finally {
-			db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public List<FollowshipInvitationMessage> queryAllFollowshipInvMessage(String selfId) {
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		List<FollowshipInvitationMessage> messages = new ArrayList<FollowshipInvitationMessage>();
@@ -580,14 +720,20 @@ public class DBManager {
 				messages.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 		return messages;
 	}
 
 	public List<FollowshipInvitationMessage> queryUnreadFollowshipInvMessage(String target) {
-
+		lock.lock();
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		List<FollowshipInvitationMessage> messages = new ArrayList<FollowshipInvitationMessage>();
 
@@ -612,8 +758,14 @@ public class DBManager {
 				messages.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 		return messages;
 	}
@@ -625,6 +777,7 @@ public class DBManager {
 
 	public void insertOrUpdateRecentMessage(String selfId, String fellowId, String messageId, int messageType,
 			String content, long sentTime) {
+		lock.lock();
 
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 		try {
@@ -669,14 +822,24 @@ public class DBManager {
 				insertStmt.executeInsert();
 			}
 			db.setTransactionSuccessful();
+
 		} finally {
-			if (null != db)
-				db.endTransaction();
-			db.close();
+			try {
+				if (null != db){
+					db.endTransaction();
+					db.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public void deleteOneRecentMessage(String selfId, String fellowId) {
+		lock.lock();
+
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 		try {
 			SQLiteStatement deleteStmt = db.compileStatement(SQL_RECENTMSG_ONEDELETE);
@@ -685,12 +848,19 @@ public class DBManager {
 			deleteStmt.bindString(2, fellowId);
 			deleteStmt.executeUpdateDelete();
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public void deleteAllRecentMessages(String selfId) {
+		lock.lock();
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
 		try {
 			SQLiteStatement deleteStmt = db.compileStatement(SQL_RECENTMSG_ALLDELETE);
@@ -698,12 +868,19 @@ public class DBManager {
 			deleteStmt.bindString(1, selfId);
 			deleteStmt.executeUpdateDelete();
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 	}
 
 	public List<RecentMessage> queryRecentMessage(String selfId) {
+		lock.lock();
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 		List<RecentMessage> recentMsgs = new ArrayList<RecentMessage>();
 
@@ -729,8 +906,14 @@ public class DBManager {
 				recentMsgs.add(msg);
 			}
 		} finally {
-			if (null != db)
-				db.close();
+			try {
+				if (null != db)
+					db.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			lock.unlock();
 		}
 
 		return recentMsgs;

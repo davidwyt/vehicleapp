@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -78,6 +79,16 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		mCommentsViewTask = null;
 		mFellowViewTask = null;
 		((RadioButton) this.findViewById(R.id.bar_rabtn_setting)).setChecked(true);
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void initView() {
@@ -300,5 +311,4 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 			break;
 		}
 	}
-
 }

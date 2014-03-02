@@ -44,6 +44,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -94,6 +95,16 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 	private ViewFellowTask mViewFellowTask = null;
 
 	private BroadcastReceiver mReceiver;
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -227,6 +238,9 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 	}
 
 	private void setVendorDetail(VendorDetail detail) {
+
+		if (null == detail)
+			return;
 
 		this.mCurVendorDetail = detail;
 

@@ -1,6 +1,7 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.LocationUtil;
 
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -64,7 +66,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		this.mViewNearbyMainForm = this.findViewById(R.id.nearbymain_form);
 		this.mViewSearchNearbyStatus = this.findViewById(R.id.nearbysearch_status);
 		this.mTextViewSearchNearbyStatus = (TextView) this.findViewById(R.id.nearbysearch_status_message);
-
 	}
 
 	@Override
@@ -72,7 +73,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		super.onStart();
 		mSearchTask = null;
 		((RadioButton) this.findViewById(R.id.bar_rabtn_middle)).setChecked(true);
-		// this.pageNum = 1;
+		TopMsgerMgr.getInstance().init(getApplicationContext(), SelfMgr.getInstance().getId());
 	}
 
 	@Override
@@ -80,6 +81,16 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		super.onStop();
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		// TODO Auto-generated method stub
@@ -94,7 +105,6 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	}
 
 	private void openChatList() {
-
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), RecentContactListActivity.class);
 		startActivity(intent);

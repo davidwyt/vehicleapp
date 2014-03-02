@@ -7,6 +7,7 @@ import com.vehicle.app.mgrs.SelfMgr;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +31,16 @@ public class MyCommentsActivity extends Activity {
 		this.setContentView(R.layout.activity_driverselfcomments);
 
 		initView();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void initView() {

@@ -1,5 +1,6 @@
 package com.vehicle.app.activities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -10,6 +11,9 @@ import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.web.bean.DriverListViewResult;
+import com.vehicle.app.web.bean.VendorListViewResult;
+import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
@@ -18,6 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -59,8 +65,17 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		super.onStart();
 
 		((RadioButton) this.findViewById(R.id.bar_rabtn_message)).setChecked(true);
-		initData();
+		// initData();
 		registerMessageReceiver();
+
+		Handler handler = new Handler();
+		Runnable myRunnable = new Runnable() {
+			public void run() {
+
+				initData();
+			}
+		};
+		handler.postDelayed(myRunnable, 500);
 	}
 
 	@Override
@@ -90,6 +105,16 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		registerReceiver(messageReceiver, filter);
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			this.finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 	private void initData() {
 
 		mRecentMsgVector.clear();
@@ -114,6 +139,37 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 			mRecentMsgVector.addAll(recentMsgs);
 
+			this.mAdapter.notifyDataSetChanged();
+
+			List<String> unknown = new ArrayList<String>();
+
+			for (RecentMessage msg : recentMsgs) {
+				if (SelfMgr.getInstance().isDriver()) {
+					if (null == SelfMgr.getInstance().getVendorInfo(msg.getFellowId())) {
+						unknown.add(msg.getFellowId());
+					}
+				} else {
+					if (null == SelfMgr.getInstance().getDriverInfo(msg.getFellowId())) {
+						unknown.add(msg.getFellowId());
+					}
+				}
+			}
+
+			if (unknown.size() > 0) {
+				VehicleWebClient webClient = new VehicleWebClient();
+				if (SelfMgr.getInstance().isDriver()) {
+					VendorListViewResult result = webClient.VendorListView(unknown);
+					if (null != result && result.isSuccess()) {
+						SelfMgr.getInstance().addUnknownVendors(result.getInfoBean());
+					}
+				} else {
+					DriverListViewResult result = webClient.DriverListView(unknown);
+					if (null != result && result.isSuccess()) {
+						SelfMgr.getInstance().addUnknownDrivers(result.getInfoBean());
+					}
+				}
+			}
+			
 			this.mAdapter.notifyDataSetChanged();
 		} catch (Exception e) {
 			e.printStackTrace();
