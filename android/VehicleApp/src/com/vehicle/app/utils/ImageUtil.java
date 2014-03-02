@@ -8,10 +8,12 @@ import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
 
 public class ImageUtil {
-	
-	public static void RenderImageView(String url, ImageView iv, int width, int height) {
-		Bitmap bitmap = BitmapCache.getInstance().get(url);
 
+	public static void RenderImageView(String url, ImageView iv, int width, int height) {
+		if (null == iv)
+			return;
+
+		Bitmap bitmap = BitmapCache.getInstance().get(url);
 		if (null != bitmap) {
 			if (width > 0 && height > 0 && (width != bitmap.getWidth() || height != bitmap.getHeight())) {
 				iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, width, height, true));

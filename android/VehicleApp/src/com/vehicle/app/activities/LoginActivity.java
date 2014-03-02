@@ -13,7 +13,6 @@ import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.OfflineMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
@@ -86,7 +85,7 @@ public class LoginActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -167,7 +166,7 @@ public class LoginActivity extends Activity {
 	 * If there are form errors (invalid email, missing fields, etc.), the
 	 * errors are presented and no actual login attempt is made.
 	 */
-	public void attemptLogin() {
+	private void attemptLogin() {
 		if (mAuthTask != null) {
 			return;
 		}
@@ -339,36 +338,47 @@ public class LoginActivity extends Activity {
 					if (SelfMgr.getInstance().isDriver()) {
 						SelfDriver self = (SelfDriver) result.getInfoBean();
 
-						VehicleWebClient webClient = new VehicleWebClient();
-						result = webClient.CarListView(self.getId());
-						self.setCars(((CarListViewResult) result).getInfoBean());
-
-						SelfMgr.getInstance().setSelfDriver(self);
-
-					} else {
-						SelfVendor self = (SelfVendor) result.getInfoBean();
-						VehicleWebClient webClient = new VehicleWebClient();
-						VendorImgViewResult imgResult = webClient.VendorImgView(self.getId());
-						if (null != imgResult) {
-							self.setImgs(imgResult.getInfoBean());
-
-							List<VendorImage> imgs = imgResult.getInfoBean();
-							if (null != imgs) {
-								for (VendorImage img : imgs) {
-									String imgUrl = img.getSrc();
-									InputStream input = HttpUtil.DownloadFile(imgUrl);
-									Bitmap bitmap = BitmapFactory.decodeStream(input);
-									BitmapCache.getInstance().put(imgUrl, bitmap);
-								}
-							}
+						try {
+							VehicleWebClient webClient = new VehicleWebClient();
+							CarListViewResult carResult = webClient.CarListView(self.getId());
+							if (null != carResult && carResult.isSuccess())
+								self.setCars((carResult).getInfoBean());
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 
-						VendorSpecViewResult specView = webClient.VendorSpecView(self.getId());
-						if (null != specView && null != specView.getInfoBean()) {
-							VendorDetail detail = specView.getInfoBean();
-							self.setComments(detail.getReviews());
-							self.setCoupons(detail.getCoupons());
-							self.setPromotions(detail.getPromotions());
+						SelfMgr.getInstance().setSelfDriver(self);
+					} else {
+
+						SelfVendor self = (SelfVendor) result.getInfoBean();
+
+						try {
+							VehicleWebClient webClient = new VehicleWebClient();
+							VendorImgViewResult imgResult = webClient.VendorImgView(self.getId());
+							if (null != imgResult && imgResult.isSuccess()) {
+								self.setImgs(imgResult.getInfoBean());
+
+								/**
+								 * List<VendorImage> imgs =
+								 * imgResult.getInfoBean(); if (null != imgs) {
+								 * for (VendorImage img : imgs) { String imgUrl
+								 * = img.getSrc(); InputStream input =
+								 * HttpUtil.DownloadFile(imgUrl); Bitmap bitmap
+								 * = BitmapFactory.decodeStream(input);
+								 * BitmapCache.getInstance().put(imgUrl,
+								 * bitmap); } }
+								 */
+							}
+
+							VendorSpecViewResult specView = webClient.VendorSpecView(self.getId());
+							if (null != specView && specView.isSuccess() && null != specView.getInfoBean()) {
+								VendorDetail detail = specView.getInfoBean();
+								self.setComments(detail.getReviews());
+								self.setCoupons(detail.getCoupons());
+								self.setPromotions(detail.getPromotions());
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 
 						SelfMgr.getInstance().setSelfVendor(self);
@@ -412,7 +422,7 @@ public class LoginActivity extends Activity {
 				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
 
 				finish();
-				
+
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				LoginActivity.this.startActivity(intent);

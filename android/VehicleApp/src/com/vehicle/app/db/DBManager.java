@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.vehicle.app.bean.RoleInfo;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
@@ -58,8 +59,83 @@ public class DBManager {
 	private final static String SQL_TOPMSG_UPDATE = "UPDATE `TOPMESSAGE` SET `TOPMSG` = ? WHERE `HOST` = ?;";
 	private final static String SQL_TOPMSG_SELECT = "SELECT `TOPMSG` FROM `TOPMESSAGE` WHERE `HOST` = ?;";
 
+	private final static String SQL_LASTONBOARD_SELECT = "SELECT `USERNAME`, `PASSWORD`, `ROLE` `AUTOLOG` FROM `LASTONBOARDROLE`;";
+	private final static String SQL_LASTONBOARD_INSERT = "INSERT INTO `LASTONBOARDROLE` (`USERNAME`, `PASSWORD`, `ROLE`, `AUTOLOG`) VALUES(?, ?, ?, ?);";
+	private final static String SQL_LASTONBOARD_DELETEALL = "DELETE FROM `LASTONBOARDROLE`;";
+
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);
+	}
+
+	public RoleInfo selectLastOnBoard() {
+		lock.lock();
+		SQLiteDatabase db = mDBHelper.getReadableDatabase();
+
+		try {
+			Cursor cursor = db.rawQuery(SQL_LASTONBOARD_SELECT, new String[] {});
+
+			if (cursor.getCount() > 0) {
+				cursor.moveToFirst();
+				String name = cursor.getString(cursor.getColumnIndex(""));
+				String pwd = cursor.getString(cursor.getColumnIndex(""));
+				int role = cursor.getInt(cursor.getColumnIndex(""));
+				int auto = cursor.getInt(cursor.getColumnIndex(""));
+
+				RoleInfo roleInfo = new RoleInfo();
+				roleInfo.setUserName(name);
+				roleInfo.setPassword(pwd);
+				roleInfo.setRoleType(role);
+				roleInfo.setIsAutoLog(auto != 0);
+				return roleInfo;
+			} else {
+				return null;
+			}
+		} finally {
+			if (null != db) {
+				try {
+					db.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			lock.unlock();
+		}
+	}
+	
+	public void updateLastOnboard(String userName, String password, int role, boolean isAuto)
+	{
+		lock.lock();
+		SQLiteDatabase db = mDBHelper.getWritableDatabase();
+		try{
+			db.beginTransaction();
+			
+			SQLiteStatement delStmt = db.compileStatement(SQL_LASTONBOARD_DELETEALL);
+			delStmt.executeUpdateDelete();
+			
+			SQLiteStatement insertStmt = db.compileStatement(SQL_LASTONBOARD_INSERT);
+			insertStmt.clearBindings();
+			insertStmt.bindString(1, userName);
+			insertStmt.bindString(2, password);
+			insertStmt.bindLong(3, role);
+			insertStmt.bindLong(4, isAuto ? 1 : 0);
+			insertStmt.executeInsert();
+			
+			db.setTransactionSuccessful();
+		}finally{
+			if(null != db)
+			{
+				try{
+					db.endTransaction();
+					db.close();
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				
+				lock.unlock();
+			}
+		}
 	}
 
 	public void insertOrUpdateTopMsg(String host, String tops) {
@@ -90,7 +166,7 @@ public class DBManager {
 
 		} finally {
 			try {
-				
+
 				if (null != db) {
 					db.endTransaction();
 					db.close();
@@ -374,12 +450,12 @@ public class DBManager {
 	}
 
 	public void insertFileMessage(FileMessage msg) {
-		
+
 		/**
-		ByteArrayOutputStream boas = new ByteArrayOutputStream();
-		msg.getContent().compress(Bitmap.CompressFormat.PNG, 100, boas);
-		*/
-		
+		 * ByteArrayOutputStream boas = new ByteArrayOutputStream();
+		 * msg.getContent().compress(Bitmap.CompressFormat.PNG, 100, boas);
+		 */
+
 		insertFileMessage(msg.getToken(), msg.getSource(), msg.getTarget(), msg.getContent(), msg.getSentTime(),
 				msg.getFlag(), msg.getMessageType());
 	}
@@ -433,7 +509,8 @@ public class DBManager {
 
 				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
 
-				//Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+				// Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0,
+				// byteArray.length);
 
 				msg.setContent(byteArray);
 
@@ -480,7 +557,8 @@ public class DBManager {
 
 				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
 
-				//Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+				// Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0,
+				// byteArray.length);
 
 				msg.setContent(byteArray);
 
@@ -825,7 +903,7 @@ public class DBManager {
 
 		} finally {
 			try {
-				if (null != db){
+				if (null != db) {
 					db.endTransaction();
 					db.close();
 				}

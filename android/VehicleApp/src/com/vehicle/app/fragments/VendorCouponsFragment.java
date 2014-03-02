@@ -9,7 +9,6 @@ import com.vehicle.app.bean.VendorCoupon;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 @SuppressLint("ValidFragment")
-public class VendorCouponsFragment extends Fragment {
+public class VendorCouponsFragment extends RefreshableFragment {
 
 	private VendorDetail vendor;
 
@@ -32,9 +31,17 @@ public class VendorCouponsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View parent = inflater.inflate(R.layout.layout_vendorcoupons, container, false);
+		return parent;
+	}
 
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		View parent = this.getView();
+		if(null == parent)
+			return;
+		
 		TableLayout table = (TableLayout) parent.findViewById(R.id.table_promotion);
-
 		List<VendorCoupon> coupons = vendor.getCoupons();
 
 		if (null != coupons) {
@@ -96,6 +103,5 @@ public class VendorCouponsFragment extends Fragment {
 				table.addView(divider, 2 * i + 1);
 			}
 		}
-		return parent;
 	}
 }

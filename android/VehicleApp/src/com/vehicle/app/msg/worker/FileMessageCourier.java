@@ -47,10 +47,12 @@ public class FileMessageCourier extends MessageBaseCourier {
 				try {
 					if (isGroupChat) {
 						VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-						resp = vClient.SendMultiFile(picMessage.getTarget(), picMessage.getPath(), picMessage.getMessageType());
+						resp = vClient.SendMultiFile(picMessage.getTarget(), picMessage.getPath(),
+								picMessage.getMessageType());
 					} else {
 						VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
-						resp = vClient.SendFile(picMessage.getTarget(), picMessage.getPath(), picMessage.getMessageType());
+						resp = vClient.SendFile(picMessage.getTarget(), picMessage.getPath(),
+								picMessage.getMessageType());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -105,8 +107,13 @@ public class FileMessageCourier extends MessageBaseCourier {
 					// ChatActivity.CHAT_STYLE_2ONE);
 					context.sendBroadcast(msgIntent);
 				} else {
-					Intent msgIntent = new Intent(Constants.ACTION_FILEMESSAGE_SENTFAILED);
-					context.sendBroadcast(msgIntent);
+					if (picMessage.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
+						Intent msgIntent = new Intent(Constants.ACTION_IMGMESSAGE_SENTFAILED);
+						context.sendBroadcast(msgIntent);
+					} else if (picMessage.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
+						Intent msgIntent = new Intent(Constants.ACTION_AUDIOMESSAGE_SENTFAILED);
+						context.sendBroadcast(msgIntent);
+					}
 				}
 
 			}

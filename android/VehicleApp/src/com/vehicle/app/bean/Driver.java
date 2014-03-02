@@ -10,9 +10,6 @@ import com.vehicle.app.utils.StringUtil;
 
 public class Driver implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6645547105668102215L;
 
 	@SerializedName("member_id")

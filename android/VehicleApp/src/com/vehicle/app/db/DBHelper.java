@@ -35,6 +35,8 @@ public class DBHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_INDEX_RECENTMSGSELF = "CREATE INDEX `RECENTMSG_SELF_IDX` ON `RECENTMESSAGE` (`SELFID` ASC)";
 
 	private static final String DATABASE_TABLE_TOPMESSAGE = "CREATE TABLE IF NOT EXISTS `TOPMESSAGE` (`HOST` CHAR(240) NOT NULL, `TOPMSG` TEXT, PRIMARY KEY (`HOST`))";
+	
+	private static final String DATABASE_TABLE_LASTLOGUSER = "CREATE TABLE IF NOT EXISTS `LASTONBOARDROLE` (`USERNAME` CHAR(240) NOT NULL, `PASSWORD` CHAR(240) NOT NULL, `ROLE` INTEGER NOT NULL DEFAULT 1, `AUTOLOG` INTEGER NOT NULL DEFAULT 1, PRIMARY KEY (`USERNAME`))";
 
 	public DBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,7 +75,9 @@ public class DBHelper extends SQLiteOpenHelper {
 			db.execSQL(DATABASE_INDEX_RECENTMSGSELF);
 
 			db.execSQL(DATABASE_TABLE_TOPMESSAGE);
-
+			
+			db.execSQL(DATABASE_TABLE_LASTLOGUSER);
+			
 			db.setTransactionSuccessful();
 
 		} catch (Exception e) {

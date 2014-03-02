@@ -1187,30 +1187,30 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int activity_login=0x7f0e0000;
     }
     public static final class string {
-        public static final int action_sign_in_register=0x7f0c0086;
-        public static final int action_sign_in_short=0x7f0c0087;
+        public static final int action_sign_in_register=0x7f0c0087;
+        public static final int action_sign_in_short=0x7f0c0088;
         public static final int alert_zh=0x7f0c002c;
         public static final int alias_hint=0x7f0c000d;
         public static final int animate=0x7f0c0028;
         public static final int app_name=0x7f0c0006;
         public static final int back=0x7f0c000a;
-        public static final int beginwords=0x7f0c0082;
+        public static final int beginwords=0x7f0c0083;
         public static final int camera_zh=0x7f0c002b;
         public static final int chat_title_name=0x7f0c0009;
         public static final int clearmsg_confirmtxt=0x7f0c002f;
         public static final int down_arrow=0x7f0c0024;
-        public static final int driverlogin_noaccount=0x7f0c008e;
-        public static final int driverlogin_registerbtn=0x7f0c008f;
+        public static final int driverlogin_noaccount=0x7f0c008f;
+        public static final int driverlogin_registerbtn=0x7f0c0090;
         public static final int error_alias_empty=0x7f0c0010;
-        public static final int error_field_required=0x7f0c008d;
-        public static final int error_incorrect_password=0x7f0c008c;
-        public static final int error_invalid_email=0x7f0c008a;
-        public static final int error_invalid_password=0x7f0c008b;
+        public static final int error_field_required=0x7f0c008e;
+        public static final int error_incorrect_password=0x7f0c008d;
+        public static final int error_invalid_email=0x7f0c008b;
+        public static final int error_invalid_password=0x7f0c008c;
         public static final int error_network=0x7f0c0013;
         public static final int error_style_empty=0x7f0c000f;
         public static final int error_tag_empty=0x7f0c0011;
         public static final int error_tag_gs_empty=0x7f0c0012;
-        public static final int followshipinvitationformatstr=0x7f0c0083;
+        public static final int followshipinvitationformatstr=0x7f0c0084;
         public static final int format_msg_location=0x7f0c001d;
         public static final int format_msg_newfellow=0x7f0c001f;
         public static final int format_msg_picture=0x7f0c001e;
@@ -1218,41 +1218,41 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int hello=0x7f0c0007;
         public static final int left_arrow=0x7f0c0021;
         public static final int location_zh=0x7f0c0029;
-        public static final int login_progress_signing_in=0x7f0c0089;
+        public static final int login_progress_signing_in=0x7f0c008a;
         public static final int logining=0x7f0c0014;
         public static final int main_empty_list=0x7f0c0008;
-        public static final int menu_forgot_password=0x7f0c0088;
+        public static final int menu_forgot_password=0x7f0c0089;
         public static final int nearbysearch_dirvers=0x7f0c001a;
         public static final int nearbysearch_vendors=0x7f0c0019;
         public static final int nearbyvendorstatustext=0x7f0c0045;
         public static final int negative_zh=0x7f0c002e;
         public static final int positive_zh=0x7f0c002d;
-        public static final int pref_default_display_name=0x7f0c00a4;
-        public static final int pref_description_social_recommendations=0x7f0c00a2;
+        public static final int pref_default_display_name=0x7f0c00a5;
+        public static final int pref_description_social_recommendations=0x7f0c00a3;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f0c00a6;
+        public static final int pref_header_data_sync=0x7f0c00a7;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f0c00a0;
+        public static final int pref_header_general=0x7f0c00a1;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f0c00a9;
-        public static final int pref_ringtone_silent=0x7f0c00ac;
-        public static final int pref_title_add_friends_to_messages=0x7f0c00a5;
-        public static final int pref_title_display_name=0x7f0c00a3;
-        public static final int pref_title_new_message_notifications=0x7f0c00aa;
-        public static final int pref_title_ringtone=0x7f0c00ab;
-        public static final int pref_title_social_recommendations=0x7f0c00a1;
-        public static final int pref_title_sync_frequency=0x7f0c00a7;
-        public static final int pref_title_system_sync_settings=0x7f0c00a8;
-        public static final int pref_title_vibrate=0x7f0c00ad;
+        public static final int pref_header_notifications=0x7f0c00aa;
+        public static final int pref_ringtone_silent=0x7f0c00ad;
+        public static final int pref_title_add_friends_to_messages=0x7f0c00a6;
+        public static final int pref_title_display_name=0x7f0c00a4;
+        public static final int pref_title_new_message_notifications=0x7f0c00ab;
+        public static final int pref_title_ringtone=0x7f0c00ac;
+        public static final int pref_title_social_recommendations=0x7f0c00a2;
+        public static final int pref_title_sync_frequency=0x7f0c00a8;
+        public static final int pref_title_system_sync_settings=0x7f0c00a9;
+        public static final int pref_title_vibrate=0x7f0c00ae;
         public static final int project_zh=0x7f0c0037;
         /**  Strings related to login 
          */
-        public static final int prompt_email=0x7f0c0084;
-        public static final int prompt_password=0x7f0c0085;
+        public static final int prompt_email=0x7f0c0085;
+        public static final int prompt_password=0x7f0c0086;
         public static final int promt_server=0x7f0c0017;
         /**  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
@@ -1263,21 +1263,21 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int pull_to_refresh_pull_label=0x7f0c0000;
         public static final int pull_to_refresh_refreshing_label=0x7f0c0002;
         public static final int pull_to_refresh_release_label=0x7f0c0001;
-        public static final int reg_btn_ok=0x7f0c0095;
-        public static final int reg_prompt_cfmpwd=0x7f0c0093;
-        public static final int reg_prompt_email=0x7f0c0090;
-        public static final int reg_prompt_password=0x7f0c0092;
-        public static final int reg_prompt_username=0x7f0c0091;
-        public static final int reg_tip_invalidemail=0x7f0c0099;
-        public static final int reg_tip_invalidpwd=0x7f0c0097;
-        public static final int reg_tip_notequalpwd=0x7f0c0098;
-        public static final int reg_tip_null=0x7f0c0096;
-        public static final int reg_title=0x7f0c0094;
-        public static final int register_fieldnull=0x7f0c009b;
-        public static final int register_invalid_email=0x7f0c009e;
-        public static final int register_invalid_pwdcfm=0x7f0c009c;
-        public static final int register_invalid_pwdlen=0x7f0c009d;
-        public static final int register_progress=0x7f0c009a;
+        public static final int reg_btn_ok=0x7f0c0096;
+        public static final int reg_prompt_cfmpwd=0x7f0c0094;
+        public static final int reg_prompt_email=0x7f0c0091;
+        public static final int reg_prompt_password=0x7f0c0093;
+        public static final int reg_prompt_username=0x7f0c0092;
+        public static final int reg_tip_invalidemail=0x7f0c009a;
+        public static final int reg_tip_invalidpwd=0x7f0c0098;
+        public static final int reg_tip_notequalpwd=0x7f0c0099;
+        public static final int reg_tip_null=0x7f0c0097;
+        public static final int reg_title=0x7f0c0095;
+        public static final int register_fieldnull=0x7f0c009c;
+        public static final int register_invalid_email=0x7f0c009f;
+        public static final int register_invalid_pwdcfm=0x7f0c009d;
+        public static final int register_invalid_pwdlen=0x7f0c009e;
+        public static final int register_progress=0x7f0c009b;
         public static final int right_arrow=0x7f0c0022;
         public static final int send=0x7f0c000b;
         public static final int setting_btn=0x7f0c0016;
@@ -1296,6 +1296,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int tip_advicepromt=0x7f0c0059;
         public static final int tip_advicesuccess=0x7f0c0062;
         public static final int tip_advicetitle=0x7f0c0058;
+        public static final int tip_audiomsgfailed=0x7f0c0082;
         public static final int tip_canceltop=0x7f0c0067;
         public static final int tip_commentfailed=0x7f0c0044;
         public static final int tip_commentfailedformat=0x7f0c0074;
@@ -1345,7 +1346,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int tip_vendortextsent=0x7f0c004c;
         public static final int tip_viewnearbyvendorfailed=0x7f0c0047;
         public static final int title=0x7f0c0018;
-        public static final int title_activity_settings=0x7f0c009f;
+        public static final int title_activity_settings=0x7f0c00a0;
         public static final int up_arrow=0x7f0c0023;
         public static final int yesterday=0x7f0c0020;
         public static final int zh_aboutus=0x7f0c0071;

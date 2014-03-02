@@ -31,6 +31,9 @@ import com.vehicle.service.bean.RangeResponse;
 
 public class SelfMgr {
 
+	public static final int ROLENUM_DRIVER = 1;
+	public static final int ROLENUM_VENDOR = 2;
+	
 	private SelfMgr() {
 
 		mFavVendorSimpleVector = new Vector<FavoriteVendor>();

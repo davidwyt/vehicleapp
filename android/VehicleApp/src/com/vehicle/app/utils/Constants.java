@@ -9,7 +9,8 @@ public class Constants {
 	public static final String ACTION_FILEMSG_RECEIVED = "com.vehicle.app.action.filereceived";
 	public static final String ACTION_FILEMSG_SENTOK = "com.vehicle.app.action.filesentok";
 	public static final String ACTION_TEXTMESSAGE_SENTFAILED = "com.vehicle.app.action.textmsg.failed";
-	public static final String ACTION_FILEMESSAGE_SENTFAILED = "com.vehicle.app.action.filemsg.failed";
+	public static final String ACTION_IMGMESSAGE_SENTFAILED = "com.vehicle.app.action.imgmsg.failed";
+	public static final String ACTION_AUDIOMESSAGE_SENTFAILED = "com.vehicle.app.action.audiomsg.failed";
 	public static final String ACTION_LOCMESSAGE_SENTFAILED = "com.vehicle.app.action.locmsg.failed";
 	public static final String ACTION_FOLLOWSHIP_SUCCESS = "com.vehicle.app.action.followship.success";
 	public static final String ACTION_FOLLOWSHIP_FAILED = "com.vehicle.app.action.followship.failed";

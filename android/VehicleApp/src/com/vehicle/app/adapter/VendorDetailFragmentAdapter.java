@@ -3,15 +3,18 @@ package com.vehicle.app.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.fragments.RefreshableFragment;
 import com.vehicle.app.fragments.VendorCommentsFragment;
 import com.vehicle.app.fragments.VendorPromotionsFragment;
 import com.vehicle.app.fragments.VendorDetailFragment;
 import com.vehicle.app.fragments.VendorCouponsFragment;
 import com.viewpagerindicator.IconPagerAdapter;
 
-public class VendorDetailFragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
+public class VendorDetailFragmentAdapter extends FragmentStatePagerAdapter implements IconPagerAdapter {
 	protected static final String[] CONTENT = new String[] { "商家介绍", "点评记录", "优惠券", "商家折扣", };
 
 	private int mCount = CONTENT.length;
@@ -23,6 +26,11 @@ public class VendorDetailFragmentAdapter extends FragmentPagerAdapter implements
 
 	public void setVendorDetail(VendorDetail detail) {
 		this.vendor = detail;
+	}
+
+	@Override
+	public int getItemPosition(Object object) {
+		return POSITION_NONE;
 	}
 
 	@Override
@@ -51,6 +59,18 @@ public class VendorDetailFragmentAdapter extends FragmentPagerAdapter implements
 	@Override
 	public int getCount() {
 		return mCount;
+	}
+
+	@Override
+	public Object instantiateItem(ViewGroup container, int position) {
+
+		Object obj = super.instantiateItem(container, position);
+		if (obj instanceof RefreshableFragment) {
+			RefreshableFragment fragment = (RefreshableFragment) obj;
+			fragment.refresh();
+		}
+		
+		return obj;
 	}
 
 	@Override

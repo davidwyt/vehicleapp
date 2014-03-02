@@ -117,7 +117,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 		mDetailPager = (ViewPager) findViewById(R.id.vendorhome_pager);
 		mDetailPager.setAdapter(mDetailAdapter);
-
+		
 		mDetailIndicator = (TitlePageIndicator) findViewById(R.id.vendorhome_indicator);
 		mDetailIndicator.setViewPager(mDetailPager);
 		mDetailIndicator.setFooterIndicatorStyle(IndicatorStyle.Triangle);
@@ -239,18 +239,32 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 	private void setVendorDetail(VendorDetail detail) {
 
-		if (null == detail)
+		if (null == detail) {
 			return;
+		}
 
 		this.mCurVendorDetail = detail;
 
 		this.mTvName.setText(detail.getVendor().getName());
 
 		this.mDetailAdapter.setVendorDetail(detail);
-		this.mDetailAdapter.notifyDataSetChanged();
-
 		this.mImgAdapter.setImgs(detail.getImgs());
-		this.mImgAdapter.notifyDataSetChanged();
+		
+		mDetailAdapter.notifyDataSetChanged();
+		mImgAdapter.notifyDataSetChanged();
+		
+		try {
+			runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void registerMessageReceiver() {

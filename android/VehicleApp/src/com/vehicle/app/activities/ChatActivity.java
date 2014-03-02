@@ -1,6 +1,5 @@
 package com.vehicle.app.activities;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -48,7 +47,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.format.DateFormat;
 import android.view.Gravity;
@@ -255,8 +253,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		filter.addAction(Constants.ACTION_FILEMSG_RECEIVED);
 		filter.addAction(Constants.ACTION_FILEMSG_SENTOK);
 		filter.addAction(Constants.ACTION_TEXTMESSAGE_SENTFAILED);
-		filter.addAction(Constants.ACTION_FILEMESSAGE_SENTFAILED);
+		filter.addAction(Constants.ACTION_IMGMESSAGE_SENTFAILED);
 		filter.addAction(Constants.ACTION_LOCMESSAGE_SENTFAILED);
+		filter.addAction(Constants.ACTION_AUDIOMESSAGE_SENTFAILED);
 
 		try {
 			registerReceiver(messageReceiver, filter);
@@ -523,15 +522,15 @@ public class ChatActivity extends Activity implements OnClickListener {
 			picItem.setSource(SelfMgr.getInstance().getId());
 			picItem.setTarget(mFellowId);
 			picItem.setName(file.getName());
-			
+
 			/**
-			if (type == IMessageItem.MESSAGE_TYPE_IMAGE) {
-				Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-				ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-				bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayBitmapStream);
-			}
-			*/
-			
+			 * if (type == IMessageItem.MESSAGE_TYPE_IMAGE) { Bitmap bitmap =
+			 * BitmapFactory.decodeFile(filePath); ByteArrayOutputStream
+			 * byteArrayBitmapStream = new ByteArrayOutputStream();
+			 * bitmap.compress(Bitmap.CompressFormat.PNG, 100,
+			 * byteArrayBitmapStream); }
+			 */
+
 			byte[] bytes = FileUtil.ReadFile(filePath);
 			picItem.setContent(bytes);
 			picItem.setFlag(MessageFlag.SELF);
@@ -603,11 +602,14 @@ public class ChatActivity extends Activity implements OnClickListener {
 			} else if (Constants.ACTION_TEXTMESSAGE_SENTFAILED.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_textmsgfailed),
 						Toast.LENGTH_LONG).show();
-			} else if (Constants.ACTION_FILEMESSAGE_SENTFAILED.equals(action)) {
+			} else if (Constants.ACTION_IMGMESSAGE_SENTFAILED.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_picmsgfailed),
 						Toast.LENGTH_LONG).show();
 			} else if (Constants.ACTION_LOCMESSAGE_SENTFAILED.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_locmsgfailed),
+						Toast.LENGTH_LONG).show();
+			} else if (Constants.ACTION_AUDIOMESSAGE_SENTFAILED.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_audiomsgfailed),
 						Toast.LENGTH_LONG).show();
 			}
 		}
