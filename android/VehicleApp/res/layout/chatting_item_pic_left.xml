@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/chatpic_iv_userhead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/contact_list_minus_btn_normal"
@@ -44,6 +44,9 @@
             android:id="@+id/chatpic_tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:singleLine="false"
+            android:layout_alignRight="@id/chatpic_iv_userhead"
             android:layout_alignParentLeft="true"
             android:layout_below="@id/chatpic_iv_userhead" />
     </RelativeLayout>

@@ -80,19 +80,19 @@
                 android:id="@+id/chat_btn_voice"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginLeft="4dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
+                android:layout_marginLeft="4dp"
                 android:background="@drawable/selector_btn_voice" />
 
             <EditText
                 android:id="@+id/et_sendmessage"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
-                android:layout_toRightOf="@id/chat_btn_voice"                
+                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="2dp"
                 android:layout_toLeftOf="@+id/chat_btn_plus"
-                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/chat_btn_voice"
                 android:background="@drawable/edittext1"
                 android:inputType="text"
                 android:singleLine="true"
@@ -114,6 +114,14 @@
             android:divider="@null"
             android:dividerHeight="5dp"
             android:scrollbars="vertical" />
+
+        <ImageButton
+            android:id="@+id/chat_btn_speak"
+            android:layout_width="192dp"
+            android:layout_height="192dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:background="@drawable/selector_button_speak" />
     </RelativeLayout>
 
 </merge>

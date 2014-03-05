@@ -76,12 +76,12 @@ public class TextMessageCourier extends MessageBaseCourier {
 
 					if (isGroupChat) {
 						MessageOne2MultiResponse multiResp = (MessageOne2MultiResponse) resp;
-						msg.setSentTime(multiResp.getMsgSentTime());
+						//msg.setSentTime(multiResp.getMsgSentTime());
 					} else {
 
 						MessageOne2OneResponse oneResp = (MessageOne2OneResponse) resp;
 						msg.setId(oneResp.getMsgId());
-						msg.setSentTime(oneResp.getMsgSentTime());
+						//msg.setSentTime(oneResp.getMsgSentTime());
 						msg.setFlag(MessageFlag.SELF);
 
 						try {
@@ -123,7 +123,6 @@ public class TextMessageCourier extends MessageBaseCourier {
 					}
 				}
 			}
-
 		};
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

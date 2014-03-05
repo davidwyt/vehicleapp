@@ -3,6 +3,7 @@ package com.vehicle.app.bean;
 import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
+import com.vehicle.app.utils.StringUtil;
 
 public class Comment implements Serializable {
 
@@ -164,7 +165,7 @@ public class Comment implements Serializable {
 	}
 
 	public String getReviews() {
-		return this.reviews;
+		return StringUtil.filterHtml(this.reviews);
 	}
 
 	public void setReviews(String reviews) {

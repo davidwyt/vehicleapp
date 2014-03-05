@@ -52,7 +52,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class VendorRatingActivity extends Activity implements OnClickListener {
+public class VendorRatingActivity extends TemplateActivity implements OnClickListener {
 
 	private Vendor mVendor;
 
@@ -97,7 +97,7 @@ public class VendorRatingActivity extends Activity implements OnClickListener {
 	public static final String KEY_COMMENT_ERRMSG = "com.vehicle.app.vendorrating.errormsg";
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_vendorrating);

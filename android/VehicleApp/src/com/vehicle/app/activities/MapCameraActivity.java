@@ -1,6 +1,5 @@
 package com.vehicle.app.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -19,7 +18,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MarkerOptions;
 import com.vehicle.app.msg.bean.SimpleLocation;
 
-public class MapCameraActivity extends Activity implements OnClickListener, CancelableCallback {
+public class MapCameraActivity extends TemplateActivity implements OnClickListener, CancelableCallback {
 	private MapView mapView;
 	private AMap aMap;
 

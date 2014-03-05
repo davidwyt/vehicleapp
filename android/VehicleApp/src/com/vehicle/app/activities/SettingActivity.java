@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class SettingActivity extends Activity {
+public class SettingActivity extends TemplateActivity {
 
 	private EditText selfIdET;
 	private EditText herIdET;
@@ -34,7 +34,7 @@ public class SettingActivity extends Activity {
 	private View mSettingMainForm;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 

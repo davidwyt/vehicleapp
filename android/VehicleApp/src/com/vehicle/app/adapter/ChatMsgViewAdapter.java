@@ -19,8 +19,8 @@ import android.widget.TextView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -86,9 +86,11 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			}
 
 			TextView tvSendTime = (TextView) convertView.findViewById(R.id.chatmsg_tv_sendtime);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
 			tvSendTime.setText(sdf.format(msg.getSentTime()));
-
+			
+			System.out.println(" in adpater msg: " + msg.getContent() + " time:" + sdf.format(msg.getSentTime()) + " long:" + msg.getSentTime());
+			
 			BaseInfo info = this.getBaseInfo(msg.getSource());
 
 			TextView tvUserName = (TextView) convertView.findViewById(R.id.chatmsg_tv_username);
@@ -136,8 +138,8 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			}
 
 			TextView tvSendTime = (TextView) convertView.findViewById(R.id.chatpic_tv_sendtime);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			tvSendTime.setText(sdf.format(new Date()));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+			tvSendTime.setText(sdf.format(pic.getSentTime()));
 
 			BaseInfo info = this.getBaseInfo(pic.getSource());
 

@@ -11,7 +11,6 @@ import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -23,7 +22,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-public class MyFellowListActivity extends Activity {
+public class MyFellowListActivity extends TemplateActivity {
 
 	private PullToRefreshListView mPullRefreshListView;
 
@@ -35,7 +34,7 @@ public class MyFellowListActivity extends Activity {
 	private List mListFellows = new ArrayList();
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

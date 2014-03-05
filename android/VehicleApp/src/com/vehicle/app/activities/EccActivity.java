@@ -1,12 +1,10 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class EccActivity extends Activity {
+public class EccActivity extends TemplateActivity {
 
 	private EditText mETEmail;
 	private EditText mETAdvice;
@@ -39,7 +37,7 @@ public class EccActivity extends Activity {
 	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -96,13 +94,15 @@ public class EccActivity extends Activity {
 
 			return;
 		}
-
+		
+		/**
 		if (!StringUtil.IsEmail(email)) {
 			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_emailinvalid),
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-
+*/
+		
 		AsyncTask<Void, Void, WebCallBaseResult> asyncTask = new AsyncTask<Void, Void, WebCallBaseResult>() {
 
 			@Override
@@ -132,7 +132,7 @@ public class EccActivity extends Activity {
 				} else {
 					if (null != result) {
 						Toast.makeText(getApplicationContext(),
-								getResources().getString(R.string.tip_advicefailed, result.getMessage()),
+								getResources().getString(R.string.tip_advicefailed2, result.getMessage()),
 								Toast.LENGTH_LONG).show();
 					} else {
 						Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_advicefailed),

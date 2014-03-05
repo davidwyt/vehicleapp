@@ -74,7 +74,7 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 
 			name = driver.getAlias();
 			feature = driver.getIntroduction();
-			distance = driver.getDistance() + "";
+			distance = driver.getDistance() + inflater.getContext().getString(R.string.zh_kilometer);
 			url = driver.getAvatar();
 
 		} else if (fellow instanceof Vendor && SelfMgr.getInstance().isDriver()) {

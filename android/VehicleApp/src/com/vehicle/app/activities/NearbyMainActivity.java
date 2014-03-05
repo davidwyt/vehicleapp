@@ -1,12 +1,14 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.LocationUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -21,7 +23,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
-public class NearbyMainActivity extends Activity implements OnCheckedChangeListener, OnClickListener {
+public class NearbyMainActivity extends TemplateActivity implements OnCheckedChangeListener, OnClickListener {
 
 	private RadioGroup mRdGroup;
 
@@ -35,7 +37,7 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 	private NearbySearchTask mSearchTask;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_nearbymain);
@@ -81,16 +83,43 @@ public class NearbyMainActivity extends Activity implements OnCheckedChangeListe
 		super.onStop();
 	}
 
+	private void attempQuit() {
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+		alertDialogBuilder.setTitle(this.getResources().getString(R.string.alert_zh));
+
+		alertDialogBuilder
+				.setMessage(getResources().getString(R.string.tip_quitconfig))
+				.setCancelable(false)
+				.setPositiveButton(getResources().getString(R.string.positive_zh),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								ActivityManager.getInstance().finishAll();
+							}
+						})
+				.setNegativeButton(getResources().getString(R.string.negative_zh),
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+
+		AlertDialog alertDialog = alertDialogBuilder.create();
+
+		alertDialog.show();
+	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			this.finish();
+			attempQuit();
 			return true;
 		}
+
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		// TODO Auto-generated method stub

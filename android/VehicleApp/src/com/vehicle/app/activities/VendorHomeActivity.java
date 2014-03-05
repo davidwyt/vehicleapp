@@ -9,7 +9,6 @@ import junit.framework.Assert;
 
 import com.vehicle.app.adapter.VendorImagePageAdapter;
 import com.vehicle.app.adapter.VendorDetailFragmentAdapter;
-import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
@@ -42,7 +41,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
@@ -52,7 +50,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VendorHomeActivity extends FragmentActivity implements OnClickListener {
+public class VendorHomeActivity extends FragmentTemplateActivity implements OnClickListener {
 
 	VendorDetailFragmentAdapter mDetailAdapter;
 	ViewPager mDetailPager;
@@ -76,6 +74,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 	public static final int PERSPECTIVE_SELF = 1;
 	public static final int PERSPECTIVE_NEARBY = 2;
 	public static final int PERSPECTIVE_FELLOW = 3;
+	public static final int PERSPECTIVE_INVITATION = 4;
 
 	public static final String KEY_PERSPECTIVE = "com.vehicle.app.key.vendorhomeactivity.pers";
 
@@ -107,7 +106,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -117,7 +116,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 		mDetailPager = (ViewPager) findViewById(R.id.vendorhome_pager);
 		mDetailPager.setAdapter(mDetailAdapter);
-		
+
 		mDetailIndicator = (TitlePageIndicator) findViewById(R.id.vendorhome_indicator);
 		mDetailIndicator.setViewPager(mDetailPager);
 		mDetailIndicator.setFooterIndicatorStyle(IndicatorStyle.Triangle);
@@ -174,17 +173,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 			VendorDetail vendor = null;
 			if (PERSPECTIVE_SELF == this.mPerspective) {
-
-				VendorDetail selfDetail = new VendorDetail();
-				SelfVendor selfVendor = SelfMgr.getInstance().getSelfVendor();
-
-				selfDetail.setVendor(selfVendor);
-				selfDetail.setCoupons(selfVendor.getCoupons());
-				selfDetail.setPromotions(selfVendor.getPromotions());
-				selfDetail.setImgs(selfVendor.getImgs());
-				selfDetail.setReviews(selfVendor.getComments());
-
-				vendor = selfDetail;
+				vendor = SelfMgr.getInstance().getSelfVendorDetail();
 			} else if (PERSPECTIVE_NEARBY == this.mPerspective) {
 				this.mNearbyVendors = bundle.getStringArrayList(KEY_NEARBYVENDORS);
 				String vendorId = bundle.getString(KEY_VENDORID);
@@ -206,6 +195,9 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 			} else if (PERSPECTIVE_FELLOW == this.mPerspective) {
 				String vendorId = bundle.getString(KEY_VENDORID);
 				vendor = SelfMgr.getInstance().getFavVendorDetail(vendorId);
+			} else if (PERSPECTIVE_INVITATION == this.mPerspective) {
+				String vendorId = bundle.getString(KEY_VENDORID);
+				vendor = SelfMgr.getInstance().getUnknownVendorDetail(vendorId);
 			}
 
 			setVendorDetail(vendor);
@@ -214,9 +206,9 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 	private void updateView(int pers) {
 
-		this.mBtnFollow.setVisibility(PERSPECTIVE_SELF == pers ? View.GONE : View.VISIBLE);
+		this.mBtnFollow.setVisibility((PERSPECTIVE_SELF == pers || PERSPECTIVE_INVITATION == pers) ? View.GONE : View.VISIBLE);
 
-		this.mBottomBar.setVisibility(PERSPECTIVE_SELF == pers ? View.GONE : View.VISIBLE);
+		this.mBottomBar.setVisibility((PERSPECTIVE_SELF == pers || PERSPECTIVE_INVITATION == pers) ? View.GONE : View.VISIBLE);
 
 		if (PERSPECTIVE_NEARBY == pers) {
 			this.mBtnFollow.setBackgroundResource(R.drawable.selector_btn_follow);
@@ -249,10 +241,10 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 		this.mDetailAdapter.setVendorDetail(detail);
 		this.mImgAdapter.setImgs(detail.getImgs());
-		
+
 		mDetailAdapter.notifyDataSetChanged();
 		mImgAdapter.notifyDataSetChanged();
-		
+
 		try {
 			runOnUiThread(new Runnable() {
 
@@ -360,14 +352,13 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
 
-		mCurIndex++;
-		if (mCurIndex >= this.mNearbyVendors.size()) {
+		if (mCurIndex+1 >= this.mNearbyVendors.size()) {
 			Toast.makeText(VendorHomeActivity.this, getResources().getString(R.string.tip_nonextvendor),
 					Toast.LENGTH_LONG).show();
 			return;
 		}
 
-		String nextId = this.mNearbyVendors.get(mCurIndex);
+		String nextId = this.mNearbyVendors.get(mCurIndex+1);
 
 		boolean isExist = SelfMgr.getInstance().isNearbyVendorDetailExist(nextId);
 
@@ -390,7 +381,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 		Assert.assertEquals(true, this.mPerspective != PERSPECTIVE_SELF);
 
-		if (this.mPerspective == PERSPECTIVE_SELF)
+		if (this.mPerspective == PERSPECTIVE_SELF || this.mPerspective == PERSPECTIVE_INVITATION)
 			return;
 
 		if (this.mPerspective == PERSPECTIVE_NEARBY) {
@@ -490,6 +481,7 @@ public class VendorHomeActivity extends FragmentActivity implements OnClickListe
 
 			if (null != result && result.isSuccess()) {
 				setVendorDetail(SelfMgr.getInstance().getNearbyVendorDetail(fellowId));
+				mCurIndex++;
 			} else {
 				Toast.makeText(VendorHomeActivity.this, getResources().getString(R.string.tip_viewnearbyvendorfailed),
 						Toast.LENGTH_LONG).show();

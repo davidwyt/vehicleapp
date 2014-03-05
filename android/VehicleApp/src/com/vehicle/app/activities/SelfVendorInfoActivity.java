@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class SelfVendorInfoActivity extends Activity {
+public class SelfVendorInfoActivity extends TemplateActivity {
 
 	private Button mBtnBack;
 	private ImageView mIvhead;
@@ -26,7 +26,7 @@ public class SelfVendorInfoActivity extends Activity {
 	private SelfVendor mSelfVendor;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 

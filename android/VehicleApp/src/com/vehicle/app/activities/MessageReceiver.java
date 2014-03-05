@@ -96,7 +96,9 @@ public class MessageReceiver extends BroadcastReceiver {
 	}
 
 	private void onNewMessageReceived(Context context, String message) {
-
+		
+		System.out.println("new msg received:" + message);
+		
 		TextMessage msg = JsonUtil.fromJson(message, TextMessage.class);
 
 		IMessageRecipient cpu = new TextMessageRecipient(context);

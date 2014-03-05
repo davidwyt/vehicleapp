@@ -1,12 +1,13 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.web.bean.DriverRegisterResult;
+import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,8 +18,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class DriverRegisterActivity extends Activity {
+public class DriverRegisterActivity extends TemplateActivity {
 
 	private EditText mEmailET;
 	private EditText mUserNameET;
@@ -37,7 +39,7 @@ public class DriverRegisterActivity extends Activity {
 	private String mUserName;
 	private String mPassword;
 	private String mPwdCfm;
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -50,11 +52,10 @@ public class DriverRegisterActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		super.onCreate(savedInstanceState);
-		
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		setContentView(R.layout.activity_register);
 
 		initView();
@@ -149,10 +150,6 @@ public class DriverRegisterActivity extends Activity {
 			this.mEmailET.setError(this.getString(R.string.register_fieldnull));
 			cancel = true;
 			focusView = this.mEmailET;
-		} else if (!StringUtil.IsEmail(this.mEmail)) {
-			this.mEmailET.setError(this.getString(R.string.register_invalid_email));
-			cancel = true;
-			focusView = this.mEmailET;
 		}
 
 		if (cancel) {
@@ -164,23 +161,41 @@ public class DriverRegisterActivity extends Activity {
 			this.mRegTask.execute((Void) null);
 		}
 	}
-	
+
 	public class RegisterTask extends AsyncTask<Void, Void, DriverRegisterResult> {
+
+		WebCallBaseResult loginResult = null;
 
 		@Override
 		protected DriverRegisterResult doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
 
+			DriverRegisterResult regResult = null;
 			try {
 				VehicleWebClient webClient = new VehicleWebClient();
-				return webClient.DriverRegister(mEmail, mUserName, mPassword);
-				
+				regResult = webClient.DriverRegister(mEmail, mUserName, mPassword);
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				
-				return null;
 			}
+
+			if (null != regResult && regResult.isSuccess()) {
+				try {
+					DriverRegisterActivity.this.runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							mRegStatusMsgView.setText(getString(R.string.login_progress_signing_in));
+						}});
+
+					loginResult = SelfMgr.getInstance().doLogin(mUserName, mPassword, getApplicationContext());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			return regResult;
 		}
 
 		@Override
@@ -189,16 +204,32 @@ public class DriverRegisterActivity extends Activity {
 			DriverRegisterActivity.this.mRegTask = null;
 			ActivityUtil.showProgress(getApplicationContext(), mRegStatusView, mRegFormView, false);
 
-			if(null == result)
-			{
-				mEmailET.setError(getString(R.string.error_network));
+			if (null == result) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_regfailed),
+						Toast.LENGTH_LONG).show();
 				return;
 			}
-			
+
 			if (result.isSuccess()) {
-				DriverRegisterActivity.this.finish();
+
+				if (null == loginResult) {
+					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_loginfailed),
+							Toast.LENGTH_LONG).show();
+				} else if (!loginResult.isSuccess()) {
+					Toast.makeText(getApplicationContext(),
+							getResources().getString(R.string.tip_loginfailedformat, loginResult.getMessage()),
+							Toast.LENGTH_LONG).show();
+				} else {
+					DriverRegisterActivity.this.finish();
+					
+					Intent intent = new Intent();
+					intent.setClass(getApplicationContext(), NearbyMainActivity.class);
+					startActivity(intent);
+				}
 			} else {
-				mEmailET.setError(result.getMessage());
+				Toast.makeText(getApplicationContext(),
+						getResources().getString(R.string.tip_regfailedformat, result.getMessage()), Toast.LENGTH_LONG)
+						.show();
 			}
 		}
 

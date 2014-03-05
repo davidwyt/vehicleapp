@@ -5,7 +5,6 @@ import cn.edu.sjtu.vehicleapp.R;
 import com.vehicle.app.adapter.CommentsViewAdapter;
 import com.vehicle.app.mgrs.SelfMgr;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class MyCommentsActivity extends Activity {
+public class MyCommentsActivity extends TemplateActivity {
 	private BaseAdapter mAdapter;
 
 	private ListView mLVComments;
@@ -24,7 +23,7 @@ public class MyCommentsActivity extends Activity {
 	private Button onBtnBak;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

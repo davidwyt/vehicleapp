@@ -19,7 +19,6 @@ import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +38,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DriverHomeActivity extends Activity implements OnClickListener {
+public class DriverHomeActivity extends TemplateActivity implements OnClickListener {
 
 	private Button mBtnBack;
 	private ImageView mIvHead;
@@ -82,7 +81,7 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 	public static final String KEY_DRIVERINFO_NEARBYS = "com.vehicle.app.driverinfoactivity.nearbys";
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_driverhome);
@@ -284,19 +283,18 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
 
-		mCurIndex++;
-		if (mCurIndex >= this.mNearbyDrivers.size()) {
+		if (mCurIndex+1 >= this.mNearbyDrivers.size()) {
 			Toast.makeText(this, getResources().getString(R.string.tip_nonextdriver), Toast.LENGTH_LONG).show();
 			return;
 		}
 
-		String nextId = this.mNearbyDrivers.get(mCurIndex);
+		String nextId = this.mNearbyDrivers.get(mCurIndex+1);
 
 		if (null != this.mRefreshTask)
 			return;
-
-		mDriverStatusMessageView.setText(R.string.nearbyvendorstatustext);
-
+		
+		mDriverStatusMessageView.setText(R.string.tip_nearbydriverstatustext);
+		
 		ActivityUtil.showProgress(getApplicationContext(), mDriverStatusView, mDriverFormView, true);
 		mRefreshTask = new RefreshDriverInfoTask(nextId);
 		mRefreshTask.execute((Void) null);
@@ -378,7 +376,9 @@ public class DriverHomeActivity extends Activity implements OnClickListener {
 				driver.setCars(carListResult.getInfoBean());
 				setViewData(driver);
 				mDriverId = driverId;
-
+				
+				mCurIndex++;
+				
 				System.out.println("new driverIdddddd:" + mDriverId);
 			} else {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_getdriverinfofailed),

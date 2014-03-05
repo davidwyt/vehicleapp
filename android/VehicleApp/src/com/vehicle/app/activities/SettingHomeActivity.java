@@ -1,11 +1,10 @@
 package com.vehicle.app.activities;
 
-
+import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,7 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-public class SettingHomeActivity extends Activity implements OnCheckedChangeListener, OnClickListener {
+public class SettingHomeActivity extends TemplateActivity implements OnCheckedChangeListener, OnClickListener {
 
 	private CommentsViewTask mCommentsViewTask;
 	private FellowViewTask mFellowViewTask;
@@ -42,7 +41,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 	private TextView mTVFellowTip;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 
@@ -63,6 +62,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 			this.startActivity(intent);
+			this.finish();
 		}
 	}
 
@@ -70,7 +70,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), RecentContactListActivity.class);
 		startActivity(intent);
-
+		this.finish();
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 		mFellowViewTask = null;
 		((RadioButton) this.findViewById(R.id.bar_rabtn_setting)).setChecked(true);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -245,10 +245,12 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 	}
 
 	private void logout() {
-		this.finish();
+
+		ActivityManager.getInstance().finishAll();
+
 		Intent intent = new Intent(this, BeginActivity.class);
+		intent.putExtra(BeginActivity.KEY_AUDOLOGIN, false);
 		this.startActivity(intent);
-		this.finish();
 	}
 
 	private void about() {
@@ -267,10 +269,11 @@ public class SettingHomeActivity extends Activity implements OnCheckedChangeList
 	}
 
 	private void returnFirst() {
-		this.finish();
+		ActivityManager.getInstance().finishAll();
+
 		Intent intent = new Intent(this, BeginActivity.class);
+		intent.putExtra(BeginActivity.KEY_AUDOLOGIN, false);
 		this.startActivity(intent);
-		this.finish();
 	}
 
 	@Override

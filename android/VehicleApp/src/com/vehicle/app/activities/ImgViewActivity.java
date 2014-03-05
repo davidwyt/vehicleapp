@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,12 +18,12 @@ import android.widget.Gallery.LayoutParams;
 import android.widget.ImageView;
 
 @SuppressWarnings("deprecation")
-public class ImgViewActivity extends Activity {
+public class ImgViewActivity extends TemplateActivity {
 
 	public static final String KEY_IMGBYTES = "com.vehicle.app.imgview.key.bitmap";
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

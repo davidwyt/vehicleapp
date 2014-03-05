@@ -5,6 +5,9 @@ public class RoleInfo {
 	private String password;
 	private int roleType;
 	private boolean isAutoLog;
+	
+	public static final int ROLETYPE_DRIVER = 1;
+	public static final int ROLETYPE_VENDOR = 2;
 
 	public String getUserName() {
 		return this.userName;

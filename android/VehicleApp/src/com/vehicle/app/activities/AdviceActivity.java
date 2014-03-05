@@ -1,12 +1,10 @@
 package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class AdviceActivity extends Activity {
+public class AdviceActivity extends TemplateActivity {
 
 	private EditText mETPhone;
 	private EditText mETEmail;
@@ -26,7 +24,7 @@ public class AdviceActivity extends Activity {
 	private Button mBtnOK;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -77,11 +75,12 @@ public class AdviceActivity extends Activity {
 			return;
 		}
 
-		if (!StringUtil.IsEmail(email)) {
-			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_emailinvalid),
-					Toast.LENGTH_LONG).show();
-			return;
-		}
+		/**
+		 * if (!StringUtil.IsEmail(email)) {
+		 * Toast.makeText(getApplicationContext(),
+		 * getResources().getString(R.string.tip_emailinvalid),
+		 * Toast.LENGTH_LONG).show(); return; }
+		 */
 
 		if (null == phone || phone.isEmpty()) {
 			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_phonenull), Toast.LENGTH_LONG)
@@ -119,7 +118,7 @@ public class AdviceActivity extends Activity {
 				} else {
 					if (null != result) {
 						Toast.makeText(getApplicationContext(),
-								getResources().getString(R.string.tip_advicefailed, result.getMessage()),
+								getResources().getString(R.string.tip_advicefailed2, result.getMessage()),
 								Toast.LENGTH_LONG).show();
 					} else {
 						Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_advicefailed),

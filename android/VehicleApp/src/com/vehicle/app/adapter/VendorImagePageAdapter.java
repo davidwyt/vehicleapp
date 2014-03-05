@@ -4,13 +4,10 @@ import java.util.List;
 
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.fragments.ImagePageFragment;
-import com.vehicle.app.fragments.RefreshableFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.ViewGroup;
 
 public class VendorImagePageAdapter extends FragmentStatePagerAdapter {
 
@@ -28,18 +25,6 @@ public class VendorImagePageAdapter extends FragmentStatePagerAdapter {
 	@Override
 	public int getItemPosition(Object object) {
 		return POSITION_NONE;
-	}
-
-	@Override
-	public Object instantiateItem(ViewGroup container, int position) {
-
-		Object obj = super.instantiateItem(container, position);
-		if (obj instanceof RefreshableFragment) {
-			RefreshableFragment fragment = (RefreshableFragment) obj;
-			fragment.refresh();
-		}
-
-		return obj;
 	}
 
 	@Override

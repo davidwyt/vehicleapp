@@ -59,7 +59,7 @@ public class DBManager {
 	private final static String SQL_TOPMSG_UPDATE = "UPDATE `TOPMESSAGE` SET `TOPMSG` = ? WHERE `HOST` = ?;";
 	private final static String SQL_TOPMSG_SELECT = "SELECT `TOPMSG` FROM `TOPMESSAGE` WHERE `HOST` = ?;";
 
-	private final static String SQL_LASTONBOARD_SELECT = "SELECT `USERNAME`, `PASSWORD`, `ROLE` `AUTOLOG` FROM `LASTONBOARDROLE`;";
+	private final static String SQL_LASTONBOARD_SELECT = "SELECT `USERNAME`, `PASSWORD`, `ROLE`, `AUTOLOG` FROM `LASTONBOARDROLE`;";
 	private final static String SQL_LASTONBOARD_INSERT = "INSERT INTO `LASTONBOARDROLE` (`USERNAME`, `PASSWORD`, `ROLE`, `AUTOLOG`) VALUES(?, ?, ?, ?);";
 	private final static String SQL_LASTONBOARD_DELETEALL = "DELETE FROM `LASTONBOARDROLE`;";
 
@@ -76,10 +76,10 @@ public class DBManager {
 
 			if (cursor.getCount() > 0) {
 				cursor.moveToFirst();
-				String name = cursor.getString(cursor.getColumnIndex(""));
-				String pwd = cursor.getString(cursor.getColumnIndex(""));
-				int role = cursor.getInt(cursor.getColumnIndex(""));
-				int auto = cursor.getInt(cursor.getColumnIndex(""));
+				String name = cursor.getString(cursor.getColumnIndex("USERNAME"));
+				String pwd = cursor.getString(cursor.getColumnIndex("PASSWORD"));
+				int role = cursor.getInt(cursor.getColumnIndex("ROLE"));
+				int auto = cursor.getInt(cursor.getColumnIndex("AUTOLOG"));
 
 				RoleInfo roleInfo = new RoleInfo();
 				roleInfo.setUserName(name);

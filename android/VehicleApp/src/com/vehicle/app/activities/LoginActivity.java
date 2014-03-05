@@ -1,36 +1,18 @@
 package com.vehicle.app.activities;
 
-import java.io.InputStream;
-import java.util.List;
-
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
-import com.vehicle.app.bean.SelfDriver;
-import com.vehicle.app.bean.SelfVendor;
-import com.vehicle.app.bean.VendorDetail;
-import com.vehicle.app.bean.VendorImage;
-import com.vehicle.app.mgrs.BitmapCache;
+import com.vehicle.app.bean.RoleInfo;
+import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.msg.worker.IMessageCourier;
-import com.vehicle.app.msg.worker.OfflineMessageCourier;
-import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.HttpUtil;
-import com.vehicle.app.web.bean.CarListViewResult;
-import com.vehicle.app.web.bean.VendorImgViewResult;
-import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleClient;
-import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import cn.jpush.android.api.JPushInterface;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,12 +26,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends TemplateActivity {
 
 	/**
 	 * The default email to populate the email field with.
@@ -75,6 +58,9 @@ public class LoginActivity extends Activity {
 	private ImageView mLoginTitle;
 
 	private Button mRegButton;
+	private Button mLogButton;
+
+	public static final String KEY_AUDOLOGIN = "com.vehicle.app.login.key.autolog";
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -116,7 +102,8 @@ public class LoginActivity extends Activity {
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-		findViewById(R.id.login_signinbtn).setOnClickListener(new View.OnClickListener() {
+		mLogButton = (Button)findViewById(R.id.login_signinbtn);
+		mLogButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
@@ -146,7 +133,47 @@ public class LoginActivity extends Activity {
 			mLoginTitle.setBackgroundResource(R.drawable.icon_shoplogintitle);
 			mRegButton.setBackgroundResource(R.drawable.selector_btn_shopreg);
 		}
+	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		boolean isAuto = false;
+		Bundle bundle = this.getIntent().getExtras();
+		if (null != bundle) {
+			isAuto = bundle.getBoolean(KEY_AUDOLOGIN, false);
+		}
+
+		RoleInfo info = null;
+		try {
+			DBManager db = new DBManager(this.getApplicationContext());
+			info = db.selectLastOnBoard();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (isAuto && null != info) {
+			this.mEmailView.setText(info.getUserName());
+			this.mPasswordView.setText(info.getPassword());
+
+			enableEdit(false);
+			SelfMgr.getInstance().clearFellows();
+			SelfMgr.getInstance().setIsDriver(info.getRoleType() == RoleInfo.ROLETYPE_DRIVER ? true : false);
+
+			mAuthTask = null;
+			attemptLogin();
+		} else {
+			enableEdit(true);
+		}
+	}
+	
+	private void enableEdit(boolean enable)
+	{
+		this.mEmailView.setEnabled(enable);
+		this.mPasswordView.setEnabled(enable);
+		this.mLogButton.setClickable(enable);
+		this.mRegButton.setClickable(enable);
 	}
 
 	@Override
@@ -168,6 +195,7 @@ public class LoginActivity extends Activity {
 	 */
 	private void attemptLogin() {
 		if (mAuthTask != null) {
+			
 			return;
 		}
 
@@ -208,6 +236,7 @@ public class LoginActivity extends Activity {
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
 			// form field with an error.
+			enableEdit(true);
 			focusView.requestFocus();
 		} else {
 			// Show a progress spinner, and kick off a background task to
@@ -325,76 +354,9 @@ public class LoginActivity extends Activity {
 
 			WebCallBaseResult result = null;
 			try {
-				// Simulate network access.
-				if (SelfMgr.getInstance().isDriver()) {
-					VehicleWebClient webClient = new VehicleWebClient();
-					result = webClient.DriverLogin(mEmail, mPassword);
-				} else {
-					VehicleWebClient webClient = new VehicleWebClient();
-					result = webClient.VendorLogin(mEmail, mPassword);
-				}
-
-				if (null != result && result.isSuccess()) {
-					if (SelfMgr.getInstance().isDriver()) {
-						SelfDriver self = (SelfDriver) result.getInfoBean();
-
-						try {
-							VehicleWebClient webClient = new VehicleWebClient();
-							CarListViewResult carResult = webClient.CarListView(self.getId());
-							if (null != carResult && carResult.isSuccess())
-								self.setCars((carResult).getInfoBean());
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
-						SelfMgr.getInstance().setSelfDriver(self);
-					} else {
-
-						SelfVendor self = (SelfVendor) result.getInfoBean();
-
-						try {
-							VehicleWebClient webClient = new VehicleWebClient();
-							VendorImgViewResult imgResult = webClient.VendorImgView(self.getId());
-							if (null != imgResult && imgResult.isSuccess()) {
-								self.setImgs(imgResult.getInfoBean());
-
-								/**
-								 * List<VendorImage> imgs =
-								 * imgResult.getInfoBean(); if (null != imgs) {
-								 * for (VendorImage img : imgs) { String imgUrl
-								 * = img.getSrc(); InputStream input =
-								 * HttpUtil.DownloadFile(imgUrl); Bitmap bitmap
-								 * = BitmapFactory.decodeStream(input);
-								 * BitmapCache.getInstance().put(imgUrl,
-								 * bitmap); } }
-								 */
-							}
-
-							VendorSpecViewResult specView = webClient.VendorSpecView(self.getId());
-							if (null != specView && specView.isSuccess() && null != specView.getInfoBean()) {
-								VendorDetail detail = specView.getInfoBean();
-								self.setComments(detail.getReviews());
-								self.setCoupons(detail.getCoupons());
-								self.setPromotions(detail.getPromotions());
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
-						SelfMgr.getInstance().setSelfVendor(self);
-					}
-
-					IMessageCourier courier = new WakeupMessageCourier(getApplicationContext());
-					courier.dispatch(null);
-
-					IMessageCourier offCourier = new OfflineMessageCourier(getApplicationContext());
-					offCourier.dispatch(null);
-
-					SelfMgr.getInstance().refreshFellows();
-				}
+				result = SelfMgr.getInstance().doLogin(mEmail, mPassword, getApplicationContext());
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
 			}
 
 			return result;
@@ -403,11 +365,13 @@ public class LoginActivity extends Activity {
 		@Override
 		protected void onPostExecute(final WebCallBaseResult result) {
 			mAuthTask = null;
+
 			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 
 			if (null == result) {
-				mPasswordView.setError(getString(R.string.error_network));
-				mPasswordView.requestFocus();
+				enableEdit(true);
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_loginfailed),
+						Toast.LENGTH_LONG).show();
 				return;
 			}
 
@@ -419,23 +383,32 @@ public class LoginActivity extends Activity {
 					e.printStackTrace();
 				}
 
-				JPushInterface.setAliasAndTags(getApplicationContext(), SelfMgr.getInstance().getId(), null);
-
 				finish();
+
+				try {
+					DBManager db = new DBManager(getApplicationContext());
+					db.updateLastOnboard(mEmail, mPassword, SelfMgr.getInstance().isDriver() ? RoleInfo.ROLETYPE_DRIVER
+							: RoleInfo.ROLETYPE_VENDOR, true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				LoginActivity.this.startActivity(intent);
 
 			} else {
-				mPasswordView.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
+				enableEdit(true);
+				Toast.makeText(getApplicationContext(),
+						getResources().getString(R.string.tip_loginfailedformat, result.getMessage()),
+						Toast.LENGTH_LONG).show();
 			}
 		}
 
 		@Override
 		protected void onCancelled() {
 			mAuthTask = null;
+			enableEdit(true);
 			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 		}
 	}

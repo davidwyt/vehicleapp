@@ -50,26 +50,20 @@ public class TopMsgerMgr {
 
 	public synchronized void addTopMsg(String host, String memberId) {
 
-		try {
-			List<String> newOne = new ArrayList<String>();
-			Collections.copy(newOne, this.topMsgs);
+			List<String> newOne = new ArrayList<String>(this.topMsgs);
 			newOne.add(0, memberId);
-
+			
+			System.out.println("new size: " + newOne.size() + " old size:" + this.topMsgs.size());
+			
 			String tops = StringUtil.JointString(newOne, Constants.COMMA);
 
 			DBManager dbMgr = new DBManager(context);
 			dbMgr.insertOrUpdateTopMsg(host, tops);
 			topMsgs.add(0, memberId);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public synchronized void removeTopMsg(String host, String memberId) {
-		try {
-			List<String> newOne = new ArrayList<String>();
-			Collections.copy(newOne, this.topMsgs);
+			List<String> newOne = new ArrayList<String>(this.topMsgs);
 
 			while (true) {
 				int index = -1;
@@ -93,10 +87,6 @@ public class TopMsgerMgr {
 			dbMgr.insertOrUpdateTopMsg(host, tops);
 			topMsgs.clear();
 			topMsgs.addAll(newOne);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public synchronized boolean isTop(String memberId) {

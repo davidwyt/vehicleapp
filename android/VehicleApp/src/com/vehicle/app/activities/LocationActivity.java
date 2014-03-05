@@ -24,7 +24,7 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.vehicle.app.msg.bean.SimpleLocation;
 
-public class LocationActivity extends Activity implements LocationSource, AMapLocationListener {
+public class LocationActivity extends TemplateActivity implements LocationSource, AMapLocationListener {
 	private AMap aMap;
 	private MapView mapView;
 	private OnLocationChangedListener mListener;

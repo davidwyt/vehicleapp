@@ -3,11 +3,13 @@ package com.vehicle.app.activities;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.vehicle.app.bean.RoleInfo;
+import com.vehicle.app.db.DBManager;
+
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,14 +17,16 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 
-public class BeginActivity extends Activity {
+public class BeginActivity extends TemplateActivity {
 
 	private View mBaK;
 
 	private static final int DELAY_FADE = 4 * 1000;
 
+	public static final String KEY_AUDOLOGIN = "com.vehicle.app.begin.key.autolog";
+
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -66,18 +70,34 @@ public class BeginActivity extends Activity {
 			this.mBaK.setVisibility(View.GONE);
 		}
 
-		Intent intent = new Intent();
-		intent.setClass(getApplicationContext(), RoleSelectActivity.class);
-		BeginActivity.this.startActivity(intent);
+		boolean isAuto = true;
+		Bundle bundle = this.getIntent().getExtras();
+		if (null != bundle) {
+			isAuto = bundle.getBoolean(KEY_AUDOLOGIN, true);
+		}
+		
+		RoleInfo info = null;
+		try {
+			DBManager db = new DBManager(this.getApplicationContext());
+			info = db.selectLastOnBoard();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-		BeginActivity.this.finish();
+		if (isAuto && null != info) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			intent.putExtra(LoginActivity.KEY_AUDOLOGIN, true);
+			startActivity(intent);
+			this.finish();
+		} else {
+			Intent intent = new Intent();
+			intent.setClass(getApplicationContext(), RoleSelectActivity.class);
+			BeginActivity.this.startActivity(intent);
+
+			BeginActivity.this.finish();
+		}
 	}
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 

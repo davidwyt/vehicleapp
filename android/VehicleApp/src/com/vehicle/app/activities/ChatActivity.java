@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -51,7 +53,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -60,13 +64,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ChatActivity extends Activity implements OnClickListener {
+public class ChatActivity extends TemplateActivity implements OnClickListener {
 
 	public static final String KEY_TITLE = "title";
 	public static final String KEY_MESSAGE = "com.vehicle.app.key.textmessage";
@@ -87,6 +92,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private Button mBtnBack;
 	private Button mBtnSave;
 	private Button mBtnPlus;
+	private Button mBtnVoice;
+
+	private ImageButton mBtnSpeak;
 
 	private EditText mEditTextContent;
 	private ChatMsgViewAdapter mAdapter;
@@ -114,7 +122,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 	private Vendor mVendor;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_chat);
@@ -141,6 +149,9 @@ public class ChatActivity extends Activity implements OnClickListener {
 		mBtnPlus = (Button) findViewById(R.id.chat_btn_plus);
 		mBtnPlus.setOnClickListener(this);
 
+		mBtnVoice = (Button) findViewById(R.id.chat_btn_voice);
+		mBtnVoice.setOnClickListener(this);
+
 		mEditTextContent = (EditText) findViewById(R.id.et_sendmessage);
 		mEditTextContent.setCursorVisible(true);
 
@@ -150,6 +161,27 @@ public class ChatActivity extends Activity implements OnClickListener {
 
 		mAdapter = new ChatMsgViewAdapter(this.getApplicationContext(), mDataArrays);
 		this.mMsgList.setAdapter(mAdapter);
+
+		mBtnSpeak = (ImageButton) this.findViewById(R.id.chat_btn_speak);
+		mBtnSpeak.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				// TODO Auto-generated method stub
+				switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					startRecording();
+					break;
+				case MotionEvent.ACTION_UP:
+					mBtnSpeak.setVisibility(View.GONE);
+					stopRecording();
+					break;
+				default:
+					break;
+				}
+				return false;
+			}
+		});
 	}
 
 	@SuppressWarnings("deprecation")
@@ -376,6 +408,17 @@ public class ChatActivity extends Activity implements OnClickListener {
 		case R.id.chat_btn_plus:
 			plus();
 			break;
+		case R.id.chat_btn_voice:
+			voice();
+			break;
+		}
+	}
+
+	private void voice() {
+		if (this.mBtnSpeak.getVisibility() == View.VISIBLE) {
+			this.mBtnSpeak.setVisibility(View.GONE);
+		} else {
+			this.mBtnSpeak.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -502,9 +545,18 @@ public class ChatActivity extends Activity implements OnClickListener {
 			entity.setContent(content);
 			entity.setFlag(MessageFlag.SELF);
 			entity.setMessageType(IMessageItem.MESSAGE_TYPE_TEXT);
+			entity.setSentTime(new Date().getTime());
+
 			IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(),
 					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(entity);
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+			System.out.println("send time: " + sdf.format(entity.getSentTime()));
+			
+			System.out.println(" in chata msg: " + entity.getContent() + " time:" + sdf.format(entity.getSentTime()) + " long:" + entity.getSentTime());
+			
+			this.addToMsgList(entity);
 		}
 	}
 
@@ -537,6 +589,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			picItem.setPath(filePath);
 			picItem.setMsgType(type);
 			System.out.println("send file " + filePath + " null:" + (null == picItem.getContent()));
+			picItem.setSentTime(new Date().getTime());
 
 			IMessageCourier msgCourier = new FileMessageCourier(this.getApplicationContext(),
 					CHAT_STYLE_2ONE != this.mChatStyle);
@@ -559,15 +612,18 @@ public class ChatActivity extends Activity implements OnClickListener {
 		entity.setContent(content);
 		entity.setFlag(MessageFlag.SELF);
 		entity.setMessageType(IMessageItem.MESSAGE_TYPE_LOCATION);
+		entity.setSentTime(new Date().getTime());
 
 		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(),
 				CHAT_STYLE_2ONE != this.mChatStyle);
 		msgCourier.dispatch(entity);
+
+		addToMsgList(entity);
 	}
 
 	private void back() {
 		this.onBackPressed();
-		finish();
+		this.finish();
 	}
 
 	private void addToMsgList(IMessageItem msg) {
@@ -629,7 +685,7 @@ public class ChatActivity extends Activity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			addToMsgList(msg);
+			// addToMsgList(msg);
 		}
 
 		private void onNewFileSent(Intent intent) {

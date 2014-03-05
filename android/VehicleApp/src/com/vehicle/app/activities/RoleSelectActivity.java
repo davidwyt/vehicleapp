@@ -3,7 +3,6 @@ package com.vehicle.app.activities;
 import com.vehicle.app.mgrs.SelfMgr;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -12,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 
-public class RoleSelectActivity extends Activity implements OnClickListener {
+public class RoleSelectActivity extends TemplateActivity implements OnClickListener {
 
 	private Button btnDriver;
 	private Button btnShop;
@@ -68,8 +67,8 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), LoginActivity.class);
+			intent.putExtra(LoginActivity.KEY_AUDOLOGIN, false);
 			this.startActivity(intent);
-			finish();
 		} else if (R.id.roleselect_shop == view.getId()) {
 
 			SelfMgr.getInstance().clearFellows();
@@ -77,8 +76,8 @@ public class RoleSelectActivity extends Activity implements OnClickListener {
 
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), LoginActivity.class);
+			intent.putExtra(LoginActivity.KEY_AUDOLOGIN, false);
 			this.startActivity(intent);
-			finish();
 		}
 	}
 }

@@ -113,8 +113,8 @@
 	<string name="zh_advice">意见反馈</string>
 	<string name="tip_commentfailedformat">评论商家失败，错误信息：%s</string>
 	<string name="tip_selectproject">请选择所做的汽车服务</string>
-	<string name="zh_unknown">未知神秘人</string>
-	<string name="tip_notificationformat_newmsg">%s 说：</string>
+	<string name="zh_unknown">神秘人</string>
+	<string name="tip_notificationformat_newmsg">%1$s 说：%2$s</string>
 	<string name="tip_notificationformat_newfile">%s 发送了一个图片消息</string>
 	<string name="tip_notificationformat_newlocation">%s 发送了一个位置信息</string>
 	<string name="tip_notificationformat_newaudio">%s 发送了一个语音消息</string>
@@ -126,4 +126,14 @@
 	<string name="tip_notificationformat_newinv">%s 发送了一个关注请求</string>
 	<string name="tip_newinv">一个关注请求</string>
 	<string name="tip_audiomsgfailed">语音消息发送失败，请检查网络连接</string>
+	<string name="tip_addtopsuccess">置顶站内信成功</string>
+	<string name="tip_removetopsuccess">取消置顶站内信成功</string>
+	<string name="tip_regfailedformat">注册失败，错误信息为：%s</string>
+	<string name="tip_regfailed">注册失败, 请检查网络连接并重试</string>
+	<string name="tip_loginfailed">登录失败，请检查网络连接并重试</string>
+	<string name="tip_loginfailedformat">登录失败，错误信息为：%s</string>
+	<string name="tip_getvendordetailfailed">获得商家详情失败，请检查网络连接</string>
+	<string name="tip_getvendordetailinprogress">正在获得商家详细信息&#8230;</string>
+	<string name="zh_kilometer">千米</string>
+	<string name="tip_quitconfig">确定要退出天下车商么？</string>
 </resources>

@@ -46,7 +46,7 @@ public class NotificationMgr {
 			return;
 
 		String ticker = "";
-		String name = SelfMgr.getInstance().getFellowName(msg.getSource());
+		String name = SelfMgr.getInstance().getFellowName(context, msg.getSource());
 		ticker = context.getResources().getString(R.string.tip_notificationformat_newmsg, name, msg.getContent());
 
 		Intent resultIntent = new Intent(context, ChatActivity.class);
@@ -63,7 +63,7 @@ public class NotificationMgr {
 			return;
 
 		String ticker = "";
-		String name = SelfMgr.getInstance().getFellowName(msg.getSource());
+		String name = SelfMgr.getInstance().getFellowName(context, msg.getSource());
 		ticker = context.getResources().getString(R.string.tip_notificationformat_newlocation, name, msg.getContent());
 
 		Intent resultIntent = new Intent(context, ChatActivity.class);
@@ -80,7 +80,7 @@ public class NotificationMgr {
 			return;
 
 		String ticker = "";
-		String name = SelfMgr.getInstance().getFellowName(msg.getSource());
+		String name = SelfMgr.getInstance().getFellowName(context, msg.getSource());
 		ticker = context.getResources().getString(R.string.tip_notificationformat_newfile, name);
 
 		Intent resultIntent = new Intent(context, ChatActivity.class);
@@ -97,7 +97,7 @@ public class NotificationMgr {
 			return;
 
 		String ticker = "";
-		String name = SelfMgr.getInstance().getFellowName(msg.getSource());
+		String name = SelfMgr.getInstance().getFellowName(context, msg.getSource());
 		ticker = context.getResources().getString(R.string.tip_notificationformat_newaudio, name);
 
 		Intent resultIntent = new Intent(context, ChatActivity.class);
@@ -118,7 +118,7 @@ public class NotificationMgr {
 			return;
 
 		String ticker = "";
-		String name = SelfMgr.getInstance().getFellowName(msg.getSource());
+		String name = SelfMgr.getInstance().getFellowName(context, msg.getSource());
 		ticker = context.getResources().getString(R.string.tip_notificationformat_newinvverdict, name);
 
 		Intent resultIntent = new Intent(context, SettingHomeActivity.class);
@@ -127,7 +127,7 @@ public class NotificationMgr {
 
 	public void notifyNewFollowshipInvitationMsg(FollowshipInvitationMessage msg) {
 		String ticker = "";
-		String name = SelfMgr.getInstance().getFellowName(msg.getSource());
+		String name = SelfMgr.getInstance().getFellowName(context, msg.getSource());
 		ticker = context.getResources().getString(R.string.tip_notificationformat_newinv, name);
 
 		Intent resultIntent = new Intent(context, FollowshipInvitationActivity.class);

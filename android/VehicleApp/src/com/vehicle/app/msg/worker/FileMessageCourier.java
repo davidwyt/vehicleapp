@@ -66,12 +66,12 @@ public class FileMessageCourier extends MessageBaseCourier {
 
 					if (isGroupChat) {
 						FileMultiTransmissionResponse fileMultiResp = (FileMultiTransmissionResponse) resp;
-						picMessage.setSentTime(fileMultiResp.getSentTime());
+						//picMessage.setSentTime(fileMultiResp.getSentTime());
 						picMessage.setToken(fileMultiResp.getToken());
 						picMessage.setFlag(MessageFlag.SELF);
 					} else {
 						FileTransmissionResponse fileResp = (FileTransmissionResponse) resp;
-						picMessage.setSentTime(fileResp.getSentTime());
+						//picMessage.setSentTime(fileResp.getSentTime());
 						picMessage.setToken(fileResp.getToken());
 						picMessage.setFlag(MessageFlag.SELF);
 

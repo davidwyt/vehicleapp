@@ -13,7 +13,6 @@ import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.utils.StringUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -26,7 +25,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GroupmsgNavActivity extends Activity implements OnClickListener {
+public class GroupmsgNavActivity extends TemplateActivity implements OnClickListener {
 
 	private Button mAllFellows;
 	private Button mNearby;
@@ -38,7 +37,7 @@ public class GroupmsgNavActivity extends Activity implements OnClickListener {
 	private RefreshFellowsTask mRefreshTask;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.setContentView(R.layout.activity_groupmsgnav);
 

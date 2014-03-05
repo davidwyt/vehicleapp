@@ -11,7 +11,7 @@ public class StringUtil {
 	}
 
 	public static boolean IsEmail(String str) {
-		return str.matches("[a-zA-Z0-9._-]+@[a-z]+.[a-z]+");
+		return str.matches("[a-zA-Z0-9._-]+@[a-zA-Z0-9_-]+.[a-z]+");
 	}
 
 	public static String JointString(List<String> strs, String seperator) {

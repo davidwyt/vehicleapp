@@ -28,7 +28,6 @@ import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,7 +45,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class NearbyFellowListActivity extends Activity {
+public class NearbyFellowListActivity extends TemplateActivity {
 
 	private PullToRefreshListView mPullRefreshListView;
 
@@ -65,7 +64,7 @@ public class NearbyFellowListActivity extends Activity {
 	private List mListFellows = new ArrayList();
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -276,22 +275,29 @@ public class NearbyFellowListActivity extends Activity {
 			// TODO: attempt authentication against a network service.
 
 			pageNum++;
+			
+			Location loc = LocationUtil.getCurLocation(getApplicationContext());
+			double latitude, longtitude;
+			if (null == loc) {
+				latitude = 31.24;
+				longtitude = 121.56;
+			} else {
+				latitude = loc.getLatitude();
+				longtitude = loc.getLongitude();
+			}
+			
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
 
-					Location loc = LocationUtil.getCurLocation(getApplicationContext());
-					double latitude, longtitude;
-					if (null == loc) {
-						latitude = 31.24;
-						longtitude = 121.56;
-					} else {
-						latitude = loc.getLatitude();
-						longtitude = loc.getLongitude();
-					}
-					return client.NearbyVendorListView(1, -1, -1, pageNum, longtitude, latitude, 6, 1, -1, -1);
+					return client.NearbyVendorListView(1, pageNum, longtitude, latitude, 6);
 				} else {
-					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(121.56, 31.24, 30);
+					/**
+					VehicleWebClient client = new VehicleWebClient();
+					return client.NearbyDriverListView(-1, longtitude, latitude);
+					*/
+					
+					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(longtitude, latitude, 30);
 
 					NearbyDriverListViewResult result = new NearbyDriverListViewResult();
 					result.setCode(WebCallBaseResult.CODE_SUCCESS);

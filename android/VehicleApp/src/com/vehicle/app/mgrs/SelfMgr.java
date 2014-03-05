@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import android.content.Context;
+
+import cn.edu.sjtu.vehicleapp.R;
+import cn.jpush.android.api.JPushInterface;
+
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.FavoriteVendor;
 import com.vehicle.app.bean.SelfDriver;
@@ -14,6 +19,9 @@ import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorFellow;
+import com.vehicle.app.msg.worker.IMessageCourier;
+import com.vehicle.app.msg.worker.OfflineMessageCourier;
+import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
@@ -21,9 +29,11 @@ import com.vehicle.app.web.bean.DriverViewResult;
 import com.vehicle.app.web.bean.FavVendorListViewResult;
 import com.vehicle.app.web.bean.NearbyVendorListViewResult;
 import com.vehicle.app.web.bean.VendorFellowListViewResult;
+import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorListViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.VendorViewResult;
+import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
 import com.vehicle.service.bean.RangeInfo;
@@ -33,7 +43,7 @@ public class SelfMgr {
 
 	public static final int ROLENUM_DRIVER = 1;
 	public static final int ROLENUM_VENDOR = 2;
-	
+
 	private SelfMgr() {
 
 		mFavVendorSimpleVector = new Vector<FavoriteVendor>();
@@ -47,6 +57,11 @@ public class SelfMgr {
 
 		mNearbyVendorDetailMap = new Hashtable<String, VendorDetail>();
 		mFavVendorDetailMap = new Hashtable<String, VendorDetail>();
+
+		mUnknowVendorDetailMap = new Hashtable<String, VendorDetail>();
+
+		unknownDriversMap = new Hashtable<String, Driver>();
+		unknowsVendorsMap = new Hashtable<String, Vendor>();
 	}
 
 	private static class InstanceHolder {
@@ -69,6 +84,7 @@ public class SelfMgr {
 
 	private SelfDriver mSelfDriver;
 	private SelfVendor mSelfVendor;
+	private VendorDetail selfVendorDetail;
 
 	private Vector<FavoriteVendor> mFavVendorSimpleVector;
 	private Vector<VendorFellow> mVendorFellowSimpleVector;
@@ -81,6 +97,10 @@ public class SelfMgr {
 
 	private Map<String, VendorDetail> mNearbyVendorDetailMap;
 	private Map<String, VendorDetail> mFavVendorDetailMap;
+	private Map<String, VendorDetail> mUnknowVendorDetailMap;
+
+	private Map<String, Driver> unknownDriversMap;
+	private Map<String, Vendor> unknowsVendorsMap;
 
 	public Map<String, VendorDetail> getNearbyVendorDetailMap() {
 		return this.mNearbyVendorDetailMap;
@@ -128,6 +148,14 @@ public class SelfMgr {
 
 	public void setSelfVendor(SelfVendor self) {
 		this.mSelfVendor = self;
+	}
+
+	public void setSelfVendorDetail(VendorDetail detail) {
+		this.selfVendorDetail = detail;
+	}
+
+	public VendorDetail getSelfVendorDetail() {
+		return this.selfVendorDetail;
 	}
 
 	public String getId() {
@@ -295,8 +323,8 @@ public class SelfMgr {
 			if (mIsDriver) {
 				VehicleWebClient client = new VehicleWebClient();
 
-				NearbyVendorListViewResult result = client.NearbyVendorListView(1, -1, -1, 1, longitude, latitude, 6,
-						1, -1, -1);
+				NearbyVendorListViewResult result = client.NearbyVendorListView(1, 1, longitude, latitude, 6
+						);
 
 				if (null != result) {
 					List<Vendor> vendors = result.getInfoBean();
@@ -308,11 +336,11 @@ public class SelfMgr {
 				}
 			} else {
 				/**
-				 * VehicleWebClient client = new VehicleWebClient();
-				 * NearbyDriverListViewResult result =
-				 * client.NearbyDriverListView(1, longitude, latitude);
-				 * this.mNearbyDriverMap.putAll(result.getResult());
-				 */
+				VehicleWebClient client = new VehicleWebClient();
+				NearbyDriverListViewResult result = client.NearbyDriverListView(1, longitude, latitude);
+				this.mNearbyDriverMap.putAll(result.getResult());
+				*/
+				
 				Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude, 30);
 				if (null != result) {
 					this.mNearbyDriverMap.putAll(result);
@@ -326,7 +354,7 @@ public class SelfMgr {
 	public Map<String, Driver> searchNearbyDrivers(double centerX, double centerY, int range) {
 		try {
 			VehicleClient client = new VehicleClient(this.getId());
-			RangeResponse resp = client.NearbyDrivers(121.56, 31.24, 30);
+			RangeResponse resp = client.NearbyDrivers(centerX, centerY, 30);
 			if (null == resp)
 				return null;
 
@@ -465,9 +493,6 @@ public class SelfMgr {
 		this.mNearbyVendorDetailMap.clear();
 	}
 
-	private Map<String, Driver> unknownDriversMap = new Hashtable<String, Driver>();
-	private Map<String, Vendor> unknowsVendorsMap = new Hashtable<String, Vendor>();
-
 	public Driver getDriverInfo(String id) {
 		if (this.mVendorFellowMap.containsKey(id)) {
 			return this.mVendorFellowMap.get(id);
@@ -490,6 +515,14 @@ public class SelfMgr {
 
 	public void addUnknownVendors(Map<String, Vendor> map) {
 		this.unknowsVendorsMap.putAll(map);
+	}
+
+	public void putUnknownVendorDetail(VendorDetail detail) {
+		this.mUnknowVendorDetailMap.put(detail.getVendor().getId(), detail);
+	}
+
+	public VendorDetail getUnknownVendorDetail(String id) {
+		return this.mUnknowVendorDetailMap.get(id);
 	}
 
 	public Vendor getVendorInfo(String id) {
@@ -538,7 +571,7 @@ public class SelfMgr {
 		}
 	}
 
-	public String getFellowName(String id) {
+	public String getFellowName(Context context, String id) {
 		if (SelfMgr.getInstance().isDriver()) {
 			Vendor vendor = SelfMgr.getInstance().getVendorInfo(id);
 			if (null != vendor) {
@@ -551,6 +584,88 @@ public class SelfMgr {
 			}
 		}
 
-		return "";
+		return context.getString(R.string.zh_unknown);
+	}
+
+	public WebCallBaseResult doLogin(String userName, String password, Context context) {
+		WebCallBaseResult loginResult = null;
+
+		if (this.mIsDriver) {
+			try {
+				VehicleWebClient webClient = new VehicleWebClient();
+				loginResult = webClient.DriverLogin(userName, password);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (null == loginResult || !loginResult.isSuccess()) {
+				return loginResult;
+			}
+
+			SelfDriver self = (SelfDriver) loginResult.getInfoBean();
+			SelfMgr.getInstance().setSelfDriver(self);
+
+			try {
+				VehicleWebClient webClient = new VehicleWebClient();
+				CarListViewResult carResult = webClient.CarListView(this.getId());
+				if (null != carResult && carResult.isSuccess())
+					this.mSelfDriver.setCars((carResult).getInfoBean());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+
+			try {
+				VehicleWebClient webClient = new VehicleWebClient();
+				loginResult = webClient.VendorLogin(userName, password);
+			} catch (Exception e) {
+
+			}
+			if (null == loginResult || !loginResult.isSuccess()) {
+				return loginResult;
+			}
+
+			SelfVendor self = (SelfVendor) loginResult.getInfoBean();
+			SelfMgr.getInstance().setSelfVendor(self);
+
+			try {
+				VehicleWebClient webClient = new VehicleWebClient();
+				VendorImgViewResult imgResult = webClient.VendorImgView(this.getId());
+				if (null != imgResult && imgResult.isSuccess()) {
+					this.mSelfVendor.setImgs(imgResult.getInfoBean());
+
+					/**
+					 * List<VendorImage> imgs = imgResult.getInfoBean(); if
+					 * (null != imgs) { for (VendorImage img : imgs) { String
+					 * imgUrl = img.getSrc(); InputStream input =
+					 * HttpUtil.DownloadFile(imgUrl); Bitmap bitmap =
+					 * BitmapFactory.decodeStream(input);
+					 * BitmapCache.getInstance().put(imgUrl, bitmap); } }
+					 */
+				}
+
+				VendorSpecViewResult specView = webClient.VendorSpecView(this.getId());
+				if (null != specView && specView.isSuccess() && null != specView.getInfoBean()) {
+					VendorDetail detail = specView.getInfoBean();
+					mSelfVendor.setComments(detail.getReviews());
+					mSelfVendor.setCoupons(detail.getCoupons());
+					mSelfVendor.setPromotions(detail.getPromotions());
+					SelfMgr.getInstance().setSelfVendorDetail(detail);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		JPushInterface.setAliasAndTags(context, SelfMgr.getInstance().getId(), null);
+
+		IMessageCourier courier = new WakeupMessageCourier(context);
+		courier.dispatch(null);
+
+		IMessageCourier offCourier = new OfflineMessageCourier(context);
+		offCourier.dispatch(null);
+
+		this.refreshFellows();
+
+		return loginResult;
 	}
 }

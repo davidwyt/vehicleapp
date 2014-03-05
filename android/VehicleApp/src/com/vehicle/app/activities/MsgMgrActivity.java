@@ -55,6 +55,7 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		this.mTVName = (TextView) this.findViewById(R.id.msgmgr_fellowname);
 
 		this.findViewById(R.id.msgmgr_favmsg).setOnClickListener(this);
+		this.findViewById(R.id.msgmgr_clearmsg).setOnClickListener(this);
 	}
 
 	private void initData() {
@@ -84,14 +85,16 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		this.mTVName.setText(name);
 
 		ImageUtil.RenderImageView(url, mIVHead, -1, -1);
+		refreshOpeTip();
+	}
 
+	private void refreshOpeTip() {
 		TextView tvOper = (TextView) this.findViewById(R.id.msgmgr_topmsgope);
 		if (TopMsgerMgr.getInstance().isTop(mFellowId)) {
 			tvOper.setText(this.getResources().getString(R.string.tip_canceltop));
 		} else {
 			tvOper.setText(this.getResources().getString(R.string.tip_addtotop));
 		}
-
 	}
 
 	@Override
@@ -112,9 +115,23 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 			this.onBackPressed();
 		} else if (R.id.msgmgr_uprow == view.getId() || R.id.msgmgr_favmsg == view.getId()) {
 			if (TopMsgerMgr.getInstance().isTop(mFellowId)) {
-				TopMsgerMgr.getInstance().removeTopMsg(SelfMgr.getInstance().getId(), mFellowId);
+				try {
+					TopMsgerMgr.getInstance().removeTopMsg(SelfMgr.getInstance().getId(), mFellowId);
+					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_removetopsuccess),
+							Toast.LENGTH_LONG).show();
+					refreshOpeTip();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else {
-				TopMsgerMgr.getInstance().addTopMsg(SelfMgr.getInstance().getId(), mFellowId);
+				try {
+					TopMsgerMgr.getInstance().addTopMsg(SelfMgr.getInstance().getId(), mFellowId);
+					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_addtopsuccess),
+							Toast.LENGTH_LONG).show();
+					refreshOpeTip();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		} else if (R.id.msgmgr_clearrow == view.getId() || R.id.msgmgr_clearmsg == view.getId()) {
 			attemptDeleteMsg();
@@ -151,20 +168,17 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 
 	private void clearMessage() {
 		try {
-			try {
-				DBManager dbMgr = new DBManager(this.getApplicationContext());
-				dbMgr.deleteAllMessages(SelfMgr.getInstance().getId(), mFellowId);
+			DBManager dbMgr = new DBManager(this.getApplicationContext());
+			dbMgr.deleteAllMessages(SelfMgr.getInstance().getId(), mFellowId);
+			TopMsgerMgr.getInstance().removeTopMsg(SelfMgr.getInstance().getId(), mFellowId);
 
-				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_deletegroupmsgsuccess),
-						Toast.LENGTH_LONG).show();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_deletegroupmsgsuccess),
+					Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 

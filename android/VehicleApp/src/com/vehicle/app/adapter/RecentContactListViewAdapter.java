@@ -8,6 +8,7 @@ import java.util.Vector;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.RecentMessage;
@@ -73,6 +74,12 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 		RecentMessage msg = this.recentMsgVecotr.get(pos);
 		if (null == msg) {
 			return view;
+		}
+
+		if (TopMsgerMgr.getInstance().isTop(msg.getFellowId())) {
+			view.setBackgroundColor(inflater.getContext().getResources().getColor(R.color.white));
+		} else {
+			view.setBackgroundColor(inflater.getContext().getResources().getColor(R.color.gray));
 		}
 
 		String alias = "";

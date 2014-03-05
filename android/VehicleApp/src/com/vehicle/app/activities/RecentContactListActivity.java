@@ -16,7 +16,6 @@ import com.vehicle.app.web.bean.VendorListViewResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +32,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
-public class RecentContactListActivity extends Activity implements OnCheckedChangeListener {
+public class RecentContactListActivity extends TemplateActivity implements OnCheckedChangeListener {
 
 	private PullToRefreshListView mPullRefreshListView;
 
@@ -69,13 +68,16 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 		registerMessageReceiver();
 
 		Handler handler = new Handler();
-		Runnable myRunnable = new Runnable() {
+		final Runnable myRunnable = new Runnable() {
 			public void run() {
-
 				initData();
 			}
 		};
-		handler.postDelayed(myRunnable, 500);
+		handler.post(new Runnable() {
+			public void run() {
+				new Thread(myRunnable).start();
+			}
+		});
 	}
 
 	@Override
@@ -117,12 +119,10 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 
 	private void initData() {
 
-		mRecentMsgVector.clear();
-
 		try {
 			DBManager dbMgr = new DBManager(this.getApplicationContext());
 
-			List<RecentMessage> recentMsgs = dbMgr.queryRecentMessage(SelfMgr.getInstance().getId());
+			final List<RecentMessage> recentMsgs = dbMgr.queryRecentMessage(SelfMgr.getInstance().getId());
 
 			List<String> topMsgs = TopMsgerMgr.getInstance().getTops();
 			for (int i = topMsgs.size() - 1; i >= 0; i--) {
@@ -137,9 +137,16 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 				}
 			}
 
-			mRecentMsgVector.addAll(recentMsgs);
+			this.runOnUiThread(new Runnable() {
 
-			this.mAdapter.notifyDataSetChanged();
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					mRecentMsgVector.clear();
+					mRecentMsgVector.addAll(recentMsgs);
+					mAdapter.notifyDataSetChanged();
+				}
+			});
 
 			List<String> unknown = new ArrayList<String>();
 
@@ -169,8 +176,15 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 					}
 				}
 			}
-			
-			this.mAdapter.notifyDataSetChanged();
+
+			this.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					mAdapter.notifyDataSetChanged();
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -216,37 +230,43 @@ public class RecentContactListActivity extends Activity implements OnCheckedChan
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), SettingHomeActivity.class);
 			this.startActivity(intent);
+			this.finish();
 		} else if (R.id.bar_rabtn_middle == checkedId) {
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 			this.startActivity(intent);
+			this.finish();
 		}
 	}
 
 	private void updateRecentMsg(RecentMessage newMsg) {
 		synchronized (this.mRecentMsgVector) {
 
-			int index = -1;
-			for (RecentMessage message : this.mRecentMsgVector) {
-				index++;
-				if (message.getFellowId().equals(newMsg.getFellowId())
-						&& message.getSelfId().equals(newMsg.getSelfId())) {
-					if (TopMsgerMgr.getInstance().isTop(newMsg.getFellowId())) {
-						this.mRecentMsgVector.set(index, newMsg);
-					} else {
-						this.mRecentMsgVector.remove(message);
+			try {
+				int index = -1;
+				for (RecentMessage message : this.mRecentMsgVector) {
+					index++;
+					if (message.getFellowId().equals(newMsg.getFellowId())
+							&& message.getSelfId().equals(newMsg.getSelfId())) {
+						if (TopMsgerMgr.getInstance().isTop(newMsg.getFellowId())) {
+							this.mRecentMsgVector.set(index, newMsg);
+						} else {
+							this.mRecentMsgVector.remove(message);
+						}
+
+						break;
 					}
-
-					break;
 				}
+
+				if (!TopMsgerMgr.getInstance().isTop(newMsg.getFellowId())) {
+					this.mRecentMsgVector.add(TopMsgerMgr.getInstance().getTops().size(), newMsg);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
-			if (!TopMsgerMgr.getInstance().isTop(newMsg.getFellowId())) {
-				this.mRecentMsgVector.add(TopMsgerMgr.getInstance().getTops().size(), newMsg);
-			}
+			this.mAdapter.notifyDataSetChanged();
 		}
-
-		this.mAdapter.notifyDataSetChanged();
 	}
 
 	class RecentMessageReceiver extends BroadcastReceiver {

@@ -57,7 +57,7 @@ public class VehicleWebClient {
 	private final static String URL_COMMENTS_VIEW = "personal/personalReviewList?memberId=%s";
 	private final static String URL_COMMENTS_ADD = "review/reviewCreate2?memberId=%s&shopId=%s&reviews=%s&price=%s&technology=%s&efficiency=%s&receive=%s&environment=%s&mainProjectId=%s&imgNames=%s";
 
-	private final static String URL_NEARBYVENDORLIST_VIEW = "member/memberBusinessProject2List?cityId=%s&areaId=%s&streetId=%s&pageId=%s&centerx=%s&centery=%s&range=%s&projectType=%s&projectId=%s&sort=%s";
+	private final static String URL_NEARBYVENDORLIST_VIEW = "member/memberBusinessProject3List?cityId=%s&pageId=%s&centerx=%s&centery=%s&range=%s";
 
 	private final static String URL_ADVICE_CREATE = "suggest/suggestCreate?memberId=%s&tel=%s&email=%s&content=%s";
 	private final static String URL_ECC_CREATE = "correction/correctionCreate?&memberId=%s&shopId=%s&email=%s&content=%s";
@@ -198,11 +198,10 @@ public class VehicleWebClient {
 		return HttpUtil.PostJson(url, null, AddCommentResult.class);
 	}
 
-	public NearbyVendorListViewResult NearbyVendorListView(int cityId, int areaId, int streetId, int pageId,
-			double centerX, double centerY, int range, int projectType, int projectId, int sort) {
+	public NearbyVendorListViewResult NearbyVendorListView(int cityId, int pageId,
+			double centerX, double centerY, int range) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_NEARBYVENDORLIST_VIEW);
-		url = String.format(url, cityId, areaId, streetId, pageId, centerX, centerY, 6, projectType, projectId,
-				sort);
+		url = String.format(url, cityId, pageId, centerX, centerY, 6);
 
 		return HttpUtil.GetJson(url, NearbyVendorListViewResult.class);
 	}

@@ -12,7 +12,6 @@ import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VendorInfoActivity extends Activity {
+public class VendorInfoActivity extends TemplateActivity {
 
 	private Button mBtnBack;
 	private Button mBtnConnect;
@@ -54,7 +53,7 @@ public class VendorInfoActivity extends Activity {
 	private BroadcastReceiver mReceiver;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 
