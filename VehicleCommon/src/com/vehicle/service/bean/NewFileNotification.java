@@ -4,7 +4,7 @@ import com.vehicle.imserver.dao.bean.MessageType;
 
 public class NewFileNotification implements INotification {
 
-	private String token;
+	private String id;
 	private String source;
 	private String target;
 	private String fileName;
@@ -16,12 +16,16 @@ public class NewFileNotification implements INotification {
 			String fileName, long sentTime, int msgType) {
 		this.source = source;
 		this.target = target;
-		this.token = token;
+		this.id = token;
 		this.fileName = fileName;
 		this.sentTime = sentTime;
 		this.msgType = msgType;
 	}
-	
+
+	public NewFileNotification() {
+
+	}
+
 	public int getMsgType() {
 		return this.msgType;
 	}
@@ -70,12 +74,12 @@ public class NewFileNotification implements INotification {
 		this.target = target;
 	}
 
-	public String getToken() {
-		return this.token;
+	public String getId() {
+		return this.id;
 	}
 
-	public void setTokean(String token) {
-		this.token = token;
+	public void setId(String token) {
+		this.id = token;
 	}
 
 	public String getFileName() {

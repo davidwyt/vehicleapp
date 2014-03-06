@@ -33,6 +33,7 @@ public class WakeupResponse extends BaseResponse {
 		this.newMessages = msgs;
 	}
 
+	@XmlElement
 	public List<NewFileNotification> getNewFiles() {
 		return this.newFiles;
 	}

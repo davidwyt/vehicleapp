@@ -24,6 +24,10 @@ public class FileTransmission {
 	private long transmissionTime;
 	private int msgType;
 
+	public FileTransmission() {
+
+	}
+
 	@Column(name = "MSGTYPE")
 	public int getMsgType() {
 		return this.msgType;

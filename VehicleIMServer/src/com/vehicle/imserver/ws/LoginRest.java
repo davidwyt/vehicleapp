@@ -16,6 +16,7 @@ import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.interfaces.LoginService;
 import com.vehicle.imserver.utils.ErrorCodes;
+import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.StringUtil;
 import com.vehicle.service.bean.ACKAllRequest;
 import com.vehicle.service.bean.ACKAllResponse;
@@ -102,6 +103,8 @@ public class LoginRest {
 			List<Message> newMsgs = this.loginService
 					.GetNewMessages(loginRequest);
 			loginResponse.setNewMessages(newMsgs);
+
+			System.out.println(JsonUtil.toJsonString(loginResponse));
 
 			return Response.status(Status.OK).entity(loginResponse).build();
 		} catch (PersistenceException e) {

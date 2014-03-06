@@ -94,7 +94,7 @@ public class LoginServiceImpl implements LoginService {
 					System.out.println("new file token:" + file.getToken());
 
 					System.out.println("new notification token:"
-							+ notification.getToken());
+							+ notification.getId());
 					notifications.add(notification);
 				}
 			}
