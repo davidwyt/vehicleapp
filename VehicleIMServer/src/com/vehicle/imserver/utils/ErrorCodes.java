@@ -27,6 +27,7 @@ public class ErrorCodes {
 	public static final int FOLLOWINVITATION_PROCESSED_ERRCODE     = 0x00000017;
 	public static final int LOGIN_INVALID_ERRORCODE                = 0x00000018;
 	public static final int FILETRAN_INVALIDTYPE_ERRCODE           = 0x00000019;
+	public static final int ACKALL_INVALID_ERRORCODE               = 0x0000001A;
 	
 	public static final String UNKNOWN_ERROR_ERRMSG                = "unknown error in the server: %s";
 	public static final String MESSAGE_NOT_FOUND_ERRMSG            = "message %s not found in server";
@@ -53,5 +54,5 @@ public class ErrorCodes {
 	public static final String FOLLOWINVITATION_PROCESSED_ERRMSG   = "the followship invitation%s processed already";
 	public static final String LOGIN_INVALID_ERRMSG                = "the id is null or empty when login";
 	public static final String FILETRAN_INVALIDFILETYPE_ERRMSG     = "invalid file type : %s, current only img(1) and autdio(2) supported";
-	
+	public static final String ACKALL_INVALID_ERRMSG               = "invalid allack request";
 }

@@ -22,5 +22,4 @@ public interface FileTransmissionService {
 	public String FetchFile(FileFetchRequest request) throws FileTransmissionNotFoundException, PersistenceException;
 	
 	public String SendCommentFile(InputStream input, String fileName) throws IOException;
-
 }

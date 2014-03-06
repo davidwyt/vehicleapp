@@ -45,7 +45,7 @@ public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 				if (InvitationVerdict.ACCEPTED.equals(msg.getVerdict())) {
 					RecentMessage recentMsg = new RecentMessage();
 					recentMsg.setSelfId(SelfMgr.getInstance().getId());
-					recentMsg.setFellowId(msg.getTarget());
+					recentMsg.setFellowId(msg.getSource());
 					recentMsg.setMessageType(msg.getMessageType());
 					recentMsg.setContent("");
 					recentMsg.setSentTime(msg.getSentTime());

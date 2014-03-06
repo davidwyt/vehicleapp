@@ -102,7 +102,7 @@ public class LoginActivity extends TemplateActivity {
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-		mLogButton = (Button)findViewById(R.id.login_signinbtn);
+		mLogButton = (Button) findViewById(R.id.login_signinbtn);
 		mLogButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -115,6 +115,9 @@ public class LoginActivity extends TemplateActivity {
 
 		mLoginTitle = (ImageView) this.findViewById(R.id.login_title);
 
+	}
+
+	private void updateUI() {
 		if (SelfMgr.getInstance().isDriver()) {
 			mLoginTitle.setBackgroundResource(R.drawable.icon_driverlogintitle);
 			mRegButton.setBackgroundResource(R.drawable.selector_btn_driverreg);
@@ -161,15 +164,16 @@ public class LoginActivity extends TemplateActivity {
 			SelfMgr.getInstance().clearFellows();
 			SelfMgr.getInstance().setIsDriver(info.getRoleType() == RoleInfo.ROLETYPE_DRIVER ? true : false);
 
+			updateUI();
 			mAuthTask = null;
 			attemptLogin();
 		} else {
+			updateUI();
 			enableEdit(true);
 		}
 	}
-	
-	private void enableEdit(boolean enable)
-	{
+
+	private void enableEdit(boolean enable) {
 		this.mEmailView.setEnabled(enable);
 		this.mPasswordView.setEnabled(enable);
 		this.mLogButton.setClickable(enable);
@@ -195,7 +199,7 @@ public class LoginActivity extends TemplateActivity {
 	 */
 	private void attemptLogin() {
 		if (mAuthTask != null) {
-			
+
 			return;
 		}
 
@@ -295,7 +299,9 @@ public class LoginActivity extends TemplateActivity {
 					lat = loc.getLatitude();
 					lnt = loc.getLongitude();
 				}
-
+				
+				//Toast.makeText(getApplicationContext(), "" + lat + " " + lnt, Toast.LENGTH_LONG).show();
+				
 				VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
 				client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
 				/**

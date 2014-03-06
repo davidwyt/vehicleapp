@@ -6,11 +6,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
+import com.vehicle.imserver.dao.bean.Message;
 
 @XmlRootElement
 public class WakeupResponse extends BaseResponse {
 
 	private List<FollowshipInvitation> newInvitations;
+	private List<Message> newMessages;
+	private List<NewFileNotification> newFiles;
 
 	@XmlElement
 	public List<FollowshipInvitation> getNewInvitations() {
@@ -20,4 +23,22 @@ public class WakeupResponse extends BaseResponse {
 	public void setNewInvitations(List<FollowshipInvitation> invitations) {
 		this.newInvitations = invitations;
 	}
+
+	@XmlElement
+	public List<Message> getNewMessages() {
+		return this.newMessages;
+	}
+
+	public void setNewMessages(List<Message> msgs) {
+		this.newMessages = msgs;
+	}
+
+	public List<NewFileNotification> getNewFiles() {
+		return this.newFiles;
+	}
+
+	public void setNewFiles(List<NewFileNotification> files) {
+		this.newFiles = files;
+	}
+
 }

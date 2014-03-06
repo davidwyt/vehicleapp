@@ -1,13 +1,10 @@
 package com.vehicle.imserver.utils;
 
-import java.util.Map;
-
-import com.vehicle.imserver.service.exception.PushNotificationFailedException;
-
 import cn.jpush.api.DeviceEnum;
 import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.MessageResult;
+import cn.jpush.api.receive.ReceiveResult;
 
 public class JPushUtil {
 	private static final String appKey = "ee54a39cda5f4cf0ed4e2617";
@@ -18,77 +15,73 @@ public class JPushUtil {
 	private static JPushClient androidJpush = null;
 	private static JPushClient iosJpush = null;
 	private static JPushUtil instance = new JPushUtil();
+	private static JPushClient reportClient = null;
 
 	private JPushUtil() {
 		androidJpush = new JPushClient(masterSecret, appKey, timeToLive,
 				DeviceEnum.Android);
 		iosJpush = new JPushClient(masterSecret, appKey, timeToLive,
 				DeviceEnum.IOS);
+
+		reportClient = new JPushClient(masterSecret, appKey, timeToLive);
 	}
 
 	public static JPushUtil getInstance() {
 		return instance;
 	}
 
-	public MessageResult SendAndroidMessage(String target, String title,
-			String content) {
-		return androidJpush.sendCustomMessageWithAlias(getRandomSendNo(),
-				target, title, content);
-	}
-
-	public MessageResult SendIOSMessage(String target, String title,
-			String content) {
-		return iosJpush.sendNotificationWithAlias(getRandomSendNo(), target,
-				title, content);
-	}
-
-	public MessageResult SendAndroidNotification(String target, String title,
-			String content) {
-		return androidJpush.sendNotificationWithAlias(getRandomSendNo(),
-				target, title, content);
-	}
-
-	public MessageResult SendAndroidNotification(String target, String title,
-			String content, Map<String, Object> extras) {
-		return androidJpush.sendNotificationWithAlias(getRandomSendNo(),
-				target, title, content, 0, extras);
-	}
-
-	public void SendNotification(String target, String title, String content)
-			throws PushNotificationFailedException {
-		MessageResult msgAndroidResult = null;
-		MessageResult msgIosResult = null;
+	public int GetIOSMessageReceivedNum(MessageResult iosResult) {
+		ReceiveResult iosRecResult = null;
 		try {
-			msgAndroidResult = SendAndroidMessage(target, title, content);
-
-			msgIosResult = SendIOSMessage(target,
-					title, content);
-
-		} catch (Exception e) {
-			throw new PushNotificationFailedException(e);
-		}
-
-		if (null != msgAndroidResult && null != msgIosResult) {
-			if (ErrorCodeEnum.NOERROR.value() == msgAndroidResult.getErrcode()
-					|| ErrorCodeEnum.NOERROR.value() == msgIosResult
-							.getErrcode()) {
-
-			} else {
-				if (ErrorCodeEnum.NOERROR.value() != msgAndroidResult
-						.getErrcode())
-					throw new PushNotificationFailedException(
-							msgAndroidResult.getErrmsg());
-				if (ErrorCodeEnum.NOERROR.value() != msgIosResult.getErrcode())
-					throw new PushNotificationFailedException(
-							msgIosResult.getErrmsg());
+			if (null != iosResult
+					&& iosResult.getErrcode() == ErrorCodeEnum.NOERROR.value()) {
+				iosRecResult = reportClient.getReceived(iosResult.getMsg_id()
+						.toString());
 			}
-		} else {
-			if (null == msgAndroidResult)
-				throw new PushNotificationFailedException(
-						"no android push result");
-			if (null == msgIosResult)
-				throw new PushNotificationFailedException("no ios push result");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+		return null == iosRecResult ? 0 : iosRecResult.getIos_apns_sent();
+	}
+
+	public int GetAndroidMessageReceivedNum(MessageResult andResult) {
+		ReceiveResult andRecResult = null;
+
+		try {
+			if (null != andResult
+					&& andResult.getErrcode() == ErrorCodeEnum.NOERROR.value()) {
+				andRecResult = reportClient.getReceived(andResult.getMsg_id()
+						.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null == andRecResult ? 0 : andRecResult.getAndroid_received();
+	}
+
+	public void SendAndroidMessage(String target, String title, String content) {
+		try {
+			androidJpush.sendCustomMessageWithAlias(getRandomSendNo(), target,
+					title, content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void SendIOSMessage(String target, String title, String content) {
+		try {
+			iosJpush.sendNotificationWithAlias(getRandomSendNo(), target,
+					title, content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void SendAllMessage(String target, String title, String content) {
+		SendAndroidMessage(target, title, content);
+		SendIOSMessage(target, title, content);
 	}
 
 	private static final int MAX = Integer.MAX_VALUE;

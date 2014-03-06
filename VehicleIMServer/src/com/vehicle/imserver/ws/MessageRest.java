@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,6 +19,8 @@ import com.vehicle.imserver.service.exception.PushMessageFailedException;
 import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
+import com.vehicle.service.bean.MessageACKRequest;
+import com.vehicle.service.bean.MessageACKResponse;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FolloweesResponse;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
@@ -45,6 +46,46 @@ public class MessageRest {
 
 	public void setMessageService(MessageService messageService) {
 		this.messageService = messageService;
+	}
+
+	@POST
+	@Path("ack")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response ackOneMessage(@Context HttpServletRequest request,
+			MessageACKRequest ackRequest) {
+		MessageACKResponse ackResponse = new MessageACKResponse();
+		if (null == ackRequest
+				|| StringUtil.isEmptyOrNull(ackRequest.getMsgId())) {
+			ackResponse.setErrorCode(ErrorCodes.MESSAGE_INVALID_ERRCODE);
+			ackResponse.setErrorMsg(String
+					.format(ErrorCodes.MESSAGE_INVALID_ERRMSG));
+			return Response.status(Status.BAD_REQUEST).entity(ackResponse)
+					.build();
+		}
+
+		try {
+			this.messageService.ackOneMessage(ackRequest);
+			return Response.status(Status.OK).entity(ackResponse).build();
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+
+			ackResponse.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			ackResponse.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					ackRequest.toString()));
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(ackResponse).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			ackResponse.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			ackResponse.setErrorMsg(String.format(
+					ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(ackResponse).build();
+		}
 	}
 
 	@POST

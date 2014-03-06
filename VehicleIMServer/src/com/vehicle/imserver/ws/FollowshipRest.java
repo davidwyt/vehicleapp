@@ -32,6 +32,8 @@ import com.vehicle.service.bean.FollowshipAddedRequest;
 import com.vehicle.service.bean.FollowshipAddedResponse;
 import com.vehicle.service.bean.FollowshipDroppedRequest;
 import com.vehicle.service.bean.FollowshipDroppedResponse;
+import com.vehicle.service.bean.FollowshipInvitationACKRequest;
+import com.vehicle.service.bean.FollowshipInvitationACKResponse;
 import com.vehicle.service.bean.FollowshipInvitationRequest;
 import com.vehicle.service.bean.FollowshipInvitationResponse;
 import com.vehicle.service.bean.FollowshipInvitationResultRequest;
@@ -50,6 +52,47 @@ public class FollowshipRest {
 
 	public void setFollowshipService(FollowshipService followshipService) {
 		this.followshipService = followshipService;
+	}
+
+	@POST
+	@Path("invack")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response AckFollowship(@Context HttpServletRequest request,
+			FollowshipInvitationACKRequest ackRequest) {
+		FollowshipInvitationACKResponse ackResponse = new FollowshipInvitationACKResponse();
+		if (null == ackRequest
+				|| StringUtil.isEmptyOrNull(ackRequest.getInvId())) {
+			ackResponse
+					.setErrorCode(ErrorCodes.FOLLOWINVRESULT_INVALID_ERRCODE);
+			ackResponse.setErrorMsg(ErrorCodes.FOLLOWINVITATION_INVALID_ERRMSG);
+
+			return Response.status(Status.BAD_REQUEST).entity(ackResponse)
+					.build();
+		}
+
+		try {
+			this.followshipService.AckFollowshipInv(ackRequest);
+			return Response.status(Status.OK).entity(ackResponse).build();
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+
+			ackResponse.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			ackResponse.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					ackRequest.toString()));
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(ackResponse).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			ackResponse.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			ackResponse.setErrorMsg(String.format(
+					ErrorCodes.UNKNOWN_ERROR_ERRMSG, e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(ackResponse).build();
+		}
 	}
 
 	@POST

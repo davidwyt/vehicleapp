@@ -187,9 +187,11 @@ public class FollowshipInvitationActivity extends TemplateActivity implements On
 					if (null != imgs) {
 						for (VendorImage img : imgs) {
 							String imgUrl = img.getSrc();
-							InputStream input = HttpUtil.DownloadFile(imgUrl);
-							Bitmap bitmap = BitmapFactory.decodeStream(input);
-							BitmapCache.getInstance().put(imgUrl, bitmap);
+							if (!BitmapCache.getInstance().contains(imgUrl)) {
+								InputStream input = HttpUtil.DownloadFile(imgUrl);
+								Bitmap bitmap = BitmapFactory.decodeStream(input);
+								BitmapCache.getInstance().put(imgUrl, bitmap);
+							}
 						}
 					}
 					vendor.setImgs(imgs);

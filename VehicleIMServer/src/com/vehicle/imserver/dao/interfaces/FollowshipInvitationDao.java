@@ -13,6 +13,8 @@ public interface FollowshipInvitationDao {
 	public FollowshipInvitation GetFollowshipInvitation(String id);
 
 	public List<FollowshipInvitation> GetNewFollowshipInvitation(String memberId);
+	
+	public void updateFollowshipInvitation(String id);
 
-	public void UpdateNewFollowshipInvitation(String memberId);
+	public void updateAllFollowshipInvitation(String memberId);
 }

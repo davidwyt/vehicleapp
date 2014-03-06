@@ -206,9 +206,11 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 
 	private void updateView(int pers) {
 
-		this.mBtnFollow.setVisibility((PERSPECTIVE_SELF == pers || PERSPECTIVE_INVITATION == pers) ? View.GONE : View.VISIBLE);
+		this.mBtnFollow.setVisibility((PERSPECTIVE_SELF == pers || PERSPECTIVE_INVITATION == pers) ? View.GONE
+				: View.VISIBLE);
 
-		this.mBottomBar.setVisibility((PERSPECTIVE_SELF == pers || PERSPECTIVE_INVITATION == pers) ? View.GONE : View.VISIBLE);
+		this.mBottomBar.setVisibility((PERSPECTIVE_SELF == pers || PERSPECTIVE_INVITATION == pers) ? View.GONE
+				: View.VISIBLE);
 
 		if (PERSPECTIVE_NEARBY == pers) {
 			this.mBtnFollow.setBackgroundResource(R.drawable.selector_btn_follow);
@@ -244,19 +246,6 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 
 		mDetailAdapter.notifyDataSetChanged();
 		mImgAdapter.notifyDataSetChanged();
-
-		try {
-			runOnUiThread(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void registerMessageReceiver() {
@@ -352,13 +341,13 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
 
-		if (mCurIndex+1 >= this.mNearbyVendors.size()) {
+		if (mCurIndex + 1 >= this.mNearbyVendors.size()) {
 			Toast.makeText(VendorHomeActivity.this, getResources().getString(R.string.tip_nonextvendor),
 					Toast.LENGTH_LONG).show();
 			return;
 		}
 
-		String nextId = this.mNearbyVendors.get(mCurIndex+1);
+		String nextId = this.mNearbyVendors.get(mCurIndex + 1);
 
 		boolean isExist = SelfMgr.getInstance().isNearbyVendorDetailExist(nextId);
 
@@ -458,9 +447,11 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 					if (null != imgs) {
 						for (VendorImage img : imgs) {
 							String imgUrl = img.getSrc();
-							InputStream input = HttpUtil.DownloadFile(imgUrl);
-							Bitmap bitmap = BitmapFactory.decodeStream(input);
-							BitmapCache.getInstance().put(imgUrl, bitmap);
+							if (!BitmapCache.getInstance().contains(imgUrl)) {
+								InputStream input = HttpUtil.DownloadFile(imgUrl);
+								Bitmap bitmap = BitmapFactory.decodeStream(input);
+								BitmapCache.getInstance().put(imgUrl, bitmap);
+							}
 						}
 					}
 

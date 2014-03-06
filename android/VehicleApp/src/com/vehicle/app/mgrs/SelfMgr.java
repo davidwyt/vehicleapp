@@ -20,7 +20,6 @@ import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorFellow;
 import com.vehicle.app.msg.worker.IMessageCourier;
-import com.vehicle.app.msg.worker.OfflineMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
@@ -323,10 +322,9 @@ public class SelfMgr {
 			if (mIsDriver) {
 				VehicleWebClient client = new VehicleWebClient();
 
-				NearbyVendorListViewResult result = client.NearbyVendorListView(1, 1, longitude, latitude, 6
-						);
+				NearbyVendorListViewResult result = client.NearbyVendorListView(1, 1, longitude, latitude, 6);
 
-				if (null != result) {
+				if (null != result && result.isSuccess()) {
 					List<Vendor> vendors = result.getInfoBean();
 					if (null != vendors) {
 						for (Vendor vendor : vendors) {
@@ -336,11 +334,12 @@ public class SelfMgr {
 				}
 			} else {
 				/**
-				VehicleWebClient client = new VehicleWebClient();
-				NearbyDriverListViewResult result = client.NearbyDriverListView(1, longitude, latitude);
-				this.mNearbyDriverMap.putAll(result.getResult());
-				*/
-				
+				 * VehicleWebClient client = new VehicleWebClient();
+				 * NearbyDriverListViewResult result =
+				 * client.NearbyDriverListView(1, longitude, latitude);
+				 * this.mNearbyDriverMap.putAll(result.getResult());
+				 */
+
 				Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude, 30);
 				if (null != result) {
 					this.mNearbyDriverMap.putAll(result);
@@ -371,7 +370,7 @@ public class SelfMgr {
 				VehicleWebClient webClient = new VehicleWebClient();
 
 				DriverListViewResult result = webClient.DriverListView(driverIds);
-				if (null == result || null == result.getInfoBean())
+				if (null == result || !result.isSuccess() || null == result.getInfoBean())
 					return null;
 
 				Map<String, Driver> drivers = result.getInfoBean();
@@ -398,8 +397,10 @@ public class SelfMgr {
 				this.mFavVendorMap.clear();
 				this.mFavVendorDetailMap.clear();
 
+				System.out.println("get iddddddddd:" + getId());
+
 				FavVendorListViewResult result = webClient.FavVendorListView(getId());
-				if (null == result)
+				if (null == result || !result.isSuccess())
 					return;
 
 				List<FavoriteVendor> favVendors = result.getInfoBean();
@@ -414,7 +415,7 @@ public class SelfMgr {
 				}
 
 				VendorListViewResult vendorResult = webClient.VendorListView(vendorIds);
-				if (null == vendorResult)
+				if (null == vendorResult || !vendorResult.isSuccess())
 					return;
 
 				Map<String, Vendor> vendorMap = vendorResult.getInfoBean();
@@ -432,7 +433,7 @@ public class SelfMgr {
 				this.mVendorFellowMap.clear();
 				VendorFellowListViewResult result = webClient.VendorFellowListView(getId());
 
-				if (null == result || null == result.getInfoBean())
+				if (null == result || !result.isSuccess() || null == result.getInfoBean())
 					return;
 
 				this.mVendorFellowSimpleVector.addAll(result.getInfoBean());
@@ -443,7 +444,7 @@ public class SelfMgr {
 				}
 
 				DriverListViewResult driverResult = webClient.DriverListView(driverIds);
-				if (null != driverResult && null != driverResult.getInfoBean()) {
+				if (null != driverResult && driverResult.isSuccess() && null != driverResult.getInfoBean()) {
 					Map<String, Driver> drivers = driverResult.getInfoBean();
 					for (Driver driver : drivers.values()) {
 						CarListViewResult carResult = webClient.CarListView(driver.getId());
@@ -465,11 +466,11 @@ public class SelfMgr {
 
 			if (mIsDriver) {
 				CommentListViewResult result = webClient.CommenListView(this.mSelfDriver.getId());
-				if (null != result && null != result.getInfoBean())
+				if (null != result && result.isSuccess() && null != result.getInfoBean())
 					this.mSelfDriver.setComments(result.getInfoBean());
 			} else {
 				VendorSpecViewResult result = webClient.VendorSpecView(this.mSelfVendor.getId());
-				if (null != result && null != result.getResult())
+				if (null != result && result.isSuccess() && null != result.getResult())
 					this.mSelfVendor.setComments(result.getResult().getReviews());
 			}
 		} catch (Exception e) {
@@ -549,7 +550,8 @@ public class SelfMgr {
 					VendorViewResult result = webClient.VendorView(id);
 					if (null != result && result.isSuccess()) {
 						Vendor vendor = result.getInfoBean();
-						this.unknowsVendorsMap.put(vendor.getId(), vendor);
+						if (null != vendor)
+							this.unknowsVendorsMap.put(vendor.getId(), vendor);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -562,7 +564,8 @@ public class SelfMgr {
 					DriverViewResult result = webClient.DriverView(id);
 					if (null != result && result.isSuccess()) {
 						Driver driver = result.getInfoBean();
-						this.unknownDriversMap.put(driver.getId(), driver);
+						if (null != driver)
+							this.unknownDriversMap.put(driver.getId(), driver);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -660,9 +663,6 @@ public class SelfMgr {
 
 		IMessageCourier courier = new WakeupMessageCourier(context);
 		courier.dispatch(null);
-
-		IMessageCourier offCourier = new OfflineMessageCourier(context);
-		offCourier.dispatch(null);
 
 		this.refreshFellows();
 

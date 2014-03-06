@@ -15,7 +15,6 @@ public class FileTransmission {
 
 	public static final int STATUS_SENT = 0;
 	public static final int STATUS_RECEIVED = 1;
-	public static final int STATUS_DONE = 2;
 
 	private String token;
 	private String path;

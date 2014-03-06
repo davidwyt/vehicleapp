@@ -864,16 +864,30 @@ public class DBManager {
 			boolean update = false;
 			Cursor cursor = db.rawQuery(SQL_RECENTMSG_ONESELECT, new String[] { selfId, fellowId });
 			if (null == cursor || 0 == cursor.getCount()) {
-
+				update = false;
 			} else if (1 == cursor.getCount()) {
+				/**
 				cursor.moveToFirst();
 				long curTime = cursor.getLong(cursor.getColumnIndex("SENTTIME"));
 				if (sentTime > curTime) {
 					update = true;
 				}
+				*/
+				update = true;
 			} else {
+				SQLiteStatement deleteRecentMsgStmt = db.compileStatement(SQL_RECENTMSG_DELETEALL);
+				deleteRecentMsgStmt.clearBindings();
+
+				deleteRecentMsgStmt.bindString(1, selfId);
+				deleteRecentMsgStmt.bindString(2, fellowId);
+
+				deleteRecentMsgStmt.executeUpdateDelete();
+				
+				update = false;
+				/**
 				throw new IllegalStateException(String.format("wrong number of recent message for %s and %s", selfId,
 						fellowId));
+				*/
 			}
 
 			System.out.println("update:" + update);

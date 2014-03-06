@@ -27,6 +27,10 @@ public class Contants {
 	public static final String HQL_UPDATE_NEWREQFOLLOWINV = "UPDATE com.vehicle.imserver.dao.bean.FollowshipInvitation SET status=:received WHERE target=:target and status=:requested";
 	public static final String HQL_UPDATE_NEWDONFOLLOWINV = "UPDATE com.vehicle.imserver.dao.bean.FollowshipInvitation SET status=:done WHERE source=:source and (status=:accepted or status=:rejected)";
 
+	public static final String HQL_SELECT_ALLNEWMESSAGE = "FROM com.vehicle.imserver.dao.bean.Message WHERE target=:target and status=:sent";
+	public static final String HQL_SELECT_ALLNEWFILE = "FROM com.vehicle.imserver.dao.bean.FileTransmission WHERE target=:target and status=:sent";
+	public static final String HQL_UPDATE_ALLNEWMESSAGE = "UPDATE com.vehicle.imserver.dao.bean.Message SET status=:received WHERE target:=target and status=:sent";
+
 	public static final int SMALLIMG_WIDTH = 150;
 	public static final int SMALLIMG_HEIGHT = 150;
 	public static final int MIDDLEIMG_WIDTH = 480;

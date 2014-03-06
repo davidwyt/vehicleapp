@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.dao.interfaces.FollowshipInvitationDao;
@@ -51,7 +48,7 @@ public class FollowshipInvitationDaoImpl extends
 	}
 
 	@Override
-	public void UpdateNewFollowshipInvitation(String memberId) {
+	public void updateAllFollowshipInvitation(String memberId) {
 		Session session = this.getSession();
 
 		Query newUpdate = session
@@ -72,5 +69,18 @@ public class FollowshipInvitationDaoImpl extends
 
 		doneUpdate.executeUpdate();
 		session.flush();
+	}
+
+	@Override
+	public void updateFollowshipInvitation(String id) {
+		FollowshipInvitation inv = this.get(id);
+		if (inv.getStatus() == FollowshipInvitation.STATUS_REQUESTED) {
+			inv.setStatus(FollowshipInvitation.STATUS_RECEIVED);
+			this.update(inv);
+		} else if (inv.getStatus() == FollowshipInvitation.STATUS_ACCEPTED
+				|| inv.getStatus() == FollowshipInvitation.STATUS_REJECTED) {
+			inv.setStatus(FollowshipInvitation.STATUS_DONE);
+			this.update(inv);
+		}
 	}
 }

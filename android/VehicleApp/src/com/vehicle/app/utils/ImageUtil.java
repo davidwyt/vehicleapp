@@ -10,8 +10,9 @@ import com.vehicle.app.msg.worker.ImageViewBitmapLoader;
 public class ImageUtil {
 
 	public static void RenderImageView(String url, ImageView iv, int width, int height) {
-		if (null == iv)
+		if (null == iv) {
 			return;
+		}
 
 		Bitmap bitmap = BitmapCache.getInstance().get(url);
 		if (null != bitmap) {

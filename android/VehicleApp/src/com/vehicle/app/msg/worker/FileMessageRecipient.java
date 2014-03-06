@@ -2,6 +2,7 @@ package com.vehicle.app.msg.worker;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Date;
 
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,8 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 			protected Boolean doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 
+				picMsgItem.setSentTime(new Date().getTime());
+
 				try {
 					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
 
@@ -57,20 +60,18 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 
 					System.out.println("fetch file to:" + filePath);
 
-					InputStream fileStream = vClient.FetchFile(picMsgItem.getToken(), filePath);
-					if (null == fileStream) {
-						System.out.println("fetch file failed:" + picMsgItem.getToken());
-						return false;
-					}
+					vClient.FetchFile(picMsgItem.getToken(), filePath);
 
 					SelfMgr.getInstance().retrieveInfo(picMsgItem.getSource());
 
 					File file = new File(filePath);
 					System.out.println("file: " + filePath + " exist:" + file.exists());
 
-					picMsgItem.setContent(FileUtil.ReadInputStream(fileStream));
-					picMsgItem.setPath(filePath);
-
+					if (file.exists()) {
+						picMsgItem.setContent(FileUtil.ReadFile(filePath));
+						picMsgItem.setPath(filePath);
+					}
+					
 					System.out.println("content null :" + (null == picMsgItem.getContent()));
 					return true;
 				} catch (Exception e) {
@@ -123,7 +124,7 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 				try {
 					RecentMessage recentMsg = new RecentMessage();
 					recentMsg.setSelfId(SelfMgr.getInstance().getId());
-					recentMsg.setFellowId(picMsgItem.getTarget());
+					recentMsg.setFellowId(picMsgItem.getSource());
 					recentMsg.setMessageType(picMsgItem.getMessageType());
 					recentMsg.setContent("");
 					recentMsg.setSentTime(picMsgItem.getSentTime());

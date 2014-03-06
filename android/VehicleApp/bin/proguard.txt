@@ -1,5 +1,5 @@
-# view res/layout/activity_vendorhome.xml #generated:114
-# view res/layout/activity_vendorhome.xml #generated:89
+# view res/layout/activity_vendorhome.xml #generated:119
+# view res/layout/activity_vendorhome.xml #generated:90
 -keep class android.support.v4.view.ViewPager { <init>(...); }
 
 # view AndroidManifest.xml #generated:204
@@ -127,9 +127,9 @@
 # view res/layout/activity_vendorrating.xml #generated:86
 -keep class com.vehicle.app.layout.ToggleButtonGroupTableLayout { <init>(...); }
 
-# view res/layout/activity_vendorhome.xml #generated:107
+# view res/layout/activity_vendorhome.xml #generated:112
 -keep class com.viewpagerindicator.TitlePageIndicator { <init>(...); }
 
-# view res/layout/activity_vendorhome.xml #generated:95
+# view res/layout/activity_vendorhome.xml #generated:96
 -keep class com.viewpagerindicator.UnderlinePageIndicator { <init>(...); }
 

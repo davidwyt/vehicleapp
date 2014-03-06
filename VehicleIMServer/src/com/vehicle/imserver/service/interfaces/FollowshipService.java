@@ -13,6 +13,7 @@ import com.vehicle.service.bean.FolloweesRequest;
 import com.vehicle.service.bean.FollowersRequest;
 import com.vehicle.service.bean.FollowshipAddedRequest;
 import com.vehicle.service.bean.FollowshipDroppedRequest;
+import com.vehicle.service.bean.FollowshipInvitationACKRequest;
 import com.vehicle.service.bean.FollowshipInvitationRequest;
 import com.vehicle.service.bean.FollowshipInvitationResultRequest;
 import com.vehicle.service.bean.FollowshipRequest;
@@ -38,7 +39,8 @@ public interface FollowshipService {
 			FollowshipDroppedRequest followshipDroppedRequest)
 			throws PushNotificationFailedException;
 
-	public FollowshipInvitation InviteFollowship(FollowshipInvitationRequest invitationRequest)
+	public FollowshipInvitation InviteFollowship(
+			FollowshipInvitationRequest invitationRequest)
 			throws PushNotificationFailedException, PersistenceException;
 
 	public void InvitedFollowshipResult(
@@ -46,4 +48,7 @@ public interface FollowshipService {
 			throws PushNotificationFailedException,
 			FollowshipInvitationNotExistException,
 			FollowshipInvitationProcessedAlreadyException, PersistenceException;
+
+	public void AckFollowshipInv(FollowshipInvitationACKRequest request)
+			throws PersistenceException;
 }

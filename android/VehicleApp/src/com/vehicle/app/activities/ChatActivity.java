@@ -551,11 +551,6 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(entity);
 
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
-			System.out.println("send time: " + sdf.format(entity.getSentTime()));
-			
-			System.out.println(" in chata msg: " + entity.getContent() + " time:" + sdf.format(entity.getSentTime()) + " long:" + entity.getSentTime());
-			
 			this.addToMsgList(entity);
 		}
 	}
@@ -618,7 +613,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 				CHAT_STYLE_2ONE != this.mChatStyle);
 		msgCourier.dispatch(entity);
 
-		addToMsgList(entity);
+		this.addToMsgList(entity);
 	}
 
 	private void back() {
@@ -675,6 +670,8 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 
 			if (!mFellowId.equals(msg.getSource()) || !msg.getTarget().equals(SelfMgr.getInstance().getId()))
 				return;
+
+			System.out.println("receive new msg:" + msg.getMessageType());
 
 			addToMsgList(msg);
 		}
@@ -756,6 +753,11 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 				mRecorder.stop();
 				mRecorder.release();
 				mRecorder = null;
+
+				File file = new File(this.audioFile);
+				if (file.exists()) {
+					this.sendFile(this.audioFile, IMessageItem.MESSAGE_TYPE_AUDIO);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

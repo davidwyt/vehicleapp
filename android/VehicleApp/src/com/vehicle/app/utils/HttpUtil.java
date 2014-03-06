@@ -11,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -170,7 +171,9 @@ public class HttpUtil {
 			System.out.println(response.getStatusLine());
 
 			if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
-				input = response.getEntity().getContent();
+				HttpEntity entity = response.getEntity();
+				BufferedHttpEntity bufferedHttpEntity = new BufferedHttpEntity(entity);
+				input = bufferedHttpEntity.getContent();
 			}
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block

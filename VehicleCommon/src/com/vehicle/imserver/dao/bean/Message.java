@@ -6,10 +6,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Index;
 
+import junit.framework.Assert;
+
 @Entity
 @Table(name = "MESSAGE", indexes = { @Index(columnList = "SOURCE"),
-		@Index(columnList = "TARGET") })
+		@Index(columnList = "TARGET"), @Index(columnList = "STATUS") })
 public class Message {
+
+	public static int STATUS_SENT = 0;
+	public static int STATUS_RECEIVED = 1;
 
 	private String id;
 	private String source;
@@ -17,16 +22,9 @@ public class Message {
 	private long sentTime;
 	private String content;
 	private int messageType;
+	private int status;
 
 	public Message() {
-	}
-
-	public Message(OfflineMessage om) {
-		this.id = om.getId();
-		this.source = om.getSource();
-		this.target = om.getTarget();
-		this.sentTime = om.getSentTime();
-		this.content = om.getContent();
 	}
 
 	@Id
@@ -37,6 +35,15 @@ public class Message {
 
 	public void setId(String iid) {
 		this.id = iid;
+	}
+
+	@Column(name = "STATUS")
+	public int getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	@Column(name = "SOURCE")

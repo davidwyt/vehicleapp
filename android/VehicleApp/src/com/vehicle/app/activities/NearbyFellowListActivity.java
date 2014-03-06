@@ -180,7 +180,7 @@ public class NearbyFellowListActivity extends TemplateActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private class DistanceComparator implements Comparator {
 
@@ -275,7 +275,7 @@ public class NearbyFellowListActivity extends TemplateActivity {
 			// TODO: attempt authentication against a network service.
 
 			pageNum++;
-			
+
 			Location loc = LocationUtil.getCurLocation(getApplicationContext());
 			double latitude, longtitude;
 			if (null == loc) {
@@ -285,7 +285,7 @@ public class NearbyFellowListActivity extends TemplateActivity {
 				latitude = loc.getLatitude();
 				longtitude = loc.getLongitude();
 			}
-			
+
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
@@ -293,11 +293,12 @@ public class NearbyFellowListActivity extends TemplateActivity {
 					return client.NearbyVendorListView(1, pageNum, longtitude, latitude, 6);
 				} else {
 					/**
-					VehicleWebClient client = new VehicleWebClient();
-					return client.NearbyDriverListView(-1, longtitude, latitude);
-					*/
-					
-					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(longtitude, latitude, 30);
+					 * VehicleWebClient client = new VehicleWebClient(); return
+					 * client.NearbyDriverListView(-1, longtitude, latitude);
+					 */
+
+					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(longtitude, latitude,
+							30);
 
 					NearbyDriverListViewResult result = new NearbyDriverListViewResult();
 					result.setCode(WebCallBaseResult.CODE_SUCCESS);
@@ -401,9 +402,11 @@ public class NearbyFellowListActivity extends TemplateActivity {
 						if (null != imgs) {
 							for (VendorImage img : imgs) {
 								String imgUrl = img.getSrc();
-								InputStream input = HttpUtil.DownloadFile(imgUrl);
-								Bitmap bitmap = BitmapFactory.decodeStream(input);
-								BitmapCache.getInstance().put(imgUrl, bitmap);
+								if (!BitmapCache.getInstance().contains(imgUrl)) {
+									InputStream input = HttpUtil.DownloadFile(imgUrl);
+									Bitmap bitmap = BitmapFactory.decodeStream(input);
+									BitmapCache.getInstance().put(imgUrl, bitmap);
+								}
 							}
 						}
 						vendor.setImgs(imgs);

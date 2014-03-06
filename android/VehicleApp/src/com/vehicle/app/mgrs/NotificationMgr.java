@@ -141,7 +141,7 @@ public class NotificationMgr {
 
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
 				.setSmallIcon(R.drawable.jpush_notification_icon)
-				.setContentTitle(context.getResources().getString(R.string.tip_newinv)).setContentText(ticker)
+				.setContentTitle(title).setContentText(ticker)
 				.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
 				.setTicker(ticker);
 
@@ -155,5 +155,4 @@ public class NotificationMgr {
 
 		notificationMgr.notify(num, notificationBuilder.build());
 	}
-
 }

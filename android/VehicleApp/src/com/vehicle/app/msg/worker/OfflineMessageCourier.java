@@ -73,7 +73,7 @@ public class OfflineMessageCourier extends MessageBaseCourier {
 					VehicleClient client = new VehicleClient(id);
 					Calendar rightNow = Calendar.getInstance();
 					rightNow.add(Calendar.DAY_OF_MONTH, -10);
-					resp = client.GetOfflineMessage(id, rightNow.getTime().getTime());
+					resp = client.GetOfflineMessage(id, 0);
 					client.OfflineAck(SelfMgr.getInstance().getId());
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -12,10 +12,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
+import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.interfaces.LoginService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
+import com.vehicle.service.bean.ACKAllRequest;
+import com.vehicle.service.bean.ACKAllResponse;
+import com.vehicle.service.bean.NewFileNotification;
 import com.vehicle.service.bean.WakeupRequest;
 import com.vehicle.service.bean.WakeupResponse;
 
@@ -30,6 +34,39 @@ public class LoginRest {
 
 	public void setLoginService(LoginService service) {
 		this.loginService = service;
+	}
+
+	@POST
+	@Path("ackall")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response ackAll(@Context HttpServletRequest request,
+			ACKAllRequest ackRequest) {
+		ACKAllResponse ackResponse = new ACKAllResponse();
+		if (null == ackRequest
+				|| StringUtil.isEmptyOrNull(ackRequest.getMemberId())) {
+			ackResponse.setErrorCode(ErrorCodes.ACKALL_INVALID_ERRORCODE);
+			ackResponse.setErrorMsg(String
+					.format(ErrorCodes.ACKALL_INVALID_ERRMSG));
+
+			return Response.status(Status.BAD_REQUEST).entity(ackResponse)
+					.build();
+		}
+
+		try {
+			this.loginService.updateAllNewTextAndFileMessage(ackRequest
+					.getMemberId());
+
+			return Response.status(Status.OK).entity(ackResponse).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			ackResponse.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			ackResponse.setErrorMsg(String
+					.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR)
+					.entity(ackResponse).build();
+		}
 	}
 
 	@POST
@@ -55,8 +92,16 @@ public class LoginRest {
 
 		try {
 			List<FollowshipInvitation> newInvitations = this.loginService
-					.ShakeNewInvitations(loginRequest);
+					.GetNewInvitations(loginRequest);
 			loginResponse.setNewInvitations(newInvitations);
+
+			List<NewFileNotification> newFiles = this.loginService
+					.GetNewFiles(loginRequest);
+			loginResponse.setNewFiles(newFiles);
+
+			List<Message> newMsgs = this.loginService
+					.GetNewMessages(loginRequest);
+			loginResponse.setNewMessages(newMsgs);
 
 			return Response.status(Status.OK).entity(loginResponse).build();
 		} catch (PersistenceException e) {

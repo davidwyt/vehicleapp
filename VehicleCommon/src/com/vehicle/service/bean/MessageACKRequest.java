@@ -4,24 +4,21 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class MessageACKRequest implements IRequest{
-	
+public class MessageACKRequest implements IRequest {
+
 	private String msgId;
-	
+
 	@XmlElement
-	public String getMsgId()
-	{
+	public String getMsgId() {
 		return this.msgId;
 	}
-	
-	public void setMsgId(String id)
-	{
+
+	public void setMsgId(String id) {
 		this.msgId = id;
 	}
-	
+
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return String.format("message:%s received", msgId);
 	}
 }

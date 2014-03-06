@@ -88,9 +88,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			TextView tvSendTime = (TextView) convertView.findViewById(R.id.chatmsg_tv_sendtime);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
 			tvSendTime.setText(sdf.format(msg.getSentTime()));
-			
-			System.out.println(" in adpater msg: " + msg.getContent() + " time:" + sdf.format(msg.getSentTime()) + " long:" + msg.getSentTime());
-			
+
 			BaseInfo info = this.getBaseInfo(msg.getSource());
 
 			TextView tvUserName = (TextView) convertView.findViewById(R.id.chatmsg_tv_username);
@@ -119,9 +117,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 							context.startActivity(intent);
 						} catch (Exception e) {
 							e.printStackTrace();
-							// Toast.makeText(context, e.getMessage() +
-							// e.getLocalizedMessage(),
-							// Toast.LENGTH_LONG).show();
 						}
 					}
 				});
@@ -297,10 +292,10 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 	}
 
 	private Bitmap scaleBitmap(Bitmap bitmap) {
-
-		if (null == bitmap)
+		if (null == bitmap) {
+			System.out.println("bitmap is null");
 			return null;
-
+		}
 		/**
 		 * DisplayMetrics dm = context.getResources().getDisplayMetrics(); int
 		 * screenWidth = dm.widthPixels; int screenHeight = dm.heightPixels;
@@ -315,7 +310,11 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		 * scaledHeight = screenHeight / 2; scaledWidth = scaledHeight *
 		 * picWidth / picHeight; } }
 		 */
-		return Bitmap.createScaledBitmap(bitmap, 128, 128, true);
+		if (bitmap.getWidth() < 128 && bitmap.getHeight() < 128) {
+			return bitmap;
+		} else {
+			return Bitmap.createScaledBitmap(bitmap, 128, 128, true);
+		}
 	}
 
 	private String getAudioTempPath() {

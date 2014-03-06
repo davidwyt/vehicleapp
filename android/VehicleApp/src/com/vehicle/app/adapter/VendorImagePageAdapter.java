@@ -19,6 +19,7 @@ public class VendorImagePageAdapter extends FragmentStatePagerAdapter {
 	}
 
 	public void setImgs(List<VendorImage> imgs) {
+		System.out.println("imgs:" + (null == imgs ? "null" : ("not null : " + imgs.size())));
 		this.imgs = imgs;
 	}
 
@@ -30,6 +31,8 @@ public class VendorImagePageAdapter extends FragmentStatePagerAdapter {
 	@Override
 	public Fragment getItem(int pos) {
 		// TODO Auto-generated method stub
+		System.out.println("in get item:" + pos);
+		
 		return null == imgs ? null : new ImagePageFragment(imgs.get(pos).getSrc());
 	}
 

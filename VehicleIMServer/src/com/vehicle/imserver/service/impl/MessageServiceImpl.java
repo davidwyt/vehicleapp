@@ -5,9 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import cn.jpush.api.ErrorCodeEnum;
-import cn.jpush.api.MessageResult;
-
 import com.vehicle.imserver.dao.bean.Message;
 import com.vehicle.imserver.dao.bean.OfflineMessage;
 import com.vehicle.imserver.dao.interfaces.FollowshipDao;
@@ -19,6 +16,7 @@ import com.vehicle.imserver.service.interfaces.MessageService;
 import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
+import com.vehicle.service.bean.MessageACKRequest;
 import com.vehicle.service.bean.MessageOne2FolloweesRequest;
 import com.vehicle.service.bean.MessageOne2FollowersRequest;
 import com.vehicle.service.bean.MessageOne2MultiRequest;
@@ -52,42 +50,22 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	private void PersistentAndSendMessage(Message msg)
-			throws PersistenceException, PushMessageFailedException {
+			throws PersistenceException {
 
-		MessageResult androidMsgResult = null;
-		MessageResult iosMsgResult = null;
 		try {
-			androidMsgResult = JPushUtil.getInstance().SendAndroidMessage(
-					msg.getTarget(), Notifications.NewMessage.toString(),
+			JPushUtil.getInstance().SendAndroidMessage(msg.getTarget(),
+					Notifications.NewMessage.toString(),
 					JsonUtil.toJsonString(msg));
-			iosMsgResult = JPushUtil.getInstance().SendIOSMessage(
-					msg.getTarget(), "chat", JsonUtil.toJsonString(msg));
+			JPushUtil.getInstance().SendIOSMessage(msg.getTarget(), "chat",
+					JsonUtil.toJsonString(msg));
 		} catch (Exception e) {
-			throw new PushMessageFailedException(e);
+			e.printStackTrace();
 		}
 
-		if (null != androidMsgResult && null != iosMsgResult) {
-			if (ErrorCodeEnum.NOERROR.value() == androidMsgResult.getErrcode()
-					|| ErrorCodeEnum.NOERROR.value() == iosMsgResult
-							.getErrcode()) {
-				try {
-					messageDao.InsertMessage(msg);
-				} catch (Exception e) {
-					throw new PersistenceException(e.getMessage(), e);
-				}
-			} else {
-				offlineMessageDao.save(new OfflineMessage(msg));
-				/**
-				 * if (ErrorCodeEnum.NOERROR.value() !=
-				 * androidMsgResult.getErrcode()) throw new
-				 * PushMessageFailedException(androidMsgResult.getErrmsg()); if
-				 * (ErrorCodeEnum.NOERROR.value() != iosMsgResult.getErrcode())
-				 * throw new
-				 * PushMessageFailedException(iosMsgResult.getErrmsg());
-				 */
-			}
-		} else {
-			throw new PushMessageFailedException("no push result");
+		try {
+			messageDao.InsertMessage(msg);
+		} catch (Exception e) {
+			throw new PersistenceException(e.getMessage(), e);
 		}
 	}
 
@@ -104,8 +82,8 @@ public class MessageServiceImpl implements MessageService {
 	}
 
 	private void PersistentAndSendMessageList(String source,
-			List<String> targets, String content,int msgType) throws PersistenceException,
-			PushMessageFailedException {
+			List<String> targets, String content, int msgType)
+			throws PersistenceException, PushMessageFailedException {
 
 		Date now = new Date();
 		for (String target : targets) {
@@ -128,7 +106,8 @@ public class MessageServiceImpl implements MessageService {
 		String source = msgRequest.getSource();
 		List<String> followees = followshipDao.GetFollowees(source);
 
-//		PersistentAndSendMessageList(source, followees, msgRequest.getContent());
+		// PersistentAndSendMessageList(source, followees,
+		// msgRequest.getContent());
 	}
 
 	public void SendMessage2Followers(MessageOne2FollowersRequest msgRequest)
@@ -138,7 +117,8 @@ public class MessageServiceImpl implements MessageService {
 		String source = msgRequest.getSource();
 		List<String> followers = followshipDao.GetFollowers(source);
 
-//		PersistentAndSendMessageList(source, followers, msgRequest.getContent());
+		// PersistentAndSendMessageList(source, followers,
+		// msgRequest.getContent());
 	}
 
 	public OfflineMessageDao getOfflineMessageDao() {
@@ -166,7 +146,7 @@ public class MessageServiceImpl implements MessageService {
 			r.setMessageType(list.get(i).getMessageType());
 			ret.add(r);
 		}
-		
+
 		return ret;
 	}
 
@@ -190,7 +170,23 @@ public class MessageServiceImpl implements MessageService {
 			multi.add(temps[i]);
 		}
 
-		PersistentAndSendMessageList(source, multi, req.getContent(),req.getMessageType());
+		PersistentAndSendMessageList(source, multi, req.getContent(),
+				req.getMessageType());
+	}
+
+	@Override
+	public void ackOneMessage(MessageACKRequest request)
+			throws PersistenceException {
+
+		try {
+			Message msg = this.messageDao.get(request.getMsgId());
+			if (null != msg && msg.getStatus() == Message.STATUS_SENT) {
+				msg.setStatus(Message.STATUS_RECEIVED);
+				this.messageDao.update(msg);
+			}
+		} catch (Exception e) {
+			throw new PersistenceException("persistence error when ack message", e);
+		}
 	}
 
 }

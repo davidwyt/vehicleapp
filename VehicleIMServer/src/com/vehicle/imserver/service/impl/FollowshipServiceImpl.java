@@ -23,6 +23,7 @@ import com.vehicle.service.bean.FollowshipAddedNotification;
 import com.vehicle.service.bean.FollowshipAddedRequest;
 import com.vehicle.service.bean.FollowshipDroppedNotification;
 import com.vehicle.service.bean.FollowshipDroppedRequest;
+import com.vehicle.service.bean.FollowshipInvitationACKRequest;
 import com.vehicle.service.bean.FollowshipInvitationAcceptNotification;
 import com.vehicle.service.bean.FollowshipInvitationNotification;
 import com.vehicle.service.bean.FollowshipInvitationRejectNotification;
@@ -101,7 +102,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 		notification.setSource(followshipAddedRequest.getMemberId());
 		notification.setTarget(followshipAddedRequest.getShopId());
 
-		JPushUtil.getInstance().SendNotification(notification.getTarget(),
+		JPushUtil.getInstance().SendAllMessage(notification.getTarget(),
 				notification.getTitle(), JsonUtil.toJsonString(notification));
 	}
 
@@ -114,12 +115,13 @@ public class FollowshipServiceImpl implements FollowshipService {
 		notification.setSource(followshipDroppedRequest.getMemberId());
 		notification.setTarget(followshipDroppedRequest.getShopId());
 
-		JPushUtil.getInstance().SendNotification(notification.getTarget(),
+		JPushUtil.getInstance().SendAllMessage(notification.getTarget(),
 				notification.getTitle(), JsonUtil.toJsonString(notification));
 	}
 
 	@Override
-	public FollowshipInvitation InviteFollowship(FollowshipInvitationRequest invitationRequest)
+	public FollowshipInvitation InviteFollowship(
+			FollowshipInvitationRequest invitationRequest)
 			throws PushNotificationFailedException, PersistenceException {
 
 		// should verify if the member has followed the shop first
@@ -145,9 +147,14 @@ public class FollowshipServiceImpl implements FollowshipService {
 		notification.setInvitationId(invitationId);
 		notification.setInviteTime(invitation.getReqTime());
 
-		JPushUtil.getInstance().SendNotification(notification.getTarget(),
-				notification.getTitle(), JsonUtil.toJsonString(notification));
-		
+		try {
+			JPushUtil.getInstance().SendAllMessage(notification.getTarget(),
+					notification.getTitle(),
+					JsonUtil.toJsonString(notification));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return invitation;
 	}
 
@@ -199,7 +206,25 @@ public class FollowshipServiceImpl implements FollowshipService {
 			throw new PersistenceException(e.getMessage(), e);
 		}
 
-		JPushUtil.getInstance().SendNotification(notification.getTarget(),
-				notification.getTitle(), JsonUtil.toJsonString(notification));
+		try {
+			JPushUtil.getInstance().SendAllMessage(notification.getTarget(),
+					notification.getTitle(),
+					JsonUtil.toJsonString(notification));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void AckFollowshipInv(FollowshipInvitationACKRequest request) throws PersistenceException {
+		// TODO Auto-generated method stub
+		try {
+			this.followshipInvitationDao.updateFollowshipInvitation(request
+					.getInvId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new PersistenceException(
+					"persistence error when ack followship invitation", e);
+		}
 	}
 }

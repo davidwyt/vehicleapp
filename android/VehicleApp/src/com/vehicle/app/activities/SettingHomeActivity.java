@@ -5,6 +5,7 @@ import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
+import cn.jpush.android.api.JPushInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -245,8 +246,8 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 	}
 
 	private void logout() {
-
 		ActivityManager.getInstance().finishAll();
+		JPushInterface.setAliasAndTags(this.getApplicationContext(), null, null);
 
 		Intent intent = new Intent(this, BeginActivity.class);
 		intent.putExtra(BeginActivity.KEY_AUDOLOGIN, false);
@@ -270,6 +271,7 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 
 	private void returnFirst() {
 		ActivityManager.getInstance().finishAll();
+		JPushInterface.setAliasAndTags(this.getApplicationContext(), null, null);
 
 		Intent intent = new Intent(this, BeginActivity.class);
 		intent.putExtra(BeginActivity.KEY_AUDOLOGIN, false);

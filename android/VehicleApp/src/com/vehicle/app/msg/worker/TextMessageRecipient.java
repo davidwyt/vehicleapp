@@ -1,5 +1,7 @@
 package com.vehicle.app.msg.worker;
 
+import java.util.Date;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,6 +16,7 @@ import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.JsonUtil;
 
 public class TextMessageRecipient extends MessageBaseRecipient {
 
@@ -36,9 +39,12 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 			@Override
 			protected Void doInBackground(Void... arg0) {
 				// TODO Auto-generated method stub
-
+				
+				textMsgItem.setSentTime(new Date().getTime());
+				
+				System.out.println("msg received :" + JsonUtil.toJsonString(textMsgItem));
+				
 				SelfMgr.getInstance().retrieveInfo(textMsgItem.getSource());
-
 				if (ActivityUtil.IsChattingWithFellow(context, textMsgItem.getSource())) {
 					textMsgItem.setFlag(MessageFlag.READ);
 					try {
@@ -70,7 +76,7 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 
 				RecentMessage recentMsg = new RecentMessage();
 				recentMsg.setSelfId(SelfMgr.getInstance().getId());
-				recentMsg.setFellowId(textMsgItem.getTarget());
+				recentMsg.setFellowId(textMsgItem.getSource());
 				recentMsg.setMessageType(textMsgItem.getMessageType());
 				recentMsg.setContent(textMsgItem.getContent());
 				recentMsg.setSentTime(textMsgItem.getSentTime());

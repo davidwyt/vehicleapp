@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
@@ -13,6 +14,7 @@ import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.service.bean.BaseResponse;
 import com.vehicle.service.bean.MessageOne2MultiResponse;
@@ -57,9 +59,11 @@ public class TextMessageCourier extends MessageBaseCourier {
 						}
 					} else if (IMessageItem.MESSAGE_TYPE_LOCATION == msg.getMessageType()) {
 						if (isGroupChat) {
-							resp = client.SendLocationMessage(msg.getTarget(), msg.getContent());
+							resp = client.SendMultiLocationMessage(msg.getTarget(), msg.getContent());
 						} else {
-							resp = client.SendTextMessage(msg.getTarget(), msg.getContent());
+							resp = client.SendLocationMessage(msg.getTarget(), msg.getContent());
+
+							Toast.makeText(context, JsonUtil.toJsonString(msg), Toast.LENGTH_LONG).show();
 						}
 					}
 
@@ -76,12 +80,12 @@ public class TextMessageCourier extends MessageBaseCourier {
 
 					if (isGroupChat) {
 						MessageOne2MultiResponse multiResp = (MessageOne2MultiResponse) resp;
-						//msg.setSentTime(multiResp.getMsgSentTime());
+						// msg.setSentTime(multiResp.getMsgSentTime());
 					} else {
 
 						MessageOne2OneResponse oneResp = (MessageOne2OneResponse) resp;
 						msg.setId(oneResp.getMsgId());
-						//msg.setSentTime(oneResp.getMsgSentTime());
+						// msg.setSentTime(oneResp.getMsgSentTime());
 						msg.setFlag(MessageFlag.SELF);
 
 						try {

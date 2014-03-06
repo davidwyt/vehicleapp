@@ -226,23 +226,16 @@ public class VehicleClient {
 		return HttpUtil.UploadFile(url, filePath, FileMultiTransmissionResponse.class);
 	}
 
-	public InputStream FetchFile(String token, String filePath) {
-		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT, URL_FILETRANSMISSION_FETCH);
-		url = String.format(url, token);
+	public void FetchFile(String token, String filePath) {
 
-		InputStream input = null;
 		try {
-			input = HttpUtil.DownloadFile(url);
-			if (null != input) {
+			InputStream input = FetchFile(token);
+			if (null != input)
 				FileUtil.SaveFile(filePath, input);
-				System.out.println("save file to " + filePath);
-			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return input;
 	}
 
 	public InputStream FetchFile(String token) {
