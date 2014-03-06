@@ -1,12 +1,12 @@
 package com.vehicle.app.msg.worker;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Date;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 
 import com.vehicle.app.activities.ChatActivity;
@@ -24,8 +24,8 @@ import com.vehicle.sdk.client.VehicleClient;
 
 public class FileMessageRecipient extends MessageBaseRecipient {
 
-	public FileMessageRecipient(Context context) {
-		super(context);
+	public FileMessageRecipient(Context context, boolean wakeup) {
+		super(context, wakeup);
 	}
 
 	@Override
@@ -43,8 +43,10 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 			protected Boolean doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 
-				picMsgItem.setSentTime(new Date().getTime());
-
+				if (!isFromWakeup) {
+					picMsgItem.setSentTime(new Date().getTime());
+				}
+				
 				try {
 					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
 
@@ -71,7 +73,7 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 						picMsgItem.setContent(FileUtil.ReadFile(filePath));
 						picMsgItem.setPath(filePath);
 					}
-					
+
 					System.out.println("content null :" + (null == picMsgItem.getContent()));
 					return true;
 				} catch (Exception e) {
@@ -137,7 +139,11 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 			}
 		};
 
-		fetchTask.execute();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			fetchTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			fetchTask.execute();
+		}
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Date;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
@@ -17,12 +18,12 @@ import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
+import com.vehicle.sdk.client.VehicleClient;
 
 public class TextMessageRecipient extends MessageBaseRecipient {
 
-	public TextMessageRecipient(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
+	public TextMessageRecipient(Context context, boolean wakeup) {
+		super(context, wakeup);
 	}
 
 	@Override
@@ -39,12 +40,15 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 			@Override
 			protected Void doInBackground(Void... arg0) {
 				// TODO Auto-generated method stub
-				
-				textMsgItem.setSentTime(new Date().getTime());
-				
+
+				if (!isFromWakeup) {
+					textMsgItem.setSentTime(new Date().getTime());
+				}
+
 				System.out.println("msg received :" + JsonUtil.toJsonString(textMsgItem));
-				
+
 				SelfMgr.getInstance().retrieveInfo(textMsgItem.getSource());
+
 				if (ActivityUtil.IsChattingWithFellow(context, textMsgItem.getSource())) {
 					textMsgItem.setFlag(MessageFlag.READ);
 					try {
@@ -84,11 +88,24 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 
 				updateRecentMessage(recentMsg);
 
+				if (!isFromWakeup) {
+					try {
+						VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+						client.AckMessage(textMsgItem.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
 				return null;
 			}
 		};
 
-		asyncTask.execute((Void) null);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			asyncTask.execute();
+		}
 	}
 
 	@Override

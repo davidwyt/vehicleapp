@@ -101,7 +101,7 @@ public class MessageReceiver extends BroadcastReceiver {
 		
 		TextMessage msg = JsonUtil.fromJson(message, TextMessage.class);
 
-		IMessageRecipient cpu = new TextMessageRecipient(context);
+		IMessageRecipient cpu = new TextMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
 
@@ -113,8 +113,8 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		FileMessage msg = new FileMessage();
 		msg.fromRawNotification(newFileNotification);
-
-		IMessageRecipient cpu = new FileMessageRecipient(context);
+		
+		IMessageRecipient cpu = new FileMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
 
@@ -127,7 +127,7 @@ public class MessageReceiver extends BroadcastReceiver {
 		InvitationVerdictMessage msg = new InvitationVerdictMessage();
 		msg.fromRawNotification(notification);
 
-		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context);
+		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
 
@@ -140,7 +140,7 @@ public class MessageReceiver extends BroadcastReceiver {
 		InvitationVerdictMessage msg = new InvitationVerdictMessage();
 		msg.fromRawNotification(notification);
 
-		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context);
+		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
 
@@ -153,7 +153,7 @@ public class MessageReceiver extends BroadcastReceiver {
 		FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
 		msg.fromRawNotification(notification);
 
-		IMessageRecipient cpu = new FollowshipInvMessageRecipient(context);
+		IMessageRecipient cpu = new FollowshipInvMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
 }

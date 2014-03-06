@@ -36,7 +36,7 @@ public class OfflineMessageCourier extends MessageBaseCourier {
 			textMsg.setSource(msg.getSource());
 			textMsg.setTarget(msg.getTarget());
 
-			IMessageRecipient recipient = new TextMessageRecipient(context);
+			IMessageRecipient recipient = new TextMessageRecipient(context, true);
 			recipient.receive(textMsg);
 
 		} else if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE
@@ -52,7 +52,7 @@ public class OfflineMessageCourier extends MessageBaseCourier {
 			else
 				imgMsg.setName(UUID.randomUUID().toString() + ".wav");
 
-			IMessageRecipient recipient = new FileMessageRecipient(context);
+			IMessageRecipient recipient = new FileMessageRecipient(context, true);
 			recipient.receive(imgMsg);
 		}
 	}

@@ -7,14 +7,16 @@ import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
 import com.vehicle.app.msg.bean.RecentMessage;
+import com.vehicle.sdk.client.VehicleClient;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 
 public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 
-	public InvitationVerdictMessageRecipient(Context context) {
-		super(context);
+	public InvitationVerdictMessageRecipient(Context context, boolean wakeup) {
+		super(context, wakeup);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -54,6 +56,13 @@ public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 					updateRecentMessage(recentMsg);
 				}
 
+				try {
+					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+					client.FollowshipInvAck(msg.getInvitationId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 				return null;
 			}
 
@@ -67,7 +76,11 @@ public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 			}
 		};
 
-		asyncTask.execute((Void) null);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			asyncTask.execute();
+		}
 	}
 
 	@Override

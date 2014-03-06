@@ -5,14 +5,16 @@ import com.vehicle.app.mgrs.NotificationMgr;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.IMessageItem;
+import com.vehicle.sdk.client.VehicleClient;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 
 public class FollowshipInvMessageRecipient extends MessageBaseRecipient {
 
-	public FollowshipInvMessageRecipient(Context context) {
-		super(context);
+	public FollowshipInvMessageRecipient(Context context, boolean wakeup) {
+		super(context, wakeup);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -36,6 +38,9 @@ public class FollowshipInvMessageRecipient extends MessageBaseRecipient {
 				try {
 					DBManager dbManager = new DBManager(context);
 					dbManager.insertFollowshipInvMessage(msg);
+
+					VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+					client.FollowshipInvAck(msg.getId());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -52,7 +57,11 @@ public class FollowshipInvMessageRecipient extends MessageBaseRecipient {
 			}
 		};
 
-		asyncTask.execute((Void) null);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			asyncTask.execute();
+		}
 
 	}
 

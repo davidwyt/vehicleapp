@@ -12,9 +12,11 @@ import android.content.Intent;
 public abstract class MessageBaseRecipient implements IMessageRecipient {
 
 	protected Context context;
+	protected boolean isFromWakeup = false;
 
-	public MessageBaseRecipient(Context context) {
+	public MessageBaseRecipient(Context context, boolean wakeup) {
 		this.context = context;
+		this.isFromWakeup = wakeup;
 	}
 
 	protected boolean shouldNotifyBar() {

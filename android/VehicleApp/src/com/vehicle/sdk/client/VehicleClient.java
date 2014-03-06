@@ -10,6 +10,8 @@ import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.URLUtil;
+import com.vehicle.service.bean.ACKAllRequest;
+import com.vehicle.service.bean.ACKAllResponse;
 import com.vehicle.service.bean.AddLocateRequest;
 import com.vehicle.service.bean.AddLocateResponse;
 import com.vehicle.service.bean.CommentFileResponse;
@@ -21,6 +23,8 @@ import com.vehicle.service.bean.FollowshipAddedRequest;
 import com.vehicle.service.bean.FollowshipAddedResponse;
 import com.vehicle.service.bean.FollowshipDroppedRequest;
 import com.vehicle.service.bean.FollowshipDroppedResponse;
+import com.vehicle.service.bean.FollowshipInvitationACKRequest;
+import com.vehicle.service.bean.FollowshipInvitationACKResponse;
 import com.vehicle.service.bean.FollowshipInvitationRequest;
 import com.vehicle.service.bean.FollowshipInvitationResponse;
 import com.vehicle.service.bean.FollowshipInvitationResultRequest;
@@ -78,9 +82,11 @@ public class VehicleClient {
 	private static final String URL_FOLLOWSHIP_DROPPED = "dropped";
 	private static final String URL_FOLLOWSHIP_INVITATION = "invitation";
 	private static final String URL_FOLLOWSHIP_INVVERDICT = "invitationresult";
+	private static final String URL_FOLLOWSHIPINV_ACK = "invack";
 
 	private static final String URL_LOGIN_ROOT = "login";
 	private static final String URL_LOGIN_LOGIN = "wakeup";
+	private static final String URL_LOGIN_ALLACK = "ackall";
 
 	private static final String URL_LOCATE_ROOT = "locate";
 	private static final String URL_LOCATE_RANGE = "range";
@@ -104,6 +110,22 @@ public class VehicleClient {
 
 	public VehicleClient(String source) {
 		this(URL_DEFAULTSERVERROOT, source);
+	}
+
+	public FollowshipInvitationACKResponse FollowshipInvAck(String invId) {
+		FollowshipInvitationACKRequest request = new FollowshipInvitationACKRequest();
+		request.setInvId(invId);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FOLLOWSHIP_ROOT, URL_FOLLOWSHIPINV_ACK);
+		return HttpUtil.PostJson(url, request, FollowshipInvitationACKResponse.class);
+	}
+
+	public ACKAllResponse AllAck(String memberId) {
+		ACKAllRequest request = new ACKAllRequest();
+		request.setMemberId(memberId);
+
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOGIN_LOGIN, URL_LOGIN_ALLACK);
+		return HttpUtil.PostJson(url, request, ACKAllResponse.class);
 	}
 
 	public OfflineMessageResponse GetOfflineMessage(String id, long since) {
