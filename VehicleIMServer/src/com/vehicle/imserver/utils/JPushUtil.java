@@ -1,5 +1,12 @@
 package com.vehicle.imserver.utils;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
+import com.vehicle.imserver.dao.bean.Message;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import cn.jpush.api.DeviceEnum;
 import cn.jpush.api.ErrorCodeEnum;
 import cn.jpush.api.JPushClient;
@@ -72,8 +79,26 @@ public class JPushUtil {
 
 	public void SendIOSMessage(String target, String title, String content) {
 		try {
+			Type type = new TypeToken<Map<String, Object>>(){}.getType();
+	        Map<String, Object> extras = new Gson().fromJson(content, type);
+	        int msgType=Integer.parseInt(extras.get("messageType").toString());
+	        String desc="";
+	        switch(msgType){
+	        case 0:
+	        	desc="您收到一条消息";
+	        	break;
+	        case 1:
+	        	desc="您收到一张图片";
+	        	break;
+	        case 2:
+	        	desc="您收到一段语音";
+	        	break;
+	        case 3:
+	        	desc="您收到一条位置信息";
+	        	break;
+	        }
 			iosJpush.sendNotificationWithAlias(getRandomSendNo(), target,
-					title, content);
+					title, desc,0,extras);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
