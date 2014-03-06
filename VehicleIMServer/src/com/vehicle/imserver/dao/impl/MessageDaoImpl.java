@@ -34,6 +34,7 @@ public class MessageDaoImpl extends BaseDaoImpl<Message> implements MessageDao {
 		Session session = this.getSession();
 
 		Query query = session.createQuery(Contants.HQL_UPDATE_ALLNEWMESSAGE);
+		query.setInteger("received", Message.STATUS_RECEIVED);
 		query.setString("target", memberId);
 		query.setInteger("sent", Message.STATUS_SENT);
 

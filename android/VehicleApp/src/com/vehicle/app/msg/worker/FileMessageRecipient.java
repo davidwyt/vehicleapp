@@ -61,7 +61,8 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 					String filePath = path + File.separator + picMsgItem.getName();
 
 					System.out.println("fetch file to:" + filePath);
-
+					System.out.println("file token :" + picMsgItem.getToken());
+					
 					vClient.FetchFile(picMsgItem.getToken(), filePath);
 
 					SelfMgr.getInstance().retrieveInfo(picMsgItem.getSource());

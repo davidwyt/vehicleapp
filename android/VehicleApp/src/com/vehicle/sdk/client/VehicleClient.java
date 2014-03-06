@@ -52,11 +52,14 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
-	private static String URL_DEFAULTSERVERROOT = "http://103.21.140.232:81/VehicleIMServer/rest";
+	// private static String URL_DEFAULTSERVERROOT =
+	// "http://103.21.140.232:81/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
 	// "http://192.168.20.20:8080/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
 	// "http://10.0.2.2:8080/VehicleIMServer/rest";
+
+	private static String URL_DEFAULTSERVERROOT = "http://192.168.1.101:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -85,7 +88,7 @@ public class VehicleClient {
 	private static final String URL_FOLLOWSHIPINV_ACK = "invack";
 
 	private static final String URL_LOGIN_ROOT = "login";
-	private static final String URL_LOGIN_LOGIN = "wakeup";
+	private static final String URL_LOGIN_WAKEUP = "wakeup";
 	private static final String URL_LOGIN_ALLACK = "ackall";
 
 	private static final String URL_LOCATE_ROOT = "locate";
@@ -124,7 +127,7 @@ public class VehicleClient {
 		ACKAllRequest request = new ACKAllRequest();
 		request.setMemberId(memberId);
 
-		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOGIN_LOGIN, URL_LOGIN_ALLACK);
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOGIN_ROOT, URL_LOGIN_ALLACK);
 		return HttpUtil.PostJson(url, request, ACKAllResponse.class);
 	}
 
@@ -364,7 +367,7 @@ public class VehicleClient {
 	}
 
 	public WakeupResponse Login(String id) {
-		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOGIN_ROOT, URL_LOGIN_LOGIN);
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_LOGIN_ROOT, URL_LOGIN_WAKEUP);
 
 		WakeupRequest request = new WakeupRequest();
 		request.setId(id);

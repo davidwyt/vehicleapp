@@ -79,8 +79,12 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 	}
 
 	private void processNewFile(NewFileNotification file) {
+		System.out.println("notification token:" + file.getToken());
+
 		FileMessage msg = new FileMessage();
 		msg.fromRawNotification(file);
+
+		System.out.println("file token:" + msg.getToken());
 
 		IMessageRecipient cpu = new FileMessageRecipient(context, true);
 		cpu.receive(msg);
@@ -105,6 +109,39 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 					e.printStackTrace();
 				}
 
+				if (null != resp && resp.isSucess()) {
+					List<FollowshipInvitation> newInvitations = resp.getNewInvitations();
+
+					if (null != newInvitations) {
+						for (FollowshipInvitation invitation : newInvitations) {
+							processInvitation(invitation);
+						}
+					}
+
+					List<Message> newMessages = resp.getNewMessages();
+					if (null != newMessages) {
+						for (Message msg : newMessages) {
+							processMessage(msg);
+						}
+					}
+
+					List<NewFileNotification> newFiles = resp.getNewFiles();
+					if (null != newFiles) {
+						for (NewFileNotification file : newFiles) {
+							processNewFile(file);
+						}
+					}
+
+					String id = SelfMgr.getInstance().getId();
+
+					try {
+						VehicleClient client = new VehicleClient(id);
+						client.AllAck(id);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
 				return resp;
 			}
 
@@ -113,28 +150,6 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 				if (null == result || !result.isSucess()) {
 					System.out.println("login to imserver failed");
 					return;
-				}
-
-				List<FollowshipInvitation> newInvitations = result.getNewInvitations();
-
-				if (null != newInvitations) {
-					for (FollowshipInvitation invitation : newInvitations) {
-						processInvitation(invitation);
-					}
-				}
-
-				List<Message> newMessages = result.getNewMessages();
-				if (null != newMessages) {
-					for (Message msg : newMessages) {
-						processMessage(msg);
-					}
-				}
-
-				List<NewFileNotification> newFiles = result.getNewFiles();
-				if (null != newFiles) {
-					for (NewFileNotification file : newFiles) {
-						processNewFile(file);
-					}
 				}
 			}
 		};

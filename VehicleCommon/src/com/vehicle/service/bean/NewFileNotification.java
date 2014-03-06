@@ -21,7 +21,7 @@ public class NewFileNotification implements INotification {
 		this.sentTime = sentTime;
 		this.msgType = msgType;
 	}
-
+	
 	public int getMsgType() {
 		return this.msgType;
 	}
