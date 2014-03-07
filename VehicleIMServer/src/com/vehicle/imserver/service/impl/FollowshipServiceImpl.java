@@ -142,8 +142,8 @@ public class FollowshipServiceImpl implements FollowshipService {
 		}
 
 		FollowshipInvitationNotification notification = new FollowshipInvitationNotification();
-		notification.setSource(invitationRequest.getMemberId());
-		notification.setTarget(invitationRequest.getShopId());
+		notification.setSource(invitationRequest.getShopId());
+		notification.setTarget(invitationRequest.getMemberId());
 		notification.setInvitationId(invitationId);
 		notification.setInviteTime(invitation.getReqTime());
 

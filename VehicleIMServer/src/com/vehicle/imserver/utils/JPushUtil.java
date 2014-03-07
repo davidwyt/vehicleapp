@@ -3,7 +3,9 @@ package com.vehicle.imserver.utils;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.dao.bean.Message;
+import com.vehicle.service.bean.FollowshipInvitationNotification;
 import com.vehicle.service.bean.NewFileNotification;
 import com.vehicle.service.bean.Notifications;
 import com.google.gson.Gson;
@@ -89,10 +91,14 @@ public class JPushUtil {
 			} else if(title.equals(Notifications.NewFile.toString())){
 				NewFileNotification n=new Gson().fromJson(content, NewFileNotification.class);
 				extras=n.toMap();
+			} else if(title.equals(Notifications.FollowshipInvitation.toString())){
+				FollowshipInvitationNotification f=new Gson().fromJson(content, FollowshipInvitationNotification.class);
+				extras=f.toMap();
 			}
-			if(extras!=null)
+			String desc="";
+			if(extras.get("messageType")!=null){
 				msgType=(int) extras.get("messageType");
-	        String desc="";
+	        
 	        switch(msgType){
 	        case 0:
 	        	desc="您收到一条消息";
@@ -107,6 +113,7 @@ public class JPushUtil {
 	        	desc="您收到一条位置信息";
 	        	break;
 	        }
+			}
 			iosJpush.sendNotificationWithAlias(getRandomSendNo(), target,
 					title, desc,0,extras);
 		} catch (Exception e) {
