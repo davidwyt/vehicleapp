@@ -1,5 +1,8 @@
 package com.vehicle.imserver.dao.bean;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -89,5 +92,15 @@ public class Message {
 
 	public void setMessageType(int messageType) {
 		this.messageType = messageType;
+	}
+	
+	public Map<String,Object> toMap(){
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("source", source);
+		map.put("target", target);
+		map.put("messageType", messageType);
+		map.put("content", content);
+		map.put("sentTime", sentTime);
+		return map;
 	}
 }

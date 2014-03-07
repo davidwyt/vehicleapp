@@ -4,6 +4,8 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import com.vehicle.imserver.dao.bean.Message;
+import com.vehicle.service.bean.NewFileNotification;
+import com.vehicle.service.bean.Notifications;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -79,9 +81,17 @@ public class JPushUtil {
 
 	public void SendIOSMessage(String target, String title, String content) {
 		try {
-			Type type = new TypeToken<Map<String, Object>>(){}.getType();
-	        Map<String, Object> extras = new Gson().fromJson(content, type);
-	        int msgType=Integer.parseInt(extras.get("messageType").toString());
+			int msgType=0;
+			Map<String,Object> extras = null;
+			if(title.equals("chat")){
+				Message m=new Gson().fromJson(content, Message.class);
+				extras=m.toMap();
+			} else if(title.equals(Notifications.NewFile.toString())){
+				NewFileNotification n=new Gson().fromJson(content, NewFileNotification.class);
+				extras=n.toMap();
+			}
+			if(extras!=null)
+				msgType=(int) extras.get("messageType");
 	        String desc="";
 	        switch(msgType){
 	        case 0:

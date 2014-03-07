@@ -1,5 +1,8 @@
 package com.vehicle.service.bean;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.vehicle.imserver.dao.bean.MessageType;
 
 public class NewFileNotification implements INotification {
@@ -90,4 +93,13 @@ public class NewFileNotification implements INotification {
 		this.fileName = name;
 	}
 
+	public Map<String,Object> toMap(){
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("source", source);
+		map.put("target", target);
+		map.put("content", token);
+		map.put("sentTime", sentTime);
+		map.put("messageType", msgType);
+		return map;
+	}
 }
