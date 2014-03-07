@@ -31,9 +31,9 @@ public class DBManager {
 	private final static String SQL_TEXTMESSAGE_FLAGUPDATE = "UPDATE `TEXTMESSAGE` SET `FLAG`= ? WHERE `SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?;";
 	private final static String SQL_TEXTMESSAGE_DELETEALL = "DELETE FROM `TEXTMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?));";
 
-	private final static String SQL_FILEMESSAGE_INSERT = "INSERT INTO `FILEMESSAGE` (`TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE`) VALUES(?, ?, ?, ?, ?, ?, ?);";
-	private final static String SQL_FILEMESSAGE_ALLSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?)) ORDER BY `SENTTIME` ASC;";
-	private final static String SQL_FILEMESSAGE_FLAGSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `CONTENT`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `FILEMESSAGE` WHERE `FLAG` = ? AND `SOURCE` = ? AND `TARGET` = ? ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_FILEMESSAGE_INSERT = "INSERT INTO `FILEMESSAGE` (`TOKEN`, `SOURCE`, `TARGET`, `PATH`, `SENTTIME`, `FLAG`, `MSGTYPE`) VALUES(?, ?, ?, ?, ?, ?, ?);";
+	private final static String SQL_FILEMESSAGE_ALLSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `PATH`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?)) ORDER BY `SENTTIME` ASC;";
+	private final static String SQL_FILEMESSAGE_FLAGSELECT = "SELECT `TOKEN`, `SOURCE`, `TARGET`, `PATH`, `SENTTIME`, `FLAG`, `MSGTYPE` FROM `FILEMESSAGE` WHERE `FLAG` = ? AND `SOURCE` = ? AND `TARGET` = ? ORDER BY `SENTTIME` ASC;";
 	private final static String SQL_FILEMESSAGE_FLAGUPDATE = "UPDATE `FILEMESSAGE` SET `FLAG`= ? WHERE `SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?;";
 	private final static String SQL_FILEMESSAGE_DELETEALL = "DELETE FROM `FILEMESSAGE` WHERE (`SOURCE` = ? AND `TARGET` = ? AND `FLAG` = ?) OR (`SOURCE` = ? AND `TARGET` = ? AND (`FLAG` = ? OR `FLAG` = ?));";
 
@@ -86,6 +86,8 @@ public class DBManager {
 				roleInfo.setPassword(pwd);
 				roleInfo.setRoleType(role);
 				roleInfo.setIsAutoLog(auto != 0);
+
+				cursor.close();
 				return roleInfo;
 			} else {
 				return null;
@@ -98,21 +100,20 @@ public class DBManager {
 					e.printStackTrace();
 				}
 			}
-			
+
 			lock.unlock();
 		}
 	}
-	
-	public void updateLastOnboard(String userName, String password, int role, boolean isAuto)
-	{
+
+	public void updateLastOnboard(String userName, String password, int role, boolean isAuto) {
 		lock.lock();
 		SQLiteDatabase db = mDBHelper.getWritableDatabase();
-		try{
+		try {
 			db.beginTransaction();
-			
+
 			SQLiteStatement delStmt = db.compileStatement(SQL_LASTONBOARD_DELETEALL);
 			delStmt.executeUpdateDelete();
-			
+
 			SQLiteStatement insertStmt = db.compileStatement(SQL_LASTONBOARD_INSERT);
 			insertStmt.clearBindings();
 			insertStmt.bindString(1, userName);
@@ -120,19 +121,17 @@ public class DBManager {
 			insertStmt.bindLong(3, role);
 			insertStmt.bindLong(4, isAuto ? 1 : 0);
 			insertStmt.executeInsert();
-			
+
 			db.setTransactionSuccessful();
-		}finally{
-			if(null != db)
-			{
-				try{
+		} finally {
+			if (null != db) {
+				try {
 					db.endTransaction();
 					db.close();
-				}catch(Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				lock.unlock();
 			}
 		}
@@ -162,6 +161,8 @@ public class DBManager {
 				updateStmt.bindString(2, host);
 				updateStmt.executeUpdateDelete();
 			}
+
+			cursor.close();
 			db.setTransactionSuccessful();
 
 		} finally {
@@ -188,11 +189,14 @@ public class DBManager {
 			Cursor cursor = db.rawQuery(SQL_TOPMSG_SELECT, new String[] { host });
 
 			if (null == cursor || 0 >= cursor.getCount()) {
+				cursor.close();
 				return "";
 			}
 
 			cursor.moveToFirst();
-			return cursor.getString(cursor.getColumnIndex("TOPMSG"));
+			String ret = cursor.getString(cursor.getColumnIndex("TOPMSG"));
+			cursor.close();
+			return ret;
 		} finally {
 			try {
 				if (null != db) {
@@ -338,28 +342,31 @@ public class DBManager {
 					SQL_TEXTMESSAGE_ALLSELECT,
 					new String[] { selfId, fellowId, MessageFlag.SELF.toString(), fellowId, selfId,
 							MessageFlag.READ.toString(), MessageFlag.UNREAD.toString() });
+			if (null != cursor && cursor.getCount() > 0) {
 
-			while (cursor.moveToNext()) {
+				while (cursor.moveToNext()) {
 
-				TextMessage msg = new TextMessage();
+					TextMessage msg = new TextMessage();
 
-				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
+					msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+					msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
 
-				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+					msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
-				msg.setMessageType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
+					msg.setMessageType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
 
-				messages.add(msg);
+					messages.add(msg);
+				}
 			}
 
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)
@@ -384,27 +391,31 @@ public class DBManager {
 		try {
 			Cursor cursor = db.rawQuery(SQL_TEXTMESSAGE_FLAGSELECT, new String[] { MessageFlag.UNREAD.toString(),
 					fellowId, selfId });
+			if (null != cursor && cursor.getCount() > 0) {
 
-			while (cursor.moveToNext()) {
+				while (cursor.moveToNext()) {
 
-				TextMessage msg = new TextMessage();
+					TextMessage msg = new TextMessage();
 
-				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
+					msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+					msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
 
-				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+					msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
-				msg.setMessageType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
+					msg.setMessageType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
 
-				messages.add(msg);
+					messages.add(msg);
+				}
 			}
+
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)
@@ -418,7 +429,7 @@ public class DBManager {
 		return messages;
 	}
 
-	public long insertFileMessage(String id, String source, String target, byte[] content, long sentTime,
+	public long insertFileMessage(String id, String source, String target, String path, long sentTime,
 			MessageFlag flag, int type) {
 
 		lock.lock();
@@ -431,7 +442,7 @@ public class DBManager {
 			insertStmt.bindString(2, source);
 			insertStmt.bindString(3, target);
 
-			insertStmt.bindBlob(4, content);
+			insertStmt.bindString(4, path);
 			insertStmt.bindLong(5, sentTime);
 			insertStmt.bindString(6, flag.toString());
 			insertStmt.bindLong(7, type);
@@ -451,12 +462,7 @@ public class DBManager {
 
 	public void insertFileMessage(FileMessage msg) {
 
-		/**
-		 * ByteArrayOutputStream boas = new ByteArrayOutputStream();
-		 * msg.getContent().compress(Bitmap.CompressFormat.PNG, 100, boas);
-		 */
-
-		insertFileMessage(msg.getToken(), msg.getSource(), msg.getTarget(), msg.getContent(), msg.getSentTime(),
+		insertFileMessage(msg.getToken(), msg.getSource(), msg.getTarget(), msg.getPath(), msg.getSentTime(),
 				msg.getFlag(), msg.getMessageType());
 	}
 
@@ -497,29 +503,28 @@ public class DBManager {
 					new String[] { selfId, fellowId, MessageFlag.SELF.toString(), fellowId, selfId,
 							MessageFlag.READ.toString(), MessageFlag.UNREAD.toString() });
 
-			while (cursor.moveToNext()) {
+			if (null != cursor && cursor.getCount() > 0) {
+				while (cursor.moveToNext()) {
 
-				FileMessage msg = new FileMessage();
+					FileMessage msg = new FileMessage();
 
-				msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
+					msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
+					msg.setPath(cursor.getString(cursor.getColumnIndex("PATH")));
 
-				// Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0,
-				// byteArray.length);
+					msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-				msg.setContent(byteArray);
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
-				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+					msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
+					messages.add(msg);
+				}
 
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
-
-				msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
-				messages.add(msg);
+				cursor.close();
 			}
 		} finally {
 			try {
@@ -545,29 +550,28 @@ public class DBManager {
 			Cursor cursor = db.rawQuery(SQL_FILEMESSAGE_FLAGSELECT, new String[] { MessageFlag.UNREAD.toString(),
 					fellowId, selfId });
 
-			while (cursor.moveToNext()) {
+			if (null != cursor && cursor.getCount() > 0) {
+				while (cursor.moveToNext()) {
 
-				FileMessage msg = new FileMessage();
+					FileMessage msg = new FileMessage();
 
-				msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
+					msg.setToken(cursor.getString(cursor.getColumnIndex("TOKEN")));
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				byte[] byteArray = cursor.getBlob(cursor.getColumnIndex("CONTENT"));
+					msg.setPath(cursor.getString(cursor.getColumnIndex("PATH")));
 
-				// Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0,
-				// byteArray.length);
+					msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-				msg.setContent(byteArray);
-
-				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
-
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
-				msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
-				messages.add(msg);
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+					msg.setMsgType(cursor.getInt(cursor.getColumnIndex("MSGTYPE")));
+					messages.add(msg);
+				}
 			}
+
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)
@@ -649,22 +653,26 @@ public class DBManager {
 			Cursor cursor = db.rawQuery(SQL_INVVERDICTMESSAGE_ALLSELECT,
 					new String[] { selfId, MessageFlag.READ.toString(), MessageFlag.UNREAD.toString() });
 
-			while (cursor.moveToNext()) {
+			if (null != cursor && cursor.getCount() > 0) {
+				while (cursor.moveToNext()) {
 
-				InvitationVerdictMessage msg = new InvitationVerdictMessage();
+					InvitationVerdictMessage msg = new InvitationVerdictMessage();
 
-				msg.setInvitationId(cursor.getString(cursor.getColumnIndex("INVITATIONID")));
+					msg.setInvitationId(cursor.getString(cursor.getColumnIndex("INVITATIONID")));
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
-				msg.setVerdict(InvitationVerdict.valueOf(cursor.getString(cursor.getColumnIndex("VERDICT"))));
+					msg.setVerdict(InvitationVerdict.valueOf(cursor.getString(cursor.getColumnIndex("VERDICT"))));
 
-				messages.add(msg);
+					messages.add(msg);
+				}
 			}
+
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)
@@ -689,22 +697,27 @@ public class DBManager {
 			Cursor cursor = db.rawQuery(SQL_INVVERDICTMESSAGE_FLAGSELECT,
 					new String[] { selfId, MessageFlag.UNREAD.toString() });
 
-			while (cursor.moveToNext()) {
+			if (null != cursor && cursor.getCount() > 0) {
 
-				InvitationVerdictMessage msg = new InvitationVerdictMessage();
+				while (cursor.moveToNext()) {
 
-				msg.setInvitationId(cursor.getString(cursor.getColumnIndex("INVITATIONID")));
+					InvitationVerdictMessage msg = new InvitationVerdictMessage();
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setInvitationId(cursor.getString(cursor.getColumnIndex("INVITATIONID")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				msg.setVerdict(InvitationVerdict.valueOf(cursor.getString(cursor.getColumnIndex("VERDICT"))));
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
-				messages.add(msg);
+					msg.setVerdict(InvitationVerdict.valueOf(cursor.getString(cursor.getColumnIndex("VERDICT"))));
+
+					messages.add(msg);
+				}
 			}
+
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)
@@ -781,22 +794,27 @@ public class DBManager {
 			Cursor cursor = db.rawQuery(SQL_FOLLOWINV_ALLSELECT, new String[] { selfId, MessageFlag.READ.toString(),
 					MessageFlag.UNREAD.toString() });
 
-			while (cursor.moveToNext()) {
+			if (null != cursor && cursor.getCount() > 0) {
 
-				FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
+				while (cursor.moveToNext()) {
 
-				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
+					FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
-				messages.add(msg);
+					msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+
+					messages.add(msg);
+				}
 			}
+
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)
@@ -818,23 +836,27 @@ public class DBManager {
 		try {
 			Cursor cursor = db.rawQuery(SQL_FOLLOWINV_FLAGSELECT,
 					new String[] { target, MessageFlag.UNREAD.toString() });
+			if (null != cursor && cursor.getCount() > 0) {
 
-			while (cursor.moveToNext()) {
+				while (cursor.moveToNext()) {
 
-				FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
+					FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
 
-				msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
+					msg.setId(cursor.getString(cursor.getColumnIndex("ID")));
 
-				msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
+					msg.setSource(cursor.getString(cursor.getColumnIndex("SOURCE")));
 
-				msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
+					msg.setTarget(cursor.getString(cursor.getColumnIndex("TARGET")));
 
-				msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
+					msg.setFlag(MessageFlag.valueOf(cursor.getString(cursor.getColumnIndex("FLAG"))));
 
-				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+					msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-				messages.add(msg);
+					messages.add(msg);
+				}
 			}
+
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)
@@ -867,12 +889,10 @@ public class DBManager {
 				update = false;
 			} else if (1 == cursor.getCount()) {
 				/**
-				cursor.moveToFirst();
-				long curTime = cursor.getLong(cursor.getColumnIndex("SENTTIME"));
-				if (sentTime > curTime) {
-					update = true;
-				}
-				*/
+				 * cursor.moveToFirst(); long curTime =
+				 * cursor.getLong(cursor.getColumnIndex("SENTTIME")); if
+				 * (sentTime > curTime) { update = true; }
+				 */
 				update = true;
 			} else {
 				SQLiteStatement deleteRecentMsgStmt = db.compileStatement(SQL_RECENTMSG_DELETEALL);
@@ -882,14 +902,16 @@ public class DBManager {
 				deleteRecentMsgStmt.bindString(2, fellowId);
 
 				deleteRecentMsgStmt.executeUpdateDelete();
-				
+
 				update = false;
 				/**
-				throw new IllegalStateException(String.format("wrong number of recent message for %s and %s", selfId,
-						fellowId));
-				*/
+				 * throw new IllegalStateException(String.format(
+				 * "wrong number of recent message for %s and %s", selfId,
+				 * fellowId));
+				 */
 			}
 
+			cursor.close();
 			System.out.println("update:" + update);
 
 			if (update) {
@@ -978,25 +1000,29 @@ public class DBManager {
 
 		try {
 			Cursor cursor = db.rawQuery(SQL_RECENTMSG_ALLSELECT, new String[] { selfId });
+			if (null != cursor && cursor.getCount() > 0) {
 
-			while (cursor.moveToNext()) {
+				while (cursor.moveToNext()) {
 
-				RecentMessage msg = new RecentMessage();
+					RecentMessage msg = new RecentMessage();
 
-				msg.setSelfId(cursor.getString(cursor.getColumnIndex("SELFID")));
+					msg.setSelfId(cursor.getString(cursor.getColumnIndex("SELFID")));
 
-				msg.setFellowId(cursor.getString(cursor.getColumnIndex("FELLOWID")));
+					msg.setFellowId(cursor.getString(cursor.getColumnIndex("FELLOWID")));
 
-				msg.setMessageType(cursor.getInt(cursor.getColumnIndex("MESSAGETYPE")));
+					msg.setMessageType(cursor.getInt(cursor.getColumnIndex("MESSAGETYPE")));
 
-				msg.setMessageId(cursor.getString(cursor.getColumnIndex("MESSAGEID")));
+					msg.setMessageId(cursor.getString(cursor.getColumnIndex("MESSAGEID")));
 
-				msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
+					msg.setSentTime(cursor.getLong(cursor.getColumnIndex("SENTTIME")));
 
-				msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+					msg.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
 
-				recentMsgs.add(msg);
+					recentMsgs.add(msg);
+				}
 			}
+
+			cursor.close();
 		} finally {
 			try {
 				if (null != db)

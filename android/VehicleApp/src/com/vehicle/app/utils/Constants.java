@@ -41,4 +41,7 @@ public class Constants {
 	public static String getMiddleVendorImg(String name) {
 		return URLUtil.UrlAppend(MIDDLEIMG_PATH, name);
 	}
+
+	public static final String POSTFIX_DEFAULT_IMAGE = "jpg";
+	public static final String POSTFIX_DEFAULT_AUDIO = "amr";
 }

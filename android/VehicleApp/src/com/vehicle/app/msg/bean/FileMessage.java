@@ -8,13 +8,10 @@ import android.os.Parcelable;
 public class FileMessage implements IMessageItem, Parcelable {
 
 	private String token;
-	private String name;
 	private String source;
 	private String target;
 	private MessageFlag flag;
 	private long sentTime;
-	private byte[] content;
-
 	private int msgType;
 
 	private String path;
@@ -42,14 +39,6 @@ public class FileMessage implements IMessageItem, Parcelable {
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getSource() {
@@ -86,14 +75,6 @@ public class FileMessage implements IMessageItem, Parcelable {
 		this.sentTime = time;
 	}
 
-	public byte[] getContent() {
-		return this.content;
-	}
-
-	public void setContent(byte[] bitmap) {
-		this.content = bitmap;
-	}
-
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -104,12 +85,10 @@ public class FileMessage implements IMessageItem, Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		// TODO Auto-generated method stub
 		dest.writeString(token);
-		dest.writeString(name);
 		dest.writeString(source);
 		dest.writeString(target);
 		dest.writeString(flag.toString());
 		dest.writeLong(sentTime);
-		// content.writeToParcel(dest, flags);
 		dest.writeString(path);
 		dest.writeInt(msgType);
 	}
@@ -122,12 +101,10 @@ public class FileMessage implements IMessageItem, Parcelable {
 			FileMessage item = new FileMessage();
 
 			item.setToken(parcel.readString());
-			item.setName(parcel.readString());
 			item.setSource(parcel.readString());
 			item.setTarget(parcel.readString());
 			item.setFlag(MessageFlag.valueOf(parcel.readString()));
 			item.setSentTime(parcel.readLong());
-			// item.setContent(Bitmap.CREATOR.createFromParcel(parcel));
 			item.setPath(parcel.readString());
 			item.setMsgType(parcel.readInt());
 			return item;
@@ -150,12 +127,12 @@ public class FileMessage implements IMessageItem, Parcelable {
 
 		NewFileNotification rawMsg = (NewFileNotification) notification;
 		this.token = rawMsg.getToken();
-		this.name = rawMsg.getFileName();
 		this.source = rawMsg.getSource();
 		this.target = rawMsg.getTarget();
 		this.sentTime = rawMsg.getSentTime();
 		this.flag = MessageFlag.UNREAD;
 		this.msgType = rawMsg.getMsgType();
+		this.path = rawMsg.getFileName();
 	}
 
 	@Override

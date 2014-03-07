@@ -66,12 +66,12 @@ public class FileMessageCourier extends MessageBaseCourier {
 
 					if (isGroupChat) {
 						FileMultiTransmissionResponse fileMultiResp = (FileMultiTransmissionResponse) resp;
-						//picMessage.setSentTime(fileMultiResp.getSentTime());
+						// picMessage.setSentTime(fileMultiResp.getSentTime());
 						picMessage.setToken(fileMultiResp.getToken());
 						picMessage.setFlag(MessageFlag.SELF);
 					} else {
 						FileTransmissionResponse fileResp = (FileTransmissionResponse) resp;
-						//picMessage.setSentTime(fileResp.getSentTime());
+						// picMessage.setSentTime(fileResp.getSentTime());
 						picMessage.setToken(fileResp.getToken());
 						picMessage.setFlag(MessageFlag.SELF);
 
@@ -96,16 +96,12 @@ public class FileMessageCourier extends MessageBaseCourier {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-
 					}
 
 					Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
 					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMessage);
-					// msgIntent.putExtra(ChatActivity.KEY_FELLOWID,
-					// picMessage.getSource());
-					// msgIntent.putExtra(ChatActivity.KEY_CHATSTYLE,
-					// ChatActivity.CHAT_STYLE_2ONE);
 					context.sendBroadcast(msgIntent);
+
 				} else {
 					if (picMessage.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
 						Intent msgIntent = new Intent(Constants.ACTION_IMGMESSAGE_SENTFAILED);

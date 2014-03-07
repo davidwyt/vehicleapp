@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Index;
 
-import junit.framework.Assert;
-
 @Entity
 @Table(name = "MESSAGE", indexes = { @Index(columnList = "SOURCE"),
 		@Index(columnList = "TARGET"), @Index(columnList = "STATUS") })

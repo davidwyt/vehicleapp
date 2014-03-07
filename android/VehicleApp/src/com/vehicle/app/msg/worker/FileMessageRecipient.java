@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
@@ -20,6 +19,7 @@ import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.FileUtil;
+import com.vehicle.app.utils.StringUtil;
 import com.vehicle.sdk.client.VehicleClient;
 
 public class FileMessageRecipient extends MessageBaseRecipient {
@@ -46,36 +46,44 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 				if (!isFromWakeup) {
 					picMsgItem.setSentTime(new Date().getTime());
 				}
-				
+
 				try {
 					VehicleClient vClient = new VehicleClient(SelfMgr.getInstance().getId());
 
-					String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-							+ Environment.DIRECTORY_PICTURES + File.separator + "Received";
+					String destPath = "";
 
-					File dir = new File(path);
-					if (!dir.exists()) {
-						dir.mkdirs();
+					String postFix = FileUtil.getPostFix(picMsgItem.getPath());
+					if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
+						if (StringUtil.IsNullOrEmpty(postFix)) {
+							postFix = Constants.POSTFIX_DEFAULT_IMAGE;
+						}
+
+						destPath = FileUtil.genPathForImage(context, postFix);
+					} else if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
+						if (StringUtil.IsNullOrEmpty(postFix)) {
+							postFix = Constants.POSTFIX_DEFAULT_AUDIO;
+						}
+
+						destPath = FileUtil.genPathForAudio(context, postFix);
 					}
 
-					String filePath = path + File.separator + picMsgItem.getName();
-
-					System.out.println("fetch file to:" + filePath);
+					System.out.println("fetch file to:" + destPath);
 					System.out.println("file token :" + picMsgItem.getToken());
-					
-					vClient.FetchFile(picMsgItem.getToken(), filePath);
+
+					vClient.FetchFile(picMsgItem.getToken(), destPath);
 
 					SelfMgr.getInstance().retrieveInfo(picMsgItem.getSource());
 
-					File file = new File(filePath);
-					System.out.println("file: " + filePath + " exist:" + file.exists());
+					File file = new File(destPath);
+					System.out.println("file: " + destPath + " exist:" + file.exists());
 
 					if (file.exists()) {
-						picMsgItem.setContent(FileUtil.ReadFile(filePath));
-						picMsgItem.setPath(filePath);
+						picMsgItem.setPath(destPath);
+					} else {
+						System.out.println("fetch file to path failed:" + destPath);
+						return false;
 					}
 
-					System.out.println("content null :" + (null == picMsgItem.getContent()));
 					return true;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -129,7 +137,7 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 					recentMsg.setSelfId(SelfMgr.getInstance().getId());
 					recentMsg.setFellowId(picMsgItem.getSource());
 					recentMsg.setMessageType(picMsgItem.getMessageType());
-					recentMsg.setContent("");
+					recentMsg.setContent(picMsgItem.getPath());
 					recentMsg.setSentTime(picMsgItem.getSentTime());
 					recentMsg.setMessageId(picMsgItem.getToken());
 

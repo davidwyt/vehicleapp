@@ -24,8 +24,8 @@
     <string name="nearbysearch_dirvers">正在搜索附近的车主&#8230;</string>
     <string name="status_getfavvendorlist">正在获取你关注的商家&#8230;</string>
     <string name="status_getvendorfellowlist">正在获取关注你的车主&#8230;</string>
-    <string name="format_msg_location">一个新位置信息</string>
-    <string name="format_msg_picture">一个新图片</string>
+    <string name="format_msg_location">一个位置信息</string>
+    <string name="format_msg_picture">一个图片</string>
     <string name="format_msg_newfellow">我们已经成为好友，开始聊天吧</string>
     <string name="yesterday">昨天</string>
     <string name="left_arrow">\u2190</string>

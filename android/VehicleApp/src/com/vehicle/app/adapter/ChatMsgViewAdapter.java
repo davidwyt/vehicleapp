@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +14,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import cn.edu.sjtu.vehicleapp.R;
 
@@ -36,10 +32,8 @@ import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.msg.worker.AudioPlayer;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.ImageUtil;
 import com.vehicle.app.utils.JsonUtil;
-import com.vehicle.app.utils.URLUtil;
 
 public class ChatMsgViewAdapter extends BaseAdapter {
 
@@ -70,6 +64,9 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		return position;
 	}
 
+	private static final int IMG_WIDTH = 128;
+	private static final int IMG_HEIGHT = 128;
+
 	@SuppressLint("SimpleDateFormat")
 	public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -79,10 +76,19 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 
 			final TextMessage msg = (TextMessage) entity;
 
-			if (SelfMgr.getInstance().IsSelf(msg.getSource())) {
-				convertView = mInflater.inflate(R.layout.chatting_item_msg_text_left, null);
+			if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_LOCATION) {
+				if (SelfMgr.getInstance().IsSelf(msg.getSource())) {
+					convertView = mInflater.inflate(R.layout.chatting_item_msg_location_left, null);
+				} else {
+					convertView = mInflater.inflate(R.layout.chatting_item_msg_location_right, null);
+				}
+
 			} else {
-				convertView = mInflater.inflate(R.layout.chatting_item_msg_text_right, null);
+				if (SelfMgr.getInstance().IsSelf(msg.getSource())) {
+					convertView = mInflater.inflate(R.layout.chatting_item_msg_text_left, null);
+				} else {
+					convertView = mInflater.inflate(R.layout.chatting_item_msg_text_right, null);
+				}
 			}
 
 			TextView tvSendTime = (TextView) convertView.findViewById(R.id.chatmsg_tv_sendtime);
@@ -99,12 +105,13 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			ImageView ivHead = (ImageView) convertView.findViewById(R.id.chatmsg_iv_userhead);
 			ImageUtil.RenderImageView(info.url, ivHead, -1, -1);
 
-			TextView tvContent = (TextView) convertView.findViewById(R.id.chatmsg_tv_chatcontent);
 			if (IMessageItem.MESSAGE_TYPE_TEXT == msg.getMessageType()) {
+				TextView tvContent = (TextView) convertView.findViewById(R.id.chatmsg_tv_chatcontent);
 				tvContent.setText(msg.getContent());
 			} else if (IMessageItem.MESSAGE_TYPE_LOCATION == msg.getMessageType()) {
-				tvContent.setBackgroundResource(R.drawable.icon_location);
-				tvContent.setOnClickListener(new OnClickListener() {
+				ImageView ivContent = (ImageView) convertView.findViewById(R.id.chatloc_iv_content);
+				ivContent.setImageResource(R.drawable.icon_location);
+				ivContent.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
@@ -147,7 +154,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			ImageUtil.RenderImageView(info.url, ivHead, -1, -1);
 
 			ImageView ivContent = (ImageView) convertView.findViewById(R.id.chatpic_tv_content);
-			final byte[] byteArray = pic.getContent();
 
 			if (entity.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
 				ivContent.setImageResource(R.drawable.icon_audio);
@@ -159,13 +165,6 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 						// TODO Auto-generated method stub
 						try {
 							String path = pic.getPath();
-
-							if (null != path && !path.isEmpty()) {
-
-							} else {
-								path = getAudioTempPath();
-								FileUtil.WriteBytes(byteArray, path);
-							}
 
 							File file = new File(path);
 							if (file.isFile() && file.exists()) {
@@ -179,66 +178,34 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 				});
 
 			} else if (entity.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
-				Bitmap bitmap = null;
+
 				String path = pic.getPath();
-				if (null != path && !path.isEmpty()) {
-					File file = new File(path);
-					if (file.isFile() && file.exists()) {
-						try {
-							bitmap = BitmapFactory.decodeFile(path);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				} else {
-					// path = getImgTempPath();
-					// FileUtil.WriteBytes(pic.getContent(), path);
+				File file = new File(path);
+				if (file.isFile() && file.exists()) {
+					Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(path, IMG_WIDTH, IMG_HEIGHT);
+					ivContent.setTag(path);
 
-					try {
-						byte[] bytes = pic.getContent();
-						if (null != bytes) {
-							bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+					ivContent.setImageBitmap(bitmap);
+
+					ivContent.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View view) {
+							// TODO Auto-generated method stub
+							try {
+								String path = (String) view.getTag();
+
+								Intent intent = new Intent(context, ImgViewActivity.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+								intent.putExtra(ImgViewActivity.KEY_IMGPATH, path);
+								context.startActivity(intent);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					});
 				}
-
-				/**
-				 * if (null != byteArray) { try { System.out.println("length :"
-				 * + byteArray.length); String path = getImgTempPath();
-				 * 
-				 * //bitmap = BitmapFactory.decodeByteArray(byteArray, 0,
-				 * byteArray.length); } catch (Exception e) {
-				 * e.printStackTrace(); } } if (null == bitmap) { bitmap =
-				 * BitmapFactory.decodeFile(pic.getPath()); }
-				 */
-
-				ivContent.setTag(bitmap);
-				Bitmap content = scaleBitmap(bitmap);
-
-				ivContent.setImageBitmap(content);
-
-				ivContent.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View view) {
-						// TODO Auto-generated method stub
-
-						Bitmap bitmap = (Bitmap) view.getTag();
-						if (null == bitmap)
-							return;
-
-						Intent intent = new Intent(context, ImgViewActivity.class);
-						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-						ByteArrayOutputStream boas = new ByteArrayOutputStream();
-						bitmap.compress(Bitmap.CompressFormat.PNG, 100, boas);
-
-						intent.putExtra(ImgViewActivity.KEY_IMGBYTES, boas.toByteArray());
-						context.startActivity(intent);
-					}
-				});
 			}
 		}
 
@@ -289,37 +256,5 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 		}
 
 		return new BaseInfo(name, url);
-	}
-
-	private Bitmap scaleBitmap(Bitmap bitmap) {
-		if (null == bitmap) {
-			System.out.println("bitmap is null");
-			return null;
-		}
-		/**
-		 * DisplayMetrics dm = context.getResources().getDisplayMetrics(); int
-		 * screenWidth = dm.widthPixels; int screenHeight = dm.heightPixels;
-		 * 
-		 * int picWidth = bitmap.getWidth(); int picHeight = bitmap.getHeight();
-		 * 
-		 * int scaledWidth = picWidth; int scaledHeight = picHeight;
-		 * 
-		 * if (picWidth > screenWidth * 3 / 2 || picHeight > screenHeight / 2) {
-		 * if (picWidth > screenWidth * 3 / 2) { scaledWidth = screenWidth * 3 /
-		 * 2; scaledHeight = scaledWidth * picHeight / picWidth; } else {
-		 * scaledHeight = screenHeight / 2; scaledWidth = scaledHeight *
-		 * picWidth / picHeight; } }
-		 */
-		if (bitmap.getWidth() < 128 && bitmap.getHeight() < 128) {
-			return bitmap;
-		} else {
-			return Bitmap.createScaledBitmap(bitmap, 128, 128, true);
-		}
-	}
-
-	private String getAudioTempPath() {
-		String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-		String name = UUID.randomUUID().toString() + ".3gp";
-		return URLUtil.UrlAppend(path, "Audio", name);
 	}
 }

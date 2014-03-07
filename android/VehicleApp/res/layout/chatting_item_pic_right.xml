@@ -29,14 +29,14 @@
             android:layout_height="64dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
+            android:background="@drawable/contact_list_minus_btn_normal"
             android:focusable="false" />
 
         <ImageView
             android:id="@+id/chatpic_tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/chatpic_iv_userhead"
             android:background="@drawable/chatto_bg_normal" />
 

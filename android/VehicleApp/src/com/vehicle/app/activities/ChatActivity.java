@@ -1,18 +1,12 @@
 package com.vehicle.app.activities;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -35,6 +29,7 @@ import com.vehicle.app.msg.worker.TextMessageCourier;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.JsonUtil;
+import com.vehicle.app.utils.StringUtil;
 
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -48,9 +43,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -362,13 +355,21 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 		if (CHAT_STYLE_2ONE == this.mChatStyle) {
 			try {
 				DBManager dbMgr = new DBManager(this.getApplicationContext());
-
-				List<TextMessage> textMsgs = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
-				List<FileMessage> fileList = dbMgr.queryAllFileMessage(SelfMgr.getInstance().getId(), mFellowId);
-
 				List<IMessageItem> msgs = new ArrayList<IMessageItem>();
-				msgs.addAll(fileList);
-				msgs.addAll(textMsgs);
+
+				try {
+					List<TextMessage> textMsgs = dbMgr.queryAllTextMessage(SelfMgr.getInstance().getId(), mFellowId);
+					msgs.addAll(textMsgs);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				try {
+					List<FileMessage> fileList = dbMgr.queryAllFileMessage(SelfMgr.getInstance().getId(), mFellowId);
+					msgs.addAll(fileList);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				sortMsg(msgs);
 
@@ -433,8 +434,16 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 		this.startActivity(intent);
 	}
 
+	private String curImgPath = "";
+
 	private void captureImage() {
+		this.curImgPath = this.getTempImgPath();
+
+		System.out.println("generated img path:" + this.curImgPath);
+
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(curImgPath)));
 		this.startActivityForResult(intent, REQUESTCODE_CAPTURE_IMAGE);
 	}
 
@@ -465,37 +474,27 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			}
 		}
 
-		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-				+ Environment.DIRECTORY_DCIM + File.separator + "Camera";
-		String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".jpg";
+		System.out.println("captured img path:" + this.curImgPath);
 
-		Bundle bundle = data.getExtras();
-		Bitmap bitmap = (Bitmap) bundle.get("data");
-		FileOutputStream fout = null;
-
-		String filePath = path + File.separator + name;
-
-		System.out.println("photoooooooooooo:" + filePath);
-
+		File file = new File(this.curImgPath);
 		try {
-			fout = new FileOutputStream(filePath);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			if (file.isFile() && file.exists()) {
+				String destPath = FileUtil.genPathForImage(getApplicationContext(), Constants.POSTFIX_DEFAULT_IMAGE);
 
-			// do something
-		} finally {
-			try {
-				if (null != fout) {
-					fout.flush();
-					fout.close();
+				FileUtil.CopyFile(this.curImgPath, destPath);
+
+				File destFile = new File(destPath);
+				if (destFile.isFile() && destFile.exists()) {
+					sendFile(destPath, IMessageItem.MESSAGE_TYPE_IMAGE);
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			} else {
+				Toast.makeText(getApplicationContext(), "capture image failed", Toast.LENGTH_LONG).show();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
-		sendFile(filePath, IMessageItem.MESSAGE_TYPE_IMAGE);
+		this.curImgPath = "";
 	}
 
 	private void onBrowseAlbum(int resultCode, Intent data) {
@@ -511,19 +510,28 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			String path = cursor.getString(column_index);
 
 			File file = new File(path);
-			if (file.isFile() && file.exists()) {
-				sendFile(path, IMessageItem.MESSAGE_TYPE_IMAGE);
-				System.out.println("selected file:" + path);
-			} else {
-				System.out.println("file not exist:" + path);
+			try {
+				if (file.isFile() && file.exists()) {
+					String postFix = FileUtil.getPostFix(path);
+					if (StringUtil.IsNullOrEmpty(postFix)) {
+						postFix = Constants.POSTFIX_DEFAULT_IMAGE;
+					}
+
+					String newFile = FileUtil.genPathForImage(getApplicationContext(), postFix);
+					FileUtil.CopyFile(path, newFile);
+					sendFile(newFile, IMessageItem.MESSAGE_TYPE_IMAGE);
+					System.out.println("selected file:" + path);
+				} else {
+					System.out.println("file not exist:" + path);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
 	private void onLocate(int resultCode, Intent data) {
 		// TODO Auto-generated method stub
-		// Toast.makeText(this, "location received!",
-		// Toast.LENGTH_SHORT).show();
 
 		if (Activity.RESULT_OK == resultCode) {
 			SimpleLocation location = (SimpleLocation) data.getSerializableExtra(LocationActivity.KEY_LOCATION);
@@ -551,7 +559,11 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(entity);
 
-			this.addToMsgList(entity);
+			//Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
+			//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
+			//this.sendBroadcast(msgIntent);
+
+			// this.addToMsgList(entity);
 		}
 	}
 
@@ -568,30 +580,20 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			FileMessage picItem = new FileMessage();
 			picItem.setSource(SelfMgr.getInstance().getId());
 			picItem.setTarget(mFellowId);
-			picItem.setName(file.getName());
-
-			/**
-			 * if (type == IMessageItem.MESSAGE_TYPE_IMAGE) { Bitmap bitmap =
-			 * BitmapFactory.decodeFile(filePath); ByteArrayOutputStream
-			 * byteArrayBitmapStream = new ByteArrayOutputStream();
-			 * bitmap.compress(Bitmap.CompressFormat.PNG, 100,
-			 * byteArrayBitmapStream); }
-			 */
-
-			byte[] bytes = FileUtil.ReadFile(filePath);
-			picItem.setContent(bytes);
 			picItem.setFlag(MessageFlag.SELF);
 			picItem.setPath(filePath);
 			picItem.setMsgType(type);
-			System.out.println("send file " + filePath + " null:" + (null == picItem.getContent()));
+			System.out.println("send file " + filePath);
 			picItem.setSentTime(new Date().getTime());
 
 			IMessageCourier msgCourier = new FileMessageCourier(this.getApplicationContext(),
 					CHAT_STYLE_2ONE != this.mChatStyle);
-
 			msgCourier.dispatch(picItem);
 
-			addToMsgList(picItem);
+			//Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
+			//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picItem);
+			//this.sendBroadcast(msgIntent);
+
 		} else {
 			System.out.println("selected file not exist:" + filePath);
 		}
@@ -613,7 +615,9 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 				CHAT_STYLE_2ONE != this.mChatStyle);
 		msgCourier.dispatch(entity);
 
-		this.addToMsgList(entity);
+		//Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
+		//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
+		//this.sendBroadcast(msgIntent);
 	}
 
 	private void back() {
@@ -621,10 +625,10 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 		this.finish();
 	}
 
-	private void addToMsgList(IMessageItem msg) {
+	private void addToMsgList(final IMessageItem msg) {
+
 		try {
-			// mAdapter.addChatItem(msg);
-			this.mDataArrays.add(msg);
+			mDataArrays.add(msg);
 			mAdapter.notifyDataSetChanged();
 			mMsgList.setSelection(mMsgList.getCount() - 1);
 		} catch (Exception e) {
@@ -682,7 +686,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			// addToMsgList(msg);
+			addToMsgList(msg);
 		}
 
 		private void onNewFileSent(Intent intent) {
@@ -691,7 +695,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			// addToMsgList(msg);
+			addToMsgList(msg);
 		}
 
 		private void onNewFileReceived(Intent intent) {
@@ -725,11 +729,11 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 
 	private void startRecording() {
 		try {
-			audioFile = this.getAudioFilePath();
+			audioFile = FileUtil.genPathForAudio(getApplicationContext(), Constants.POSTFIX_DEFAULT_AUDIO);
 
 			mRecorder = new MediaRecorder();
 			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-			mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+			mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
 
 			mRecorder.setOutputFile(audioFile);
 			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
@@ -755,8 +759,8 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 				mRecorder = null;
 
 				File file = new File(this.audioFile);
-				if (file.exists()) {
-					this.sendFile(this.audioFile, IMessageItem.MESSAGE_TYPE_AUDIO);
+				if (file.isFile() && file.exists()) {
+					sendFile(this.audioFile, IMessageItem.MESSAGE_TYPE_AUDIO);
 				}
 			}
 		} catch (Exception e) {
@@ -765,19 +769,21 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 		}
 	}
 
-	private String getAudioFilePath() {
-		String parent = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Audio/";
-		try {
-			File file = new File(parent);
-			if (!file.exists()) {
-				file.mkdirs();
+	private String getTempImgPath() {
+
+		String root = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+				+ Environment.DIRECTORY_DCIM;
+		File path = new File(root + File.separator + "Image");
+		if (!path.exists()) {
+			try {
+				path.mkdirs();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
-		String name = UUID.randomUUID().toString() + ".3gp";
-
-		return parent + name;
+		String filePath = path.getAbsolutePath() + File.separator + UUID.randomUUID().toString() + "."
+				+ Constants.POSTFIX_DEFAULT_IMAGE;
+		return filePath;
 	}
 }
