@@ -79,7 +79,7 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 	}
 
 	private void processNewFile(NewFileNotification file) {
-		System.out.println("notification token:" + file.getId());
+		System.out.println("notification token:" + file.getToken());
 
 		FileMessage msg = new FileMessage();
 		msg.fromRawNotification(file);

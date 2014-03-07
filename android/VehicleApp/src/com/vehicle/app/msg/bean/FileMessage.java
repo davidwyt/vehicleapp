@@ -149,7 +149,7 @@ public class FileMessage implements IMessageItem, Parcelable {
 		}
 
 		NewFileNotification rawMsg = (NewFileNotification) notification;
-		this.token = rawMsg.getId();
+		this.token = rawMsg.getToken();
 		this.name = rawMsg.getFileName();
 		this.source = rawMsg.getSource();
 		this.target = rawMsg.getTarget();
