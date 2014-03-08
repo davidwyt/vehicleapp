@@ -54,6 +54,8 @@ public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 					recentMsg.setMessageId(msg.getInvitationId());
 
 					updateRecentMessage(recentMsg);
+
+					SelfMgr.getInstance().refreshFellows();
 				}
 
 				try {
@@ -68,11 +70,14 @@ public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 
 			@Override
 			protected void onPostExecute(Void result) {
-				if (shouldNotifyBar()) {
-					NotificationMgr notificationMgr = new NotificationMgr(context);
-					notificationMgr.notifyNewInvitationVerdictMsg(msg);
+				if (shouldNotifyBar() && InvitationVerdict.ACCEPTED.equals(msg.getVerdict())) {
+					try {
+						NotificationMgr notificationMgr = new NotificationMgr(context);
+						notificationMgr.notifyNewInvitationVerdictMsg(msg);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-
 			}
 		};
 

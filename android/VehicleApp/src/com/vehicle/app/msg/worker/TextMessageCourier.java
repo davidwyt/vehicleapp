@@ -23,10 +23,12 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 public class TextMessageCourier extends MessageBaseCourier {
 
 	private boolean isGroupChat = false;
+	private boolean broadResult = false;
 
-	public TextMessageCourier(Context context, boolean isGroupChat) {
+	public TextMessageCourier(Context context, boolean isGroupChat, boolean broadResult) {
 		super(context);
 		this.isGroupChat = isGroupChat;
+		this.broadResult = broadResult;
 	}
 
 	@Override
@@ -113,10 +115,11 @@ public class TextMessageCourier extends MessageBaseCourier {
 						System.out.println("send msg success:" + oneResp.getMsgId());
 					}
 
-					//Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
-					//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, msg);
-					//context.sendBroadcast(msgIntent);
-
+					if (broadResult) {
+						Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
+						msgIntent.putExtra(ChatActivity.KEY_MESSAGE, msg);
+						context.sendBroadcast(msgIntent);
+					}
 				} else {
 					if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_LOCATION) {
 						Intent msgIntent = new Intent(Constants.ACTION_LOCMESSAGE_SENTFAILED);

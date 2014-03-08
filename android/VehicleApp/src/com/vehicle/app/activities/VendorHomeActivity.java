@@ -160,8 +160,12 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 	protected void onStart() {
 		super.onStart();
 
-		initData();
-
+		try {
+			initData();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		this.registerMessageReceiver();
 	}
 
@@ -281,26 +285,30 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 	@Override
 	public void onClick(View view) {
 		// TODO Auto-generated method stub
-		int id = view.getId();
-		switch (id) {
-		case R.id.vendorbar_shake:
-			shake();
-			break;
-		case R.id.vendorbar_yelp:
-			yelp();
-			break;
-		case R.id.vendorbar_ecc:
-			ecc();
-			break;
-		case R.id.vendorbar_next:
-			gotoNext();
-			break;
-		case R.id.vendortitle_btn_back:
-			gobak();
-			break;
-		case R.id.vendortitle_btn_follow:
-			follow();
-			break;
+		try {
+			int id = view.getId();
+			switch (id) {
+			case R.id.vendorbar_shake:
+				shake();
+				break;
+			case R.id.vendorbar_yelp:
+				yelp();
+				break;
+			case R.id.vendorbar_ecc:
+				ecc();
+				break;
+			case R.id.vendorbar_next:
+				gotoNext();
+				break;
+			case R.id.vendortitle_btn_back:
+				gobak();
+				break;
+			case R.id.vendortitle_btn_follow:
+				follow();
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -331,7 +339,7 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 		entity.setFlag(MessageFlag.SELF);
 		entity.setMessageType(IMessageItem.MESSAGE_TYPE_TEXT);
 		entity.setSentTime(new Date().getTime());
-		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(), false);
+		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(), false, true);
 		msgCourier.dispatch(entity);
 	}
 

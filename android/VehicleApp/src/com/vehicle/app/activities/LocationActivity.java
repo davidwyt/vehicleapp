@@ -45,7 +45,7 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,7 +55,11 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 		mapView = (MapView) findViewById(R.id.location_map);
 		mapView.onCreate(savedInstanceState);
 
-		init();
+		try {
+			init();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

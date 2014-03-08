@@ -70,11 +70,15 @@ public class TextMessageRecipient extends MessageBaseRecipient {
 						e.printStackTrace();
 					}
 
-					NotificationMgr notificationMgr = new NotificationMgr(context);
-					if (IMessageItem.MESSAGE_TYPE_TEXT == textMsgItem.getMessageType()) {
-						notificationMgr.notifyNewTextMsg(textMsgItem);
-					} else if (IMessageItem.MESSAGE_TYPE_LOCATION == textMsgItem.getMessageType()) {
-						notificationMgr.notifyNewLocationMsg(textMsgItem);
+					try {
+						NotificationMgr notificationMgr = new NotificationMgr(context);
+						if (IMessageItem.MESSAGE_TYPE_TEXT == textMsgItem.getMessageType()) {
+							notificationMgr.notifyNewTextMsg(textMsgItem);
+						} else if (IMessageItem.MESSAGE_TYPE_LOCATION == textMsgItem.getMessageType()) {
+							notificationMgr.notifyNewLocationMsg(textMsgItem);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 

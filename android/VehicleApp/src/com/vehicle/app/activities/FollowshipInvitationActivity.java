@@ -1,6 +1,7 @@
 package com.vehicle.app.activities;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import com.vehicle.app.bean.VendorDetail;
@@ -14,6 +15,7 @@ import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.InvitationVerdictMessageCourier;
 import com.vehicle.app.utils.ActivityUtil;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
@@ -21,7 +23,10 @@ import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -51,6 +56,9 @@ public class FollowshipInvitationActivity extends TemplateActivity implements On
 	private TextView mInvStatusMessageView;
 
 	private RefreshVendorDetailTask mRefreshTask;
+	private BroadcastReceiver mReceiver;
+
+	public static final String KEY_INVVERDICT_ERRORMSG = "com.vehicle.app.key.invverdict.result.errmsg";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +111,14 @@ public class FollowshipInvitationActivity extends TemplateActivity implements On
 		super.onStart();
 
 		initData();
+
+		registerMessageReceiver();
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
+		this.unregisterMessageReceiver();
 	}
 
 	@Override
@@ -161,6 +172,7 @@ public class FollowshipInvitationActivity extends TemplateActivity implements On
 		msg.setTarget(mInvitation.getSource());
 		msg.setFlag(MessageFlag.SELF);
 		msg.setVerdict(isAccept ? InvitationVerdict.ACCEPTED : InvitationVerdict.REJECTED);
+		msg.setSentTime(new Date().getTime());
 
 		IMessageCourier cpu = new InvitationVerdictMessageCourier(this.getApplicationContext());
 		cpu.dispatch(msg);
@@ -224,6 +236,54 @@ public class FollowshipInvitationActivity extends TemplateActivity implements On
 		protected void onCancelled() {
 			mRefreshTask = null;
 			ActivityUtil.showProgress(getApplicationContext(), mInvStatusView, mInvFormView, false);
+		}
+	}
+
+	private void registerMessageReceiver() {
+
+		mReceiver = new InvVerdictResultReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+		filter.addAction(Constants.ACTION_INVVERDICT_ACCEPTFAILED);
+		filter.addAction(Constants.ACTION_INVVERDICT_ACCEPTSUCCESS);
+		filter.addAction(Constants.ACTION_INVVERDICT_REJECTFAILED);
+		filter.addAction(Constants.ACTION_INVVERDICT_REJECTSUCCESS);
+
+		try {
+			registerReceiver(mReceiver, filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void unregisterMessageReceiver() {
+		try {
+			unregisterReceiver(this.mReceiver);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	class InvVerdictResultReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+
+			if (Constants.ACTION_INVVERDICT_ACCEPTSUCCESS.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_invverdictacceptsuccess),
+						Toast.LENGTH_LONG).show();
+			} else if (Constants.ACTION_INVVERDICT_ACCEPTFAILED.equals(action)) {
+				String error = intent.getStringExtra(KEY_INVVERDICT_ERRORMSG);
+				Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+			} else if (Constants.ACTION_INVVERDICT_REJECTSUCCESS.equals(action)) {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_invverdictrejectsuccess),
+						Toast.LENGTH_LONG).show();
+			} else if (Constants.ACTION_INVVERDICT_REJECTFAILED.equals(action)) {
+				String error = intent.getStringExtra(KEY_INVVERDICT_ERRORMSG);
+				Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 }

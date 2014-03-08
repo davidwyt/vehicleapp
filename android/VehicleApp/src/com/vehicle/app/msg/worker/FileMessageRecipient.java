@@ -124,11 +124,16 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 						e.printStackTrace();
 					}
 
-					NotificationMgr notificationMgr = new NotificationMgr(context);
-					if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
-						notificationMgr.notifyNewImgMsg(picMsgItem);
-					} else if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
-						notificationMgr.notifyNewAudioMsg(picMsgItem);
+					try {
+
+						NotificationMgr notificationMgr = new NotificationMgr(context);
+						if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {
+							notificationMgr.notifyNewImgMsg(picMsgItem);
+						} else if (picMsgItem.getMessageType() == IMessageItem.MESSAGE_TYPE_AUDIO) {
+							notificationMgr.notifyNewAudioMsg(picMsgItem);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 

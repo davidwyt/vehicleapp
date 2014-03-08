@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.vehicle.app.activities.FollowshipInvitationActivity" >
 
-        <LinearLayout
+    <LinearLayout
         android:id="@+id/followinv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/azure" />
     </LinearLayout>
-    
+
     <ScrollView
         android:id="@+id/invitation_form"
         android:layout_width="match_parent"
@@ -68,10 +68,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/followshipinvitation_titleId"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/icon_bg_invitationtext"
+                android:layout_marginTop="16dp"
                 android:text="@string/followshipinvitationformatstr"
-                android:textColor="@color/textFieldColor" />
+                android:textColor="@color/black"
+                android:background="@color/white"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/followshipinvitation_shopdetail"
@@ -82,24 +83,29 @@
                 android:layout_marginTop="32dp"
                 android:background="@drawable/selector_btn_shopdetail" />
 
-            <Button
-                android:id="@+id/followshipinvitation_accept"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/followshipinvitation_shopdetail"
-                android:layout_alignParentLeft="true"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/selector_btn_acceptinv" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp" >
 
-            <Button
-                android:id="@+id/followshipinvitation_reject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/followshipinvitation_accept"
-                android:layout_below="@id/followshipinvitation_shopdetail"
-                android:layout_toRightOf="@id/followshipinvitation_accept"
-                android:background="@drawable/selector_btn_rejectinv" />
+                <Button
+                    android:id="@+id/followshipinvitation_accept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/selector_btn_acceptinv" />
+
+                <Button
+                    android:id="@+id/followshipinvitation_reject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/selector_btn_rejectinv" />
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 

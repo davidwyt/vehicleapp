@@ -447,9 +447,13 @@ public class SelfMgr {
 				if (null != driverResult && driverResult.isSuccess() && null != driverResult.getInfoBean()) {
 					Map<String, Driver> drivers = driverResult.getInfoBean();
 					for (Driver driver : drivers.values()) {
-						CarListViewResult carResult = webClient.CarListView(driver.getId());
-						if (null != carResult && null != carResult.getInfoBean()) {
-							driver.setCars(carResult.getInfoBean());
+						try {
+							CarListViewResult carResult = webClient.CarListView(driver.getId());
+							if (null != carResult && null != carResult.getInfoBean()) {
+								driver.setCars(carResult.getInfoBean());
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
 					this.mVendorFellowMap.putAll(driverResult.getInfoBean());

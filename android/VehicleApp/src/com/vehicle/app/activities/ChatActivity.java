@@ -558,7 +558,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			entity.setSentTime(new Date().getTime());
 
 			IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(),
-					CHAT_STYLE_2ONE != this.mChatStyle);
+					CHAT_STYLE_2ONE != this.mChatStyle, false);
 			msgCourier.dispatch(entity);
 
 			// Intent msgIntent = new
@@ -640,7 +640,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 		entity.setSentTime(new Date().getTime());
 
 		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(),
-				CHAT_STYLE_2ONE != this.mChatStyle);
+				CHAT_STYLE_2ONE != this.mChatStyle, false);
 		msgCourier.dispatch(entity);
 
 		// Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);

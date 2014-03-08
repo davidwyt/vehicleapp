@@ -5,7 +5,7 @@ import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.activities.FollowshipInvitationActivity;
-import com.vehicle.app.activities.SettingHomeActivity;
+import com.vehicle.app.activities.RecentContactListActivity;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.IMessageItem;
 import com.vehicle.app.msg.bean.InvitationVerdict;
@@ -121,7 +121,7 @@ public class NotificationMgr {
 		String name = SelfMgr.getInstance().getFellowName(context, msg.getSource());
 		ticker = context.getResources().getString(R.string.tip_notificationformat_newinvverdict, name);
 
-		Intent resultIntent = new Intent(context, SettingHomeActivity.class);
+		Intent resultIntent = new Intent(context, RecentContactListActivity.class);
 		createNotification(ticker, context.getResources().getString(R.string.tip_newmsg), resultIntent);
 	}
 

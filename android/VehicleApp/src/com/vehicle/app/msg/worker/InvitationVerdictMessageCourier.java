@@ -1,5 +1,8 @@
 package com.vehicle.app.msg.worker;
 
+import cn.edu.sjtu.vehicleapp.R;
+
+import com.vehicle.app.activities.FollowshipInvitationActivity;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
@@ -7,12 +10,14 @@ import com.vehicle.app.msg.bean.InvitationVerdict;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
 import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.bean.RecentMessage;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.sdk.client.VehicleWebClient;
 import com.vehicle.service.bean.FollowshipInvitationResultResponse;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -60,7 +65,6 @@ public class InvitationVerdictMessageCourier extends MessageBaseCourier {
 			protected void onPostExecute(FollowshipInvitationResultResponse result) {
 				if (null != result && result.isSucess()) {
 					System.out.println("invitation verdict sent successful:" + JsonUtil.toJsonString(msg));
-
 					try {
 						msg.setFlag(MessageFlag.SELF);
 
@@ -75,13 +79,43 @@ public class InvitationVerdictMessageCourier extends MessageBaseCourier {
 						recentMsg.setSelfId(SelfMgr.getInstance().getId());
 						recentMsg.setFellowId(msg.getTarget());
 						recentMsg.setMessageType(msg.getMessageType());
-						recentMsg.setContent("");
+						recentMsg.setContent(InvitationVerdict.ACCEPTED.toString());
 						recentMsg.setSentTime(msg.getSentTime());
 						recentMsg.setMessageId(msg.getInvitationId());
 
 						updateRecentMessage(recentMsg);
+
+						Intent intent = new Intent(Constants.ACTION_INVVERDICT_ACCEPTSUCCESS);
+						context.sendBroadcast(intent);
+					} else {
+						Intent intent = new Intent(Constants.ACTION_INVVERDICT_REJECTSUCCESS);
+						context.sendBroadcast(intent);
 					}
+
 				} else {
+
+					if (InvitationVerdict.ACCEPTED.equals(msg.getVerdict())) {
+						Intent intent = new Intent(Constants.ACTION_INVVERDICT_ACCEPTFAILED);
+						if (null != result && result.getErrorCode() == 0x00000017) {
+							String error = context.getResources().getString(R.string.tip_invprocesserro);
+							intent.putExtra(FollowshipInvitationActivity.KEY_INVVERDICT_ERRORMSG, error);
+						} else {
+							String error = context.getResources().getString(R.string.tip_invverdictsentfailed);
+							intent.putExtra(FollowshipInvitationActivity.KEY_INVVERDICT_ERRORMSG, error);
+						}
+						context.sendBroadcast(intent);
+					} else {
+						Intent intent = new Intent(Constants.ACTION_INVVERDICT_REJECTFAILED);
+						if (null != result && result.getErrorCode() == 0x00000017) {
+							String error = context.getResources().getString(R.string.tip_invprocesserro);
+							intent.putExtra(FollowshipInvitationActivity.KEY_INVVERDICT_ERRORMSG, error);
+						} else {
+							String error = context.getResources().getString(R.string.tip_invverdictsentfailed);
+							intent.putExtra(FollowshipInvitationActivity.KEY_INVVERDICT_ERRORMSG, error);
+						}
+						context.sendBroadcast(intent);
+					}
+
 					System.out.println(String.format("invitation verdict %s send failed with:%s",
 							JsonUtil.toJsonString(msg), null == result ? "" : JsonUtil.toJsonString(result)));
 				}

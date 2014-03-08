@@ -23,7 +23,7 @@ import org.apache.http.util.EntityUtils;
 public class HttpUtil {
 
 	private static final int TIMEOUT = 10000;
-	
+
 	public static <T> T PostJson(String url, Object entity, Class<T> t) {
 
 		final HttpParams httpParams = new BasicHttpParams();
@@ -49,23 +49,26 @@ public class HttpUtil {
 			System.out.println("----------------------------------------");
 			System.out.println(response.getStatusLine());
 
-			if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
-				HttpEntity resEntity = response.getEntity();
-				if (resEntity != null) {
-					System.out.println("Response content length: " + resEntity.getContentLength());
+			// if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+			// {
+			HttpEntity resEntity = response.getEntity();
+			if (resEntity != null) {
+				System.out.println("Response content length: " + resEntity.getContentLength());
 
-					resp = EntityUtils.toString(resEntity, "UTF-8");
+				resp = EntityUtils.toString(resEntity, "UTF-8");
 
-					System.out.println(resp);
-					return JsonUtil.fromJson(resp, t);
-					// EntityUtils.consume(resEntity);
-				}
+				System.out.println(resp);
+				return JsonUtil.fromJson(resp, t);
+				// EntityUtils.consume(resEntity);
 			}
+			// }
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -92,20 +95,23 @@ public class HttpUtil {
 			System.out.println("----------------------------------------");
 			System.out.println(response.getStatusLine());
 
-			if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
-				HttpEntity resEntity = response.getEntity();
-				if (resEntity != null) {
-					System.out.println("Response content length: " + resEntity.getContentLength());
-					resp = EntityUtils.toString(resEntity, "UTF-8");
-					System.out.println(resp);
-					return JsonUtil.fromJson(resp, t);
-				}
+			// if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+			// {
+			HttpEntity resEntity = response.getEntity();
+			if (resEntity != null) {
+				System.out.println("Response content length: " + resEntity.getContentLength());
+				resp = EntityUtils.toString(resEntity, "UTF-8");
+				System.out.println(resp);
+				return JsonUtil.fromJson(resp, t);
 			}
+			// }
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -132,20 +138,23 @@ public class HttpUtil {
 			System.out.println("----------------------------------------");
 			System.out.println(response.getStatusLine());
 
-			if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
-				HttpEntity resEntity = response.getEntity();
-				if (resEntity != null) {
-					System.out.println("Response content length: " + resEntity.getContentLength());
-					resp = EntityUtils.toString(resEntity, "UTF-8");
-					System.out.println("upload resp:" + resp);
-					return JsonUtil.fromJson(resp, t);
-				}
+			// if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode())
+			// {
+			HttpEntity resEntity = response.getEntity();
+			if (resEntity != null) {
+				System.out.println("Response content length: " + resEntity.getContentLength());
+				resp = EntityUtils.toString(resEntity, "UTF-8");
+				System.out.println("upload resp:" + resp);
+				return JsonUtil.fromJson(resp, t);
 			}
+			// }
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 

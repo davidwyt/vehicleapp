@@ -17,6 +17,7 @@ import com.vehicle.app.msg.bean.CommentMessage;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.VendorCommentMessageCourier;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.Activity;
@@ -324,25 +325,29 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 	}
 
 	private void setImageViewBitmap(String path) {
-		Bitmap bitmap = BitmapFactory.decodeFile(path);
+		try {
+			Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(path, 128, 128);
 
-		switch (this.mImgIndex) {
-		case 1:
-			this.mImg1.setImageBitmap(bitmap);
-			this.mImg1.setTag(path);
-			break;
-		case 2:
-			this.mImg2.setImageBitmap(bitmap);
-			this.mImg2.setTag(path);
-			break;
-		case 3:
-			this.mImg3.setImageBitmap(bitmap);
-			this.mImg3.setTag(path);
-			break;
-		case 4:
-			this.mImg4.setImageBitmap(bitmap);
-			this.mImg4.setTag(path);
-			break;
+			switch (this.mImgIndex) {
+			case 1:
+				this.mImg1.setImageBitmap(bitmap);
+				this.mImg1.setTag(path);
+				break;
+			case 2:
+				this.mImg2.setImageBitmap(bitmap);
+				this.mImg2.setTag(path);
+				break;
+			case 3:
+				this.mImg3.setImageBitmap(bitmap);
+				this.mImg3.setTag(path);
+				break;
+			case 4:
+				this.mImg4.setImageBitmap(bitmap);
+				this.mImg4.setTag(path);
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

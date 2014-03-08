@@ -1,5 +1,6 @@
 package com.vehicle.app.msg.worker;
 
+import java.util.Date;
 import java.util.List;
 
 import com.vehicle.app.mgrs.SelfMgr;
@@ -46,6 +47,7 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 			msg.setTarget(invitation.getSource());
 			msg.setVerdict(InvitationVerdict.ACCEPTED);
 			msg.setFlag(MessageFlag.UNREAD);
+			msg.setSentTime(new Date().getTime());
 
 			IMessageRecipient recipient = new InvitationVerdictMessageRecipient(context, true);
 			recipient.receive(msg);
@@ -56,6 +58,7 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 			msg.setTarget(invitation.getSource());
 			msg.setVerdict(InvitationVerdict.REJECTED);
 			msg.setFlag(MessageFlag.UNREAD);
+			msg.setSentTime(new Date().getTime());
 
 			IMessageRecipient recipient = new InvitationVerdictMessageRecipient(context, true);
 			recipient.receive(msg);

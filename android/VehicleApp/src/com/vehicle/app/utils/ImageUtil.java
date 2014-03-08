@@ -35,8 +35,12 @@ public class ImageUtil {
 				iv.setTag(R.id.TAGKEY_BITMAP_HEIGHT, height);
 			}
 
-			ImageViewBitmapLoader loader = new ImageViewBitmapLoader(iv);
-			loader.load();
+			try {
+				ImageViewBitmapLoader loader = new ImageViewBitmapLoader(iv);
+				loader.load();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

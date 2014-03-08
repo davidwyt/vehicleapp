@@ -16,6 +16,10 @@ public class Constants {
 	public static final String ACTION_FOLLOWSHIP_FAILED = "com.vehicle.app.action.followship.failed";
 	public static final String ACTION_INVITATION_SUCCESS = "com.vehicle.app.action.invitation.success";
 	public static final String ACTION_INVITATION_FAILED = "com.vehicle.app.action.invitation.failed";
+	public static final String ACTION_INVVERDICT_ACCEPTSUCCESS = "com.vehicle.app.action.invitationverdict.acceptsuccess";
+	public static final String ACTION_INVVERDICT_ACCEPTFAILED = "com.vehicle.app.action.invitationverdict.acceptfailed";
+	public static final String ACTION_INVVERDICT_REJECTSUCCESS = "com.vehicle.app.action.invitationverdict.rejectsuccess";
+	public static final String ACTION_INVVERDICT_REJECTFAILED = "com.vehicle.app.action.invitationverdict.rejectfailed";
 	public static final String ACTION_VENDORCOMMENT_SUCCESS = "com.vehicle.app.action.vendorcomment.success";
 	public static final String ACTION_VENDORCOMMENT_FAILED = "com.vehicle.app.action.vendorcomment.failed";
 	public static final String ACTION_RECENTMSG_UPDATE = "com.vehicle.app.action.recentmsgupdate";
@@ -37,7 +41,7 @@ public class Constants {
 	public static final String IMGNAME_DIVIDER = "|";
 
 	public static final String MIDDLEIMG_PATH = "http://www.ac0086.com/uploads/pics/m/";
-	
+
 	public static final double LOCATION_DEFAULT_LATITUDE = 31.025885;
 	public static final double LOCATION_DEFAULT_LONGTITUDE = 121.428689;
 

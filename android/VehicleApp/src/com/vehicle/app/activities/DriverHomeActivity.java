@@ -240,7 +240,12 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 	protected void onStart() {
 		super.onStart();
 		mRefreshTask = null;
-		initData();
+		try {
+			initData();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		registerMessageReceiver();
 	}
 
@@ -283,18 +288,18 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
 
-		if (mCurIndex+1 >= this.mNearbyDrivers.size()) {
+		if (mCurIndex + 1 >= this.mNearbyDrivers.size()) {
 			Toast.makeText(this, getResources().getString(R.string.tip_nonextdriver), Toast.LENGTH_LONG).show();
 			return;
 		}
 
-		String nextId = this.mNearbyDrivers.get(mCurIndex+1);
+		String nextId = this.mNearbyDrivers.get(mCurIndex + 1);
 
 		if (null != this.mRefreshTask)
 			return;
-		
+
 		mDriverStatusMessageView.setText(R.string.tip_nearbydriverstatustext);
-		
+
 		ActivityUtil.showProgress(getApplicationContext(), mDriverStatusView, mDriverFormView, true);
 		mRefreshTask = new RefreshDriverInfoTask(nextId);
 		mRefreshTask.execute((Void) null);
@@ -311,7 +316,7 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 		intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2ONE);
 		this.startActivity(intent);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -376,9 +381,9 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 				driver.setCars(carListResult.getInfoBean());
 				setViewData(driver);
 				mDriverId = driverId;
-				
+
 				mCurIndex++;
-				
+
 				System.out.println("new driverIdddddd:" + mDriverId);
 			} else {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_getdriverinfofailed),

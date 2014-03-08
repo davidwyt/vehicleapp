@@ -51,8 +51,12 @@ public class FollowshipInvMessageRecipient extends MessageBaseRecipient {
 			@Override
 			protected void onPostExecute(Void result) {
 				if (shouldNotifyBar()) {
-					NotificationMgr notificationMgr = new NotificationMgr(context);
-					notificationMgr.notifyNewFollowshipInvitationMsg(msg);
+					try {
+						NotificationMgr notificationMgr = new NotificationMgr(context);
+						notificationMgr.notifyNewFollowshipInvitationMsg(msg);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		};

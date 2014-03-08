@@ -82,9 +82,9 @@ public class InvitationVerdictMessage implements IMessageItem, Serializable {
 		// TODO Auto-generated method stub
 
 		if (!(notification instanceof FollowshipInvitationAcceptNotification)
-				|| !(notification instanceof FollowshipInvitationRejectNotification)) {
+				&& !(notification instanceof FollowshipInvitationRejectNotification)) {
 			throw new IllegalArgumentException(
-					"notificatoin not FollowshipInvitationAcceptNotification or FollowshipInvitationRejectNotification");
+					"notification not FollowshipInvitationAcceptNotification or FollowshipInvitationRejectNotification");
 		}
 
 		if (notification instanceof FollowshipInvitationAcceptNotification) {

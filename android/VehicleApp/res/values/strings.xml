@@ -136,4 +136,8 @@
 	<string name="tip_getvendordetailinprogress">正在获得商家详细信息&#8230;</string>
 	<string name="zh_kilometer">千米</string>
 	<string name="tip_quitconfig">确定要退出天下车商么？</string>
+	<string name="tip_invverdictacceptsuccess">您已同意了该车商的关注邀请，可以给他发送站内信了</string>
+	<string name="tip_invverdictsentfailed">消息发送失败，请检查网络连接并重试</string>
+	<string name="tip_invverdictrejectsuccess">消息发送成功</string>
+	<string name="tip_invprocesserro">该邀请已经处理过，无需再次处理</string>
 </resources>
