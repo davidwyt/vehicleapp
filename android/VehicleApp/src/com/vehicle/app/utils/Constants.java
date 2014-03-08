@@ -37,6 +37,9 @@ public class Constants {
 	public static final String IMGNAME_DIVIDER = "|";
 
 	public static final String MIDDLEIMG_PATH = "http://www.ac0086.com/uploads/pics/m/";
+	
+	public static final double LOCATION_DEFAULT_LATITUDE = 31.025885;
+	public static final double LOCATION_DEFAULT_LONGTITUDE = 121.428689;
 
 	public static String getMiddleVendorImg(String name) {
 		return URLUtil.UrlAppend(MIDDLEIMG_PATH, name);

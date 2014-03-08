@@ -42,8 +42,11 @@ public class MessageReceiver extends BroadcastReceiver {
 		} else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
 			Log.d(TAG, "接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
 
-			processCustomMessage(context, bundle);
-
+			try {
+				processCustomMessage(context, bundle);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
 			Log.d(TAG, "接收到推送下来的通知");
 			int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
@@ -85,20 +88,18 @@ public class MessageReceiver extends BroadcastReceiver {
 		} else if (Notifications.NewFile.toString().equalsIgnoreCase(title)) {
 			onNewFileReceived(context, message);
 		} else if (Notifications.FollowshipInvitation.toString().equalsIgnoreCase(title)) {
-
+			onNewFollowshipInvitationReceived(context, message);
 		} else if (Notifications.FollowshipInvitationAccepted.toString().equalsIgnoreCase(title)) {
 			onNewInvVerdictAcceptedReceived(context, message);
 		} else if (Notifications.FollowshipInvitationRejected.toString().equalsIgnoreCase(title)) {
 			onNewInvVerdictRejectedReceived(context, message);
-		} else if (Notifications.FollowshipInvitation.toString().equalsIgnoreCase(title)) {
-			onNewFollowshipInvitationReceived(context, message);
 		}
 	}
 
 	private void onNewMessageReceived(Context context, String message) {
-		
+
 		System.out.println("new msg received:" + message);
-		
+
 		TextMessage msg = JsonUtil.fromJson(message, TextMessage.class);
 
 		IMessageRecipient cpu = new TextMessageRecipient(context, false);
@@ -113,7 +114,7 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		FileMessage msg = new FileMessage();
 		msg.fromRawNotification(newFileNotification);
-		
+
 		IMessageRecipient cpu = new FileMessageRecipient(context, false);
 		cpu.receive(msg);
 	}

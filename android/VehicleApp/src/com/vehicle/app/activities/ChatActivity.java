@@ -30,9 +30,11 @@ import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.app.utils.StringUtil;
+import com.vehicle.service.bean.BaseResponse;
 
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -310,13 +312,13 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			this.mTitleView.setBackgroundResource(R.drawable.icon_bakground);
 
 			if (SelfMgr.getInstance().isDriver()) {
-				this.mVendor = SelfMgr.getInstance().getFavVendor(mFellowId);
+				this.mVendor = SelfMgr.getInstance().getVendorInfo(mFellowId);
 				tvFellow.setVisibility(View.VISIBLE);
 				if (null != this.mVendor) {
 					tvFellow.setText(this.mVendor.getName());
 				}
 			} else {
-				this.mDriver = SelfMgr.getInstance().getVendorFellow(mFellowId);
+				this.mDriver = SelfMgr.getInstance().getDriverInfo(mFellowId);
 				tvFellow.setVisibility(View.VISIBLE);
 				if (null != this.mDriver) {
 					tvFellow.setText(this.mDriver.getAlias());
@@ -559,11 +561,14 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(entity);
 
-			//Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
-			//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
-			//this.sendBroadcast(msgIntent);
+			// Intent msgIntent = new
+			// Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
+			// msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
+			// this.sendBroadcast(msgIntent);
 
 			// this.addToMsgList(entity);
+			FakeSendTask task = new FakeSendTask(entity);
+			task.execute();
 		}
 	}
 
@@ -577,7 +582,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 
 		if (file.isFile() && file.exists()) {
 
-			FileMessage picItem = new FileMessage();
+			final FileMessage picItem = new FileMessage();
 			picItem.setSource(SelfMgr.getInstance().getId());
 			picItem.setTarget(mFellowId);
 			picItem.setFlag(MessageFlag.SELF);
@@ -590,12 +595,35 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(picItem);
 
-			//Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
-			//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picItem);
-			//this.sendBroadcast(msgIntent);
+			// Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
+			// msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picItem);
+			// this.sendBroadcast(msgIntent);
+
+			FakeSendTask task = new FakeSendTask(picItem);
+			task.execute();
 
 		} else {
 			System.out.println("selected file not exist:" + filePath);
+		}
+	}
+
+	private class FakeSendTask extends AsyncTask<Void, Void, Void> {
+
+		private IMessageItem msgItem;
+
+		public FakeSendTask(IMessageItem msg) {
+			this.msgItem = msg;
+		}
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			addToMsgList(msgItem);
 		}
 	}
 
@@ -615,9 +643,11 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 				CHAT_STYLE_2ONE != this.mChatStyle);
 		msgCourier.dispatch(entity);
 
-		//Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
-		//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
-		//this.sendBroadcast(msgIntent);
+		// Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
+		// msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
+		// this.sendBroadcast(msgIntent);
+		FakeSendTask task = new FakeSendTask(entity);
+		task.execute();
 	}
 
 	private void back() {
@@ -686,7 +716,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			addToMsgList(msg);
+			// addToMsgList(msg);
 		}
 
 		private void onNewFileSent(Intent intent) {
@@ -695,7 +725,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			if (!mFellowId.equals(msg.getTarget()) || !msg.getSource().equals(SelfMgr.getInstance().getId()))
 				return;
 
-			addToMsgList(msg);
+			// addToMsgList(msg);
 		}
 
 		private void onNewFileReceived(Intent intent) {

@@ -102,7 +102,12 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 			}
 		}
 
-		String lastMessage = formatLastMessage(msg);
+		String lastMessage = "";
+		try {
+			lastMessage = formatLastMessage(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		tvAlias.setText(alias);
 

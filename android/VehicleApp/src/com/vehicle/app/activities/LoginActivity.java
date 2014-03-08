@@ -1,5 +1,7 @@
 package com.vehicle.app.activities;
 
+import java.util.Date;
+
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
@@ -8,6 +10,7 @@ import com.vehicle.app.bean.RoleInfo;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleClient;
 
@@ -15,7 +18,9 @@ import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -231,11 +236,6 @@ public class LoginActivity extends TemplateActivity {
 			focusView = mEmailView;
 			cancel = true;
 		}
-		/**
-		 * else if (!StringUtil.IsEmail(mEmail)) {
-		 * mEmailView.setError(getString(R.string.error_invalid_email));
-		 * focusView = mEmailView; cancel = true; }
-		 */
 
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
@@ -250,6 +250,7 @@ public class LoginActivity extends TemplateActivity {
 			// showProgress(true);
 			mAuthTask = new UserLoginTask();
 			mAuthTask.execute((Void) null);
+
 		}
 	}
 
@@ -271,48 +272,99 @@ public class LoginActivity extends TemplateActivity {
 				e.printStackTrace();
 			}
 		}
-
+		System.out.println("thread in ..............");
 		try {
 			mAMapLocationManager = LocationManagerProxy.getInstance(this);
 			this.mAMapLocationManager.setGpsEnable(true);
 			mAMapLocationManager.requestLocationUpdates(LocationProviderProxy.AMapNetwork, 5000, 10, myListener);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	class StartUpdateLocThread extends Thread {
+
+		public void run() {
+			try {
+				Looper.prepare();
+				startUpdateLocation();
+				Looper.loop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private class UpdateLocTask extends AsyncTask<Void, Void, Void> {
+
+		private double lnt;
+		private double lat;
+
+		public UpdateLocTask(double lnt, double lat) {
+			this.lnt = lnt;
+			this.lat = lat;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+				client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+
 	private class MyLocationListener implements AMapLocationListener {
 
-		double lastLat = -1.0d;
-		double lastLnt = -1.0d;
 		long lastUpdateTime = 0;
+		private UpdateLocTask updateLocTask = null;
+		double lastLat = 0.0d;
+		double lastLnt = 0.0d;
 
 		private void updateLocation(Location loc) {
 			try {
-				// Location loc =
-				// LocationUtil.getCurLocation(getApplicationContext());
-				double lat, lnt;
+
+				if (!SelfMgr.getInstance().isLogin() && SelfMgr.getInstance().isDriver()) {
+					return;
+				}
+
+				long cur = new Date().getTime();
+
+				if (cur - lastUpdateTime < 30 * 1000) {
+					return;
+				}
+
+				final double lat;
+				final double lnt;
 				if (null == loc) {
-					lat = 31.24;
-					lnt = 121.56;
+					lat = Constants.LOCATION_DEFAULT_LATITUDE;
+					lnt = Constants.LOCATION_DEFAULT_LONGTITUDE;
 				} else {
 					lat = loc.getLatitude();
 					lnt = loc.getLongitude();
 				}
-				
-				//Toast.makeText(getApplicationContext(), "" + lat + " " + lnt, Toast.LENGTH_LONG).show();
-				
-				VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
-				client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
-				/**
-				 * long cur = new Date().getTime(); if (0 !=
-				 * Double.compare(lastLat, lat) && 0 != Double.compare(lastLnt,
-				 * lnt) || (cur - lastUpdateTime) >= 5 * 60 * 1000) {
-				 * VehicleClient client = new
-				 * VehicleClient(SelfMgr.getInstance().getId());
-				 * client.UpdateLocation(SelfMgr.getInstance().getId(), lnt,
-				 * lat); lastLnt = lnt; lastLat = lat; lastUpdateTime = cur; }
-				 */
+
+				if (Math.abs(lastLat - lat) < 0.000001 && Math.abs(lastLnt - lnt) < 0.000001
+						&& cur - lastUpdateTime < 300 * 1000) {
+					return;
+				}
+
+				updateLocTask = new UpdateLocTask(lnt, lat);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					updateLocTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				} else {
+					updateLocTask.execute();
+				}
+
+				this.lastUpdateTime = cur;
+				this.lastLat = lat;
+				this.lastLnt = lnt;
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -382,12 +434,6 @@ public class LoginActivity extends TemplateActivity {
 			}
 
 			if (result.isSuccess()) {
-				// finish();
-				try {
-					startUpdateLocation();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 
 				finish();
 
@@ -399,6 +445,10 @@ public class LoginActivity extends TemplateActivity {
 					e.printStackTrace();
 				}
 
+				if (SelfMgr.getInstance().isDriver()) {
+					StartUpdateLocThread tt = new StartUpdateLocThread();
+					tt.start();
+				}
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				LoginActivity.this.startActivity(intent);

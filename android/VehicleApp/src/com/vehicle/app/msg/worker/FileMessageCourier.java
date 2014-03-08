@@ -98,9 +98,9 @@ public class FileMessageCourier extends MessageBaseCourier {
 						}
 					}
 
-					Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
-					msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMessage);
-					context.sendBroadcast(msgIntent);
+					//Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
+					//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMessage);
+					//context.sendBroadcast(msgIntent);
 
 				} else {
 					if (picMessage.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {

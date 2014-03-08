@@ -189,8 +189,9 @@ public class FollowshipServiceImpl implements FollowshipService {
 					.setSource(invitation.getTarget());
 			((FollowshipInvitationAcceptNotification) notification)
 					.setTarget(invitation.getSource());
-			
 			invitation.setStatus(FollowshipInvitation.STATUS_ACCEPTED);
+			((FollowshipInvitationAcceptNotification) notification)
+					.setInvitationId(invitation.getID());
 
 		} else {
 			notification = new FollowshipInvitationRejectNotification();
@@ -199,8 +200,9 @@ public class FollowshipServiceImpl implements FollowshipService {
 			((FollowshipInvitationRejectNotification) notification)
 					.setTarget(invitation.getSource());
 			invitation.setStatus(FollowshipInvitation.STATUS_REJECTED);
+			((FollowshipInvitationRejectNotification) notification)
+					.setInvitationId(invitation.getID());
 		}
-		((FollowshipInvitationAcceptNotification) notification).setInvitationId(invitation.getID());
 		try {
 			this.followshipInvitationDao.UpdateFollowshipInvitation(invitation);
 		} catch (Exception e) {
@@ -217,7 +219,8 @@ public class FollowshipServiceImpl implements FollowshipService {
 	}
 
 	@Override
-	public void AckFollowshipInv(FollowshipInvitationACKRequest request) throws PersistenceException {
+	public void AckFollowshipInv(FollowshipInvitationACKRequest request)
+			throws PersistenceException {
 		// TODO Auto-generated method stub
 		try {
 			this.followshipInvitationDao.updateFollowshipInvitation(request

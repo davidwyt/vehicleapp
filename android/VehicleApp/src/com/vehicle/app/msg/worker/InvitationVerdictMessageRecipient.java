@@ -49,7 +49,7 @@ public class InvitationVerdictMessageRecipient extends MessageBaseRecipient {
 					recentMsg.setSelfId(SelfMgr.getInstance().getId());
 					recentMsg.setFellowId(msg.getSource());
 					recentMsg.setMessageType(msg.getMessageType());
-					recentMsg.setContent("");
+					recentMsg.setContent(InvitationVerdict.ACCEPTED.toString());
 					recentMsg.setSentTime(msg.getSentTime());
 					recentMsg.setMessageId(msg.getInvitationId());
 

@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import com.vehicle.app.bean.RoleInfo;
 import com.vehicle.app.db.DBManager;
+import com.vehicle.app.mgrs.SelfMgr;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
@@ -46,11 +47,17 @@ public class BeginActivity extends TemplateActivity {
 
 			@Override
 			public void run() {
-				fade();
+				try {
+					fade();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		};
 
 		timer.schedule(task, DELAY_FADE);
+
+		SelfMgr.getInstance().doLogout(getApplicationContext());
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -75,7 +82,7 @@ public class BeginActivity extends TemplateActivity {
 		if (null != bundle) {
 			isAuto = bundle.getBoolean(KEY_AUDOLOGIN, true);
 		}
-		
+
 		RoleInfo info = null;
 		try {
 			DBManager db = new DBManager(this.getApplicationContext());

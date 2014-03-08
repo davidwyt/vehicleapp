@@ -81,9 +81,9 @@ public class SelfMgr {
 		this.mIsDriver = isDriver;
 	}
 
-	private SelfDriver mSelfDriver;
-	private SelfVendor mSelfVendor;
-	private VendorDetail selfVendorDetail;
+	private SelfDriver mSelfDriver = null;
+	private SelfVendor mSelfVendor = null;
+	private VendorDetail selfVendorDetail = null;
 
 	private Vector<FavoriteVendor> mFavVendorSimpleVector;
 	private Vector<VendorFellow> mVendorFellowSimpleVector;
@@ -478,6 +478,12 @@ public class SelfMgr {
 		}
 	}
 
+	public void clearSelf() {
+		this.selfVendorDetail = null;
+		this.mSelfDriver = null;
+		this.mSelfVendor = null;
+	}
+
 	public void clearFellows() {
 		this.mFavVendorMap.clear();
 		this.mFavVendorSimpleVector.clear();
@@ -492,6 +498,12 @@ public class SelfMgr {
 		this.mNearbyVendorMap.clear();
 
 		this.mNearbyVendorDetailMap.clear();
+	}
+
+	public void clearUnknown() {
+		this.mUnknowVendorDetailMap.clear();
+		this.unknownDriversMap.clear();
+		this.unknowsVendorsMap.clear();
 	}
 
 	public Driver getDriverInfo(String id) {
@@ -588,6 +600,22 @@ public class SelfMgr {
 		}
 
 		return context.getString(R.string.zh_unknown);
+	}
+
+	public boolean isLogin() {
+		return (this.mIsDriver && null != this.mSelfDriver) || (!this.mIsDriver && null != this.mSelfVendor);
+	}
+
+	public void doLogout(Context context) {
+		try {
+			this.clearFellows();
+			this.clearNearby();
+			this.clearUnknown();
+			this.clearSelf();
+			JPushInterface.setAliasAndTags(context, null, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public WebCallBaseResult doLogin(String userName, String password, Context context) {

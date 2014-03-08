@@ -1,11 +1,12 @@
 package com.vehicle.app.msg.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.vehicle.service.bean.FollowshipInvitationAcceptNotification;
 import com.vehicle.service.bean.FollowshipInvitationRejectNotification;
 
-public class InvitationVerdictMessage implements IMessageItem, Serializable{
+public class InvitationVerdictMessage implements IMessageItem, Serializable {
 
 	/**
 	 * 
@@ -18,6 +19,7 @@ public class InvitationVerdictMessage implements IMessageItem, Serializable{
 	private String target;
 	private InvitationVerdict verdict;
 	private MessageFlag flag;
+	private long sentTime;
 
 	public String getInvitationId() {
 		return this.invitationId;
@@ -65,10 +67,14 @@ public class InvitationVerdictMessage implements IMessageItem, Serializable{
 		this.flag = flag;
 	}
 
+	public void setSentTime(long time) {
+		this.sentTime = time;
+	}
+
 	@Override
 	public long getSentTime() {
 		// TODO Auto-generated method stub
-		return 0;
+		return sentTime;
 	}
 
 	@Override
@@ -88,6 +94,7 @@ public class InvitationVerdictMessage implements IMessageItem, Serializable{
 			this.source = rawMsg.getSource();
 			this.target = rawMsg.getTarget();
 			this.verdict = InvitationVerdict.ACCEPTED;
+			this.sentTime = new Date().getTime();
 		} else if (notification instanceof FollowshipInvitationRejectNotification) {
 
 			FollowshipInvitationRejectNotification rawMsg = (FollowshipInvitationRejectNotification) notification;
@@ -95,9 +102,9 @@ public class InvitationVerdictMessage implements IMessageItem, Serializable{
 			this.invitationId = rawMsg.getInvitationId();
 			this.source = rawMsg.getSource();
 			this.target = rawMsg.getTarget();
-			this.verdict = InvitationVerdict.ACCEPTED;
+			this.verdict = InvitationVerdict.REJECTED;
+			this.sentTime = new Date().getTime();
 		}
-
 	}
 
 	@Override

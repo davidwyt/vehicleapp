@@ -330,6 +330,7 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 		entity.setContent(this.getResources().getString(R.string.tip_vendorshaketext));
 		entity.setFlag(MessageFlag.SELF);
 		entity.setMessageType(IMessageItem.MESSAGE_TYPE_TEXT);
+		entity.setSentTime(new Date().getTime());
 		IMessageCourier msgCourier = new TextMessageCourier(this.getApplicationContext(), false);
 		msgCourier.dispatch(entity);
 	}

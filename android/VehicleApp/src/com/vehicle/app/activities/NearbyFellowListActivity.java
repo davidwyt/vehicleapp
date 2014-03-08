@@ -19,6 +19,7 @@ import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.NearbyDriverListViewResult;
@@ -279,8 +280,8 @@ public class NearbyFellowListActivity extends TemplateActivity {
 			Location loc = LocationUtil.getCurLocation(getApplicationContext());
 			double latitude, longtitude;
 			if (null == loc) {
-				latitude = 31.24;
-				longtitude = 121.56;
+				latitude = Constants.LOCATION_DEFAULT_LATITUDE;
+				longtitude = Constants.LOCATION_DEFAULT_LONGTITUDE;
 			} else {
 				latitude = loc.getLatitude();
 				longtitude = loc.getLongitude();

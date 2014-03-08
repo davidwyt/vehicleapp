@@ -42,6 +42,7 @@ public class LocateRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response add(@Context HttpServletRequest request,
 			AddLocateRequest addReq) {
+		
 		System.out.println("receive request locatettttttttttt :" + JsonUtil.toJsonString(addReq));
 		
 		AddLocateResponse resp=new AddLocateResponse();
