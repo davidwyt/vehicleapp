@@ -122,10 +122,10 @@ public class JPushUtil {
 					desc = "您收到一张图片";
 					break;
 				case 2:
-					desc = "您收到一段语音";
+					desc = "您收到一条位置信息";
 					break;
 				case 3:
-					desc = "您收到一条位置信息";
+					desc = "您收到一段语音";
 					break;
 				}
 			}
