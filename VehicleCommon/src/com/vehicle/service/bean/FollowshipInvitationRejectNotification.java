@@ -1,5 +1,8 @@
 package com.vehicle.service.bean;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FollowshipInvitationRejectNotification implements INotification{
 
 	private String source;
@@ -46,5 +49,13 @@ public class FollowshipInvitationRejectNotification implements INotification{
 	public void setTarget(String target)
 	{
 		this.target = target;
+	}
+	
+	public Map<String,Object> toMap(){
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("source", source);
+		map.put("target", target);
+		map.put("invitationId", invitationId);
+		return map;
 	}
 }

@@ -55,7 +55,7 @@ public class LocateUtil {
 		for(int i=0;i<list.size();i++){
 			double distance=RangeUtil.LantitudeLongitudeDist(centerX, centerY, list.get(i).getLocateX(), list.get(i).getLocateY());
 			long during=System.currentTimeMillis()-list.get(i).getTime();
-			if(distance<=range&&during<=7200000){
+			if(distance<=range&&during<=43200000){
 				RangeInfo r=new RangeInfo();
 				r.setDistance(distance);
 				r.setDuring(during);

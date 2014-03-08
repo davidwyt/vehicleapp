@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.vehicle.imserver.dao.bean.FollowshipInvitation;
 import com.vehicle.imserver.dao.bean.Message;
+import com.vehicle.service.bean.FollowshipInvitationAcceptNotification;
 import com.vehicle.service.bean.FollowshipInvitationNotification;
+import com.vehicle.service.bean.FollowshipInvitationRejectNotification;
 import com.vehicle.service.bean.NewFileNotification;
 import com.vehicle.service.bean.Notifications;
 import com.google.gson.Gson;
@@ -83,39 +85,52 @@ public class JPushUtil {
 
 	public void SendIOSMessage(String target, String title, String content) {
 		try {
-			int msgType=0;
-			Map<String,Object> extras = null;
-			if(title.equals("chat")){
-				Message m=new Gson().fromJson(content, Message.class);
-				extras=m.toMap();
-			} else if(title.equals(Notifications.NewFile.toString())){
-				NewFileNotification n=new Gson().fromJson(content, NewFileNotification.class);
-				extras=n.toMap();
-			} else if(title.equals(Notifications.FollowshipInvitation.toString())){
-				FollowshipInvitationNotification f=new Gson().fromJson(content, FollowshipInvitationNotification.class);
-				extras=f.toMap();
+			int msgType = 0;
+			Map<String, Object> extras = null;
+			if (title.equals("chat")) {
+				Message m = new Gson().fromJson(content, Message.class);
+				extras = m.toMap();
+			} else if (title.equals(Notifications.NewFile.toString())) {
+				NewFileNotification n = new Gson().fromJson(content,
+						NewFileNotification.class);
+				extras = n.toMap();
+			} else if (title.equals(Notifications.FollowshipInvitation
+					.toString())) {
+				FollowshipInvitationNotification f = new Gson().fromJson(
+						content, FollowshipInvitationNotification.class);
+				extras = f.toMap();
+			} else if (title.equals(Notifications.FollowshipInvitationAccepted
+					.toString())) {
+				FollowshipInvitationAcceptNotification f = new Gson().fromJson(
+						content, FollowshipInvitationAcceptNotification.class);
+				extras = f.toMap();
+			} else if (title.equals(Notifications.FollowshipInvitationRejected
+					.toString())) {
+				FollowshipInvitationRejectNotification f = new Gson().fromJson(
+						content, FollowshipInvitationRejectNotification.class);
+				extras = f.toMap();
 			}
-			String desc="";
-			if(extras.get("messageType")!=null){
-				msgType=(int) extras.get("messageType");
-	        
-	        switch(msgType){
-	        case 0:
-	        	desc="您收到一条消息";
-	        	break;
-	        case 1:
-	        	desc="您收到一张图片";
-	        	break;
-	        case 2:
-	        	desc="您收到一段语音";
-	        	break;
-	        case 3:
-	        	desc="您收到一条位置信息";
-	        	break;
-	        }
+			String desc = "";
+			if (extras != null && extras.get("messageType") != null) {
+				msgType = (int) extras.get("messageType");
+
+				switch (msgType) {
+				case 0:
+					desc = "您收到一条消息";
+					break;
+				case 1:
+					desc = "您收到一张图片";
+					break;
+				case 2:
+					desc = "您收到一段语音";
+					break;
+				case 3:
+					desc = "您收到一条位置信息";
+					break;
+				}
 			}
 			iosJpush.sendNotificationWithAlias(getRandomSendNo(), target,
-					title, desc,0,extras);
+					title, desc, 0, extras);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

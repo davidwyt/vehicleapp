@@ -189,6 +189,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 					.setSource(invitation.getTarget());
 			((FollowshipInvitationAcceptNotification) notification)
 					.setTarget(invitation.getSource());
+			
 			invitation.setStatus(FollowshipInvitation.STATUS_ACCEPTED);
 
 		} else {
@@ -199,7 +200,7 @@ public class FollowshipServiceImpl implements FollowshipService {
 					.setTarget(invitation.getSource());
 			invitation.setStatus(FollowshipInvitation.STATUS_REJECTED);
 		}
-
+		((FollowshipInvitationAcceptNotification) notification).setInvitationId(invitation.getID());
 		try {
 			this.followshipInvitationDao.UpdateFollowshipInvitation(invitation);
 		} catch (Exception e) {
