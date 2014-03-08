@@ -1,26 +1,21 @@
 package com.vehicle.app.activities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+
+import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.BaseAdapter;
-import android.widget.Gallery;
-import android.widget.Gallery.LayoutParams;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-@SuppressWarnings("deprecation")
 public class ImgViewActivity extends TemplateActivity {
 
-	public static final String KEY_IMGBYTES = "com.vehicle.app.imgview.key.bitmap";
+	public static final String KEY_IMGPATH = "com.vehicle.app.imgview.key.path";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,53 +34,39 @@ public class ImgViewActivity extends TemplateActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Bundle bundle = this.getIntent().getExtras();
-		if (null != bundle) {
-			byte[] bytes = bundle.getByteArray(KEY_IMGBYTES);
-			Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-			List<Bitmap> imgs = new ArrayList<Bitmap>();
-			imgs.add(bitmap);
 
-			Gallery gallery = (Gallery) this.findViewById(R.id.gallery);
+		try {
+			Bundle bundle = this.getIntent().getExtras();
 
-			gallery.setAdapter(new ImageAdapter(this, imgs));
+			if (null != bundle) {
+				String path = bundle.getString(KEY_IMGPATH);
+
+				DisplayMetrics dm = new DisplayMetrics();
+				getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+				float density = dm.density;
+
+				int screenWidth = (int) (dm.widthPixels * density + 0.5f);
+				int screenHeight = (int) (dm.heightPixels * density + 0.5f);
+
+				System.out.println("screenWidth:" + screenWidth + " height:" + screenHeight);
+
+				File file = new File(path);
+				if (file.isFile() && file.exists()) {
+					Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(path, 400, 500);
+
+					ImageView img = (ImageView) this.findViewById(R.id.imgview_img);
+					img.setImageBitmap(bitmap);
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		}
-	}
-
-	class ImageAdapter extends BaseAdapter {
-		List<Bitmap> imgs;
-
-		public ImageAdapter(Context c, List<Bitmap> imgs) {
-			mContext = c;
-			this.imgs = imgs;
-		}
-
-		public int getCount() {
-			return null == imgs ? 0 : imgs.size();
-		}
-
-		public Object getItem(int position) {
-			return null == imgs ? null : imgs.get(position);
-		}
-
-		public long getItemId(int position) {
-			return position;
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ImageView img = new ImageView(mContext);
-			img.setImageBitmap(imgs.get(position));
-			img.setAdjustViewBounds(true);
-			img.setLayoutParams(new Gallery.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-			return img;
-		}
-
-		private Context mContext;
-
 	}
 }

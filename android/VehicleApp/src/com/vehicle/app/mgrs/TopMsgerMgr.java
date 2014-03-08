@@ -40,7 +40,8 @@ public class TopMsgerMgr {
 
 			if (null != temp) {
 				for (String top : temp) {
-					topMsgs.add(top);
+					if (!StringUtil.IsNullOrEmpty(top.trim()))
+						topMsgs.add(top.trim());
 				}
 			}
 		} catch (Exception e) {
@@ -50,43 +51,43 @@ public class TopMsgerMgr {
 
 	public synchronized void addTopMsg(String host, String memberId) {
 
-			List<String> newOne = new ArrayList<String>(this.topMsgs);
-			newOne.add(0, memberId);
-			
-			System.out.println("new size: " + newOne.size() + " old size:" + this.topMsgs.size());
-			
-			String tops = StringUtil.JointString(newOne, Constants.COMMA);
+		List<String> newOne = new ArrayList<String>(this.topMsgs);
+		newOne.add(0, memberId);
 
-			DBManager dbMgr = new DBManager(context);
-			dbMgr.insertOrUpdateTopMsg(host, tops);
-			topMsgs.add(0, memberId);
+		System.out.println("new size: " + newOne.size() + " old size:" + this.topMsgs.size());
+
+		String tops = StringUtil.JointString(newOne, Constants.COMMA);
+
+		DBManager dbMgr = new DBManager(context);
+		dbMgr.insertOrUpdateTopMsg(host, tops);
+		topMsgs.add(0, memberId);
 	}
 
 	public synchronized void removeTopMsg(String host, String memberId) {
-			List<String> newOne = new ArrayList<String>(this.topMsgs);
+		List<String> newOne = new ArrayList<String>(this.topMsgs);
 
-			while (true) {
-				int index = -1;
-				for (int i = 0; i < newOne.size(); i++) {
-					if (newOne.get(i).equals(memberId)) {
-						index = i;
-						break;
-					}
-				}
-
-				if (index == -1) {
+		while (true) {
+			int index = -1;
+			for (int i = 0; i < newOne.size(); i++) {
+				if (newOne.get(i).equals(memberId)) {
+					index = i;
 					break;
-				} else {
-					newOne.remove(index);
 				}
 			}
 
-			String tops = StringUtil.JointString(newOne, Constants.COMMA);
+			if (index == -1) {
+				break;
+			} else {
+				newOne.remove(index);
+			}
+		}
 
-			DBManager dbMgr = new DBManager(context);
-			dbMgr.insertOrUpdateTopMsg(host, tops);
-			topMsgs.clear();
-			topMsgs.addAll(newOne);
+		String tops = StringUtil.JointString(newOne, Constants.COMMA);
+
+		DBManager dbMgr = new DBManager(context);
+		dbMgr.insertOrUpdateTopMsg(host, tops);
+		topMsgs.clear();
+		topMsgs.addAll(newOne);
 	}
 
 	public synchronized boolean isTop(String memberId) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chatitem_pic_left"
+    android:id="@+id/chatitem_msg_left"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -13,7 +13,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/chatpic_tv_sendtime"
+            android:id="@+id/chatmsg_tv_sendtime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -24,7 +24,7 @@
         android:layout_marginTop="5dp" >
 
         <ImageView
-            android:id="@+id/chatpic_iv_userhead"
+            android:id="@+id/chatmsg_iv_userhead"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_alignParentLeft="true"
@@ -32,23 +32,23 @@
             android:background="@drawable/contact_list_minus_btn_normal"
             android:focusable="false" />
 
-        <ImageView
-            android:id="@+id/chatpic_tv_content"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+       <ImageView
+            android:id="@+id/chatloc_iv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/chatpic_iv_userhead"
+            android:layout_toRightOf="@id/chatmsg_iv_userhead"
             android:background="@drawable/chatfrom_bg_normal" />
 
         <TextView
-            android:id="@+id/chatpic_tv_username"
+            android:id="@+id/chatmsg_tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:singleLine="false"
-            android:layout_alignRight="@id/chatpic_iv_userhead"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/chatpic_iv_userhead" />
+            android:layout_alignRight="@id/chatmsg_iv_userhead"
+            android:layout_below="@id/chatmsg_iv_userhead"
+            android:singleLine="false"
+            android:textColor="@color/black" />
     </RelativeLayout>
 
 </LinearLayout>

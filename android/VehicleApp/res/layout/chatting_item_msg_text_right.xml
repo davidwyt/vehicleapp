@@ -29,14 +29,14 @@
             android:layout_height="64dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/common_signin_btn_icon_pressed_dark"
+            android:background="@drawable/contact_list_minus_btn_normal"
             android:focusable="false" />
 
         <TextView
             android:id="@+id/chatmsg_tv_chatcontent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/chatmsg_iv_userhead"
             android:background="@drawable/chatto_bg_normal"
             android:textColor="@color/textFieldColor" />
@@ -45,8 +45,8 @@
             android:id="@+id/chatmsg_tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignLeft="@id/chatmsg_iv_userhead"
+            android:layout_alignParentRight="true"
             android:layout_below="@id/chatmsg_iv_userhead"
             android:singleLine="false"
             android:textColor="@color/black" />

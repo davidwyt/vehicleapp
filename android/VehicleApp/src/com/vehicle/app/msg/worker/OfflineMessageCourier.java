@@ -47,11 +47,11 @@ public class OfflineMessageCourier extends MessageBaseCourier {
 			imgMsg.setSentTime(msg.getSentTime());
 			imgMsg.setSource(msg.getSource());
 			imgMsg.setTarget(msg.getTarget());
-			if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE)
-				imgMsg.setName(UUID.randomUUID().toString() + ".png");
-			else
-				imgMsg.setName(UUID.randomUUID().toString() + ".wav");
-
+			/**
+			 * if (msg.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE)
+			 * imgMsg.setName(UUID.randomUUID().toString() + ".png"); else
+			 * imgMsg.setName(UUID.randomUUID().toString() + ".wav");
+			 */
 			IMessageRecipient recipient = new FileMessageRecipient(context, true);
 			recipient.receive(imgMsg);
 		}

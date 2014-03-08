@@ -64,7 +64,6 @@ public class RecentContactListActivity extends TemplateActivity implements OnChe
 		super.onStart();
 
 		((RadioButton) this.findViewById(R.id.bar_rabtn_message)).setChecked(true);
-		// initData();
 		registerMessageReceiver();
 
 		Handler handler = new Handler();
