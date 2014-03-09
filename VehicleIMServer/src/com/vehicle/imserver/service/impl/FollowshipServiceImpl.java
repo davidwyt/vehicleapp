@@ -173,10 +173,13 @@ public class FollowshipServiceImpl implements FollowshipService {
 			throw new FollowshipInvitationNotExistException(String.format(
 					"the invitation:%s not exist", invitationId));
 		}
+		
+		System.out.println("invitation status:" + invitation.getStatus());
 
 		if (FollowshipInvitation.STATUS_ACCEPTED == invitation.getStatus()
 				|| FollowshipInvitation.STATUS_REJECTED == invitation
-						.getStatus()) {
+						.getStatus()
+				|| FollowshipInvitation.STATUS_DONE == invitation.getStatus()) {
 			throw new FollowshipInvitationProcessedAlreadyException(
 					String.format("the invitation:%s has been processed",
 							invitationId));

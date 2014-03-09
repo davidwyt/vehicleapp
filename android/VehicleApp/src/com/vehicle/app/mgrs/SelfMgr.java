@@ -353,7 +353,7 @@ public class SelfMgr {
 	public Map<String, Driver> searchNearbyDrivers(double centerX, double centerY, int range) {
 		try {
 			VehicleClient client = new VehicleClient(this.getId());
-			RangeResponse resp = client.NearbyDrivers(centerX, centerY, 30);
+			RangeResponse resp = client.NearbyDrivers(centerX, centerY, range);
 			if (null == resp)
 				return null;
 

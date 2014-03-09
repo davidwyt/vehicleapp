@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.mgrs.BitmapCache;
+import com.vehicle.app.utils.StringUtil;
 
 import junit.framework.Assert;
 
@@ -30,6 +31,9 @@ public class ImageViewBitmapLoader {
 	}
 
 	private Bitmap loadBitmap(String url) {
+		if (StringUtil.IsNullOrEmpty(url)) {
+			return null;
+		}
 		Bitmap bm = null;
 		InputStream is = null;
 		BufferedInputStream bis = null;

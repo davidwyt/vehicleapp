@@ -1,5 +1,6 @@
 package com.vehicle.app.activities;
 
+import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdictMessage;
 import com.vehicle.app.msg.bean.FileMessage;
@@ -102,6 +103,11 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		TextMessage msg = JsonUtil.fromJson(message, TextMessage.class);
 
+		if (!SelfMgr.getInstance().IsSelf(msg.getTarget())) {
+			System.out.println("the msg should be sent to " + msg.getTarget() + " not me");
+			return;
+		}
+
 		IMessageRecipient cpu = new TextMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
@@ -114,6 +120,11 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		FileMessage msg = new FileMessage();
 		msg.fromRawNotification(newFileNotification);
+
+		if (!SelfMgr.getInstance().IsSelf(msg.getTarget())) {
+			System.out.println("the msg should be sent to " + msg.getTarget() + " not me");
+			return;
+		}
 
 		IMessageRecipient cpu = new FileMessageRecipient(context, false);
 		cpu.receive(msg);
@@ -128,6 +139,11 @@ public class MessageReceiver extends BroadcastReceiver {
 		InvitationVerdictMessage msg = new InvitationVerdictMessage();
 		msg.fromRawNotification(notification);
 
+		if (!SelfMgr.getInstance().IsSelf(msg.getTarget())) {
+			System.out.println("the msg should be sent to " + msg.getTarget() + " not me");
+			return;
+		}
+
 		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
@@ -141,6 +157,11 @@ public class MessageReceiver extends BroadcastReceiver {
 		InvitationVerdictMessage msg = new InvitationVerdictMessage();
 		msg.fromRawNotification(notification);
 
+		if (!SelfMgr.getInstance().IsSelf(msg.getTarget())) {
+			System.out.println("the msg should be sent to " + msg.getTarget() + " not me");
+			return;
+		}
+
 		IMessageRecipient cpu = new InvitationVerdictMessageRecipient(context, false);
 		cpu.receive(msg);
 	}
@@ -153,6 +174,11 @@ public class MessageReceiver extends BroadcastReceiver {
 
 		FollowshipInvitationMessage msg = new FollowshipInvitationMessage();
 		msg.fromRawNotification(notification);
+
+		if (!SelfMgr.getInstance().IsSelf(msg.getTarget())) {
+			System.out.println("the msg should be sent to " + msg.getTarget() + " not me");
+			return;
+		}
 
 		IMessageRecipient cpu = new FollowshipInvMessageRecipient(context, false);
 		cpu.receive(msg);
