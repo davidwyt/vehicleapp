@@ -51,7 +51,7 @@
             android:layout_height="96dp"
             android:layout_below="@id/moreapp_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="64dp"
             android:src="@drawable/selector_log_this" >
         </ImageView>
 
@@ -64,7 +64,7 @@
             android:gravity="center"
             android:text="天下车商"
             android:textColor="@color/black"
-            android:textSize="14sp" >
+            android:textSize="18sp" >
         </TextView>
 
         <LinearLayout
@@ -96,7 +96,7 @@
                     android:gravity="center"
                     android:text="轮胎家"
                     android:textColor="@color/black"
-                    android:textSize="14sp" >
+                    android:textSize="18sp" >
                 </TextView>
             </LinearLayout>
 
@@ -119,7 +119,7 @@
                     android:gravity="center"
                     android:text="道路救援"
                     android:textColor="@color/black"
-                    android:textSize="14sp" >
+                    android:textSize="18sp" >
                 </TextView>
             </LinearLayout>
 
@@ -142,7 +142,7 @@
                     android:gravity="center"
                     android:text="加油站"
                     android:textColor="@color/black"
-                    android:textSize="14sp" >
+                    android:textSize="18sp" >
                 </TextView>
             </LinearLayout>
         </LinearLayout>

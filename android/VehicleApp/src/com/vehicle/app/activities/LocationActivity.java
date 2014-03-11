@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import cn.edu.sjtu.vehicleapp.R;
 
@@ -79,17 +80,10 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				/**
-				 * Toast.makeText(LocationActivity.this,
-				 * JsonUtil.toJsonString(LocationActivity.this.location),
-				 * Toast.LENGTH_SHORT).show();
-				 */
-
 				Intent intent = new Intent();
 				intent.putExtra(KEY_LOCATION, location);
 				setResult(Activity.RESULT_OK, intent);
 				finish();
-
 			}
 
 		});
@@ -160,7 +154,7 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
-
+		Toast.makeText(getApplicationContext(), "location changed2222", Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -188,7 +182,14 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 			location.setLatitude(aLocation.getLatitude());
 			location.setLongitude(aLocation.getLongitude());
 
-			okButton.setVisibility(View.VISIBLE);
+			this.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					okButton.setVisibility(View.VISIBLE);
+				}
+			});
 		}
 	}
 

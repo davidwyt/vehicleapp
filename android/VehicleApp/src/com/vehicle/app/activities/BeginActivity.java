@@ -10,6 +10,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -32,6 +34,21 @@ public class BeginActivity extends TemplateActivity {
 		this.setContentView(R.layout.activity_begin);
 
 		this.mBaK = this.findViewById(R.id.activity_begin);
+
+		System.out.println("version:" + this.getVersion());
+	}
+
+	private String getVersion() {
+		try {
+			PackageManager manager = this.getPackageManager();
+			PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+			String version = info.versionName;
+			return version;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	@Override

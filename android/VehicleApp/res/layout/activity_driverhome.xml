@@ -132,6 +132,7 @@
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:text="我的名字"
+                        android:textSize="20sp"
                         android:textColor="@color/black" >
                     </TextView>
 

@@ -170,7 +170,6 @@ public class LoginActivity extends TemplateActivity {
 
 		updateUI();
 		mAuthTask = null;
-		this.mEmailView.setText(this.getFilesDir().toString());
 	}
 
 	@Override

@@ -151,4 +151,5 @@
     <string name="tip_viewselfvendorfailed">加载我的商家详细信息失败，请检查网络并重试</string>
     <string name="tip_status_selfvendorview">正在加载我的商家详细信息&#8230;</string>
     <string name="tip_nocomments">暂无评论</string>
+    <string name="zh_none">无</string>
 </resources>

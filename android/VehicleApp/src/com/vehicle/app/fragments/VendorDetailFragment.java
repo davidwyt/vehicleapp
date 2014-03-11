@@ -7,6 +7,7 @@ import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ImageUtil;
+import com.vehicle.app.utils.StringUtil;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -78,13 +79,25 @@ public final class VendorDetailFragment extends Fragment {
 			strPhone += vendor.getTelephone();
 		}
 
+		if (StringUtil.IsNullOrEmpty(strPhone)) {
+			strPhone = this.getString(R.string.zh_none);
+		}
+
 		tvMobile.setText(strPhone);
 
 		TextView tvAddr = (TextView) parent.findViewById(R.id.vendor_address);
-		tvAddr.setText(vendor.getCas() + vendor.getAddress());
+		String strAddr = vendor.getCas() + vendor.getAddress();
+		if (StringUtil.IsNullOrEmpty(strAddr)) {
+			strAddr = this.getString(R.string.zh_none);
+		}
+		tvAddr.setText(strAddr);
 
 		TextView tvIntro = (TextView) parent.findViewById(R.id.vendor_introduction);
-		tvIntro.setText(vendor.getIntroduction());
+		String strIntro = vendor.getIntroduction();
+		if (StringUtil.IsNullOrEmpty(strIntro)) {
+			strIntro = this.getString(R.string.zh_none);
+		}
+		tvIntro.setText(strIntro);
 
 		View vDial = parent.findViewById(R.id.vendor_phonelayout);
 		View tvMapLoc = parent.findViewById(R.id.vendor_addresslayout);
@@ -130,5 +143,4 @@ public final class VendorDetailFragment extends Fragment {
 
 		return parent;
 	}
-
 }
