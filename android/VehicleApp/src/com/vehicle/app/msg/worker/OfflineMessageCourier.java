@@ -2,7 +2,6 @@ package com.vehicle.app.msg.worker;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.UUID;
 
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;

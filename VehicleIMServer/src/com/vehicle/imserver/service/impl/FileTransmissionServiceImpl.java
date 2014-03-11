@@ -204,12 +204,31 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		File inputFile = new File(filePath);
 
 		String retName = inputFile.getName();
-		BufferedImage sourceImg = ImageIO.read(inputFile);
-		int width = sourceImg.getWidth();
 
-		processImgFile(filePath, width, Contants.IMG_TYPE_SMALL);
-		processImgFile(filePath, width, Contants.IMG_TYPE_MIDDLE);
-		processImgFile(filePath, width, Contants.IMG_TYPE_LARGE);
+		try {
+			BufferedImage sourceImg = ImageIO.read(inputFile);
+			int width = sourceImg.getWidth();
+
+			try {
+				processImgFile(filePath, width, Contants.IMG_TYPE_SMALL);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				processImgFile(filePath, width, Contants.IMG_TYPE_MIDDLE);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				processImgFile(filePath, width, Contants.IMG_TYPE_LARGE);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return retName;
 	}
