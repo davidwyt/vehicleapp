@@ -100,6 +100,16 @@ public class FileUtil {
 		try {
 			FileInputStream input = new FileInputStream(src);
 			FileOutputStream output = new FileOutputStream(dest);
+
+			File file = new File(dest);
+			File parent = file.getParentFile();
+			if (!parent.exists()) {
+				try {
+					parent.mkdirs();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			IOUtils.copy(input, output);
 		} catch (Exception e) {
 			e.printStackTrace();

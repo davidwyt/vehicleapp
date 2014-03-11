@@ -11,7 +11,6 @@ import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleClient;
 
@@ -171,9 +170,7 @@ public class LoginActivity extends TemplateActivity {
 
 		updateUI();
 		mAuthTask = null;
-
-		Toast.makeText(getApplicationContext(), FileUtil.genPathForImage(getApplicationContext(), "jpg"),
-				Toast.LENGTH_LONG).show();
+		this.mEmailView.setText(this.getFilesDir().toString());
 	}
 
 	@Override

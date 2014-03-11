@@ -45,6 +45,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -587,6 +588,8 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 			IMessageCourier msgCourier = new FileMessageCourier(this.getApplicationContext(),
 					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(picItem);
+
+			Log.i("file send path", filePath);
 
 			FakeSendTask task = new FakeSendTask(picItem);
 			task.execute();

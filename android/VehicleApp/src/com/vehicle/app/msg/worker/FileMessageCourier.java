@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
@@ -121,6 +122,8 @@ public class FileMessageCourier extends MessageBaseCourier {
 						picMessage.setFlag(MessageFlag.SELF);
 
 						processMessage(picMessage);
+
+						Log.i("file sent", picMessage.getPath());
 					}
 
 					// Intent msgIntent = new

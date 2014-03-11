@@ -30,7 +30,7 @@ public class ImageUtil {
 
 		ImageIO.write(tarImg, formatName, output);
 	}
-	
+
 	public static void scale(File input, File output, int targetW, int targetH,
 			String formatName) throws IOException {
 

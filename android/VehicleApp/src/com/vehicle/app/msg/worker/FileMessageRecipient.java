@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
@@ -78,8 +79,10 @@ public class FileMessageRecipient extends MessageBaseRecipient {
 					System.out.println("file: " + destPath + " exist:" + file.exists());
 
 					if (file.exists()) {
+						Log.i("file received", destPath);
 						picMsgItem.setPath(destPath);
 					} else {
+						Log.i("file received failed", destPath);
 						System.out.println("fetch file to path failed:" + destPath);
 						return false;
 					}

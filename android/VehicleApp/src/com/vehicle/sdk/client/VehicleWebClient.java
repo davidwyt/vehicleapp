@@ -75,7 +75,15 @@ public class VehicleWebClient {
 
 	public DriverRegisterResult DriverRegister(String email, String userName, String password) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_DRIVER_REGISTER);
-		url = String.format(url, userName, password, email);
+
+		String name = userName;
+		try {
+			name = URLEncoder.encode(userName, "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		url = String.format(url, name, password, email);
 
 		return HttpUtil.PostJson(url, null, DriverRegisterResult.class);
 	}
@@ -191,15 +199,13 @@ public class VehicleWebClient {
 		url = String.format(url, driverId, vendorId, URLEncoder.encode(reviews, "UTF-8"), priceScore, technologyScore,
 				efficiencyScore, receptionScore, envScore, mainProjectId, URLEncoder.encode(imgNames, "UTF-8"));
 
-		// url = url.replace(" ", "%20");
-
 		System.out.println("url:" + url);
 
 		return HttpUtil.PostJson(url, null, AddCommentResult.class);
 	}
 
-	public NearbyVendorListViewResult NearbyVendorListView(int cityId, int pageId,
-			double centerX, double centerY, int range) {
+	public NearbyVendorListViewResult NearbyVendorListView(int cityId, int pageId, double centerX, double centerY,
+			int range) {
 		String url = URLUtil.UrlAppend(URL_DEFAULTROOT, URL_NEARBYVENDORLIST_VIEW);
 		url = String.format(url, cityId, pageId, centerX, centerY, 6);
 
