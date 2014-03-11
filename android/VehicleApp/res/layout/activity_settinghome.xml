@@ -72,8 +72,8 @@
                 <LinearLayout
                     android:id="@+id/settings_base"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/gray"
+                    android:layout_height="40dp"
+                    android:background="@drawable/icon_setting_bgbar"
                     android:orientation="horizontal"
                     android:paddingLeft="8dp"
                     android:paddingTop="4dp" >
@@ -102,7 +102,6 @@
                     android:id="@+id/settingtable_my"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="4dip"
                     android:stretchColumns="1" >
 
                     <TableRow
@@ -240,18 +239,17 @@
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/gray"
+                    android:layout_height="40dp"
+                    android:background="@drawable/icon_setting_bgbar"
                     android:orientation="horizontal"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="4dp" >
+                    android:paddingLeft="8dp" >
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
+                        android:layout_marginTop="10dp"
                         android:contentDescription="@string/title"
-                        android:scaleType="centerCrop"
+                        android:scaleType="centerInside"
                         android:src="@drawable/icon_setting_more" >
                     </ImageView>
 

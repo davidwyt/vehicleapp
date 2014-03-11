@@ -7,14 +7,13 @@ import java.util.List;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.utils.StringUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -55,6 +54,17 @@ public class GroupmsgNavActivity extends TemplateActivity implements OnClickList
 		mNavFormView = findViewById(R.id.groupmsgnav_form);
 		mNavStatusView = findViewById(R.id.groupmsgnav_status);
 		mNavStatusMessageView = (TextView) findViewById(R.id.groupmsgnav_status_message);
+
+		Button bak = (Button) this.findViewById(R.id.groupmsgnav_goback);
+		bak.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				onBackPressed();
+				finish();
+			}
+		});
 	}
 
 	@Override
@@ -128,16 +138,8 @@ public class GroupmsgNavActivity extends TemplateActivity implements OnClickList
 
 			try {
 				if (isNearby) {
-					Location loc = LocationUtil.getCurLocation(getApplicationContext());
-					double latitude, longtitude;
-					if (null == loc) {
-						latitude = 31.24;
-						longtitude = 121.56;
-					} else {
-						latitude = loc.getLatitude();
-						longtitude = loc.getLongitude();
-					}
-					SelfMgr.getInstance().refreshNearby(longtitude, latitude);
+					SimpleLocation location = SelfMgr.getInstance().getLocation();
+					SelfMgr.getInstance().refreshNearby(location.getLongitude(), location.getLatitude(), -1);
 				} else {
 					SelfMgr.getInstance().refreshFellows();
 				}
@@ -175,7 +177,7 @@ public class GroupmsgNavActivity extends TemplateActivity implements OnClickList
 					intent.putExtra(ChatActivity.KEY_FELLOWID, StringUtil.JointString(ids, Constants.COMMA));
 					intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2NEARBY);
 					startActivity(intent);
-					
+
 					finish();
 				} else {
 					if (SelfMgr.getInstance().isDriver()) {
@@ -208,7 +210,7 @@ public class GroupmsgNavActivity extends TemplateActivity implements OnClickList
 					intent.putExtra(ChatActivity.KEY_FELLOWID, StringUtil.JointString(ids, Constants.COMMA));
 					intent.putExtra(ChatActivity.KEY_CHATSTYLE, ChatActivity.CHAT_STYLE_2FELLOWS);
 					startActivity(intent);
-					
+
 					finish();
 				} else {
 					if (SelfMgr.getInstance().isDriver()) {
@@ -229,7 +231,7 @@ public class GroupmsgNavActivity extends TemplateActivity implements OnClickList
 			ActivityUtil.showProgress(getApplicationContext(), mNavStatusView, mNavFormView, false);
 		}
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 

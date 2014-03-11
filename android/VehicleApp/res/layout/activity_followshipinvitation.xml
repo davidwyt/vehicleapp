@@ -31,47 +31,60 @@
     <ScrollView
         android:id="@+id/invitation_form"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/gray" >
 
         <RelativeLayout
-            style="@style/InvitationFormContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical" >
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/followshipinvitation_titleId"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:layout_alignParentTop="true"
+                android:background="@drawable/icon_bakground" >
 
                 <Button
                     android:id="@+id/invitation_goback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
                     android:background="@drawable/selector_btn_gobak" />
 
-                <ImageView
+                <TextView
+                    android:id="@+id/invitation_tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginTop="4dp"
-                    android:contentDescription="@string/title"
-                    android:src="@drawable/icon_invitationtitle" >
-                </ImageView>
-            </LinearLayout>
+                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="关注请求"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" >
+                </TextView>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/followshipinvitation_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/followshipinvitation_titleId"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/white"
                 android:text="@string/followshipinvitationformatstr"
                 android:textColor="@color/black"
-                android:background="@color/white"
                 android:textSize="18sp" />
 
             <Button
@@ -90,7 +103,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp" >
+                android:layout_marginTop="32dp" >
 
                 <Button
                     android:id="@+id/followshipinvitation_accept"

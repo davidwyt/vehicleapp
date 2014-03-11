@@ -18,10 +18,9 @@ import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
-import com.vehicle.app.utils.LocationUtil;
 import com.vehicle.app.web.bean.NearbyDriverListViewResult;
 import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
@@ -32,16 +31,16 @@ import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +49,7 @@ public class NearbyFellowListActivity extends TemplateActivity {
 
 	private PullToRefreshListView mPullRefreshListView;
 
-	private ImageView mTitle;
+	private View mTitle;
 
 	private BaseAdapter mAdapter;
 
@@ -72,19 +71,34 @@ public class NearbyFellowListActivity extends TemplateActivity {
 		this.setContentView(R.layout.activity_nearbyfellowlist);
 
 		initView();
+
+		initData();
+
+		pageNum = 1;
 	}
 
 	private void initView() {
+		Button bakBtn = (Button) this.findViewById(R.id.nearby_goback);
+		bakBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				onBackPressed();
+				finish();
+			}
+		});
+
 		mPullRefreshListView = (PullToRefreshListView) this.findViewById(R.id.nearbyfellows);
-		this.mTitle = (ImageView) this.findViewById(R.id.nearby_title);
+		this.mTitle = this.findViewById(R.id.nearby_title);
 		this.mNearbyFormView = this.findViewById(R.id.nearbyfellows_form);
 		this.mNearbyStatusView = this.findViewById(R.id.nearbyfellow_status);
 		this.mNearbyStatusMessageView = (TextView) this.findViewById(R.id.nearbyfellow_status_message);
 
 		if (SelfMgr.getInstance().isDriver()) {
-			this.mTitle.setImageResource(R.drawable.icon_nearbyshopstitle);
+			this.mTitle.setBackgroundResource(R.drawable.icon_nearbyshopstitle);
 		} else {
-			this.mTitle.setImageResource(R.drawable.icon_nearbydriverstitle);
+			this.mTitle.setBackgroundResource(R.drawable.icon_nearbydriverstitle);
 		}
 
 		if (SelfMgr.getInstance().isDriver())
@@ -146,9 +160,6 @@ public class NearbyFellowListActivity extends TemplateActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		initData();
-
-		pageNum = 1;
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -277,29 +288,29 @@ public class NearbyFellowListActivity extends TemplateActivity {
 
 			pageNum++;
 
-			Location loc = LocationUtil.getCurLocation(getApplicationContext());
-			double latitude, longtitude;
-			if (null == loc) {
-				latitude = Constants.LOCATION_DEFAULT_LATITUDE;
-				longtitude = Constants.LOCATION_DEFAULT_LONGTITUDE;
-			} else {
-				latitude = loc.getLatitude();
-				longtitude = loc.getLongitude();
-			}
+			/**
+			 * Location loc =
+			 * LocationUtil.getCurLocation(getApplicationContext()); double
+			 * latitude, longtitude; if (null == loc) { latitude =
+			 * Constants.LOCATION_DEFAULT_LATITUDE; longtitude =
+			 * Constants.LOCATION_DEFAULT_LONGTITUDE; } else { latitude =
+			 * loc.getLatitude(); longtitude = loc.getLongitude(); }
+			 */
 
+			SimpleLocation location = SelfMgr.getInstance().getLocation();
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
 
-					return client.NearbyVendorListView(1, pageNum, longtitude, latitude, 6);
+					return client.NearbyVendorListView(1, pageNum, location.getLongitude(), location.getLatitude(), 6);
 				} else {
 					/**
 					 * VehicleWebClient client = new VehicleWebClient(); return
 					 * client.NearbyDriverListView(-1, longtitude, latitude);
 					 */
 
-					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(longtitude, latitude,
-							30);
+					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(
+							location.getLongitude(), location.getLatitude(), 30);
 
 					NearbyDriverListViewResult result = new NearbyDriverListViewResult();
 					result.setCode(WebCallBaseResult.CODE_SUCCESS);
@@ -403,16 +414,19 @@ public class NearbyFellowListActivity extends TemplateActivity {
 						if (null != imgs) {
 							for (VendorImage img : imgs) {
 								String imgUrl = img.getSrc();
-								if (!BitmapCache.getInstance().contains(imgUrl)) {
-									InputStream input = HttpUtil.DownloadFile(imgUrl);
-									Bitmap bitmap = BitmapFactory.decodeStream(input);
-									BitmapCache.getInstance().put(imgUrl, bitmap);
+								try {
+									if (!BitmapCache.getInstance().contains(imgUrl)) {
+										InputStream input = HttpUtil.DownloadFile(imgUrl);
+										Bitmap bitmap = BitmapFactory.decodeStream(input);
+										BitmapCache.getInstance().put(imgUrl, bitmap);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
 								}
 							}
 						}
 						vendor.setImgs(imgs);
 					}
-
 				} else {
 
 				}

@@ -29,7 +29,6 @@
             android:layout_height="64dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/contact_list_minus_btn_normal"
             android:focusable="false" />
 
         <TextView

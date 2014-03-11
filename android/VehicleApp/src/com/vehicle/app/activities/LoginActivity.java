@@ -11,6 +11,7 @@ import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleClient;
 
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -64,6 +66,8 @@ public class LoginActivity extends TemplateActivity {
 
 	private Button mRegButton;
 	private Button mLogButton;
+
+	private CheckBox mCBSave;
 
 	public static final String KEY_AUDOLOGIN = "com.vehicle.app.login.key.autolog";
 
@@ -120,6 +124,7 @@ public class LoginActivity extends TemplateActivity {
 
 		mLoginTitle = (ImageView) this.findViewById(R.id.login_title);
 
+		mCBSave = (CheckBox) this.findViewById(R.id.login_checkbox_savepwd);
 	}
 
 	private void updateUI() {
@@ -147,42 +152,28 @@ public class LoginActivity extends TemplateActivity {
 	protected void onStart() {
 		super.onStart();
 
-		boolean isAuto = false;
-		Bundle bundle = this.getIntent().getExtras();
-		if (null != bundle) {
-			isAuto = bundle.getBoolean(KEY_AUDOLOGIN, false);
-		}
-
 		RoleInfo info = null;
 		try {
 			DBManager db = new DBManager(this.getApplicationContext());
-			info = db.selectLastOnBoard();
+			info = db.selectLastOnBoard(SelfMgr.getInstance().isDriver() ? RoleInfo.ROLETYPE_DRIVER
+					: RoleInfo.ROLETYPE_VENDOR);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		if (isAuto && null != info) {
+		if (null != info && info.getIsAutoLog()) {
 			this.mEmailView.setText(info.getUserName());
 			this.mPasswordView.setText(info.getPassword());
-
-			enableEdit(false);
-			SelfMgr.getInstance().clearFellows();
-			SelfMgr.getInstance().setIsDriver(info.getRoleType() == RoleInfo.ROLETYPE_DRIVER ? true : false);
-
-			updateUI();
-			mAuthTask = null;
-			attemptLogin();
+			this.mCBSave.setChecked(true);
 		} else {
-			updateUI();
-			enableEdit(true);
+			this.mCBSave.setChecked(false);
 		}
-	}
 
-	private void enableEdit(boolean enable) {
-		this.mEmailView.setEnabled(enable);
-		this.mPasswordView.setEnabled(enable);
-		this.mLogButton.setClickable(enable);
-		this.mRegButton.setClickable(enable);
+		updateUI();
+		mAuthTask = null;
+
+		Toast.makeText(getApplicationContext(), FileUtil.genPathForImage(getApplicationContext(), "jpg"),
+				Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -240,7 +231,6 @@ public class LoginActivity extends TemplateActivity {
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
 			// form field with an error.
-			enableEdit(true);
 			focusView.requestFocus();
 		} else {
 			// Show a progress spinner, and kick off a background task to
@@ -329,16 +319,6 @@ public class LoginActivity extends TemplateActivity {
 		private void updateLocation(Location loc) {
 			try {
 
-				if (!SelfMgr.getInstance().isLogin() && SelfMgr.getInstance().isDriver()) {
-					return;
-				}
-
-				long cur = new Date().getTime();
-
-				if (cur - lastUpdateTime < 30 * 1000) {
-					return;
-				}
-
 				final double lat;
 				final double lnt;
 				if (null == loc) {
@@ -347,6 +327,21 @@ public class LoginActivity extends TemplateActivity {
 				} else {
 					lat = loc.getLatitude();
 					lnt = loc.getLongitude();
+				}
+
+				// Toast.makeText(getApplicationContext(), lat + " " + lnt,
+				// Toast.LENGTH_LONG).show();
+				SelfMgr.getInstance().updateLocation(lat, lnt);
+
+				if ((!SelfMgr.getInstance().isLogin() && SelfMgr.getInstance().isDriver())
+						|| !SelfMgr.getInstance().isDriver()) {
+					return;
+				}
+
+				long cur = new Date().getTime();
+
+				if (cur - lastUpdateTime < 30 * 1000) {
+					return;
 				}
 
 				if (Math.abs(lastLat - lat) < 0.000001 && Math.abs(lastLnt - lnt) < 0.000001
@@ -427,7 +422,6 @@ public class LoginActivity extends TemplateActivity {
 			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 
 			if (null == result) {
-				enableEdit(true);
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_loginfailed),
 						Toast.LENGTH_LONG).show();
 				return;
@@ -440,31 +434,33 @@ public class LoginActivity extends TemplateActivity {
 				try {
 					DBManager db = new DBManager(getApplicationContext());
 					db.updateLastOnboard(mEmail, mPassword, SelfMgr.getInstance().isDriver() ? RoleInfo.ROLETYPE_DRIVER
-							: RoleInfo.ROLETYPE_VENDOR, true);
+							: RoleInfo.ROLETYPE_VENDOR, mCBSave.isChecked());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
-				if (SelfMgr.getInstance().isDriver()) {
-					StartUpdateLocThread tt = new StartUpdateLocThread();
-					tt.start();
-				}
+				StartUpdateLocThread tt = new StartUpdateLocThread();
+				tt.start();
+
 				Intent intent = new Intent();
 				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 				LoginActivity.this.startActivity(intent);
 
 			} else {
-				enableEdit(true);
-				Toast.makeText(getApplicationContext(),
-						getResources().getString(R.string.tip_loginfailedformat, result.getMessage()),
-						Toast.LENGTH_LONG).show();
+				if (SelfMgr.getInstance().isDriver()) {
+					Toast.makeText(getApplicationContext(),
+							getResources().getString(R.string.tip_loginfailedformat_driver), Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(getApplicationContext(),
+							getResources().getString(R.string.tip_loginfailedformat_vendor), Toast.LENGTH_LONG).show();
+
+				}
 			}
 		}
 
 		@Override
 		protected void onCancelled() {
 			mAuthTask = null;
-			enableEdit(true);
 			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 		}
 	}

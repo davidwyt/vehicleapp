@@ -37,54 +37,43 @@
         android:layout_height="match_parent"
         android:background="@color/gray" >
 
-        <LinearLayout
-            android:id="@+id/driverinfo_title_bar"
+        <RelativeLayout
+            android:id="@+id/driverhome_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/barDarkColor" >
+            android:layout_alignParentTop="true"
+            android:background="@drawable/icon_bakground" >
 
             <Button
                 android:id="@+id/driverinfo_goback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/selector_btn_gobak" />
-
-            <ImageView
-                android:id="@+id/driverinfo_title_nameiv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="4dp"
-                android:contentDescription="@string/title"
-                android:src="@drawable/icon_driverinfotitle" >
-            </ImageView>
 
             <TextView
                 android:id="@+id/driverinfo_title_nametv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="32dp"
+                android:layout_centerInParent="true"
                 android:textColor="@color/white"
-                android:textSize="20sp" >
+                android:textSize="22sp" >
             </TextView>
 
             <Button
                 android:id="@+id/driverinfo_title_btn_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginLeft="16dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/selector_btn_msg" />
-        </LinearLayout>
-
-        <View
-            android:id="@+id/driverinfo_divider"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_below="@id/driverinfo_title_bar"
-            android:background="@color/blue" >
-        </View>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/driverinfo_bottombar"
@@ -112,7 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/driverinfo_bottombar"
-            android:layout_below="@id/driverinfo_divider"
+            android:layout_below="@id/driverhome_title"
             android:background="@color/gray" >
 
             <LinearLayout

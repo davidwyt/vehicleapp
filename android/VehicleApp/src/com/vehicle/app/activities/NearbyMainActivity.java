@@ -3,14 +3,13 @@ package com.vehicle.app.activities;
 import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.mgrs.TopMsgerMgr;
+import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.LocationUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -177,16 +176,8 @@ public class NearbyMainActivity extends TemplateActivity implements OnCheckedCha
 			// TODO: attempt authentication against a network service.
 
 			try {
-				Location loc = LocationUtil.getCurLocation(getApplicationContext());
-				double latitude, longtitude;
-				if (null == loc) {
-					latitude = 31.24;
-					longtitude = 121.56;
-				} else {
-					latitude = loc.getLatitude();
-					longtitude = loc.getLongitude();
-				}
-				SelfMgr.getInstance().refreshNearby(longtitude, latitude);
+				SimpleLocation location = SelfMgr.getInstance().getLocation();
+				SelfMgr.getInstance().refreshNearby(location.getLongitude(), location.getLatitude(), 1);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

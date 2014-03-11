@@ -53,7 +53,7 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 	private Button mBtnShake;
 	private Button mBtnNext;
 	private TextView mTitleName;
-	private ImageView mTitleIV;
+	//private ImageView mTitleIV;
 
 	private View mBottomBar;
 
@@ -109,7 +109,7 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 		this.mBtnNext.setOnClickListener(this);
 
 		this.mTitleName = (TextView) this.findViewById(R.id.driverinfo_title_nametv);
-		this.mTitleIV = (ImageView) this.findViewById(R.id.driverinfo_title_nameiv);
+		//this.mTitleIV = (ImageView) this.findViewById(R.id.driverinfo_title_nameiv);
 		this.mBottomBar = this.findViewById(R.id.driverinfo_bottombar);
 
 		mDriverFormView = this.findViewById(R.id.driverinfo_form);
@@ -119,8 +119,8 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 
 	private void updateView(int pers) {
 
-		this.mTitleIV.setVisibility(PERSPECTIVE_SELF == pers ? View.VISIBLE : View.GONE);
-		this.mTitleName.setVisibility(PERSPECTIVE_SELF == pers ? View.GONE : View.VISIBLE);
+		//this.mTitleIV.setVisibility(PERSPECTIVE_SELF == pers ? View.VISIBLE : View.GONE);
+		//this.mTitleName.setVisibility(PERSPECTIVE_SELF == pers ? View.GONE : View.VISIBLE);
 		this.mBottomBar.setVisibility(PERSPECTIVE_NEARBY == pers ? View.VISIBLE : View.GONE);
 		this.mBtnMsg.setVisibility(PERSPECTIVE_FELLOW == pers ? View.VISIBLE : View.GONE);
 	}
@@ -166,10 +166,7 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 
 		ImageUtil.RenderImageView(driver.getAvatar(), mIvHead, -1, -1);
 
-		if (PERSPECTIVE_SELF != this.mPerspective) {
-			this.mTitleName.setText(driver.getAlias());
-		}
-
+		this.mTitleName.setText(driver.getAlias());
 		this.mTvName.setText(driver.getAlias());
 		this.mTvAge.setText(driver.getBirthday());
 		this.mTvSex.setText(driver.getSex());

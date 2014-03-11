@@ -3,8 +3,6 @@ package com.vehicle.app.activities;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.vehicle.app.bean.RoleInfo;
-import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -77,32 +75,11 @@ public class BeginActivity extends TemplateActivity {
 			this.mBaK.setVisibility(View.GONE);
 		}
 
-		boolean isAuto = true;
-		Bundle bundle = this.getIntent().getExtras();
-		if (null != bundle) {
-			isAuto = bundle.getBoolean(KEY_AUDOLOGIN, true);
-		}
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), RoleSelectActivity.class);
+		BeginActivity.this.startActivity(intent);
 
-		RoleInfo info = null;
-		try {
-			DBManager db = new DBManager(this.getApplicationContext());
-			info = db.selectLastOnBoard();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (isAuto && null != info) {
-			Intent intent = new Intent(this, LoginActivity.class);
-			intent.putExtra(LoginActivity.KEY_AUDOLOGIN, true);
-			startActivity(intent);
-			this.finish();
-		} else {
-			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), RoleSelectActivity.class);
-			BeginActivity.this.startActivity(intent);
-
-			BeginActivity.this.finish();
-		}
+		BeginActivity.this.finish();
 	}
 
 	@Override

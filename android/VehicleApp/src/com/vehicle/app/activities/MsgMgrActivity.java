@@ -8,7 +8,6 @@ import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MsgMgrActivity extends Activity implements OnClickListener {
+public class MsgMgrActivity extends TemplateActivity implements OnClickListener {
 
 	private Button mBtnBack;
 
@@ -113,6 +112,7 @@ public class MsgMgrActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		if (R.id.msgmgr_goback == view.getId()) {
 			this.onBackPressed();
+			this.finish();
 		} else if (R.id.msgmgr_uprow == view.getId() || R.id.msgmgr_favmsg == view.getId()) {
 			if (TopMsgerMgr.getInstance().isTop(mFellowId)) {
 				try {

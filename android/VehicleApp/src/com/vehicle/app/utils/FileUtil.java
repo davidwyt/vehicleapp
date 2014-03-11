@@ -28,6 +28,15 @@ public class FileUtil {
 	}
 
 	public static void SaveFile(String path, InputStream input) throws IOException {
+		File file = new File(path);
+		File parent = file.getParentFile();
+		if (!parent.exists()) {
+			try {
+				parent.mkdirs();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		OutputStream outStream = new FileOutputStream(path);
 		IOUtils.copy(input, outStream);
 	}

@@ -84,7 +84,7 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 	private int mPerspective;
 
 	private ArrayList<String> mNearbyVendors;
-	private int mCurIndex;
+	private int mCurIndex = 0;
 	private VendorDetail mCurVendorDetail;
 
 	private View mVendorFormView;
@@ -109,6 +109,7 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.setContentView(R.layout.activity_vendorhome);
 
@@ -154,18 +155,18 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 		this.mVendorStatusMessageView = (TextView) this.findViewById(R.id.vendorhome_status_message);
 
 		mBottomBar = this.findViewById(R.id.vendorbar);
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
 
 		try {
 			initData();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
 		this.registerMessageReceiver();
 	}
 
@@ -273,6 +274,26 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 			unregisterReceiver(this.mReceiver);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private final static String KEY_STATE_CURINDEX = "com.vehicle.app.vendorhome.state.curindex";
+
+	@Override
+	protected void onSaveInstanceState(Bundle savedInstanceState) {
+		System.out.println("on save statetttttttttttttttttttttt");
+		super.onSaveInstanceState(savedInstanceState);
+		if (PERSPECTIVE_NEARBY == this.mPerspective) {
+			savedInstanceState.putInt(KEY_STATE_CURINDEX, this.mCurIndex);
+		}
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		System.out.println("on restore statetttttttttttttttttttttt");
+		super.onRestoreInstanceState(savedInstanceState);
+		if (PERSPECTIVE_NEARBY == this.mPerspective) {
+			this.mCurIndex = savedInstanceState.getInt(KEY_STATE_CURINDEX, 0);
 		}
 	}
 

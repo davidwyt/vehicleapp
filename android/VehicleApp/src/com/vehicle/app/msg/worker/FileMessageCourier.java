@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 
-import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.IMessageItem;
@@ -13,6 +12,7 @@ import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.bean.FileMessage;
 import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.StringUtil;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.service.bean.BaseResponse;
 import com.vehicle.service.bean.FileMultiTransmissionResponse;
@@ -25,6 +25,31 @@ public class FileMessageCourier extends MessageBaseCourier {
 	public FileMessageCourier(Context context, boolean isGroupChat) {
 		super(context);
 		this.isGroupChat = isGroupChat;
+	}
+
+	private void processMessage(FileMessage msg) {
+		try {
+			DBManager dbMgr = new DBManager(context.getApplicationContext());
+			dbMgr.insertFileMessage(msg);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			RecentMessage recentMsg = new RecentMessage();
+			recentMsg.setSelfId(SelfMgr.getInstance().getId());
+			recentMsg.setFellowId(msg.getTarget());
+			recentMsg.setMessageType(msg.getMessageType());
+			recentMsg.setContent("");
+			recentMsg.setSentTime(msg.getSentTime());
+			recentMsg.setMessageId(msg.getToken());
+
+			updateRecentMessage(recentMsg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -69,38 +94,39 @@ public class FileMessageCourier extends MessageBaseCourier {
 						// picMessage.setSentTime(fileMultiResp.getSentTime());
 						picMessage.setToken(fileMultiResp.getToken());
 						picMessage.setFlag(MessageFlag.SELF);
+
+						if (!StringUtil.IsNullOrEmpty(picMessage.getTarget())) {
+							String[] targets = picMessage.getTarget().split(Constants.COMMA);
+							if (null != targets) {
+								for (String tar : targets) {
+									if (!StringUtil.IsNullOrEmpty(tar)) {
+										FileMessage msg = new FileMessage();
+										msg.setFlag(MessageFlag.SELF);
+										msg.setMsgType(picMessage.getMsgType());
+										msg.setPath(picMessage.getPath());
+										msg.setSentTime(picMessage.getSentTime());
+										msg.setSource(picMessage.getSource());
+										msg.setTarget(tar);
+										msg.setToken(picMessage.getToken());
+
+										processMessage(msg);
+									}
+								}
+							}
+						}
 					} else {
 						FileTransmissionResponse fileResp = (FileTransmissionResponse) resp;
 						// picMessage.setSentTime(fileResp.getSentTime());
 						picMessage.setToken(fileResp.getToken());
 						picMessage.setFlag(MessageFlag.SELF);
 
-						try {
-							DBManager dbMgr = new DBManager(context.getApplicationContext());
-							dbMgr.insertFileMessage(picMessage);
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
-						try {
-							RecentMessage recentMsg = new RecentMessage();
-							recentMsg.setSelfId(SelfMgr.getInstance().getId());
-							recentMsg.setFellowId(picMessage.getTarget());
-							recentMsg.setMessageType(picMessage.getMessageType());
-							recentMsg.setContent("");
-							recentMsg.setSentTime(picMessage.getSentTime());
-							recentMsg.setMessageId(picMessage.getToken());
-
-							updateRecentMessage(recentMsg);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						processMessage(picMessage);
 					}
 
-					//Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
-					//msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMessage);
-					//context.sendBroadcast(msgIntent);
+					// Intent msgIntent = new
+					// Intent(Constants.ACTION_FILEMSG_SENTOK);
+					// msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picMessage);
+					// context.sendBroadcast(msgIntent);
 
 				} else {
 					if (picMessage.getMessageType() == IMessageItem.MESSAGE_TYPE_IMAGE) {

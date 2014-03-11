@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.vehicle.app.adapter.RecentContactListViewAdapter;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
@@ -194,6 +195,7 @@ public class RecentContactListActivity extends TemplateActivity implements OnChe
 		this.mAdapter = new RecentContactListViewAdapter(this, mRecentMsgVector);
 
 		this.mPullRefreshListView = (PullToRefreshListView) this.findViewById(R.id.list_users);
+		this.mPullRefreshListView.setMode(Mode.DISABLED);
 		this.mPullRefreshListView.getRefreshableView().setAdapter(this.mAdapter);
 		this.mPullRefreshListView.getRefreshableView().setOnItemClickListener(new OnItemClickListener() {
 

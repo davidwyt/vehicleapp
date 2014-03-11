@@ -73,6 +73,16 @@
                 android:maxLines="1"
                 android:singleLine="true" />
 
+            <CheckBox
+                android:id="@+id/login_checkbox_savepwd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:text="保存用户名密码" >
+            </CheckBox>
+
             <Button
                 android:id="@+id/login_signinbtn"
                 android:layout_width="wrap_content"

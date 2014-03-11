@@ -19,8 +19,10 @@ import com.vehicle.app.bean.SelfVendor;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorFellow;
+import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
@@ -116,7 +118,7 @@ public class SelfMgr {
 	public VendorDetail getNearbyVendorDetail(String id) {
 		return this.mNearbyVendorDetailMap.get(id);
 	}
-
+	
 	public Map<String, VendorDetail> getFavVendorDetailMap() {
 		return this.mFavVendorDetailMap;
 	}
@@ -316,13 +318,13 @@ public class SelfMgr {
 		return this.mFavVendorMap.get(id);
 	}
 
-	public synchronized void refreshNearby(double longitude, double latitude) {
+	public synchronized void refreshNearby(double longitude, double latitude, int pageNum) {
 		this.clearNearby();
 		try {
 			if (mIsDriver) {
 				VehicleWebClient client = new VehicleWebClient();
 
-				NearbyVendorListViewResult result = client.NearbyVendorListView(1, 1, longitude, latitude, 6);
+				NearbyVendorListViewResult result = client.NearbyVendorListView(1, pageNum, longitude, latitude, 6);
 
 				if (null != result && result.isSuccess()) {
 					List<Vendor> vendors = result.getInfoBean();
@@ -422,12 +424,13 @@ public class SelfMgr {
 				if (null != vendorMap)
 					this.mFavVendorMap.putAll(vendorMap);
 
-				for (String id : vendorIds) {
-					VendorSpecViewResult vendorSpecResult = webClient.VendorSpecView(id);
-					if (null != vendorSpecResult && null != vendorSpecResult.getInfoBean())
-						this.mFavVendorDetailMap.put(id, vendorSpecResult.getInfoBean());
-				}
-
+				/**
+				 * for (String id : vendorIds) { VendorSpecViewResult
+				 * vendorSpecResult = webClient.VendorSpecView(id); if (null !=
+				 * vendorSpecResult && null != vendorSpecResult.getInfoBean())
+				 * this.mFavVendorDetailMap.put(id,
+				 * vendorSpecResult.getInfoBean()); }
+				 */
 			} else {
 				this.mVendorFellowSimpleVector.clear();
 				this.mVendorFellowMap.clear();
@@ -699,5 +702,21 @@ public class SelfMgr {
 		this.refreshFellows();
 
 		return loginResult;
+	}
+
+	private double latitude = Constants.LOCATION_DEFAULT_LATITUDE;
+	private double longtitude = Constants.LOCATION_DEFAULT_LONGTITUDE;
+
+	public synchronized void updateLocation(double lat, double lnt) {
+		this.latitude = lat;
+		this.longtitude = lnt;
+	}
+
+	public synchronized SimpleLocation getLocation() {
+		SimpleLocation simLocation = new SimpleLocation();
+		simLocation.setLatitude(latitude);
+		simLocation.setLongitude(longtitude);
+
+		return simLocation;
 	}
 }

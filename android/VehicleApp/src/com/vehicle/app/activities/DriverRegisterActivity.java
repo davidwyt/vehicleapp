@@ -216,9 +216,14 @@ public class DriverRegisterActivity extends TemplateActivity {
 					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_loginfailed),
 							Toast.LENGTH_LONG).show();
 				} else if (!loginResult.isSuccess()) {
-					Toast.makeText(getApplicationContext(),
-							getResources().getString(R.string.tip_loginfailedformat, loginResult.getMessage()),
-							Toast.LENGTH_LONG).show();
+					if (SelfMgr.getInstance().isDriver()) {
+						Toast.makeText(getApplicationContext(),
+								getResources().getString(R.string.tip_loginfailedformat_driver), Toast.LENGTH_LONG).show();
+					} else {
+						Toast.makeText(getApplicationContext(),
+								getResources().getString(R.string.tip_loginfailedformat_vendor), Toast.LENGTH_LONG).show();
+
+					}
 				} else {
 					DriverRegisterActivity.this.finish();
 					

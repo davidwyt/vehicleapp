@@ -30,12 +30,11 @@ public final class VendorDetailFragment extends Fragment {
 		this.vendorDetail = vendor;
 	}
 
-
 	@Override
 	public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		View parent = inflater.inflate(R.layout.layout_vendorinfo, container, false);
-		
+
 		ImageView ivHead = (ImageView) parent.findViewById(R.id.vendor_icon);
 
 		final Vendor vendor = vendorDetail.getVendor();
@@ -82,7 +81,7 @@ public final class VendorDetailFragment extends Fragment {
 		tvMobile.setText(strPhone);
 
 		TextView tvAddr = (TextView) parent.findViewById(R.id.vendor_address);
-		tvAddr.setText(vendor.getAddress());
+		tvAddr.setText(vendor.getCas() + vendor.getAddress());
 
 		TextView tvIntro = (TextView) parent.findViewById(R.id.vendor_introduction);
 		tvIntro.setText(vendor.getIntroduction());
@@ -128,7 +127,7 @@ public final class VendorDetailFragment extends Fragment {
 				}
 			}
 		});
-		
+
 		return parent;
 	}
 

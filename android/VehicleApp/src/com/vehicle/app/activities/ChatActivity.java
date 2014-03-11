@@ -30,7 +30,6 @@ import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.JsonUtil;
 import com.vehicle.app.utils.StringUtil;
-import com.vehicle.service.bean.BaseResponse;
 
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -561,12 +560,6 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 					CHAT_STYLE_2ONE != this.mChatStyle, false);
 			msgCourier.dispatch(entity);
 
-			// Intent msgIntent = new
-			// Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
-			// msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
-			// this.sendBroadcast(msgIntent);
-
-			// this.addToMsgList(entity);
 			FakeSendTask task = new FakeSendTask(entity);
 			task.execute();
 		}
@@ -595,15 +588,10 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 					CHAT_STYLE_2ONE != this.mChatStyle);
 			msgCourier.dispatch(picItem);
 
-			// Intent msgIntent = new Intent(Constants.ACTION_FILEMSG_SENTOK);
-			// msgIntent.putExtra(ChatActivity.KEY_MESSAGE, picItem);
-			// this.sendBroadcast(msgIntent);
-
 			FakeSendTask task = new FakeSendTask(picItem);
 			task.execute();
-
 		} else {
-			System.out.println("selected file not exist:" + filePath);
+			Toast.makeText(getApplicationContext(), "file:" + filePath + " not exist", Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -643,9 +631,6 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 				CHAT_STYLE_2ONE != this.mChatStyle, false);
 		msgCourier.dispatch(entity);
 
-		// Intent msgIntent = new Intent(Constants.ACTION_TEXTMESSAGE_SENTOK);
-		// msgIntent.putExtra(ChatActivity.KEY_MESSAGE, entity);
-		// this.sendBroadcast(msgIntent);
 		FakeSendTask task = new FakeSendTask(entity);
 		task.execute();
 	}

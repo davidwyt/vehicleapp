@@ -59,7 +59,7 @@ public class VehicleClient {
 	// "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	// private static String URL_DEFAULTSERVERROOT =
-	// "http://192.168.1.102:8080/VehicleIMServer/rest";
+	// "http://192.168.1.100:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";

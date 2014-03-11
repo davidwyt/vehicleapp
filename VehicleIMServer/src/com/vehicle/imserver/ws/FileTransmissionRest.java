@@ -3,6 +3,8 @@ package com.vehicle.imserver.ws;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
+import java.util.UUID;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +58,7 @@ public class FileTransmissionRest {
 			@PathParam("target") String target,
 			@PathParam("fileName") String fileName,
 			@PathParam("fileType") int fileType) {
-		
+
 		FileTransmissionResponse resp = new FileTransmissionResponse();
 
 		if (StringUtil.isEmptyOrNull(source)
@@ -151,7 +153,7 @@ public class FileTransmissionRest {
 
 			return Response.status(Status.BAD_REQUEST).entity(resp).build();
 		}
-		
+
 		if (fileType != MessageType.AUDIO.ordinal()
 				&& fileType != MessageType.IMAGE.ordinal()) {
 			resp.setErrorCode(ErrorCodes.FILETRAN_INVALIDTYPE_ERRCODE);
@@ -166,12 +168,11 @@ public class FileTransmissionRest {
 		fileRequest.setTargets(targets);
 		fileRequest.setFileName(fileName);
 		fileRequest.setMsgType(fileType);
-		
+
 		try {
-			FileTransmission fileTran = fileTransmissionService.SendFile2Multi(
-					fileRequest, input);
-			resp.setSentTime(fileTran.getTransmissionTime());
-			resp.setToken(fileTran.getToken());
+			fileTransmissionService.SendFile2Multi(fileRequest, input);
+			resp.setSentTime(new Date().getTime());
+			resp.setToken(UUID.randomUUID().toString());
 
 			return Response.status(Status.OK).entity(resp).build();
 		} catch (IOException e) {

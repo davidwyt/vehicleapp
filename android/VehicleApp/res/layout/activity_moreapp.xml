@@ -23,7 +23,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/selector_btn_gobak" />
 
             <TextView
@@ -57,8 +59,8 @@
             android:id="@+id/moreapp_thistext"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/moreapp_thisicon"
             android:layout_alignLeft="@id/moreapp_thisicon"
+            android:layout_below="@id/moreapp_thisicon"
             android:gravity="center"
             android:text="天下车商"
             android:textColor="@color/black"
@@ -69,6 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/moreapp_thistext"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginTop="16dp"

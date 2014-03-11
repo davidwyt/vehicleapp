@@ -35,7 +35,7 @@ public class EccActivity extends TemplateActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,6 +55,7 @@ public class EccActivity extends TemplateActivity {
 		});
 
 		this.mETEmail = (EditText) this.findViewById(R.id.ecc_email);
+		this.mETEmail.setText(SelfMgr.getInstance().getSelfDriver().getEmail());
 		this.mETAdvice = (EditText) this.findViewById(R.id.ecc_text);
 
 		this.mBtnOK = (Button) this.findViewById(R.id.ecc_ok);
@@ -94,15 +95,14 @@ public class EccActivity extends TemplateActivity {
 
 			return;
 		}
-		
+
 		/**
-		if (!StringUtil.IsEmail(email)) {
-			Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_emailinvalid),
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-*/
-		
+		 * if (!StringUtil.IsEmail(email)) {
+		 * Toast.makeText(getApplicationContext(),
+		 * getResources().getString(R.string.tip_emailinvalid),
+		 * Toast.LENGTH_LONG).show(); return; }
+		 */
+
 		AsyncTask<Void, Void, WebCallBaseResult> asyncTask = new AsyncTask<Void, Void, WebCallBaseResult>() {
 
 			@Override
@@ -123,19 +123,19 @@ public class EccActivity extends TemplateActivity {
 			@Override
 			protected void onPostExecute(WebCallBaseResult result) {
 				if (null != result && result.isSuccess()) {
-					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_advicesuccess),
+					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_eccsuccess),
 							Toast.LENGTH_LONG).show();
-					
+
 					mETEmail.setText("");
 					mETAdvice.setText("");
-					
+
 				} else {
 					if (null != result) {
 						Toast.makeText(getApplicationContext(),
-								getResources().getString(R.string.tip_advicefailed2, result.getMessage()),
+								getResources().getString(R.string.tip_eccfailed2, result.getMessage()),
 								Toast.LENGTH_LONG).show();
 					} else {
-						Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_advicefailed),
+						Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_eccfailed),
 								Toast.LENGTH_LONG).show();
 					}
 				}

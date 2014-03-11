@@ -8,12 +8,11 @@
 
     <ImageView
         android:id="@+id/myfellow_iv_head"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:contentDescription="@string/title"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/contact_list_minus_btn_normal"
         android:focusable="false" />
 
     <TextView

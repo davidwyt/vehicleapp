@@ -16,7 +16,7 @@ public interface FileTransmissionService {
 	public FileTransmission SendFile(FileTransmissionRequest request,
 			InputStream input) throws IOException, PushNotificationFailedException, PersistenceException;
 	
-	public FileTransmission SendFile2Multi(FileMultiTransmissionRequest request,
+	public void SendFile2Multi(FileMultiTransmissionRequest request,
 			InputStream input) throws IOException, PushNotificationFailedException, PersistenceException;
 	
 	public String FetchFile(FileFetchRequest request) throws FileTransmissionNotFoundException, PersistenceException;

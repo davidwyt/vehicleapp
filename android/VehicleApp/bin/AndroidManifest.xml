@@ -45,66 +45,150 @@
         android:icon="@drawable/logo1"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.vehicle.app.activities.BeginActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.BeginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.vehicle.app.activities.LoginActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.LocationActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.LocationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.SettingActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.SettingActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.DriverRegisterActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.DriverRegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.RecentContactListActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.RecentContactListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.FollowshipInvitationActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.FollowshipInvitationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.NearbyMainActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.NearbyMainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.RoleSelectActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.RoleSelectActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.DriverHomeActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.DriverHomeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.SelfVendorInfoActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.SelfVendorInfoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.VendorInfoActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.VendorInfoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.DriverInfoOldActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.DriverInfoOldActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.GroupmsgNavActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.GroupmsgNavActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.NearbyFellowListActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.NearbyFellowListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.MsgMgrActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.MsgMgrActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.MyFellowListActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.MyFellowListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.ChatActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.ChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.MapCameraActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.MapCameraActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.VendorHomeActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.VendorHomeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.VendorRatingActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.VendorRatingActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.SettingHomeActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.SettingHomeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.MyCommentsActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.MyCommentsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.AboutActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.AboutActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.RelativeAppsActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.RelativeAppsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.AdviceActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.AdviceActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.EccActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.EccActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
-        <activity android:name="com.vehicle.app.activities.ImgViewActivity" >
+        <activity
+            android:name="com.vehicle.app.activities.ImgViewActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" >
         </activity>
 
         <service

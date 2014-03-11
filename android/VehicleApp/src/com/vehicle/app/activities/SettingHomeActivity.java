@@ -1,11 +1,24 @@
 package com.vehicle.app.activities;
 
+import java.io.InputStream;
+import java.util.List;
+
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.ActivityManager;
+import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
+import com.vehicle.app.utils.HttpUtil;
+import com.vehicle.app.web.bean.VendorImgViewResult;
+import com.vehicle.app.web.bean.VendorSpecViewResult;
+import com.vehicle.app.web.bean.WebCallBaseResult;
+import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -15,6 +28,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
@@ -22,6 +36,7 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 
 	private CommentsViewTask mCommentsViewTask;
 	private FellowViewTask mFellowViewTask;
+	private SelfViewTask mSelfViewTask;
 
 	private View mViewSettingStatus;
 	private TextView mTextViewSettingStatus;
@@ -141,7 +156,85 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		}
 	}
 
-	public class FellowViewTask extends AsyncTask<Void, Void, Void> {
+	private class SelfViewTask extends AsyncTask<Void, Void, WebCallBaseResult> {
+
+		@Override
+		protected WebCallBaseResult doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+
+			WebCallBaseResult result = null;
+
+			try {
+				// Simulate network access.
+				if (!SelfMgr.getInstance().isDriver()) {
+					VehicleWebClient webClient = new VehicleWebClient();
+					result = webClient.VendorSpecView(SelfMgr.getInstance().getId());
+
+					if (null != result && result.isSuccess()) {
+						VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
+						VendorDetail vendor = vendorView.getInfoBean();
+
+						if (null != vendor) {
+							SelfMgr.getInstance().setSelfVendorDetail(vendor);
+						}
+					} else {
+						return null;
+					}
+
+					result = webClient.VendorImgView(SelfMgr.getInstance().getId());
+					if (null != result && result.isSuccess()) {
+						VendorDetail vendor = SelfMgr.getInstance().getSelfVendorDetail();
+						List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
+						if (null != imgs) {
+							for (VendorImage img : imgs) {
+								String imgUrl = img.getSrc();
+								try {
+									if (!BitmapCache.getInstance().contains(imgUrl)) {
+										InputStream input = HttpUtil.DownloadFile(imgUrl);
+										Bitmap bitmap = BitmapFactory.decodeStream(input);
+										BitmapCache.getInstance().put(imgUrl, bitmap);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						vendor.setImgs(imgs);
+					}
+				} else {
+
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(WebCallBaseResult result) {
+			mSelfViewTask = null;
+			ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, false);
+
+			if (null != result && result.isSuccess()) {
+				Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
+				intent.putExtra(VendorHomeActivity.KEY_PERSPECTIVE, VendorHomeActivity.PERSPECTIVE_SELF);
+				startActivity(intent);
+			} else {
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_viewselfvendorfailed),
+						Toast.LENGTH_LONG).show();
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			mSelfViewTask = null;
+			ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, false);
+		}
+	}
+
+	private class FellowViewTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
@@ -150,7 +243,6 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 				SelfMgr.getInstance().refreshFellows();
 			} catch (Exception e) {
 				e.printStackTrace();
-
 				System.err.println("refresh fellows failed");
 			}
 			return null;
@@ -210,10 +302,23 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 			intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_SELF);
 			this.startActivity(intent);
 		} else {
-			Intent intent = new Intent(this, VendorHomeActivity.class);
-			intent.putExtra(VendorHomeActivity.KEY_PERSPECTIVE, VendorHomeActivity.PERSPECTIVE_SELF);
-			this.startActivity(intent);
+			attemptViewSelfVendor();
 		}
+	}
+
+	private void attemptViewSelfVendor() {
+		if (null != this.mSelfViewTask) {
+			return;
+		}
+
+		if (!SelfMgr.getInstance().isDriver()) {
+			this.mTextViewSettingStatus.setText(R.string.tip_status_selfvendorview);
+		} else {
+		}
+
+		ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, true);
+		this.mSelfViewTask = new SelfViewTask();
+		this.mSelfViewTask.execute((Void) null);
 	}
 
 	private void openMyFellows() {
@@ -248,8 +353,7 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		ActivityManager.getInstance().finishAll();
 		SelfMgr.getInstance().doLogout(getApplicationContext());
 
-		Intent intent = new Intent(this, BeginActivity.class);
-		intent.putExtra(BeginActivity.KEY_AUDOLOGIN, false);
+		Intent intent = new Intent(this, RoleSelectActivity.class);
 		this.startActivity(intent);
 	}
 
@@ -269,12 +373,11 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 	}
 
 	private void returnFirst() {
-		ActivityManager.getInstance().finishAll();
-		SelfMgr.getInstance().doLogout(getApplicationContext());
+		this.finish();
 
-		Intent intent = new Intent(this, BeginActivity.class);
-		intent.putExtra(BeginActivity.KEY_AUDOLOGIN, false);
-		this.startActivity(intent);
+		Intent intent = new Intent();
+		intent.setClass(getApplicationContext(), NearbyMainActivity.class);
+		startActivity(intent);
 	}
 
 	@Override

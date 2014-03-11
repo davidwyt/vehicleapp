@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import javax.imageio.ImageIO;
 
@@ -16,12 +19,14 @@ import com.vehicle.imserver.service.exception.FileTransmissionNotFoundException;
 import com.vehicle.imserver.service.exception.PersistenceException;
 import com.vehicle.imserver.service.exception.PushNotificationFailedException;
 import com.vehicle.imserver.service.interfaces.FileTransmissionService;
+import com.vehicle.imserver.utils.CallableQueue;
 import com.vehicle.imserver.utils.Contants;
 import com.vehicle.imserver.utils.FileUtil;
 import com.vehicle.imserver.utils.ImageUtil;
 import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
+import com.vehicle.imserver.utils.StringUtil;
 import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileMultiTransmissionRequest;
 import com.vehicle.service.bean.FileTransmissionRequest;
@@ -103,11 +108,38 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 		return path;
 	}
 
+	private void SendMultiFileMsg(String[] targets,
+			Map<String, FileTransmission> fileMap,
+			FileMultiTransmissionRequest request, String filePath) {
+		if (null == targets)
+			return;
+
+		for (int i = 0; i < targets.length; i++) {
+			if (StringUtil.isEmptyOrNull(targets[i]))
+				continue;
+
+			FileTransmission fileTran = fileMap.get(targets[i]);
+
+			INotification notification = new NewFileNotification(
+					request.getSource(), targets[i], fileTran.getToken(),
+					request.getFileName(), fileTran.getTransmissionTime(),
+					request.getMsgType());
+
+			try {
+				JPushUtil.getInstance().SendAllMessage(targets[i],
+						notification.getTitle(),
+						JsonUtil.toJsonString(notification));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
 	@Override
-	public FileTransmission SendFile2Multi(
-			FileMultiTransmissionRequest request, InputStream input)
-			throws IOException, PushNotificationFailedException,
-			PersistenceException {
+	public void SendFile2Multi(FileMultiTransmissionRequest request,
+			InputStream input) throws IOException,
+			PushNotificationFailedException, PersistenceException {
 		String fileName = UUID.randomUUID().toString();
 		String filePath = FileUtil.GenPathForFileTransmission("",
 				request.getFileName(), fileName, request.getMsgType());
@@ -120,36 +152,37 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			throw e;
 		}
 
-		String[] targets = request.getTargets().split(",");
-		FileTransmission fileTran = null;
+		final String[] targets = request.getTargets().split(",");
+
+		if (null == targets)
+			return;
+
+		Map<String, FileTransmission> fileMap = new Hashtable<String, FileTransmission>();
+
 		for (int i = 0; i < targets.length; i++) {
+			if (StringUtil.isEmptyOrNull(targets[i]))
+				continue;
+
 			FileTransmissionRequest fReq = new FileTransmissionRequest();
 			fReq.setFileName(request.getFileName());
 			fReq.setSource(request.getSource());
 			fReq.setTarget(targets[i]);
 			fReq.setMsgType(request.getMsgType());
 			String token = UUID.randomUUID().toString();
-			fileTran = RequestDaoUtil.toFileTransmission(fReq, filePath, token);
+			FileTransmission fileTran = RequestDaoUtil.toFileTransmission(fReq,
+					filePath, token);
+			fileMap.put(targets[i], fileTran);
+
 			try {
 				fileTransmissionDao.AddFileTranmission(fileTran);
-			} catch (Exception e) {
-				throw new PersistenceException(e.getMessage(), e);
-			}
-
-			INotification notification = new NewFileNotification(
-					fileTran.getSource(), fileTran.getTarget(),
-					fileTran.getToken(), request.getFileName(),
-					fileTran.getTransmissionTime(), fileTran.getMsgType());
-
-			try {
-				JPushUtil.getInstance().SendAllMessage(fileTran.getTarget(),
-						notification.getTitle(),
-						JsonUtil.toJsonString(notification));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		return fileTran;
+
+		MultiFileCourier courier = new MultiFileCourier(targets, fileMap,
+				request, filePath);
+		CallableQueue.getInstance().Queue(courier);
 	}
 
 	@Override
@@ -219,6 +252,34 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 						Contants.LARGEIMG_WIDTH, Contants.LARGEIMG_HEIGHT,
 						"PNG");
 			}
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private class MultiFileCourier implements Callable {
+		String[] targets;
+		FileMultiTransmissionRequest request;
+		String filePath;
+		Map<String, FileTransmission> fileMap;
+
+		MultiFileCourier(String[] targets,
+				Map<String, FileTransmission> fileMap,
+				FileMultiTransmissionRequest request, String filePath) {
+			this.targets = targets;
+			this.fileMap = fileMap;
+			this.request = request;
+			this.filePath = filePath;
+		}
+
+		@Override
+		public Object call() throws Exception {
+			// TODO Auto-generated method stub
+			try {
+				SendMultiFileMsg(targets, fileMap, request, filePath);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
 		}
 
 	}

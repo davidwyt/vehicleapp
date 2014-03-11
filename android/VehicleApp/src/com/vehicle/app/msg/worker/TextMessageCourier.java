@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.widget.Toast;
 
 import com.vehicle.app.activities.ChatActivity;
 import com.vehicle.app.db.DBManager;
@@ -14,7 +13,7 @@ import com.vehicle.app.msg.bean.MessageFlag;
 import com.vehicle.app.msg.bean.RecentMessage;
 import com.vehicle.app.msg.bean.TextMessage;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.JsonUtil;
+import com.vehicle.app.utils.StringUtil;
 import com.vehicle.sdk.client.VehicleClient;
 import com.vehicle.service.bean.BaseResponse;
 import com.vehicle.service.bean.MessageOne2MultiResponse;
@@ -43,6 +42,30 @@ public class TextMessageCourier extends MessageBaseCourier {
 
 		AsyncTask<Void, Void, BaseResponse> sendAsync = new AsyncTask<Void, Void, BaseResponse>() {
 
+			private void processMessage(TextMessage msg) {
+				try {
+					DBManager dbMgr = new DBManager(context);
+					dbMgr.insertTextMessage(msg);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				try {
+					RecentMessage recentMsg = new RecentMessage();
+					recentMsg.setSelfId(SelfMgr.getInstance().getId());
+					recentMsg.setFellowId(msg.getTarget());
+					recentMsg.setMessageType(msg.getMessageType());
+					recentMsg.setContent(msg.getContent());
+					recentMsg.setSentTime(msg.getSentTime());
+					recentMsg.setMessageId(msg.getId());
+
+					updateRecentMessage(recentMsg);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
 			@Override
 			protected BaseResponse doInBackground(Void... params) {
 				// TODO Auto-generated method stub
@@ -64,8 +87,6 @@ public class TextMessageCourier extends MessageBaseCourier {
 							resp = client.SendMultiLocationMessage(msg.getTarget(), msg.getContent());
 						} else {
 							resp = client.SendLocationMessage(msg.getTarget(), msg.getContent());
-
-							Toast.makeText(context, JsonUtil.toJsonString(msg), Toast.LENGTH_LONG).show();
 						}
 					}
 
@@ -82,6 +103,29 @@ public class TextMessageCourier extends MessageBaseCourier {
 
 					if (isGroupChat) {
 						MessageOne2MultiResponse multiResp = (MessageOne2MultiResponse) resp;
+						msg.setId(multiResp.getMsgId());
+
+						String targets = msg.getTarget();
+						if (!StringUtil.IsNullOrEmpty(targets)) {
+							String[] targetArray = msg.getTarget().split(Constants.COMMA);
+							if (null != targetArray) {
+								for (String tar : targetArray) {
+									if (!StringUtil.IsNullOrEmpty(tar)) {
+										TextMessage textMsg = new TextMessage();
+										textMsg.setContent(msg.getContent());
+										textMsg.setId("groupmsg");
+										textMsg.setSource(msg.getSource());
+										textMsg.setTarget(tar);
+										textMsg.setFlag(MessageFlag.SELF);
+										textMsg.setSentTime(msg.getSentTime());
+										textMsg.setMessageType(msg.getMessageType());
+
+										this.processMessage(textMsg);
+									}
+								}
+							}
+						}
+
 						// msg.setSentTime(multiResp.getMsgSentTime());
 					} else {
 
@@ -90,27 +134,7 @@ public class TextMessageCourier extends MessageBaseCourier {
 						// msg.setSentTime(oneResp.getMsgSentTime());
 						msg.setFlag(MessageFlag.SELF);
 
-						try {
-							DBManager dbMgr = new DBManager(context);
-							dbMgr.insertTextMessage(msg);
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
-						try {
-							RecentMessage recentMsg = new RecentMessage();
-							recentMsg.setSelfId(SelfMgr.getInstance().getId());
-							recentMsg.setFellowId(msg.getTarget());
-							recentMsg.setMessageType(msg.getMessageType());
-							recentMsg.setContent(msg.getContent());
-							recentMsg.setSentTime(msg.getSentTime());
-							recentMsg.setMessageId(msg.getId());
-
-							updateRecentMessage(recentMsg);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						processMessage(msg);
 
 						System.out.println("send msg success:" + oneResp.getMsgId());
 					}

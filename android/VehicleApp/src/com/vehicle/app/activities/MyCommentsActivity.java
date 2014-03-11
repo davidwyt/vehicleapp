@@ -1,8 +1,11 @@
 package com.vehicle.app.activities;
 
+import java.util.List;
+
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.adapter.CommentsViewAdapter;
+import com.vehicle.app.bean.Comment;
 import com.vehicle.app.mgrs.SelfMgr;
 
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MyCommentsActivity extends TemplateActivity {
 	private BaseAdapter mAdapter;
@@ -31,7 +35,7 @@ public class MyCommentsActivity extends TemplateActivity {
 
 		initView();
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -54,7 +58,6 @@ public class MyCommentsActivity extends TemplateActivity {
 				finish();
 			}
 		});
-
 	}
 
 	@Override
@@ -65,11 +68,22 @@ public class MyCommentsActivity extends TemplateActivity {
 
 	private void initData() {
 		if (SelfMgr.getInstance().isDriver()) {
-			this.mAdapter = new CommentsViewAdapter(LayoutInflater.from(getApplicationContext()), SelfMgr.getInstance()
-					.getSelfDriver().getComments(), true);
+			List<Comment> comments = SelfMgr.getInstance().getSelfDriver().getComments();
+			this.mAdapter = new CommentsViewAdapter(LayoutInflater.from(getApplicationContext()), comments, true);
+			if (null == comments || comments.size() <= 0) {
+				Toast.makeText(getApplicationContext(), this.getString(R.string.tip_nocomments), Toast.LENGTH_LONG)
+						.show();
+				return;
+			}
 		} else {
-			this.mAdapter = new CommentsViewAdapter(LayoutInflater.from(getApplicationContext()), SelfMgr.getInstance()
-					.getSelfVendor().getComments(), false);
+			List<Comment> comments = SelfMgr.getInstance().getSelfVendor().getComments();
+			if (null == comments || comments.size() <= 0) {
+				Toast.makeText(getApplicationContext(), this.getString(R.string.tip_nocomments), Toast.LENGTH_LONG)
+						.show();
+				return;
+			}
+
+			this.mAdapter = new CommentsViewAdapter(LayoutInflater.from(getApplicationContext()), comments, false);
 		}
 
 		mLVComments.setAdapter(mAdapter);

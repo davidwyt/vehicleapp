@@ -22,7 +22,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/selector_btn_gobak" />
 
             <Button
@@ -31,7 +33,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/selector_btn_save" />
 
             <TextView
@@ -46,7 +51,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:singleLine="true"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="20sp" >
             </TextView>
         </RelativeLayout>
@@ -56,7 +61,15 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="8dp" >
+            android:layout_marginBottom="8dp"
+            android:background="@color/gray2" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/gray" >
+            </View>
 
             <Button
                 android:id="@+id/chat_btn_send"
@@ -120,8 +133,8 @@
             android:layout_width="192dp"
             android:layout_height="192dp"
             android:layout_centerInParent="true"
-            android:visibility="gone"
-            android:background="@drawable/selector_button_speak" />
+            android:background="@drawable/selector_button_speak"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </merge>

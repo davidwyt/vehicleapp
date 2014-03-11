@@ -133,7 +133,7 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 
 		this.mComment = (EditText) this.findViewById(R.id.vendorrating_et_comment);
 
-		this.mBtnBak = (Button) this.findViewById(R.id.vendorrating_goback);
+		this.mBtnBak = (Button) this.findViewById(R.id.vendorrating_btn_back);
 		this.mBtnBak.setOnClickListener(this);
 
 		this.mBtnOK = (Button) this.findViewById(R.id.vendorrating_submit);
@@ -482,7 +482,6 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 
 	private void back() {
 		this.finish();
-		finish();
 	}
 
 	class CommentResultReceiver extends BroadcastReceiver {
@@ -494,6 +493,7 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 			if (Constants.ACTION_VENDORCOMMENT_SUCCESS.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_commentsuccess),
 						Toast.LENGTH_LONG).show();
+				finish();
 			} else if (Constants.ACTION_VENDORCOMMENT_FAILED.equals(action)) {
 				String msg = intent.getStringExtra(KEY_COMMENT_ERRMSG);
 				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
@@ -505,7 +505,7 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
-		case R.id.vendorrating_goback:
+		case R.id.vendorrating_btn_back:
 			back();
 			break;
 		case R.id.vendorrating_submit:

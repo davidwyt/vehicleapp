@@ -1,5 +1,6 @@
 package com.vehicle.app.activities;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,27 +9,48 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.vehicle.app.adapter.MyFellowsViewAdapter;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.bean.VendorImage;
+import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.utils.ActivityUtil;
+import com.vehicle.app.utils.HttpUtil;
+import com.vehicle.app.web.bean.VendorImgViewResult;
+import com.vehicle.app.web.bean.VendorSpecViewResult;
+import com.vehicle.app.web.bean.WebCallBaseResult;
+import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MyFellowListActivity extends TemplateActivity {
 
 	private PullToRefreshListView mPullRefreshListView;
 
-	private ImageView mTitle;
+	private TextView mTitle;
 
 	private BaseAdapter mAdapter;
+
+	private View mMyFormView;
+	private View mMyStatusView;
+	private TextView mMyStatusMessageView;
+
+	private ViewMyFellowTask mViewFellowTask = null;
 
 	@SuppressWarnings("rawtypes")
 	private List mListFellows = new ArrayList();
@@ -52,16 +74,32 @@ public class MyFellowListActivity extends TemplateActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	private void initView() {
+
+		this.mMyFormView = this.findViewById(R.id.myfellows_form);
+		this.mMyStatusView = this.findViewById(R.id.myfellow_status);
+		this.mMyStatusMessageView = (TextView) this.findViewById(R.id.myfellow_status_message);
+
 		mPullRefreshListView = (PullToRefreshListView) this.findViewById(R.id.myfellows);
-		this.mTitle = (ImageView) this.findViewById(R.id.myfellowlist_title);
+		this.mTitle = (TextView) this.findViewById(R.id.myfellowlist_title_nametv);
 
 		if (SelfMgr.getInstance().isDriver()) {
-			this.mTitle.setImageResource(R.drawable.icon_title_myfavvendors);
+			this.mTitle.setText(this.getString(R.string.title_myfavvendor));
 		} else {
-			this.mTitle.setImageResource(R.drawable.icon_title_myfellowdrivers);
+			this.mTitle.setText(this.getString(R.string.title_myvendorfellow));
 		}
+
+		Button bakBtn = (Button) this.findViewById(R.id.myfellowlist_goback);
+		bakBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				onBackPressed();
+				finish();
+			}
+		});
 
 		mPullRefreshListView.setMode(Mode.DISABLED);
 
@@ -73,10 +111,9 @@ public class MyFellowListActivity extends TemplateActivity {
 				Object user = mListFellows.get(position - 1);
 				if (SelfMgr.getInstance().isDriver() && user instanceof Vendor) {
 					Vendor vendor = (Vendor) user;
-					Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
-					intent.putExtra(VendorHomeActivity.KEY_VENDORID, vendor.getId());
-					intent.putExtra(VendorHomeActivity.KEY_PERSPECTIVE, VendorHomeActivity.PERSPECTIVE_FELLOW);
-					startActivity(intent);
+					if (null != vendor)
+						attempViewFellow(vendor.getId());
+
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
 					Driver driver = (Driver) user;
 					Intent intent = new Intent(getApplicationContext(), DriverHomeActivity.class);
@@ -90,6 +127,13 @@ public class MyFellowListActivity extends TemplateActivity {
 		this.mAdapter = new MyFellowsViewAdapter(this, this.mListFellows);
 		ListView actualListView = mPullRefreshListView.getRefreshableView();
 		actualListView.setAdapter(mAdapter);
+	}
+
+	private void startVendorHome(String id) {
+		Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
+		intent.putExtra(VendorHomeActivity.KEY_VENDORID, id);
+		intent.putExtra(VendorHomeActivity.KEY_PERSPECTIVE, VendorHomeActivity.PERSPECTIVE_FELLOW);
+		startActivity(intent);
 	}
 
 	@Override
@@ -114,5 +158,103 @@ public class MyFellowListActivity extends TemplateActivity {
 	@Override
 	protected void onStop() {
 		super.onStop();
+	}
+
+	private void attempViewFellow(String id) {
+
+		if (SelfMgr.getInstance().isDriver()) {
+			if (SelfMgr.getInstance().isFavVendorDetailExist(id)) {
+				startVendorHome(id);
+				return;
+			}
+		}
+
+		if (null != this.mViewFellowTask)
+			return;
+
+		if (SelfMgr.getInstance().isDriver()) {
+			mMyStatusMessageView.setText(R.string.tip_myfellowvendorstatustext);
+		} else {
+		}
+
+		ActivityUtil.showProgress(getApplicationContext(), mMyStatusView, mMyFormView, true);
+		mViewFellowTask = new ViewMyFellowTask();
+		mViewFellowTask.execute(id);
+	}
+
+	private class ViewMyFellowTask extends AsyncTask<String, Void, WebCallBaseResult> {
+		private String fellowId;
+
+		@Override
+		protected WebCallBaseResult doInBackground(String... params) {
+			// TODO: attempt authentication against a network service.
+			fellowId = params[0];
+			WebCallBaseResult result = null;
+			try {
+				// Simulate network access.
+				if (SelfMgr.getInstance().isDriver()) {
+					VehicleWebClient webClient = new VehicleWebClient();
+					result = webClient.VendorSpecView(fellowId);
+
+					if (null != result && result.isSuccess()) {
+						VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
+						VendorDetail vendor = vendorView.getInfoBean();
+
+						if (null != vendor) {
+							SelfMgr.getInstance().updateFavVendorDetail(vendor);
+						}
+					} else {
+						return null;
+					}
+
+					result = webClient.VendorImgView(fellowId);
+					if (null != result && result.isSuccess()) {
+						VendorDetail vendor = SelfMgr.getInstance().getFavVendorDetail(fellowId);
+						List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
+						if (null != imgs) {
+							for (VendorImage img : imgs) {
+								String imgUrl = img.getSrc();
+								try {
+									if (!BitmapCache.getInstance().contains(imgUrl)) {
+										InputStream input = HttpUtil.DownloadFile(imgUrl);
+										Bitmap bitmap = BitmapFactory.decodeStream(input);
+										BitmapCache.getInstance().put(imgUrl, bitmap);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						vendor.setImgs(imgs);
+					}
+				} else {
+
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(final WebCallBaseResult result) {
+			mViewFellowTask = null;
+			ActivityUtil.showProgress(getApplicationContext(), mMyStatusView, mMyFormView, false);
+
+			if (null != result && result.isSuccess()) {
+				startVendorHome(fellowId);
+			} else {
+				Toast.makeText(MyFellowListActivity.this,
+						getResources().getString(R.string.tip_loadvendordetailfailed), Toast.LENGTH_LONG).show();
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			mViewFellowTask = null;
+			ActivityUtil.showProgress(getApplicationContext(), mMyStatusView, mMyFormView, false);
+		}
 	}
 }

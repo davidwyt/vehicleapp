@@ -59,20 +59,20 @@ public class DBManager {
 	private final static String SQL_TOPMSG_UPDATE = "UPDATE `TOPMESSAGE` SET `TOPMSG` = ? WHERE `HOST` = ?;";
 	private final static String SQL_TOPMSG_SELECT = "SELECT `TOPMSG` FROM `TOPMESSAGE` WHERE `HOST` = ?;";
 
-	private final static String SQL_LASTONBOARD_SELECT = "SELECT `USERNAME`, `PASSWORD`, `ROLE`, `AUTOLOG` FROM `LASTONBOARDROLE`;";
+	private final static String SQL_LASTONBOARD_SELECT = "SELECT `USERNAME`, `PASSWORD`, `ROLE`, `AUTOLOG` FROM `LASTONBOARDROLE` WHERE `ROLE` = ?;";
 	private final static String SQL_LASTONBOARD_INSERT = "INSERT INTO `LASTONBOARDROLE` (`USERNAME`, `PASSWORD`, `ROLE`, `AUTOLOG`) VALUES(?, ?, ?, ?);";
-	private final static String SQL_LASTONBOARD_DELETEALL = "DELETE FROM `LASTONBOARDROLE`;";
+	private final static String SQL_LASTONBOARD_DELETEALL = "DELETE FROM `LASTONBOARDROLE` WHERE `ROLE` = ?;";
 
 	public DBManager(Context context) {
 		mDBHelper = new DBHelper(context);
 	}
 
-	public RoleInfo selectLastOnBoard() {
+	public RoleInfo selectLastOnBoard(int roleType) {
 		lock.lock();
 		SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
 		try {
-			Cursor cursor = db.rawQuery(SQL_LASTONBOARD_SELECT, new String[] {});
+			Cursor cursor = db.rawQuery(SQL_LASTONBOARD_SELECT, new String[] { Integer.toString(roleType) });
 
 			if (cursor.getCount() > 0) {
 				cursor.moveToFirst();
@@ -112,6 +112,7 @@ public class DBManager {
 			db.beginTransaction();
 
 			SQLiteStatement delStmt = db.compileStatement(SQL_LASTONBOARD_DELETEALL);
+			delStmt.bindLong(1, role);
 			delStmt.executeUpdateDelete();
 
 			SQLiteStatement insertStmt = db.compileStatement(SQL_LASTONBOARD_INSERT);
