@@ -1,10 +1,18 @@
 package com.vehicle.sdk.client;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import com.vehicle.app.bean.VendorCoupon;
+import com.vehicle.app.bean.VendorDetail;
+import com.vehicle.app.bean.VendorImage;
+import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.StringUtil;
@@ -35,7 +43,7 @@ public class VehicleWebClient {
 
 	private final static String URL_DEFAULTROOT = "http://mobiles.ac0086.com";
 
-	private final static String URL_DRIVER_LOGIN = "index/login?userName=%s&pass=%s";
+	private final static String URL_DRIVER_LOGIN = "index/login2?userName=%s&pass=%s";
 	private final static String URL_DRIVER_REGISTER = "personal/personalCreate?userName=%s&pass=%s&email=%s";
 	private final static String URL_DRIVERI_VIEW = "personal/personalView?memberId=%s";
 	private final static String URL_DRIVERLIST_VIEW = "personal/personalListView?memberId=%s";
@@ -244,5 +252,72 @@ public class VehicleWebClient {
 		url = String.format(url, memberId, shopId, URLEncoder.encode(email, "UTF-8"),
 				URLEncoder.encode(content, "UTF-8"));
 		return HttpUtil.PostJson(url, null, AdviceResult.class);
+	}
+
+	public VendorSpecViewResult ViewVendorAllDetail(String vendorId) {
+		VendorDetail detail = null;
+		VendorSpecViewResult result = null;
+
+		try {
+			result = this.VendorSpecView(vendorId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (null != result && result.isSuccess()) {
+			VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
+			detail = vendorView.getInfoBean();
+		} else {
+			return null;
+		}
+
+		VendorImgViewResult imgResult = null;
+		try {
+			imgResult = this.VendorImgView(vendorId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		if (null != imgResult && imgResult.isSuccess()) {
+			List<VendorImage> imgs = ((VendorImgViewResult) imgResult).getInfoBean();
+			if (null != imgs) {
+				for (VendorImage img : imgs) {
+					String imgUrl = img.getSrc();
+
+					if (!StringUtil.IsNullOrEmpty(imgUrl) && !BitmapCache.getInstance().contains(imgUrl)) {
+						try {
+							InputStream input = HttpUtil.DownloadFile(imgUrl);
+							Bitmap bitmap = BitmapFactory.decodeStream(input);
+							BitmapCache.getInstance().put(imgUrl, bitmap);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			if (null != detail)
+				detail.setImgs(imgs);
+		}
+
+		if (null != detail) {
+			List<VendorCoupon> coupons = detail.getCoupons();
+			if (null != coupons) {
+				for (VendorCoupon coupon : coupons) {
+					String url = coupon.getContent();
+					if (!StringUtil.IsNullOrEmpty(url)) {
+						try {
+							if (!BitmapCache.getInstance().contains(url)) {
+								InputStream input = HttpUtil.DownloadFile(url);
+								Bitmap bitmap = BitmapFactory.decodeStream(input);
+								BitmapCache.getInstance().put(url, bitmap);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		return result;
 	}
 }

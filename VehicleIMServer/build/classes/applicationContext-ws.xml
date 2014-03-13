@@ -27,5 +27,10 @@
 			<ref bean="loginService" />
 		</property>
 	</bean>
+	<bean id="upgradeRest" class="com.vehicle.imserver.ws.UpgradeRest">
+		<property name="upgradeService">
+			<ref bean="upgradeService" />
+		</property>
+	</bean>
 
 </beans>

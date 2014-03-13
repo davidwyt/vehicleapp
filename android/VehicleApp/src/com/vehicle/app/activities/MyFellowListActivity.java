@@ -1,6 +1,5 @@
 package com.vehicle.app.activities;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,20 +9,14 @@ import com.vehicle.app.adapter.MyFellowsViewAdapter;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
-import com.vehicle.app.bean.VendorImage;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.HttpUtil;
-import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -194,7 +187,7 @@ public class MyFellowListActivity extends TemplateActivity {
 				// Simulate network access.
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient webClient = new VehicleWebClient();
-					result = webClient.VendorSpecView(fellowId);
+					result = webClient.ViewVendorAllDetail(fellowId);
 
 					if (null != result && result.isSuccess()) {
 						VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
@@ -203,30 +196,8 @@ public class MyFellowListActivity extends TemplateActivity {
 						if (null != vendor) {
 							SelfMgr.getInstance().updateFavVendorDetail(vendor);
 						}
-					} else {
-						return null;
 					}
 
-					result = webClient.VendorImgView(fellowId);
-					if (null != result && result.isSuccess()) {
-						VendorDetail vendor = SelfMgr.getInstance().getFavVendorDetail(fellowId);
-						List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
-						if (null != imgs) {
-							for (VendorImage img : imgs) {
-								String imgUrl = img.getSrc();
-								try {
-									if (!BitmapCache.getInstance().contains(imgUrl)) {
-										InputStream input = HttpUtil.DownloadFile(imgUrl);
-										Bitmap bitmap = BitmapFactory.decodeStream(input);
-										BitmapCache.getInstance().put(imgUrl, bitmap);
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						}
-						vendor.setImgs(imgs);
-					}
 				} else {
 
 				}

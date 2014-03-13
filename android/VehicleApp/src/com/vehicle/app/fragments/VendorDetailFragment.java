@@ -76,6 +76,10 @@ public final class VendorDetailFragment extends Fragment {
 
 		if (null != vendor.getTelephone() && !vendor.getTelephone().isEmpty()
 				&& !vendor.getTelephone().equalsIgnoreCase("null")) {
+			if (!StringUtil.IsNullOrEmpty(strPhone)) {
+				strPhone += "  ";
+			}
+			
 			strPhone += vendor.getTelephone();
 		}
 
@@ -113,7 +117,7 @@ public final class VendorDetailFragment extends Fragment {
 						phone = vendor.getTelephone();
 					}
 					if (null != phone && !phone.isEmpty()) {
-						Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel://" + phone));
+						Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
 						startActivity(intent);
 					}
 				} catch (Exception e) {
@@ -129,8 +133,8 @@ public final class VendorDetailFragment extends Fragment {
 				// TODO Auto-generated method stub
 				try {
 					SimpleLocation loc = new SimpleLocation();
-					loc.setLatitude(vendor.getPointX());
-					loc.setLongitude(vendor.getPointY());
+					loc.setLatitude(vendor.getPointY());
+					loc.setLongitude(vendor.getPointX());
 
 					Intent intent = new Intent(inflater.getContext(), MapCameraActivity.class);
 					intent.putExtra(MapCameraActivity.KEY_POSITION, loc);

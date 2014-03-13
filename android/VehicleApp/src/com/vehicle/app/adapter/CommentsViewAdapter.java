@@ -65,7 +65,7 @@ public class CommentsViewAdapter extends BaseAdapter {
 		} else {
 			tvName.setText(comment.getAlias());
 		}
-		
+
 		RatingBar rbScore = (RatingBar) view.findViewById(R.id.ratingbar_score);
 		rbScore.setRating((float) comment.getScore());
 
@@ -91,6 +91,8 @@ public class CommentsViewAdapter extends BaseAdapter {
 			setImg(img2, paths, 1);
 			setImg(img3, paths, 2);
 			setImg(img4, paths, 3);
+		} else {
+			view.findViewById(R.id.vendorrating_imgs).setVisibility(View.GONE);
 		}
 		return view;
 	}
@@ -100,6 +102,5 @@ public class CommentsViewAdapter extends BaseAdapter {
 			String url = paths[index];
 			ImageUtil.RenderImageView(url, img, -1, -1);
 		}
-
 	}
 }

@@ -4,10 +4,13 @@ import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
 
+import com.vehicle.app.activities.ImgViewActivity;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorCoupon;
+import com.vehicle.app.utils.StringUtil;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -19,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @SuppressLint("ValidFragment")
 public class VendorCouponsFragment extends Fragment {
@@ -30,16 +34,16 @@ public class VendorCouponsFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View parent = inflater.inflate(R.layout.layout_vendorcoupons, container, false);
-		
+
 		TableLayout table = (TableLayout) parent.findViewById(R.id.table_promotion);
 		List<VendorCoupon> coupons = vendor.getCoupons();
 
 		if (null != coupons) {
 			for (int i = 0; i < coupons.size(); i++) {
 
-				VendorCoupon coupon = coupons.get(i);
+				final VendorCoupon coupon = coupons.get(i);
 
 				TableRow row = new TableRow(getActivity());
 
@@ -76,7 +80,16 @@ public class VendorCouponsFragment extends Fragment {
 					@Override
 					public void onClick(View view) {
 						// TODO Auto-generated method stub
+						if (StringUtil.IsNullOrEmpty(coupon.getContent())) {
+							Toast.makeText(getActivity(), getActivity().getString(R.string.tip_nocoupondetail),
+									Toast.LENGTH_LONG).show();
+							return;
+						}
 
+						Intent intent = new Intent(inflater.getContext(), ImgViewActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						intent.putExtra(ImgViewActivity.KEY_IMGURL, coupon.getContent());
+						inflater.getContext().startActivity(intent);
 					}
 				});
 
@@ -87,7 +100,7 @@ public class VendorCouponsFragment extends Fragment {
 
 				TableRow.LayoutParams dividerLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
 				dividerLayout.topMargin = 2;
-				
+
 				View divider = new View(getActivity());
 				divider.setLayoutParams(dividerLayout);
 				divider.setBackgroundColor(getResources().getColor(R.color.azure));
@@ -97,5 +110,5 @@ public class VendorCouponsFragment extends Fragment {
 		}
 		return parent;
 	}
-	
+
 }

@@ -1,5 +1,6 @@
 package com.vehicle.app.adapter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -60,6 +61,7 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 		TextView tvFeature = (TextView) view.findViewById(R.id.nearbyfellow_tv_feature);
 		TextView tvDistance = (TextView) view.findViewById(R.id.nearbyfellow_tv_distance);
 		ImageView ivHead = (ImageView) view.findViewById(R.id.nearbyfellow_iv_head);
+		TextView tvTime = (TextView) view.findViewById(R.id.nearbyfellow_tv_time);
 
 		Object fellow = this.fellows.get(pos);
 
@@ -79,7 +81,11 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 					+ inflater.getContext().getString(R.string.zh_kilometer);
 			url = driver.getAvatar();
 
+			tvTime.setVisibility(View.VISIBLE);
+			tvTime.setText(formatTime(inflater.getContext(), driver.getDuration()));
 		} else if (fellow instanceof Vendor && SelfMgr.getInstance().isDriver()) {
+
+			tvTime.setVisibility(View.GONE);
 
 			Vendor vendor = (Vendor) fellow;
 			name = vendor.getName();
@@ -102,4 +108,16 @@ public class NearbyFellowsViewAdapter extends BaseAdapter {
 		return view;
 	}
 
+	private String formatTime(Context context, long time) {
+		if (time < 60 * 1000) {
+			return new BigDecimal((double) (time / 1000.0)).setScale(0, BigDecimal.ROUND_HALF_UP)
+					+ context.getString(R.string.zh_second);
+		} else if (time < 60 * 60 * 1000) {
+			return new BigDecimal((double) (time / (60 * 1000.0))).setScale(0, BigDecimal.ROUND_HALF_UP)
+					+ context.getString(R.string.zh_minute);
+		} else {
+			return new BigDecimal((double) (time / (60 * 60 * 1000.0))).setScale(0, BigDecimal.ROUND_HALF_UP)
+					+ context.getString(R.string.zh_hour);
+		}
+	}
 }

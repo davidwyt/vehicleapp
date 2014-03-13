@@ -51,7 +51,8 @@ public class FileTransmissionRest {
 
 	@POST
 	@Path("send/source={source}&&target={target}&&fileName={fileName}&&fileType={fileType}")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Consumes({ MediaType.APPLICATION_OCTET_STREAM,
+			MediaType.MULTIPART_FORM_DATA })
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response TransmitFile(@Context HttpServletRequest request,
 			InputStream input, @PathParam("source") String source,

@@ -3,6 +3,8 @@ package com.vehicle.sdk.client;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import com.vehicle.app.mgrs.SelfMgr;
@@ -52,14 +54,14 @@ import com.vehicle.service.bean.MessageOne2OneResponse;
 
 public class VehicleClient {
 
-	// private static String URL_DEFAULTSERVERROOT =
-	// "http://103.21.140.232:81/VehicleIMServer/rest";
+	private static String URL_DEFAULTSERVERROOT = "http://103.21.140.232:81/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
 	// "http://192.168.20.20:8080/VehicleIMServer/rest";
 	// private static String URL_DEFAULTSERVERROOT =
 	// "http://10.0.2.2:8080/VehicleIMServer/rest";
 
-	private static String URL_DEFAULTSERVERROOT = "http://192.168.1.100:8080/VehicleIMServer/rest";
+	// private static String URL_DEFAULTSERVERROOT =
+	// "http://192.168.1.100:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -233,20 +235,25 @@ public class VehicleClient {
 		HttpUtil.PostJson(url, request, MessageOne2FolloweesResponse.class);
 	}
 
-	public FileTransmissionResponse SendFile(String target, String filePath, int type) {
+	public FileTransmissionResponse SendFile(String target, String filePath, int type)
+			throws UnsupportedEncodingException {
 		File file = new File(filePath);
 
-		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
-				String.format(URL_FILETRANSMISSION_SEND, source, target, file.getName(), type));
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT, String.format(
+				URL_FILETRANSMISSION_SEND, source, target, URLEncoder.encode(file.getName(), "UTF-8"), type));
 
 		return HttpUtil.UploadFile(url, filePath, FileTransmissionResponse.class);
 	}
 
-	public FileMultiTransmissionResponse SendMultiFile(String targets, String filePath, int type) {
+	public FileMultiTransmissionResponse SendMultiFile(String targets, String filePath, int type)
+			throws UnsupportedEncodingException {
 		File file = new File(filePath);
 
-		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
-				String.format(URL_FILEMULTITRANSMISSION_SEND, source, targets, file.getName(), type));
+		String url = URLUtil.UrlAppend(
+				URL_SERVERROOT,
+				URL_FILETRANSMISSION_ROOT,
+				String.format(URL_FILEMULTITRANSMISSION_SEND, source, targets,
+						URLEncoder.encode(file.getName(), "UTF-8"), type));
 
 		return HttpUtil.UploadFile(url, filePath, FileMultiTransmissionResponse.class);
 	}
@@ -400,11 +407,11 @@ public class VehicleClient {
 		return response;
 	}
 
-	public CommentFileResponse UploadCommentImg(String filePath) {
+	public CommentFileResponse UploadCommentImg(String filePath) throws UnsupportedEncodingException {
 		File file = new File(filePath);
 
 		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_FILETRANSMISSION_ROOT,
-				String.format(URL_FILETRANSMISSION_COMMENTIMG, file.getName()));
+				String.format(URL_FILETRANSMISSION_COMMENTIMG, URLEncoder.encode(file.getName(), "UTF-8")));
 
 		return HttpUtil.UploadFile(url, filePath, CommentFileResponse.class);
 	}

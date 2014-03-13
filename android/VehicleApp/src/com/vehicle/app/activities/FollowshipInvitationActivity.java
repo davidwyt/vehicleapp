@@ -1,12 +1,8 @@
 package com.vehicle.app.activities;
 
-import java.io.InputStream;
 import java.util.Date;
-import java.util.List;
 
 import com.vehicle.app.bean.VendorDetail;
-import com.vehicle.app.bean.VendorImage;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.FollowshipInvitationMessage;
 import com.vehicle.app.msg.bean.InvitationVerdict;
@@ -16,8 +12,6 @@ import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.InvitationVerdictMessageCourier;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.HttpUtil;
-import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
@@ -27,8 +21,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -186,31 +178,13 @@ public class FollowshipInvitationActivity extends TemplateActivity implements On
 			WebCallBaseResult result = null;
 			try {
 				VehicleWebClient webClient = new VehicleWebClient();
-				result = webClient.VendorSpecView(mInvitation.getSource());
+				result = webClient.ViewVendorAllDetail(mInvitation.getSource());
 
-				VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
-				VendorDetail vendor = vendorView.getInfoBean();
-
-				SelfMgr.getInstance().putUnknownVendorDetail(vendor);
-
-				result = webClient.VendorImgView(mInvitation.getSource());
 				if (null != result && result.isSuccess()) {
-					List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
-					if (null != imgs) {
-						for (VendorImage img : imgs) {
-							String imgUrl = img.getSrc();
-							try {
-								if (!BitmapCache.getInstance().contains(imgUrl)) {
-									InputStream input = HttpUtil.DownloadFile(imgUrl);
-									Bitmap bitmap = BitmapFactory.decodeStream(input);
-									BitmapCache.getInstance().put(imgUrl, bitmap);
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					vendor.setImgs(imgs);
+					VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
+					VendorDetail vendor = vendorView.getInfoBean();
+
+					SelfMgr.getInstance().putUnknownVendorDetail(vendor);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -278,12 +252,21 @@ public class FollowshipInvitationActivity extends TemplateActivity implements On
 			if (Constants.ACTION_INVVERDICT_ACCEPTSUCCESS.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_invverdictacceptsuccess),
 						Toast.LENGTH_LONG).show();
+				try {
+					Intent contactIntent = new Intent();
+					contactIntent.setClass(getApplicationContext(), RecentContactListActivity.class);
+					startActivity(contactIntent);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else if (Constants.ACTION_INVVERDICT_ACCEPTFAILED.equals(action)) {
 				String error = intent.getStringExtra(KEY_INVVERDICT_ERRORMSG);
 				Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
 			} else if (Constants.ACTION_INVVERDICT_REJECTSUCCESS.equals(action)) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_invverdictrejectsuccess),
 						Toast.LENGTH_LONG).show();
+				onBackPressed();
+				finish();
 			} else if (Constants.ACTION_INVVERDICT_REJECTFAILED.equals(action)) {
 				String error = intent.getStringExtra(KEY_INVVERDICT_ERRORMSG);
 				Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();

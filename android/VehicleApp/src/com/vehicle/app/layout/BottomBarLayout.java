@@ -34,9 +34,9 @@ public class BottomBarLayout extends LinearLayout {
 		Button btnMiddle = (Button) this.findViewById(R.id.bar_rabtn_middle);
 
 		if (SelfMgr.getInstance().isDriver()) {
-			btnMiddle.setBackgroundResource(R.drawable.selector_button_bottomdriver);
-		} else {
 			btnMiddle.setBackgroundResource(R.drawable.selector_button_bottomvendor);
+		} else {
+			btnMiddle.setBackgroundResource(R.drawable.selector_button_bottomdriver);
 		}
 	}
 }

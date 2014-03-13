@@ -31,6 +31,8 @@ public class Contants {
 	public static final String HQL_SELECT_ALLNEWFILE = "FROM com.vehicle.imserver.dao.bean.FileTransmission WHERE target=:target and status=:sent";
 	public static final String HQL_UPDATE_ALLNEWMESSAGE = "UPDATE com.vehicle.imserver.dao.bean.Message SET status=:received WHERE target=:target and status=:sent";
 
+	public static final String HQL_SELECT_LATESTVERSION = "FROM com.vehicle.imserver.dao.bean.VersionInfo ORDER BY majorVersion DESC, minorVersion DESC";
+
 	public static final int SMALLIMG_WIDTH = 150;
 	public static final int SMALLIMG_HEIGHT = 150;
 	public static final int MIDDLEIMG_WIDTH = 480;

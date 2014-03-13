@@ -42,7 +42,8 @@ public class VendorCommentMessageCourier extends MessageBaseCourier {
 			@Override
 			protected AddCommentResult doInBackground(Void... arg0) {
 				// TODO Auto-generated method stub
-				AddCommentResult result = null;
+				AddCommentResult result = new AddCommentResult();
+				result.setIsUploadFailed(false);
 				try {
 					String imgNames = "";
 
@@ -51,8 +52,13 @@ public class VendorCommentMessageCourier extends MessageBaseCourier {
 						for (int i = 0; i < imgPaths.size(); i++) {
 							String path = imgPaths.get(i);
 
-							VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
-							CommentFileResponse resp = client.UploadCommentImg(path);
+							CommentFileResponse resp = null;
+							try {
+								VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+								resp = client.UploadCommentImg(path);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							if (null != resp && resp.isSucess()) {
 								String name = resp.getFileName();
 								imgNames += name;
@@ -60,13 +66,15 @@ public class VendorCommentMessageCourier extends MessageBaseCourier {
 									imgNames += Constants.IMGNAME_DIVIDER;
 								}
 							} else {
-								throw new Exception("upload img failed");
+								System.err.println("upload file failed");
+								result.setIsUploadFailed(true);
+								return result;
 							}
 						}
 					}
 
 					System.out.println("img:" + imgNames);
-
+					result = null;
 					VehicleWebClient client = new VehicleWebClient();
 					result = client.AddComment(msg.getSource(), msg.getTarget(), msg.getComment(), msg.getPriceScore(),
 							msg.getTechnologyScore(), msg.getEfficiencyScore(), msg.getReceptionScore(),
@@ -83,13 +91,18 @@ public class VendorCommentMessageCourier extends MessageBaseCourier {
 
 				if (null != result && result.isSuccess()) {
 					System.out.println("add comment success");
-
 					Intent intent = new Intent(Constants.ACTION_VENDORCOMMENT_SUCCESS);
 					context.sendBroadcast(intent);
 				} else {
+					String msg = "";
+					if (null != result && result.getIsUploadFailed()) {
+						msg = context.getString(R.string.tip_uploadcommentimgfailed);
+					} else {
+						msg = null == result ? context.getResources().getString(R.string.tip_commentfailed) : context
+								.getResources().getString(R.string.tip_commentfailedformat, result.getMessage());
+					}
+
 					Intent intent = new Intent(Constants.ACTION_VENDORCOMMENT_FAILED);
-					String msg = null == result ? context.getResources().getString(R.string.tip_commentfailed)
-							: context.getResources().getString(R.string.tip_commentfailedformat, result.getMessage());
 					intent.putExtra(VendorRatingActivity.KEY_COMMENT_ERRMSG, msg);
 					context.sendBroadcast(intent);
 				}

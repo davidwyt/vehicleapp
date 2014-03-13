@@ -13,8 +13,27 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 
 import android.content.Context;
+import android.os.Environment;
 
 public class FileUtil {
+
+	public static String getTempImgPath() {
+
+		String root = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+				+ Environment.DIRECTORY_DCIM;
+		File path = new File(root + File.separator + "Image");
+		if (!path.exists()) {
+			try {
+				path.mkdirs();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		String filePath = path.getAbsolutePath() + File.separator + UUID.randomUUID().toString() + "."
+				+ Constants.POSTFIX_DEFAULT_IMAGE;
+		return filePath;
+	}
 
 	public static String AppendPath(String part1, String part2) {
 		String path = part1;

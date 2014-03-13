@@ -53,7 +53,7 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 	private Button mBtnShake;
 	private Button mBtnNext;
 	private TextView mTitleName;
-	//private ImageView mTitleIV;
+	// private ImageView mTitleIV;
 
 	private View mBottomBar;
 
@@ -93,7 +93,7 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 		this.mBtnBack.setOnClickListener(this);
 
 		this.mIvHead = (ImageView) this.findViewById(R.id.driverinfo_icon);
-		this.mTvName = (TextView) this.findViewById(R.id.driverinfo_name);
+		this.mTvName = (TextView) this.findViewById(R.id.driverinfo_addr);
 		this.mTvAge = (TextView) this.findViewById(R.id.driverinfo_age);
 		this.mTvSex = (TextView) this.findViewById(R.id.driverinfo_sex);
 		this.mTvPerInfo = (TextView) this.findViewById(R.id.driver_driverinfo);
@@ -109,7 +109,8 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 		this.mBtnNext.setOnClickListener(this);
 
 		this.mTitleName = (TextView) this.findViewById(R.id.driverinfo_title_nametv);
-		//this.mTitleIV = (ImageView) this.findViewById(R.id.driverinfo_title_nameiv);
+		// this.mTitleIV = (ImageView)
+		// this.findViewById(R.id.driverinfo_title_nameiv);
 		this.mBottomBar = this.findViewById(R.id.driverinfo_bottombar);
 
 		mDriverFormView = this.findViewById(R.id.driverinfo_form);
@@ -119,8 +120,6 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 
 	private void updateView(int pers) {
 
-		//this.mTitleIV.setVisibility(PERSPECTIVE_SELF == pers ? View.VISIBLE : View.GONE);
-		//this.mTitleName.setVisibility(PERSPECTIVE_SELF == pers ? View.GONE : View.VISIBLE);
 		this.mBottomBar.setVisibility(PERSPECTIVE_NEARBY == pers ? View.VISIBLE : View.GONE);
 		this.mBtnMsg.setVisibility(PERSPECTIVE_FELLOW == pers ? View.VISIBLE : View.GONE);
 	}
@@ -165,11 +164,14 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 		}
 
 		ImageUtil.RenderImageView(driver.getAvatar(), mIvHead, -1, -1);
-
 		this.mTitleName.setText(driver.getAlias());
-		this.mTvName.setText(driver.getAlias());
-		this.mTvAge.setText(driver.getBirthday());
-		this.mTvSex.setText(driver.getSex());
+		this.mTvName.setText(this.getString(R.string.zh_addr, null == driver.getProvince() ? "" : driver.getProvince(),
+				null == driver.getCity() ? "" : driver.getCity()));
+
+		this.mTvAge.setText(this.getString(R.string.zh_brithdayformat,
+				null == driver.getBirthday() ? "" : driver.getBirthday()));
+
+		this.mTvSex.setText(this.getString(R.string.zh_sex, null == driver.getSex() ? "" : driver.getSex()));
 
 		this.mTvPerInfo.setText(driver.getIntroduction());
 		this.mCarTable.removeAllViews();
@@ -242,7 +244,7 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		registerMessageReceiver();
 	}
 
@@ -262,6 +264,12 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 
 		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
+
+		if (!SelfMgr.getInstance().isLogin()) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			this.startActivity(intent);
+			return;
+		}
 
 		String curId = this.mNearbyDrivers.get(mCurIndex);
 		if (SelfMgr.getInstance().isVendorFellow(curId)) {

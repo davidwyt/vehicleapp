@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -439,7 +438,7 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 	private String curImgPath = "";
 
 	private void captureImage() {
-		this.curImgPath = this.getTempImgPath();
+		this.curImgPath = FileUtil.getTempImgPath();
 
 		System.out.println("generated img path:" + this.curImgPath);
 
@@ -787,21 +786,4 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 		}
 	}
 
-	private String getTempImgPath() {
-
-		String root = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-				+ Environment.DIRECTORY_DCIM;
-		File path = new File(root + File.separator + "Image");
-		if (!path.exists()) {
-			try {
-				path.mkdirs();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		String filePath = path.getAbsolutePath() + File.separator + UUID.randomUUID().toString() + "."
-				+ Constants.POSTFIX_DEFAULT_IMAGE;
-		return filePath;
-	}
 }

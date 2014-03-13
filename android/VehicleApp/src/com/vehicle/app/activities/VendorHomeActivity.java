@@ -1,17 +1,13 @@
 package com.vehicle.app.activities;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import junit.framework.Assert;
 
 import com.vehicle.app.adapter.VendorImagePageAdapter;
 import com.vehicle.app.adapter.VendorDetailFragmentAdapter;
 import com.vehicle.app.bean.VendorDetail;
-import com.vehicle.app.bean.VendorImage;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.FollowshipMessage;
 import com.vehicle.app.msg.bean.IMessageItem;
@@ -22,8 +18,6 @@ import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.TextMessageCourier;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
-import com.vehicle.app.utils.HttpUtil;
-import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
@@ -37,8 +31,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -92,7 +84,6 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 	private TextView mVendorStatusMessageView;
 
 	private ViewFellowTask mViewFellowTask = null;
-
 	private BroadcastReceiver mReceiver;
 
 	@Override
@@ -192,6 +183,8 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 					}
 
 					Assert.assertEquals(index >= 0, true);
+
+					System.out.println("nearby size:" + this.mNearbyVendors.size());
 
 					this.mCurIndex = index;
 
@@ -353,6 +346,18 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 		if (this.mPerspective != PERSPECTIVE_NEARBY)
 			return;
 
+		if (!SelfMgr.getInstance().isLogin()) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			this.startActivity(intent);
+			return;
+		}
+
+		if (SelfMgr.getInstance().isFavoriteVendor(this.mNearbyVendors.get(mCurIndex))) {
+			Toast.makeText(getApplicationContext(), this.getString(R.string.tip_followvendoryet), Toast.LENGTH_LONG)
+					.show();
+			return;
+		}
+
 		TextMessage entity = new TextMessage();
 		entity.setSource(SelfMgr.getInstance().getId());
 		entity.setTarget(this.mNearbyVendors.get(mCurIndex));
@@ -383,6 +388,7 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 
 		if (isExist) {
 			setVendorDetail(SelfMgr.getInstance().getNearbyVendorDetail(nextId));
+			mCurIndex++;
 			return;
 		}
 
@@ -402,6 +408,12 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 
 		if (this.mPerspective == PERSPECTIVE_SELF || this.mPerspective == PERSPECTIVE_INVITATION)
 			return;
+
+		if (!SelfMgr.getInstance().isLogin()) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			this.startActivity(intent);
+			return;
+		}
 
 		if (this.mPerspective == PERSPECTIVE_NEARBY) {
 			String curId = this.mNearbyVendors.get(mCurIndex);
@@ -436,7 +448,7 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 		finish();
 	}
 
-	public class ViewFellowTask extends AsyncTask<String, Void, WebCallBaseResult> {
+	private class ViewFellowTask extends AsyncTask<String, Void, WebCallBaseResult> {
 		private String fellowId;
 
 		@Override
@@ -446,46 +458,12 @@ public class VendorHomeActivity extends FragmentTemplateActivity implements OnCl
 			WebCallBaseResult result = null;
 			try {
 				VehicleWebClient webClient = new VehicleWebClient();
-				result = webClient.VendorSpecView(fellowId);
+				result = webClient.ViewVendorAllDetail(fellowId);
 
 				if (null != result && result.isSuccess()) {
 					VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
 					VendorDetail vendor = vendorView.getInfoBean();
-
 					SelfMgr.getInstance().updateNearbyVendorDetail(vendor);
-					/**
-					 * List<Comment> comments = vendor.getReviews(); if (null !=
-					 * comments && comments.size() > 0) { for (Comment comment :
-					 * comments) { String imgs = comment.getImgNamesM();
-					 * String[] names = imgs.split(Constants.IMGNAME_DIVIDER);
-					 * 
-					 * for (String name : names) { if (null != name &&
-					 * name.length() > 0) { String imgUrl =
-					 * Constants.getMiddleVendorImg(name); InputStream input =
-					 * HttpUtil.DownloadFile(imgUrl); Bitmap bitmap =
-					 * BitmapFactory.decodeStream(input);
-					 * BitmapCache.getInstance().put(imgUrl, bitmap); } } } }
-					 */
-				} else {
-					return null;
-				}
-
-				result = webClient.VendorImgView(fellowId);
-				if (null != result && result.isSuccess()) {
-					VendorDetail vendor = SelfMgr.getInstance().getNearbyVendorDetail(fellowId);
-					List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
-					if (null != imgs) {
-						for (VendorImage img : imgs) {
-							String imgUrl = img.getSrc();
-							if (!BitmapCache.getInstance().contains(imgUrl)) {
-								InputStream input = HttpUtil.DownloadFile(imgUrl);
-								Bitmap bitmap = BitmapFactory.decodeStream(input);
-								BitmapCache.getInstance().put(imgUrl, bitmap);
-							}
-						}
-					}
-
-					vendor.setImgs(imgs);
 				}
 
 			} catch (Exception e) {

@@ -112,13 +112,14 @@ public class SelfMgr {
 	}
 
 	public void updateNearbyVendorDetail(VendorDetail detail) {
-		this.mNearbyVendorDetailMap.put(detail.getVendor().getId(), detail);
+		if (null != detail)
+			this.mNearbyVendorDetailMap.put(detail.getVendor().getId(), detail);
 	}
 
 	public VendorDetail getNearbyVendorDetail(String id) {
 		return this.mNearbyVendorDetailMap.get(id);
 	}
-	
+
 	public Map<String, VendorDetail> getFavVendorDetailMap() {
 		return this.mFavVendorDetailMap;
 	}
@@ -128,7 +129,8 @@ public class SelfMgr {
 	}
 
 	public void updateFavVendorDetail(VendorDetail detail) {
-		this.mFavVendorDetailMap.put(detail.getVendor().getId(), detail);
+		if (null != detail)
+			this.mFavVendorDetailMap.put(detail.getVendor().getId(), detail);
 	}
 
 	public VendorDetail getFavVendorDetail(String id) {
@@ -335,14 +337,9 @@ public class SelfMgr {
 					}
 				}
 			} else {
-				/**
-				 * VehicleWebClient client = new VehicleWebClient();
-				 * NearbyDriverListViewResult result =
-				 * client.NearbyDriverListView(1, longitude, latitude);
-				 * this.mNearbyDriverMap.putAll(result.getResult());
-				 */
 
-				Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude, 30);
+				Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude,
+						Constants.LOCATION_DEFAULT_NEARBYDRIVERDISTANCE);
 				if (null != result) {
 					this.mNearbyDriverMap.putAll(result);
 				}
@@ -379,6 +376,7 @@ public class SelfMgr {
 				for (RangeInfo info : infos) {
 					Driver driver = drivers.get(info.getOwnerId());
 					driver.setDistance(info.getDistance());
+					driver.setDuration(info.getDuring());
 				}
 
 				return drivers;
@@ -613,12 +611,16 @@ public class SelfMgr {
 		return (this.mIsDriver && null != this.mSelfDriver) || (!this.mIsDriver && null != this.mSelfVendor);
 	}
 
+	public void clearAll() {
+		this.clearFellows();
+		this.clearNearby();
+		this.clearUnknown();
+		this.clearSelf();
+	}
+
 	public void doLogout(Context context) {
 		try {
-			this.clearFellows();
-			this.clearNearby();
-			this.clearUnknown();
-			this.clearSelf();
+			this.clearAll();
 			JPushInterface.setAliasAndTags(context, null, null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -635,6 +637,7 @@ public class SelfMgr {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 			if (null == loginResult || !loginResult.isSuccess()) {
 				return loginResult;
 			}
@@ -670,15 +673,6 @@ public class SelfMgr {
 				VendorImgViewResult imgResult = webClient.VendorImgView(this.getId());
 				if (null != imgResult && imgResult.isSuccess()) {
 					this.mSelfVendor.setImgs(imgResult.getInfoBean());
-
-					/**
-					 * List<VendorImage> imgs = imgResult.getInfoBean(); if
-					 * (null != imgs) { for (VendorImage img : imgs) { String
-					 * imgUrl = img.getSrc(); InputStream input =
-					 * HttpUtil.DownloadFile(imgUrl); Bitmap bitmap =
-					 * BitmapFactory.decodeStream(input);
-					 * BitmapCache.getInstance().put(imgUrl, bitmap); } }
-					 */
 				}
 
 				VendorSpecViewResult specView = webClient.VendorSpecView(this.getId());
@@ -694,7 +688,9 @@ public class SelfMgr {
 			}
 		}
 
-		JPushInterface.setAliasAndTags(context, SelfMgr.getInstance().getId(), null);
+		TopMsgerMgr.getInstance().init(context, getId());
+
+		JPushInterface.setAliasAndTags(context, getId(), null);
 
 		IMessageCourier courier = new WakeupMessageCourier(context);
 		courier.dispatch(null);

@@ -3,6 +3,7 @@ package com.vehicle.app.adapter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Vector;
 
 import com.vehicle.app.bean.Driver;
@@ -113,7 +114,9 @@ public class RecentContactListViewAdapter extends BaseAdapter {
 
 		tvLastMessage.setText(lastMessage);
 
-		tvLastMessageDate.setText(formatLastMessageTime(msg));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+
+		tvLastMessageDate.setText(sdf.format(msg.getSentTime()));
 
 		ImageUtil.RenderImageView(url, ivHead, ICON_WIDTH, ICON_HEIGHT);
 

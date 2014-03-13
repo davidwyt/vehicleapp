@@ -2,7 +2,6 @@ package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
-import com.vehicle.app.mgrs.TopMsgerMgr;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ActivityUtil;
 
@@ -74,7 +73,6 @@ public class NearbyMainActivity extends TemplateActivity implements OnCheckedCha
 		super.onStart();
 		mSearchTask = null;
 		((RadioButton) this.findViewById(R.id.bar_rabtn_middle)).setChecked(true);
-		TopMsgerMgr.getInstance().init(getApplicationContext(), SelfMgr.getInstance().getId());
 	}
 
 	@Override

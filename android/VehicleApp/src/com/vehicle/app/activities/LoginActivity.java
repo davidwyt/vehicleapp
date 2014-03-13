@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
@@ -66,9 +65,9 @@ public class LoginActivity extends TemplateActivity {
 	private Button mRegButton;
 	private Button mLogButton;
 
-	private CheckBox mCBSave;
+	private Button mBakButton;
 
-	public static final String KEY_AUDOLOGIN = "com.vehicle.app.login.key.autolog";
+	private CheckBox mCBSave;
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -116,6 +115,16 @@ public class LoginActivity extends TemplateActivity {
 			@Override
 			public void onClick(View view) {
 				attemptLogin();
+			}
+		});
+
+		this.mBakButton = (Button) findViewById(R.id.login_bak);
+		this.mBakButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				onBackPressed();
 			}
 		});
 
@@ -175,13 +184,6 @@ public class LoginActivity extends TemplateActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.activity_login, menu);
-		return true;
 	}
 
 	/**
@@ -417,13 +419,7 @@ public class LoginActivity extends TemplateActivity {
 
 			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 
-			if (null == result) {
-				Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_loginfailed),
-						Toast.LENGTH_LONG).show();
-				return;
-			}
-
-			if (result.isSuccess()) {
+			if (null != result && result.isSuccess()) {
 
 				finish();
 
@@ -438,9 +434,11 @@ public class LoginActivity extends TemplateActivity {
 				StartUpdateLocThread tt = new StartUpdateLocThread();
 				tt.start();
 
-				Intent intent = new Intent();
-				intent.setClass(getApplicationContext(), NearbyMainActivity.class);
-				LoginActivity.this.startActivity(intent);
+				if (!SelfMgr.getInstance().isDriver()) {
+					Intent intent = new Intent();
+					intent.setClass(getApplicationContext(), NearbyMainActivity.class);
+					LoginActivity.this.startActivity(intent);
+				}
 
 			} else {
 				if (SelfMgr.getInstance().isDriver()) {

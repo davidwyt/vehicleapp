@@ -1,5 +1,6 @@
 package com.vehicle.imserver.ws;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,30 +24,43 @@ import com.vehicle.service.bean.RangeResponse;
 
 @Path("locate")
 public class LocateRest {
-	
+
 	@POST
 	@Path("range")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response range(@Context HttpServletRequest request,
 			RangeRequest rangeReq) {
-		List<RangeInfo> list=LocateUtil.getInstance().get(rangeReq.getCenterX(), rangeReq.getCenterY(), rangeReq.getRange());
-		RangeResponse resp=new RangeResponse();
+
+		Date date = new Date();
+
+		System.out.println(date.toString()
+				+ " test nearby driverrrrrrrrrrrrrrr:"
+				+ JsonUtil.toJsonString(rangeReq));
+
+		List<RangeInfo> list = LocateUtil.getInstance().get(
+				rangeReq.getCenterX(), rangeReq.getCenterY(),
+				rangeReq.getRange());
+		RangeResponse resp = new RangeResponse();
 		resp.setList(list);
+
+		System.out.println(date.toString() + "nearby driverrrrrrrrrrrrrrrrs:"
+				+ JsonUtil.toJsonString(list));
 		return Response.status(Status.OK).entity(resp).build();
 	}
-	
+
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response add(@Context HttpServletRequest request,
 			AddLocateRequest addReq) {
-		
-		System.out.println("receive request locatettttttttttt :" + JsonUtil.toJsonString(addReq));
-		
-		AddLocateResponse resp=new AddLocateResponse();
-		LocateInfo info=new LocateInfo();
+
+		System.out.println("receive request locatettttttttttt :"
+				+ JsonUtil.toJsonString(addReq));
+
+		AddLocateResponse resp = new AddLocateResponse();
+		LocateInfo info = new LocateInfo();
 		info.setLocateX(addReq.getLocateX());
 		info.setLocateY(addReq.getLocateY());
 		info.setOwnerId(addReq.getId());

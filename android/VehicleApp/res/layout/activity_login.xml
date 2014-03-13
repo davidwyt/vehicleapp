@@ -78,9 +78,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
+                android:text="保存用户名密码"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                android:text="保存用户名密码" >
+                android:textSize="18sp" >
             </CheckBox>
 
             <Button
@@ -105,6 +105,21 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/selector_btn_driverreg" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:singleLine="true"
+                android:text="@string/zh_notlogin" />
+
+            <Button
+                android:id="@+id/login_bak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/selector_btn_bigback" />
         </LinearLayout>
     </ScrollView>
 

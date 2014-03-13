@@ -62,12 +62,10 @@ public class RoleSelectActivity extends TemplateActivity implements OnClickListe
 
 		if (R.id.roleselect_driver == view.getId()) {
 
-			SelfMgr.getInstance().clearFellows();
 			SelfMgr.getInstance().setIsDriver(true);
 
 			Intent intent = new Intent();
-			intent.setClass(getApplicationContext(), LoginActivity.class);
-			intent.putExtra(LoginActivity.KEY_AUDOLOGIN, false);
+			intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 			this.startActivity(intent);
 		} else if (R.id.roleselect_shop == view.getId()) {
 
@@ -76,7 +74,6 @@ public class RoleSelectActivity extends TemplateActivity implements OnClickListe
 
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), LoginActivity.class);
-			intent.putExtra(LoginActivity.KEY_AUDOLOGIN, false);
 			this.startActivity(intent);
 		}
 	}

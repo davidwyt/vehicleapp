@@ -108,9 +108,11 @@
                         android:id="@+id/settinghome_myrow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
 
                         <TextView
+                            android:id="@+id/settings_tv_myinfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left"
@@ -138,43 +140,11 @@
                     </View>
 
                     <TableRow
-                        android:id="@+id/settinghome_mycommrow"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="left"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center"
-                            android:text="@string/zh_mycomments"
-                            android:textColor="@color/black"
-                            android:textSize="20sp" />
-
-                        <ImageView
-                            android:id="@+id/settings_mycomments"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:contentDescription="@string/title"
-                            android:paddingRight="16dp"
-                            android:src="@drawable/selector_btn_ok" />
-                    </TableRow>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/gray" >
-                    </View>
-
-                    <TableRow
                         android:id="@+id/settinghome_myfellowrow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
 
                         <TextView
                             android:id="@+id/settings_fellowtip"
@@ -204,10 +174,46 @@
                     </View>
 
                     <TableRow
+                        android:id="@+id/settinghome_mycommrow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
+
+                        <TextView
+                            android:id="@+id/settings_tv_mycomments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="@string/zh_mycomments"
+                            android:textColor="@color/black"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:id="@+id/settings_mycomments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:contentDescription="@string/title"
+                            android:paddingRight="16dp"
+                            android:src="@drawable/selector_btn_ok" />
+                    </TableRow>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/gray" >
+                    </View>
+
+                    <TableRow
                         android:id="@+id/settinghome_logoutrow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -275,7 +281,8 @@
                         android:id="@+id/settinghome_turnbackrow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -308,7 +315,8 @@
                         android:id="@+id/settinghome_aboutusrow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -341,7 +349,8 @@
                         android:id="@+id/settinghome_moreapprow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -374,7 +383,8 @@
                         android:id="@+id/settinghome_advicerow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp" >
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -402,6 +412,34 @@
                         android:layout_height="2dp"
                         android:background="@color/gray" >
                     </View>
+
+                    <TableRow
+                        android:id="@+id/settinghome_upgrade"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="2dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="版本升级"
+                            android:textColor="@color/black"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:id="@+id/settings_upgrade"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:contentDescription="@string/title"
+                            android:paddingRight="16dp"
+                            android:src="@drawable/selector_btn_ok" />
+                    </TableRow>
                 </TableLayout>
             </LinearLayout>
         </ScrollView>

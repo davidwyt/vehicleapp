@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item 
         android:state_pressed="true" 
-        android:drawable="@drawable/mm_title_back_pressed" />
+        android:drawable="@drawable/icon_btn_close_pressed" />
     <item 
-        android:drawable="@drawable/mm_title_back_normal" />
+        android:drawable="@drawable/icon_btn_close" />
 </selector>

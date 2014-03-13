@@ -1,24 +1,15 @@
 package com.vehicle.app.activities;
 
-import java.io.InputStream;
-import java.util.List;
-
 import com.vehicle.app.bean.VendorDetail;
-import com.vehicle.app.bean.VendorImage;
 import com.vehicle.app.mgrs.ActivityManager;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.HttpUtil;
-import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -54,6 +45,8 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 	private ImageView mIVAdvice;
 
 	private TextView mTVFellowTip;
+	private TextView mTVMyInfo;
+	private TextView mTVMyComments;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -148,11 +141,17 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		this.findViewById(R.id.settinghome_turnbackrow).setOnClickListener(this);
 
 		this.mTVFellowTip = (TextView) this.findViewById(R.id.settings_fellowtip);
+		this.mTVMyInfo = (TextView) this.findViewById(R.id.settings_tv_myinfo);
+		this.mTVMyComments = (TextView) this.findViewById(R.id.settings_tv_mycomments);
 
 		if (SelfMgr.getInstance().isDriver()) {
 			this.mTVFellowTip.setText(this.getResources().getString(R.string.tip_myvendors));
+			this.mTVMyInfo.setText(this.getString(R.string.zh_mydriverinfo));
+			this.mTVMyComments.setText(this.getString(R.string.zh_mycomments));
 		} else {
 			this.mTVFellowTip.setText(this.getResources().getString(R.string.tip_mydrivers));
+			this.mTVMyInfo.setText(this.getString(R.string.zh_myvendorinfo));
+			this.mTVMyComments.setText(this.getString(R.string.zh_drivercomments));
 		}
 	}
 
@@ -168,7 +167,7 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 				// Simulate network access.
 				if (!SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient webClient = new VehicleWebClient();
-					result = webClient.VendorSpecView(SelfMgr.getInstance().getId());
+					result = webClient.ViewVendorAllDetail(SelfMgr.getInstance().getId());
 
 					if (null != result && result.isSuccess()) {
 						VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
@@ -177,29 +176,6 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 						if (null != vendor) {
 							SelfMgr.getInstance().setSelfVendorDetail(vendor);
 						}
-					} else {
-						return null;
-					}
-
-					result = webClient.VendorImgView(SelfMgr.getInstance().getId());
-					if (null != result && result.isSuccess()) {
-						VendorDetail vendor = SelfMgr.getInstance().getSelfVendorDetail();
-						List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
-						if (null != imgs) {
-							for (VendorImage img : imgs) {
-								String imgUrl = img.getSrc();
-								try {
-									if (!BitmapCache.getInstance().contains(imgUrl)) {
-										InputStream input = HttpUtil.DownloadFile(imgUrl);
-										Bitmap bitmap = BitmapFactory.decodeStream(input);
-										BitmapCache.getInstance().put(imgUrl, bitmap);
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						}
-						vendor.setImgs(imgs);
 					}
 				} else {
 
@@ -350,11 +326,16 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 	}
 
 	private void logout() {
-		ActivityManager.getInstance().finishAll();
-		SelfMgr.getInstance().doLogout(getApplicationContext());
+		if (SelfMgr.getInstance().isLogin()) {
+			ActivityManager.getInstance().finishAll();
+			SelfMgr.getInstance().doLogout(getApplicationContext());
 
-		Intent intent = new Intent(this, RoleSelectActivity.class);
-		this.startActivity(intent);
+			Intent intent = new Intent(this, RoleSelectActivity.class);
+			this.startActivity(intent);
+		} else {
+			Intent intent = new Intent(this, LoginActivity.class);
+			this.startActivity(intent);
+		}
 	}
 
 	private void about() {

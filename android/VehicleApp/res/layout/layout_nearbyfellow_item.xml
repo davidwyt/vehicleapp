@@ -10,9 +10,9 @@
         android:id="@+id/nearbyfellow_iv_head"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:contentDescription="@string/title"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:contentDescription="@string/title"
         android:focusable="false" />
 
     <TextView
@@ -24,9 +24,9 @@
         android:layout_toRightOf="@id/nearbyfellow_iv_head"
         android:ellipsize="end"
         android:gravity="left"
-        android:textStyle="bold"
         android:singleLine="true"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/nearbyfellow_tv_feature"
@@ -48,6 +48,19 @@
         android:ellipsize="end"
         android:gravity="right"
         android:singleLine="true"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/nearbyfellow_tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/nearbyfellow_tv_distance"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ellipsize="end"
+        android:gravity="right"
+        android:singleLine="true"
+        android:text="time"
         android:textSize="15sp" />
 
 </RelativeLayout>

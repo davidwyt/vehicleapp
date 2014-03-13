@@ -187,7 +187,8 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					okButton.setVisibility(View.VISIBLE);
+					if (okButton.getVisibility() != View.VISIBLE)
+						okButton.setVisibility(View.VISIBLE);
 				}
 			});
 		}

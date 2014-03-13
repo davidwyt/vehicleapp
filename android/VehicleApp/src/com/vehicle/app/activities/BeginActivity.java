@@ -94,14 +94,13 @@ public class BeginActivity extends TemplateActivity {
 
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), RoleSelectActivity.class);
+		System.out.println("action:" + RoleSelectActivity.class.getCanonicalName());
 		BeginActivity.this.startActivity(intent);
-
 		BeginActivity.this.finish();
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			this.finish();
 			return true;

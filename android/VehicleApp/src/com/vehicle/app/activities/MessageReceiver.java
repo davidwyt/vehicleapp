@@ -81,6 +81,10 @@ public class MessageReceiver extends BroadcastReceiver {
 
 	private void processCustomMessage(Context context, Bundle bundle) {
 
+		if (!SelfMgr.getInstance().isLogin()) {
+			return;
+		}
+
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
 		String title = bundle.getString(JPushInterface.EXTRA_TITLE);
 

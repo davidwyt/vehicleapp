@@ -39,7 +39,6 @@ public class ImagePageFragment extends Fragment {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(inflater.getContext(), ImgViewActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
 				intent.putExtra(ImgViewActivity.KEY_IMGURL, url);
 				inflater.getContext().startActivity(intent);
 			}

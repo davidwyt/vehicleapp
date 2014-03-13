@@ -42,7 +42,7 @@
             android:id="@+id/vendorhome_title"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"
+            android:layout_weight="0.9"
             android:background="@drawable/icon_bakground" >
 
             <Button
@@ -51,9 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:background="@drawable/selector_btn_gobak" />
 
             <Button
@@ -62,7 +62,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/selector_btn_follow" />
 
             <TextView
@@ -78,7 +80,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:textColor="@color/white"
-                android:textSize="20sp" >
+                android:textSize="22sp" >
             </TextView>
         </RelativeLayout>
 
@@ -86,7 +88,7 @@
             android:id="@+id/vendorhome_img"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.0"
+            android:layout_weight="2.1"
             android:orientation="vertical" >
 
             <android.support.v4.view.ViewPager
@@ -131,27 +133,30 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="bottom"
-            android:layout_weight="0.8"
+            android:layout_weight="0.7"
             android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/vendorbar_shake"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
                 android:layout_weight="1.0"
                 android:background="@drawable/selector_button_vendorbar_shake" />
 
             <Button
                 android:id="@+id/vendorbar_yelp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
                 android:layout_weight="1.0"
                 android:background="@drawable/selector_button_vendorbar_yelp" />
 
             <Button
                 android:id="@+id/vendorbar_ecc"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
                 android:layout_weight="1.0"
                 android:background="@drawable/selector_button_vendorbar_ecc" >
             </Button>
@@ -159,7 +164,8 @@
             <Button
                 android:id="@+id/vendorbar_next"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
                 android:layout_weight="1.0"
                 android:background="@drawable/selector_button_vendorbar_next" >
             </Button>

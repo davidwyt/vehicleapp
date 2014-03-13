@@ -45,6 +45,9 @@ public class Constants {
 	public static final double LOCATION_DEFAULT_LATITUDE = 31.025885;
 	public static final double LOCATION_DEFAULT_LONGTITUDE = 121.428689;
 
+	public static final int LOCATION_DEFAULT_NEARBYDRIVERDISTANCE = 10;
+	public static final int LOCATION_DEFAULT_NEARBYVENDORDISTANCE = 30;
+
 	public static String getMiddleVendorImg(String name) {
 		return URLUtil.UrlAppend(MIDDLEIMG_PATH, name);
 	}

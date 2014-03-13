@@ -1,14 +1,9 @@
 package com.vehicle.app.activities;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.layout.ToggleButtonGroupTableLayout;
@@ -17,6 +12,7 @@ import com.vehicle.app.msg.bean.CommentMessage;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.VendorCommentMessageCourier;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.FileUtil;
 import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -33,7 +29,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -165,6 +160,10 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 		} else {
 			mImgContainer.setVisibility(View.INVISIBLE);
 			mBtnUpload.setVisibility(View.VISIBLE);
+			this.mImg1.setVisibility(View.VISIBLE);
+			this.mImg2.setVisibility(View.INVISIBLE);
+			this.mImg3.setVisibility(View.INVISIBLE);
+			this.mImg4.setVisibility(View.INVISIBLE);
 		}
 	}
 
@@ -216,8 +215,17 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 		});
 	}
 
+	private String curImgPath;
+
 	private void captureImage() {
+
+		this.curImgPath = FileUtil.getTempImgPath();
+
+		System.out.println("generated img path:" + this.curImgPath);
+
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(curImgPath)));
 		this.startActivityForResult(intent, REQUESTCODE_CAPTURE_IMAGE);
 	}
 
@@ -265,61 +273,39 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 			}
 		}
 
-		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-				+ Environment.DIRECTORY_DCIM + File.separator + "Camera";
-		String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".png";
-
-		Bundle bundle = data.getExtras();
-		if (null == bundle)
-			return;
-
-		Bitmap bitmap = (Bitmap) bundle.get("data");
-		FileOutputStream fout = null;
-
-		String filePath = path + File.separator + name;
-
-		System.out.println("photoooooooooooo:" + filePath);
-
+		File file = new File(this.curImgPath);
 		try {
-			fout = new FileOutputStream(filePath);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, fout);
-			setImageViewBitmap(filePath);
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-
-			// do something
-		} finally {
-			try {
-				if (null != fout) {
-					fout.flush();
-					fout.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (file.isFile() && file.exists()) {
+				setImageViewBitmap(curImgPath);
+			} else {
+				Toast.makeText(getApplicationContext(), "capture image failed", Toast.LENGTH_LONG).show();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void onBrowseAlbum(int resultCode, Intent data) {
+		try {
+			if (Activity.RESULT_OK == resultCode) {
+				Uri originalUri = data.getData();
+				ContentResolver resolver = getContentResolver();
+				String[] proj = { MediaStore.Images.Media.DATA };
+				Cursor cursor = resolver.query(originalUri, proj, null, null, null);
+				int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+				cursor.moveToFirst();
+				String path = cursor.getString(column_index);
 
-		if (Activity.RESULT_OK == resultCode) {
-
-			Uri originalUri = data.getData();
-			ContentResolver resolver = getContentResolver();
-			String[] proj = { MediaStore.Images.Media.DATA };
-			Cursor cursor = resolver.query(originalUri, proj, null, null, null);
-			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-			cursor.moveToFirst();
-			String path = cursor.getString(column_index);
-
-			File file = new File(path);
-			if (file.isFile() && file.exists()) {
-				setImageViewBitmap(path);
-				System.out.println("selected file:" + path);
-			} else {
-				System.out.println("file not exist:" + path);
+				File file = new File(path);
+				if (file.isFile() && file.exists()) {
+					setImageViewBitmap(path);
+					System.out.println("selected file:" + path);
+				} else {
+					System.out.println("file not exist:" + path);
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -331,14 +317,17 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 			case 1:
 				this.mImg1.setImageBitmap(bitmap);
 				this.mImg1.setTag(path);
+				this.mImg2.setVisibility(View.VISIBLE);
 				break;
 			case 2:
 				this.mImg2.setImageBitmap(bitmap);
 				this.mImg2.setTag(path);
+				this.mImg3.setVisibility(View.VISIBLE);
 				break;
 			case 3:
 				this.mImg3.setImageBitmap(bitmap);
 				this.mImg3.setTag(path);
+				this.mImg4.setVisibility(View.VISIBLE);
 				break;
 			case 4:
 				this.mImg4.setImageBitmap(bitmap);
@@ -376,13 +365,6 @@ public class VendorRatingActivity extends TemplateActivity implements OnClickLis
 
 		String comment = this.mComment.getText().toString();
 		comment = comment.trim();
-		/**
-		 * if ((!StringUtil.isChinese(comment) && comment.length() < 10) ||
-		 * (StringUtil.isChinese(comment) && StringUtil.getWordCount(comment) <
-		 * 10)) { Toast.makeText(getApplicationContext(),
-		 * getResources().getString(R.string.tip_vendorcommenttooshort),
-		 * Toast.LENGTH_LONG).show(); return; }
-		 */
 
 		int checkId = mRadioGroupProject.getCheckedRadioButtonId();
 		if (-1 == checkId) {

@@ -14,7 +14,7 @@ import com.vehicle.app.fragments.VendorCouponsFragment;
 import com.viewpagerindicator.IconPagerAdapter;
 
 public class VendorDetailFragmentAdapter extends FragmentStatePagerAdapter implements IconPagerAdapter {
-	protected static final String[] CONTENT = new String[] { "商家介绍", "点评记录", "优惠券", "商家折扣", };
+	protected static final String[] CONTENT = new String[] { "商户介绍", "点评记录", "优惠券", "商户折扣", };
 
 	private int mCount = CONTENT.length;
 	private VendorDetail vendor;
@@ -51,7 +51,6 @@ public class VendorDetailFragmentAdapter extends FragmentStatePagerAdapter imple
 			ret = new VendorPromotionsFragment(vendor);
 			break;
 		}
-
 		return ret;
 	}
 

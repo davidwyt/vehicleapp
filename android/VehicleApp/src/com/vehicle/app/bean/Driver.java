@@ -50,6 +50,16 @@ public class Driver implements Serializable {
 	private Date lastMessageTime;
 	private double distance;
 
+	private long duration;
+
+	public long getDuration() {
+		return this.duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
 	@SerializedName("Review.list")
 	protected List<Comment> comments;
 

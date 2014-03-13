@@ -44,4 +44,10 @@
 			<ref bean="fileTransmissionDao" />
 		</property>
 	</bean>
+
+	<bean id="upgradeService" class="com.vehicle.imserver.service.impl.UpgradeServiceImpl">
+		<property name="versionDao">
+			<ref bean="versionDao" />
+		</property>
+	</bean>
 </beans>

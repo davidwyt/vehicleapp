@@ -1,6 +1,5 @@
 package com.vehicle.app.activities;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,22 +14,17 @@ import com.vehicle.app.adapter.NearbyFellowsViewAdapter;
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
-import com.vehicle.app.bean.VendorImage;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.HttpUtil;
+import com.vehicle.app.utils.Constants;
 import com.vehicle.app.web.bean.NearbyDriverListViewResult;
-import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -288,15 +282,6 @@ public class NearbyFellowListActivity extends TemplateActivity {
 
 			pageNum++;
 
-			/**
-			 * Location loc =
-			 * LocationUtil.getCurLocation(getApplicationContext()); double
-			 * latitude, longtitude; if (null == loc) { latitude =
-			 * Constants.LOCATION_DEFAULT_LATITUDE; longtitude =
-			 * Constants.LOCATION_DEFAULT_LONGTITUDE; } else { latitude =
-			 * loc.getLatitude(); longtitude = loc.getLongitude(); }
-			 */
-
 			SimpleLocation location = SelfMgr.getInstance().getLocation();
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
@@ -310,7 +295,8 @@ public class NearbyFellowListActivity extends TemplateActivity {
 					 */
 
 					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(
-							location.getLongitude(), location.getLatitude(), 30);
+							location.getLongitude(), location.getLatitude(),
+							Constants.LOCATION_DEFAULT_NEARBYDRIVERDISTANCE);
 
 					NearbyDriverListViewResult result = new NearbyDriverListViewResult();
 					result.setCode(WebCallBaseResult.CODE_SUCCESS);
@@ -381,52 +367,14 @@ public class NearbyFellowListActivity extends TemplateActivity {
 				// Simulate network access.
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient webClient = new VehicleWebClient();
-					result = webClient.VendorSpecView(fellowId);
+					result = webClient.ViewVendorAllDetail(fellowId);
 
 					if (null != result && result.isSuccess()) {
 						VendorSpecViewResult vendorView = (VendorSpecViewResult) result;
 						VendorDetail vendor = vendorView.getInfoBean();
-
 						SelfMgr.getInstance().updateNearbyVendorDetail(vendor);
-						/**
-						 * List<Comment> comments = vendor.getReviews(); if
-						 * (null != comments && comments.size() > 0) { for
-						 * (Comment comment : comments) { String imgs =
-						 * comment.getImgNamesM(); String[] names =
-						 * imgs.split(Constants.IMGNAME_DIVIDER);
-						 * 
-						 * for (String name : names) { if (null != name &&
-						 * name.length() > 0) { String imgUrl =
-						 * Constants.getMiddleVendorImg(name); InputStream input
-						 * = HttpUtil.DownloadFile(imgUrl); Bitmap bitmap =
-						 * BitmapFactory.decodeStream(input);
-						 * BitmapCache.getInstance().put(imgUrl, bitmap); } } }
-						 * }
-						 */
-					} else {
-						return null;
 					}
-
-					result = webClient.VendorImgView(fellowId);
-					if (null != result && result.isSuccess()) {
-						VendorDetail vendor = SelfMgr.getInstance().getNearbyVendorDetail(fellowId);
-						List<VendorImage> imgs = ((VendorImgViewResult) result).getInfoBean();
-						if (null != imgs) {
-							for (VendorImage img : imgs) {
-								String imgUrl = img.getSrc();
-								try {
-									if (!BitmapCache.getInstance().contains(imgUrl)) {
-										InputStream input = HttpUtil.DownloadFile(imgUrl);
-										Bitmap bitmap = BitmapFactory.decodeStream(input);
-										BitmapCache.getInstance().put(imgUrl, bitmap);
-									}
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						}
-						vendor.setImgs(imgs);
-					}
+					
 				} else {
 
 				}

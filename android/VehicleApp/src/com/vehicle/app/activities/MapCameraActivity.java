@@ -17,6 +17,7 @@ import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MarkerOptions;
 import com.vehicle.app.msg.bean.SimpleLocation;
+import com.vehicle.app.utils.JsonUtil;
 
 public class MapCameraActivity extends TemplateActivity implements OnClickListener, CancelableCallback {
 	private MapView mapView;
@@ -53,6 +54,9 @@ public class MapCameraActivity extends TemplateActivity implements OnClickListen
 		Bundle bundle = this.getIntent().getExtras();
 		if (null != bundle) {
 			SimpleLocation loc = (SimpleLocation) bundle.getSerializable(KEY_POSITION);
+
+			System.out.println(JsonUtil.toJsonString(loc));
+
 			if (null != loc) {
 				final LatLng pos = new LatLng(loc.getLatitude(), loc.getLongitude());
 				Handler handler = new Handler();
@@ -126,7 +130,7 @@ public class MapCameraActivity extends TemplateActivity implements OnClickListen
 	@Override
 	public void onFinish() {
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
