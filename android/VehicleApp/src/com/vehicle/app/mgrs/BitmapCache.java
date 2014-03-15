@@ -3,6 +3,8 @@ package com.vehicle.app.mgrs;
 import java.util.Hashtable;
 import java.util.Map;
 
+import com.vehicle.app.utils.StringUtil;
+
 import android.graphics.Bitmap;
 
 public class BitmapCache {
@@ -33,6 +35,9 @@ public class BitmapCache {
 	}
 
 	public void put(String key, Bitmap bitmap) {
+		if (StringUtil.IsNullOrEmpty(key) || null == bitmap)
+			return;
+
 		this.bitmapCache.put(key, bitmap);
 	}
 

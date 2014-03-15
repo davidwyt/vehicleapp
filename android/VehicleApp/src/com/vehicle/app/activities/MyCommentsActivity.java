@@ -63,7 +63,11 @@ public class MyCommentsActivity extends TemplateActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		initData();
+		try {
+			initData();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void initData() {
@@ -76,7 +80,7 @@ public class MyCommentsActivity extends TemplateActivity {
 				return;
 			}
 		} else {
-			List<Comment> comments = SelfMgr.getInstance().getSelfVendor().getComments();
+			List<Comment> comments = SelfMgr.getInstance().getSelfVendorDetail().getReviews();
 			if (null == comments || comments.size() <= 0) {
 				Toast.makeText(getApplicationContext(), this.getString(R.string.tip_nocomments), Toast.LENGTH_LONG)
 						.show();

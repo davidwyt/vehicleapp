@@ -10,7 +10,6 @@ import com.vehicle.app.bean.RoleInfo;
 import com.vehicle.app.db.DBManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
-import com.vehicle.app.utils.Constants;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleClient;
 
@@ -320,15 +319,14 @@ public class LoginActivity extends TemplateActivity {
 				final double lat;
 				final double lnt;
 				if (null == loc) {
-					lat = Constants.LOCATION_DEFAULT_LATITUDE;
-					lnt = Constants.LOCATION_DEFAULT_LONGTITUDE;
+					return;
 				} else {
 					lat = loc.getLatitude();
 					lnt = loc.getLongitude();
 				}
 
-				// Toast.makeText(getApplicationContext(), lat + " " + lnt,
-				// Toast.LENGTH_LONG).show();
+				System.out.println("location " + lat + " " + lnt);
+
 				SelfMgr.getInstance().updateLocation(lat, lnt);
 
 				if ((!SelfMgr.getInstance().isLogin() && SelfMgr.getInstance().isDriver())
@@ -431,8 +429,8 @@ public class LoginActivity extends TemplateActivity {
 					e.printStackTrace();
 				}
 
-				StartUpdateLocThread tt = new StartUpdateLocThread();
-				tt.start();
+				//StartUpdateLocThread tt = new StartUpdateLocThread();
+				//tt.start();
 
 				if (!SelfMgr.getInstance().isDriver()) {
 					Intent intent = new Intent();
@@ -440,14 +438,22 @@ public class LoginActivity extends TemplateActivity {
 					LoginActivity.this.startActivity(intent);
 				}
 
+			} else if (null == result) {
+				Toast.makeText(getApplicationContext(), getString(R.string.tip_loginfailed), Toast.LENGTH_LONG).show();
 			} else {
-				if (SelfMgr.getInstance().isDriver()) {
-					Toast.makeText(getApplicationContext(),
-							getResources().getString(R.string.tip_loginfailedformat_driver), Toast.LENGTH_LONG).show();
+				if (null != result && (result.getCode() == 14170 || result.getCode() == 14171)) {
+					Toast.makeText(getApplicationContext(), result.getMessage(), Toast.LENGTH_LONG).show();
 				} else {
-					Toast.makeText(getApplicationContext(),
-							getResources().getString(R.string.tip_loginfailedformat_vendor), Toast.LENGTH_LONG).show();
+					if (SelfMgr.getInstance().isDriver()) {
+						Toast.makeText(getApplicationContext(),
+								getResources().getString(R.string.tip_loginfailedformat_driver), Toast.LENGTH_LONG)
+								.show();
+					} else {
+						Toast.makeText(getApplicationContext(),
+								getResources().getString(R.string.tip_loginfailedformat_vendor), Toast.LENGTH_LONG)
+								.show();
 
+					}
 				}
 			}
 		}

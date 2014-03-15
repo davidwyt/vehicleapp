@@ -2,6 +2,7 @@ package com.vehicle.app.activities;
 
 import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.mgrs.UpgradeMgr;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ActivityUtil;
 
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 public class NearbyMainActivity extends TemplateActivity implements OnCheckedChangeListener, OnClickListener {
@@ -40,11 +42,6 @@ public class NearbyMainActivity extends TemplateActivity implements OnCheckedCha
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_nearbymain);
 		initView();
-		startUpdateLocation();
-	}
-
-	private void startUpdateLocation() {
-
 	}
 
 	private void initView() {
@@ -73,6 +70,11 @@ public class NearbyMainActivity extends TemplateActivity implements OnCheckedCha
 		super.onStart();
 		mSearchTask = null;
 		((RadioButton) this.findViewById(R.id.bar_rabtn_middle)).setChecked(true);
+
+		if (!UpgradeMgr.getInstance().isChecked) {
+			UpgradeMgr.getInstance().attemptCheck(this, false);
+			UpgradeMgr.getInstance().isChecked = true;
+		}
 	}
 
 	@Override
@@ -153,6 +155,13 @@ public class NearbyMainActivity extends TemplateActivity implements OnCheckedCha
 
 	private void searchNearby() {
 		if (null != this.mSearchTask) {
+			return;
+		}
+
+		SimpleLocation location = SelfMgr.getInstance().getLocation();
+		if (null == location) {
+			Toast.makeText(getApplicationContext(), this.getString(R.string.tip_locationfailed), Toast.LENGTH_LONG)
+					.show();
 			return;
 		}
 

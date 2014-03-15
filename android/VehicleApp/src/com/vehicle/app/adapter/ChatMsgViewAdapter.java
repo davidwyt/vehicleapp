@@ -98,6 +98,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			BaseInfo info = this.getBaseInfo(msg.getSource());
 
 			TextView tvUserName = (TextView) convertView.findViewById(R.id.chatmsg_tv_username);
+			tvUserName.setVisibility(View.GONE);
 			tvUserName.setText(info.name);
 			TextPaint tp = tvUserName.getPaint();
 			tp.setFakeBoldText(true);
@@ -149,6 +150,7 @@ public class ChatMsgViewAdapter extends BaseAdapter {
 			tvUserName.setText(info.name);
 			TextPaint tp = tvUserName.getPaint();
 			tp.setFakeBoldText(true);
+			tvUserName.setVisibility(View.GONE);
 
 			ImageView ivHead = (ImageView) convertView.findViewById(R.id.chatpic_iv_userhead);
 			ImageUtil.RenderImageView(info.url, ivHead, -1, -1);

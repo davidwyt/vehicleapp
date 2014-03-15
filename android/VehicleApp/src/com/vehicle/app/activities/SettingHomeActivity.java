@@ -3,6 +3,7 @@ package com.vehicle.app.activities;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.app.mgrs.UpgradeMgr;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
@@ -47,6 +48,8 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 	private TextView mTVFellowTip;
 	private TextView mTVMyInfo;
 	private TextView mTVMyComments;
+
+	private ImageView mTVUpgrade;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +134,9 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		this.mIVApps = (ImageView) this.findViewById(R.id.settings_moreapp);
 		this.mIVApps.setOnClickListener(this);
 
+		mTVUpgrade = (ImageView) this.findViewById(R.id.settings_upgrade);
+		this.mTVUpgrade.setOnClickListener(this);
+
 		this.findViewById(R.id.settinghome_aboutusrow).setOnClickListener(this);
 		this.findViewById(R.id.settinghome_advicerow).setOnClickListener(this);
 		this.findViewById(R.id.settinghome_logoutrow).setOnClickListener(this);
@@ -139,6 +145,7 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		this.findViewById(R.id.settinghome_myfellowrow).setOnClickListener(this);
 		this.findViewById(R.id.settinghome_myrow).setOnClickListener(this);
 		this.findViewById(R.id.settinghome_turnbackrow).setOnClickListener(this);
+		this.findViewById(R.id.settinghome_upgraderow).setOnClickListener(this);
 
 		this.mTVFellowTip = (TextView) this.findViewById(R.id.settings_fellowtip);
 		this.mTVMyInfo = (TextView) this.findViewById(R.id.settings_tv_myinfo);
@@ -327,12 +334,20 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 
 	private void logout() {
 		if (SelfMgr.getInstance().isLogin()) {
+			try {
+				String tip = this.getString(R.string.tip_logout, SelfMgr.getInstance().isDriver() ? SelfMgr
+						.getInstance().getSelfDriver().getAlias() : SelfMgr.getInstance().getSelfVendor().getName());
+
+				Toast.makeText(getApplicationContext(), tip, Toast.LENGTH_LONG).show();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			ActivityManager.getInstance().finishAll();
 			SelfMgr.getInstance().doLogout(getApplicationContext());
-
 			Intent intent = new Intent(this, RoleSelectActivity.class);
 			this.startActivity(intent);
 		} else {
+			SelfMgr.getInstance().doLogout(getApplicationContext());
 			Intent intent = new Intent(this, LoginActivity.class);
 			this.startActivity(intent);
 		}
@@ -359,6 +374,10 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		Intent intent = new Intent();
 		intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 		startActivity(intent);
+	}
+
+	private void upgrade() {
+		attemptUpgrade();
 	}
 
 	@Override
@@ -397,6 +416,19 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		case R.id.settinghome_turnbackrow:
 			returnFirst();
 			break;
+		case R.id.settings_upgrade:
+		case R.id.settinghome_upgraderow:
+			upgrade();
+			break;
 		}
 	}
+
+	private void attemptUpgrade() {
+		if (UpgradeMgr.getInstance().isChecking()) {
+			Toast.makeText(getApplicationContext(), this.getString(R.string.tip_ischecking), Toast.LENGTH_LONG).show();
+			return;
+		}
+		UpgradeMgr.getInstance().attemptCheck(this, true);
+	}
+
 }

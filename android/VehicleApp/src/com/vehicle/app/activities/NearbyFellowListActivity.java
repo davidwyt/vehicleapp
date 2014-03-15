@@ -283,16 +283,16 @@ public class NearbyFellowListActivity extends TemplateActivity {
 			pageNum++;
 
 			SimpleLocation location = SelfMgr.getInstance().getLocation();
+			if (null == location) {
+				return null;
+			}
+
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
 
 					return client.NearbyVendorListView(1, pageNum, location.getLongitude(), location.getLatitude(), 6);
 				} else {
-					/**
-					 * VehicleWebClient client = new VehicleWebClient(); return
-					 * client.NearbyDriverListView(-1, longtitude, latitude);
-					 */
 
 					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(
 							location.getLongitude(), location.getLatitude(),
@@ -374,7 +374,7 @@ public class NearbyFellowListActivity extends TemplateActivity {
 						VendorDetail vendor = vendorView.getInfoBean();
 						SelfMgr.getInstance().updateNearbyVendorDetail(vendor);
 					}
-					
+
 				} else {
 
 				}

@@ -1,6 +1,7 @@
 package com.vehicle.app.fragments;
 
 import com.vehicle.app.activities.ImgViewActivity;
+import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.utils.ImageUtil;
 
 import cn.edu.sjtu.vehicleapp.R;
@@ -37,6 +38,10 @@ public class ImagePageFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
+				if (!BitmapCache.getInstance().contains(url)) {
+					return;
+				}
+				
 				Intent intent = new Intent(inflater.getContext(), ImgViewActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.putExtra(ImgViewActivity.KEY_IMGURL, url);

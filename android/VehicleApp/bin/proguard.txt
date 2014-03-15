@@ -2,22 +2,22 @@
 # view res/layout/activity_vendorhome.xml #generated:94
 -keep class android.support.v4.view.ViewPager { <init>(...); }
 
-# view AndroidManifest.xml #generated:267
+# view AndroidManifest.xml #generated:272
 -keep class cn.edu.sjtu.vehicleapp.SettingsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:234
+# view AndroidManifest.xml #generated:239
 -keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:192
+# view AndroidManifest.xml #generated:197
 -keep class cn.jpush.android.service.DownloadService { <init>(...); }
 
-# view AndroidManifest.xml #generated:212
+# view AndroidManifest.xml #generated:217
 -keep class cn.jpush.android.service.PushReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:199
+# view AndroidManifest.xml #generated:204
 -keep class cn.jpush.android.service.PushService { <init>(...); }
 
-# view AndroidManifest.xml #generated:180
+# view AndroidManifest.xml #generated:185
 -keep class cn.jpush.android.ui.PushActivity { <init>(...); }
 
 # view res/layout/activity_camera.xml #generated:7
@@ -68,7 +68,7 @@
 # view AndroidManifest.xml #generated:128
 -keep class com.vehicle.app.activities.MapCameraActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:237
+# view AndroidManifest.xml #generated:242
 -keep class com.vehicle.app.activities.MessageReceiver { <init>(...); }
 
 # view AndroidManifest.xml #generated:113
@@ -100,6 +100,9 @@
 
 # view AndroidManifest.xml #generated:143
 -keep class com.vehicle.app.activities.SettingHomeActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:178
+-keep class com.vehicle.app.activities.UpgradeActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:133
 -keep class com.vehicle.app.activities.VendorHomeActivity { <init>(...); }

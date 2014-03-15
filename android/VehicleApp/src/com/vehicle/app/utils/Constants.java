@@ -29,21 +29,16 @@ public class Constants {
 	public static String URL_DEFAULTICON = "http://www.ac0086.com/uploads/face1.png";
 
 	public static final LatLng BEIJING = new LatLng(39.90403, 116.407525);// 北京市经纬度
-	public static final LatLng ZHONGGUANCUN = new LatLng(39.983456, 116.3154950);// 北京市中关村经纬度
-	public static final LatLng SHANGHAI = new LatLng(31.238068, 121.501654);// 上海市经纬度
-	public static final LatLng FANGHENG = new LatLng(39.989614, 116.481763);// 方恒国际中心经纬度
-	public static final LatLng CHENGDU = new LatLng(30.679879, 104.064855);// 成都市经纬度
-	public static final LatLng XIAN = new LatLng(34.341568, 108.940174);// 西安市经纬度
-	public static final LatLng ZHENGZHOU = new LatLng(34.7466, 113.625367);// 郑州市经纬度
-
+	
 	public static final String COMMA = ",";
 
 	public static final String IMGNAME_DIVIDER = "|";
+	public static final String IMGNAME_DIVIDER_DECODER = "\\|";
 
 	public static final String MIDDLEIMG_PATH = "http://www.ac0086.com/uploads/pics/m/";
 
-	public static final double LOCATION_DEFAULT_LATITUDE = 31.025885;
-	public static final double LOCATION_DEFAULT_LONGTITUDE = 121.428689;
+	//public static final double LOCATION_DEFAULT_LATITUDE = 31.025885;
+	//public static final double LOCATION_DEFAULT_LONGTITUDE = 121.428689;
 
 	public static final int LOCATION_DEFAULT_NEARBYDRIVERDISTANCE = 10;
 	public static final int LOCATION_DEFAULT_NEARBYVENDORDISTANCE = 30;

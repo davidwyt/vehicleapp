@@ -33,6 +33,7 @@ import com.vehicle.service.bean.FollowshipInvitationResultRequest;
 import com.vehicle.service.bean.FollowshipInvitationResultResponse;
 import com.vehicle.service.bean.FollowshipRequest;
 import com.vehicle.service.bean.FollowshipResponse;
+import com.vehicle.service.bean.LatestVersionResponse;
 import com.vehicle.service.bean.MessageOne2MultiRequest;
 import com.vehicle.service.bean.MessageOne2MultiResponse;
 import com.vehicle.service.bean.OfflineAckRequest;
@@ -61,7 +62,7 @@ public class VehicleClient {
 	// "http://10.0.2.2:8080/VehicleIMServer/rest";
 
 	// private static String URL_DEFAULTSERVERROOT =
-	// "http://192.168.1.100:8080/VehicleIMServer/rest";
+	// "http://192.168.1.101:8080/VehicleIMServer/rest";
 
 	private static final String URL_MESSAGE_ROOT = "message";
 	private static final String URL_MESSAGE_ONE2ONE = "one2one";
@@ -96,6 +97,9 @@ public class VehicleClient {
 	private static final String URL_LOCATE_ROOT = "locate";
 	private static final String URL_LOCATE_RANGE = "range";
 	private static final String URL_LOCATE_UPDATE = "add";
+
+	private static final String URL_UPGRADE_ROOT = "upgrade";
+	private static final String URL_UPGRADE_LATEST = "latestversion";
 
 	private String URL_SERVERROOT;
 	private String source;
@@ -414,5 +418,10 @@ public class VehicleClient {
 				String.format(URL_FILETRANSMISSION_COMMENTIMG, URLEncoder.encode(file.getName(), "UTF-8")));
 
 		return HttpUtil.UploadFile(url, filePath, CommentFileResponse.class);
+	}
+
+	public LatestVersionResponse GetLatestVersion() {
+		String url = URLUtil.UrlAppend(URL_SERVERROOT, URL_UPGRADE_ROOT, URL_UPGRADE_LATEST);
+		return HttpUtil.GetJson(url, LatestVersionResponse.class);
 	}
 }

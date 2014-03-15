@@ -184,7 +184,6 @@ public class MyFellowListActivity extends TemplateActivity {
 			fellowId = params[0];
 			WebCallBaseResult result = null;
 			try {
-				// Simulate network access.
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient webClient = new VehicleWebClient();
 					result = webClient.ViewVendorAllDetail(fellowId);

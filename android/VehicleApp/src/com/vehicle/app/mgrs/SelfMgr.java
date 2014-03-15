@@ -30,7 +30,6 @@ import com.vehicle.app.web.bean.DriverViewResult;
 import com.vehicle.app.web.bean.FavVendorListViewResult;
 import com.vehicle.app.web.bean.NearbyVendorListViewResult;
 import com.vehicle.app.web.bean.VendorFellowListViewResult;
-import com.vehicle.app.web.bean.VendorImgViewResult;
 import com.vehicle.app.web.bean.VendorListViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.VendorViewResult;
@@ -166,6 +165,9 @@ public class SelfMgr {
 	}
 
 	public boolean IsSelf(String id) {
+		if (!this.isLogin())
+			return false;
+
 		return this.getId().equals(id);
 	}
 
@@ -337,7 +339,6 @@ public class SelfMgr {
 					}
 				}
 			} else {
-
 				Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude,
 						Constants.LOCATION_DEFAULT_NEARBYDRIVERDISTANCE);
 				if (null != result) {
@@ -375,8 +376,10 @@ public class SelfMgr {
 				Map<String, Driver> drivers = result.getInfoBean();
 				for (RangeInfo info : infos) {
 					Driver driver = drivers.get(info.getOwnerId());
-					driver.setDistance(info.getDistance());
-					driver.setDuration(info.getDuring());
+					if (null != driver) {
+						driver.setDistance(info.getDistance());
+						driver.setDuration(info.getDuring());
+					}
 				}
 
 				return drivers;
@@ -422,13 +425,6 @@ public class SelfMgr {
 				if (null != vendorMap)
 					this.mFavVendorMap.putAll(vendorMap);
 
-				/**
-				 * for (String id : vendorIds) { VendorSpecViewResult
-				 * vendorSpecResult = webClient.VendorSpecView(id); if (null !=
-				 * vendorSpecResult && null != vendorSpecResult.getInfoBean())
-				 * this.mFavVendorDetailMap.put(id,
-				 * vendorSpecResult.getInfoBean()); }
-				 */
 			} else {
 				this.mVendorFellowSimpleVector.clear();
 				this.mVendorFellowMap.clear();
@@ -449,9 +445,11 @@ public class SelfMgr {
 					Map<String, Driver> drivers = driverResult.getInfoBean();
 					for (Driver driver : drivers.values()) {
 						try {
-							CarListViewResult carResult = webClient.CarListView(driver.getId());
-							if (null != carResult && null != carResult.getInfoBean()) {
-								driver.setCars(carResult.getInfoBean());
+							if (null != driver) {
+								CarListViewResult carResult = webClient.CarListView(driver.getId());
+								if (null != carResult && null != carResult.getInfoBean()) {
+									driver.setCars(carResult.getInfoBean());
+								}
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -476,7 +474,7 @@ public class SelfMgr {
 			} else {
 				VendorSpecViewResult result = webClient.VendorSpecView(this.mSelfVendor.getId());
 				if (null != result && result.isSuccess() && null != result.getResult())
-					this.mSelfVendor.setComments(result.getResult().getReviews());
+					this.selfVendorDetail.setReviews(result.getResult().getReviews());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -654,7 +652,6 @@ public class SelfMgr {
 				e.printStackTrace();
 			}
 		} else {
-
 			try {
 				VehicleWebClient webClient = new VehicleWebClient();
 				loginResult = webClient.VendorLogin(userName, password);
@@ -670,18 +667,10 @@ public class SelfMgr {
 
 			try {
 				VehicleWebClient webClient = new VehicleWebClient();
-				VendorImgViewResult imgResult = webClient.VendorImgView(this.getId());
-				if (null != imgResult && imgResult.isSuccess()) {
-					this.mSelfVendor.setImgs(imgResult.getInfoBean());
-				}
+				VendorSpecViewResult detailResult = webClient.ViewVendorAllDetail(this.getId());
 
-				VendorSpecViewResult specView = webClient.VendorSpecView(this.getId());
-				if (null != specView && specView.isSuccess() && null != specView.getInfoBean()) {
-					VendorDetail detail = specView.getInfoBean();
-					mSelfVendor.setComments(detail.getReviews());
-					mSelfVendor.setCoupons(detail.getCoupons());
-					mSelfVendor.setPromotions(detail.getPromotions());
-					SelfMgr.getInstance().setSelfVendorDetail(detail);
+				if (null != detailResult && detailResult.isSuccess() && null != detailResult.getInfoBean()) {
+					SelfMgr.getInstance().setSelfVendorDetail(detailResult.getInfoBean());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -700,19 +689,17 @@ public class SelfMgr {
 		return loginResult;
 	}
 
-	private double latitude = Constants.LOCATION_DEFAULT_LATITUDE;
-	private double longtitude = Constants.LOCATION_DEFAULT_LONGTITUDE;
+	private SimpleLocation myLocation = null;
 
 	public synchronized void updateLocation(double lat, double lnt) {
-		this.latitude = lat;
-		this.longtitude = lnt;
+		if (null == myLocation) {
+			myLocation = new SimpleLocation();
+		}
+		myLocation.setLatitude(lat);
+		myLocation.setLongitude(lnt);
 	}
 
 	public synchronized SimpleLocation getLocation() {
-		SimpleLocation simLocation = new SimpleLocation();
-		simLocation.setLatitude(latitude);
-		simLocation.setLongitude(longtitude);
-
-		return simLocation;
+		return this.myLocation;
 	}
 }

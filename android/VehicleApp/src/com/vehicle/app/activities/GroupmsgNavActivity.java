@@ -104,11 +104,20 @@ public class GroupmsgNavActivity extends TemplateActivity implements OnClickList
 		if (null != this.mRefreshTask) {
 			return;
 		}
-		
+
 		if (!SelfMgr.getInstance().isLogin()) {
 			Intent intent = new Intent(this, LoginActivity.class);
 			this.startActivity(intent);
 			return;
+		}
+
+		if (isNearby) {
+			SimpleLocation location = SelfMgr.getInstance().getLocation();
+			if (null == location) {
+				Toast.makeText(getApplicationContext(), this.getString(R.string.tip_locationfailed), Toast.LENGTH_LONG)
+						.show();
+				return;
+			}
 		}
 
 		if (SelfMgr.getInstance().isDriver()) {

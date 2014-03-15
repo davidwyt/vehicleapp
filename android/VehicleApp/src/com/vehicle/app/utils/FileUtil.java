@@ -47,15 +47,7 @@ public class FileUtil {
 	}
 
 	public static void SaveFile(String path, InputStream input) throws IOException {
-		File file = new File(path);
-		File parent = file.getParentFile();
-		if (!parent.exists()) {
-			try {
-				parent.mkdirs();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		createParentDirs(path);
 		OutputStream outStream = new FileOutputStream(path);
 		IOUtils.copy(input, outStream);
 	}
@@ -98,15 +90,7 @@ public class FileUtil {
 	}
 
 	public static void WriteBytes(byte[] bytes, String path) {
-		File file = new File(path);
-		File parent = file.getParentFile();
-		if (null != parent && !parent.exists()) {
-			try {
-				parent.mkdirs();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		createParentDirs(path);
 
 		try {
 			IOUtils.write(bytes, new FileOutputStream(path));
@@ -120,15 +104,7 @@ public class FileUtil {
 			FileInputStream input = new FileInputStream(src);
 			FileOutputStream output = new FileOutputStream(dest);
 
-			File file = new File(dest);
-			File parent = file.getParentFile();
-			if (!parent.exists()) {
-				try {
-					parent.mkdirs();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
+			createParentDirs(dest);
 			IOUtils.copy(input, output);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -148,16 +124,32 @@ public class FileUtil {
 
 	public static String AppendTempFilePath(String root, String subPath, String postFix) {
 		String path = root + File.separator + subPath + File.separator + UUID.randomUUID().toString() + "." + postFix;
+		createParentDirs(path);
+		return path;
+	}
+
+	public static void createParentDirs(String path) {
 		File file = new File(path);
 		File parent = file.getParentFile();
-		if (!parent.exists()) {
+		System.out.println("ppppppppppppp:" + parent.getAbsolutePath());
+		if (null != parent && !parent.exists()) {
 			try {
+				System.out.println("mkkkkkkkkkkkkkkkkkk");
 				parent.mkdirs();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
 
+	public static String genPathForApk(Context context, int majorVersion, int minorVersion) {
+		String root = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
+				+ Environment.DIRECTORY_DCIM;
+
+		String path = root + File.separator + "apk" + File.separator + "VehicleApp" + File.separator + (majorVersion + "." + minorVersion)
+				+ File.separator + "VehicleApp.apk";
+
+		createParentDirs(path);
 		return path;
 	}
 

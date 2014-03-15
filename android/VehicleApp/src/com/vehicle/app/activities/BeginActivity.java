@@ -1,17 +1,23 @@
 package com.vehicle.app.activities;
 
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
+import com.amap.api.location.LocationManagerProxy;
+import com.amap.api.location.LocationProviderProxy;
 import com.vehicle.app.mgrs.SelfMgr;
+import com.vehicle.sdk.client.VehicleClient;
 
 import cn.edu.sjtu.vehicleapp.R;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -22,7 +28,7 @@ public class BeginActivity extends TemplateActivity {
 
 	private View mBaK;
 
-	private static final int DELAY_FADE = 4 * 1000;
+	private static final int DELAY_FADE = 5 * 1000;
 
 	public static final String KEY_AUDOLOGIN = "com.vehicle.app.begin.key.autolog";
 
@@ -34,21 +40,6 @@ public class BeginActivity extends TemplateActivity {
 		this.setContentView(R.layout.activity_begin);
 
 		this.mBaK = this.findViewById(R.id.activity_begin);
-
-		System.out.println("version:" + this.getVersion());
-	}
-
-	private String getVersion() {
-		try {
-			PackageManager manager = this.getPackageManager();
-			PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
-			String version = info.versionName;
-			return version;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	@Override
@@ -57,6 +48,8 @@ public class BeginActivity extends TemplateActivity {
 
 		this.mBaK.setVisibility(View.VISIBLE);
 
+		startUpdateLocation();
+		
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 
@@ -73,6 +66,140 @@ public class BeginActivity extends TemplateActivity {
 		timer.schedule(task, DELAY_FADE);
 
 		SelfMgr.getInstance().doLogout(getApplicationContext());
+	}
+	
+	LocationManagerProxy mAMapLocationManager = null;
+	AMapLocationListener myListener = new MyLocationListener();
+	
+	private void startUpdateLocation() {
+
+		if (null != this.mAMapLocationManager) {
+			try {
+				mAMapLocationManager.removeUpdates(myListener);
+				mAMapLocationManager.destory();
+				mAMapLocationManager = null;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("thread in ..............");
+		try {
+			mAMapLocationManager = LocationManagerProxy.getInstance(this);
+			this.mAMapLocationManager.setGpsEnable(true);
+			mAMapLocationManager.requestLocationUpdates(LocationProviderProxy.AMapNetwork, 5000, 10, myListener);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private class UpdateLocTask extends AsyncTask<Void, Void, Void> {
+
+		private double lnt;
+		private double lat;
+
+		public UpdateLocTask(double lnt, double lat) {
+			this.lnt = lnt;
+			this.lat = lat;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				VehicleClient client = new VehicleClient(SelfMgr.getInstance().getId());
+				client.UpdateLocation(SelfMgr.getInstance().getId(), lnt, lat);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
+	
+	private class MyLocationListener implements AMapLocationListener {
+
+		long lastUpdateTime = 0;
+		private UpdateLocTask updateLocTask = null;
+		double lastLat = 0.0d;
+		double lastLnt = 0.0d;
+
+		private void updateLocation(Location loc) {
+			try {
+
+				final double lat;
+				final double lnt;
+				if (null == loc) {
+					return;
+				} else {
+					lat = loc.getLatitude();
+					lnt = loc.getLongitude();
+				}
+
+				System.out.println("location " + lat + " " + lnt);
+
+				SelfMgr.getInstance().updateLocation(lat, lnt);
+
+				if ((!SelfMgr.getInstance().isLogin() && SelfMgr.getInstance().isDriver())
+						|| !SelfMgr.getInstance().isDriver()) {
+					return;
+				}
+
+				long cur = new Date().getTime();
+
+				if (cur - lastUpdateTime < 30 * 1000) {
+					return;
+				}
+
+				if (Math.abs(lastLat - lat) < 0.000001 && Math.abs(lastLnt - lnt) < 0.000001
+						&& cur - lastUpdateTime < 300 * 1000) {
+					return;
+				}
+
+				updateLocTask = new UpdateLocTask(lnt, lat);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+					updateLocTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				} else {
+					updateLocTask.execute();
+				}
+
+				this.lastUpdateTime = cur;
+				this.lastLat = lat;
+				this.lastLnt = lnt;
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onLocationChanged(Location loc) {
+			// TODO Auto-generated method stub
+			updateLocation(loc);
+		}
+
+		@Override
+		public void onProviderDisabled(String arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onProviderEnabled(String arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onLocationChanged(AMapLocation loc) {
+			// TODO Auto-generated method stub
+			updateLocation(loc);
+		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

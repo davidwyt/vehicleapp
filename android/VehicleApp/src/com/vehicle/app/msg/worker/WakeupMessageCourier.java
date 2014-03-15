@@ -102,12 +102,13 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 			protected WakeupResponse doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 
+				String myId = "";
 				WakeupResponse resp = null;
 				try {
-					String id = SelfMgr.getInstance().getId();
+					myId = SelfMgr.getInstance().getId();
 
-					VehicleClient client = new VehicleClient(id);
-					resp = client.Login(id);
+					VehicleClient client = new VehicleClient(myId);
+					resp = client.Login(myId);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -135,11 +136,9 @@ public class WakeupMessageCourier extends MessageBaseCourier {
 						}
 					}
 
-					String id = SelfMgr.getInstance().getId();
-
 					try {
-						VehicleClient client = new VehicleClient(id);
-						client.AllAck(id);
+						VehicleClient client = new VehicleClient(myId);
+						client.AllAck(myId);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -2,8 +2,10 @@ package com.vehicle.app.adapter;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -11,9 +13,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import cn.edu.sjtu.vehicleapp.R;
 
+import com.vehicle.app.activities.ImgViewActivity;
 import com.vehicle.app.bean.Comment;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.ImageUtil;
+import com.vehicle.app.utils.StringUtil;
 
 public class CommentsViewAdapter extends BaseAdapter {
 
@@ -86,21 +90,48 @@ public class CommentsViewAdapter extends BaseAdapter {
 		String imgNames = comment.getImgNamesS();
 
 		if (null != imgNames && imgNames.length() > 0) {
-			String[] paths = imgNames.split(Constants.IMGNAME_DIVIDER);
-			setImg(img1, paths, 0);
-			setImg(img2, paths, 1);
-			setImg(img3, paths, 2);
-			setImg(img4, paths, 3);
+
+			String[] paths = imgNames.split(Constants.IMGNAME_DIVIDER_DECODER);
+
+			setImg(comment, img1, paths, 0);
+			setImg(comment, img2, paths, 1);
+			setImg(comment, img3, paths, 2);
+			setImg(comment, img4, paths, 3);
 		} else {
 			view.findViewById(R.id.vendorrating_imgs).setVisibility(View.GONE);
 		}
 		return view;
 	}
 
-	private void setImg(ImageView img, String[] paths, int index) {
+	private void setImg(final Comment comment, ImageView img, String[] paths, final int index) {
 		if (index < paths.length) {
 			String url = paths[index];
-			ImageUtil.RenderImageView(url, img, -1, -1);
+			if (!StringUtil.IsNullOrEmpty(url))
+				ImageUtil.RenderImageView(url, img, -1, -1);
+
+			img.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View view) {
+					// TODO Auto-generated method stub
+					try {
+						String imgNames = comment.getImgNamesL();
+						if (null != imgNames && imgNames.length() > 0) {
+
+							String[] largePaths = imgNames.split(Constants.IMGNAME_DIVIDER_DECODER);
+							if (null != largePaths && largePaths.length > index) {
+								Intent intent = new Intent(inflater.getContext(), ImgViewActivity.class);
+								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+								intent.putExtra(ImgViewActivity.KEY_IMGURL, largePaths[index]);
+								inflater.getContext().startActivity(intent);
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
 		}
 	}
 }

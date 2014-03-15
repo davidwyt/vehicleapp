@@ -1,18 +1,12 @@
 package com.vehicle.sdk.client;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import com.vehicle.app.bean.VendorCoupon;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorImage;
-import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.utils.Constants;
 import com.vehicle.app.utils.HttpUtil;
 import com.vehicle.app.utils.StringUtil;
@@ -280,7 +274,7 @@ public class VehicleWebClient {
 
 		if (null != imgResult && imgResult.isSuccess()) {
 			List<VendorImage> imgs = ((VendorImgViewResult) imgResult).getInfoBean();
-			if (null != imgs) {
+			/*if (null != imgs) {
 				for (VendorImage img : imgs) {
 					String imgUrl = img.getSrc();
 
@@ -294,12 +288,12 @@ public class VehicleWebClient {
 						}
 					}
 				}
-			}
+			}*/
 			if (null != detail)
 				detail.setImgs(imgs);
 		}
 
-		if (null != detail) {
+		/*if (null != detail) {
 			List<VendorCoupon> coupons = detail.getCoupons();
 			if (null != coupons) {
 				for (VendorCoupon coupon : coupons) {
@@ -317,7 +311,7 @@ public class VehicleWebClient {
 					}
 				}
 			}
-		}
+		}*/
 		return result;
 	}
 }

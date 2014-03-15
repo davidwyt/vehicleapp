@@ -42,7 +42,7 @@
             android:id="@+id/vendorhome_title"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.9"
+            android:layout_weight="1.0"
             android:background="@drawable/icon_bakground" >
 
             <Button
@@ -88,7 +88,7 @@
             android:id="@+id/vendorhome_img"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.1"
+            android:layout_weight="2.5"
             android:orientation="vertical" >
 
             <android.support.v4.view.ViewPager

@@ -1,20 +1,13 @@
 package com.vehicle.app.msg.worker;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-
 import cn.edu.sjtu.vehicleapp.R;
 
 import com.vehicle.app.mgrs.BitmapCache;
-import com.vehicle.app.utils.StringUtil;
+import com.vehicle.app.utils.ImageUtil;
 
 import junit.framework.Assert;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.widget.ImageView;
@@ -30,40 +23,7 @@ public class ImageViewBitmapLoader {
 		Assert.assertEquals(null != view.getTag(R.id.TAGKEY_BITMAP_URL), true);
 	}
 
-	private Bitmap loadBitmap(String url) {
-		if (StringUtil.IsNullOrEmpty(url)) {
-			return null;
-		}
-		Bitmap bm = null;
-		InputStream is = null;
-		BufferedInputStream bis = null;
-		System.out.println("urllllllllll:" + url);
-		try {
-			URLConnection conn = new URL(url).openConnection();
-			conn.connect();
-			is = conn.getInputStream();
-			bis = new BufferedInputStream(is);
-			bm = BitmapFactory.decodeStream(bis);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (bis != null) {
-				try {
-					bis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return bm;
-	}
+	
 
 	public void load() {
 		LoadBitmapTask task = new LoadBitmapTask();
@@ -83,7 +43,7 @@ public class ImageViewBitmapLoader {
 			Bitmap result = BitmapCache.getInstance().get(url);
 
 			if (null == result) {
-				result = loadBitmap(url);
+				result = ImageUtil.loadBitmap(url);
 			}
 
 			return result;
@@ -119,7 +79,6 @@ public class ImageViewBitmapLoader {
 				mImageView.setImageBitmap(result);
 			}
 		}
-
 	}
 
 }

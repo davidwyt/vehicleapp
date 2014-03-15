@@ -169,4 +169,18 @@
     <string name="tip_vendordetailloadfailed">加载优惠券详情失败，请检查网络连接并重试</string>
     <string name="tip_nocoupondetail">该优惠券没有详情</string>
     <string name="tip_uploadcommentimgfailed">上传评论图片失败，请检查网络连接并重试</string>
+    <string name="tip_locationfailed">尚未获得定位信息，请稍后或检查设置</string>
+    <string name="tip_downloadversionformat">爱车帮有新版本(%s),是否下载更新</string>
+    <string name="tip_upgradeformat">爱车帮新版本()%s),已经下载完成，是否安装</string>
+    <string name="zh_install">安装</string>
+    <string name="zh_download">下载</string>
+    <string name="zh_nexttime">下次再说</string>
+    <string name="zh_upgrade">软件更新</string>
+    <string name="zh_downnewversion">下载新版本爱车帮</string>
+    <string name="zh_downloading">正在下载(%s)</string>
+    <string name="tip_getversioninfofailed">查询版本信息失败，请检查网络连接并重试</string>
+    <string name="tip_curalreadylatest">当前版本为最新版，无需更新</string>
+    <string name="tip_ischecking">正在检查更新，请耐心等待</string>
+    <string name="tip_imgloading">正在加载图片&#8230;</string>
+    <string name="tip_logout">您已退出了"%s"的账号</string>
 </resources>

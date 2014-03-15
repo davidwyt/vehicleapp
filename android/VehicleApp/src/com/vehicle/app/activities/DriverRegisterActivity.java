@@ -182,12 +182,13 @@ public class DriverRegisterActivity extends TemplateActivity {
 
 			if (null != regResult && regResult.isSuccess()) {
 				try {
-					DriverRegisterActivity.this.runOnUiThread(new Runnable(){
+					DriverRegisterActivity.this.runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
 							mRegStatusMsgView.setText(getString(R.string.login_progress_signing_in));
-						}});
+						}
+					});
 
 					loginResult = SelfMgr.getInstance().doLogin(mUserName, mPassword, getApplicationContext());
 				} catch (Exception e) {
@@ -211,22 +212,27 @@ public class DriverRegisterActivity extends TemplateActivity {
 			}
 
 			if (result.isSuccess()) {
-
 				if (null == loginResult) {
 					Toast.makeText(getApplicationContext(), getResources().getString(R.string.tip_loginfailed),
 							Toast.LENGTH_LONG).show();
 				} else if (!loginResult.isSuccess()) {
-					if (SelfMgr.getInstance().isDriver()) {
-						Toast.makeText(getApplicationContext(),
-								getResources().getString(R.string.tip_loginfailedformat_driver), Toast.LENGTH_LONG).show();
+					if (loginResult.getCode() == 14170 || loginResult.getCode() == 14171) {
+						Toast.makeText(getApplicationContext(), loginResult.getMessage(), Toast.LENGTH_LONG).show();
 					} else {
-						Toast.makeText(getApplicationContext(),
-								getResources().getString(R.string.tip_loginfailedformat_vendor), Toast.LENGTH_LONG).show();
+						if (SelfMgr.getInstance().isDriver()) {
+							Toast.makeText(getApplicationContext(),
+									getResources().getString(R.string.tip_loginfailedformat_driver), Toast.LENGTH_LONG)
+									.show();
+						} else {
+							Toast.makeText(getApplicationContext(),
+									getResources().getString(R.string.tip_loginfailedformat_vendor), Toast.LENGTH_LONG)
+									.show();
 
+						}
 					}
 				} else {
 					DriverRegisterActivity.this.finish();
-					
+
 					Intent intent = new Intent();
 					intent.setClass(getApplicationContext(), NearbyMainActivity.class);
 					startActivity(intent);

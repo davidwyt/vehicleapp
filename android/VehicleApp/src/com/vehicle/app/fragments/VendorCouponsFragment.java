@@ -36,7 +36,7 @@ public class VendorCouponsFragment extends Fragment {
 	@Override
 	public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View parent = inflater.inflate(R.layout.layout_vendorcoupons, container, false);
-
+		
 		TableLayout table = (TableLayout) parent.findViewById(R.id.table_promotion);
 		List<VendorCoupon> coupons = vendor.getCoupons();
 

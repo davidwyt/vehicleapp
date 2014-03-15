@@ -1,7 +1,5 @@
 package com.vehicle.app.bean;
 
-import java.util.List;
-
 import com.google.gson.annotations.SerializedName;
 
 public class SelfVendor extends Vendor {
@@ -31,46 +29,6 @@ public class SelfVendor extends Vendor {
 	
 	@SerializedName("avatar_status")
 	private int avatarStatus;
-
-	private List<Comment> comments;
-
-	private List<VendorPromotion> promotions;
-
-	private List<VendorCoupon> coupons;
-
-	private List<VendorImage> imgs;
-
-	public List<VendorPromotion> getPromotions() {
-		return this.promotions;
-	}
-
-	public void setPromotions(List<VendorPromotion> promotions) {
-		this.promotions = promotions;
-	}
-
-	public List<Comment> getComments() {
-		return this.comments;
-	}
-
-	public void setComments(List<Comment> reviews) {
-		this.comments = reviews;
-	}
-
-	public List<VendorCoupon> getCoupons() {
-		return this.coupons;
-	}
-
-	public void setCoupons(List<VendorCoupon> coupons) {
-		this.coupons = coupons;
-	}
-
-	public List<VendorImage> getImgs() {
-		return this.imgs;
-	}
-
-	public void setImgs(List<VendorImage> imgs) {
-		this.imgs = imgs;
-	}
 
 	public String getId() {
 		return this.id;

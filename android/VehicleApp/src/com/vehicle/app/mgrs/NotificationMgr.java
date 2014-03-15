@@ -23,8 +23,8 @@ import android.support.v4.app.NotificationCompat;
 public class NotificationMgr {
 
 	private static int notificationNum = 0;
-
-	private synchronized static int nextNotificationNum() {
+	
+	public synchronized static int nextNotificationNum() {
 		notificationNum++;
 		if (notificationNum >= Integer.MAX_VALUE) {
 			notificationNum = 0;
@@ -37,6 +37,17 @@ public class NotificationMgr {
 
 	public NotificationMgr(Context context) {
 		this.context = context;
+	}
+
+	public void cancel(int id) {
+		try {
+			NotificationManager notificationMgr = (NotificationManager) context
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+
+			notificationMgr.cancel(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void notifyNewTextMsg(TextMessage msg) {
@@ -136,12 +147,18 @@ public class NotificationMgr {
 		createNotification(ticker, context.getResources().getString(R.string.tip_newinv), resultIntent);
 	}
 
+	public void notifyDowonloadNewVersion(Context context, int num, int curProgress) {
+		String ticker = context.getString(R.string.zh_downnewversion);
+		String title = context.getString(R.string.zh_downloading, curProgress + "%");
+
+		createNotification(num, ticker, title, null, curProgress, 100);
+	}
+
 	private void createNotification(String ticker, String title, Intent intent) {
 		int num = nextNotificationNum();
 
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-				.setSmallIcon(R.drawable.jpush_notification_icon)
-				.setContentTitle(title).setContentText(ticker)
+				.setSmallIcon(R.drawable.jpush_notification_icon).setContentTitle(title).setContentText(ticker)
 				.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
 				.setTicker(ticker);
 
@@ -153,6 +170,25 @@ public class NotificationMgr {
 		NotificationManager notificationMgr = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
+		notificationMgr.notify(num, notificationBuilder.build());
+	}
+
+	private void createNotification(int num, String ticker, String title, Intent intent, int curProgress,
+			int maxProgress) {
+		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+				.setSmallIcon(R.drawable.jpush_notification_icon).setContentTitle(title).setContentText(ticker)
+				.setDefaults(Notification.DEFAULT_LIGHTS).setTicker(ticker)
+				.setProgress(maxProgress, curProgress, false);
+		notificationBuilder.setAutoCancel(true);
+		notificationBuilder.setSound(null);
+		notificationBuilder.setVibrate(null);
+
+		NotificationManager notificationMgr = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		Notification notify = notificationBuilder.build();
+		notify.sound = null;
+		notify.vibrate = null;
 		notificationMgr.notify(num, notificationBuilder.build());
 	}
 }
