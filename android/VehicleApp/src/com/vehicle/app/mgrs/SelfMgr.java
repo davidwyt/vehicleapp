@@ -5,12 +5,14 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import android.content.Context;
 
 import cn.edu.sjtu.vehicleapp.R;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 import com.vehicle.app.bean.Driver;
 import com.vehicle.app.bean.FavoriteVendor;
@@ -23,6 +25,8 @@ import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.msg.worker.IMessageCourier;
 import com.vehicle.app.msg.worker.WakeupMessageCourier;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.utils.JPushAliasMaker;
+import com.vehicle.app.utils.StringUtil;
 import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.CommentListViewResult;
 import com.vehicle.app.web.bean.DriverListViewResult;
@@ -248,11 +252,13 @@ public class SelfMgr {
 	}
 
 	public void addNearbyVendor(Vendor vendor) {
-		this.mNearbyVendorMap.put(vendor.getId(), vendor);
+		if (null != vendor)
+			this.mNearbyVendorMap.put(vendor.getId(), vendor);
 	}
 
 	public void addNearbyDriver(Driver driver) {
-		this.mNearbyDriverMap.put(driver.getId(), driver);
+		if (null != driver)
+			this.mNearbyDriverMap.put(driver.getId(), driver);
 	}
 
 	public void addNearbyVendors(Collection<Vendor> vendors) {
@@ -481,13 +487,13 @@ public class SelfMgr {
 		}
 	}
 
-	public void clearSelf() {
+	public synchronized void clearSelf() {
 		this.selfVendorDetail = null;
 		this.mSelfDriver = null;
 		this.mSelfVendor = null;
 	}
 
-	public void clearFellows() {
+	public synchronized void clearFellows() {
 		this.mFavVendorMap.clear();
 		this.mFavVendorSimpleVector.clear();
 		this.mFavVendorDetailMap.clear();
@@ -496,14 +502,14 @@ public class SelfMgr {
 		this.mVendorFellowSimpleVector.clear();
 	}
 
-	public void clearNearby() {
+	public synchronized void clearNearby() {
 		this.mNearbyDriverMap.clear();
 		this.mNearbyVendorMap.clear();
 
 		this.mNearbyVendorDetailMap.clear();
 	}
 
-	public void clearUnknown() {
+	public synchronized void clearUnknown() {
 		this.mUnknowVendorDetailMap.clear();
 		this.unknownDriversMap.clear();
 		this.unknowsVendorsMap.clear();
@@ -526,15 +532,47 @@ public class SelfMgr {
 	}
 
 	public void addUnknownDrivers(Map<String, Driver> map) {
-		this.unknownDriversMap.putAll(map);
+		if (null != map) {
+			Set<String> ids = map.keySet();
+			if (null != ids) {
+				for (String id : ids) {
+					try {
+						if (!StringUtil.IsNullOrEmpty(id)) {
+							Driver driver = map.get(id);
+							if (null != driver)
+								this.unknownDriversMap.put(id, driver);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 	public void addUnknownVendors(Map<String, Vendor> map) {
-		this.unknowsVendorsMap.putAll(map);
+		if (null != map) {
+			Set<String> ids = map.keySet();
+			if (null != ids) {
+				for (String id : ids) {
+					try {
+						if (!StringUtil.IsNullOrEmpty(id)) {
+							Vendor vendor = map.get(id);
+							if (null != vendor) {
+								this.unknowsVendorsMap.put(id, vendor);
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 
 	public void putUnknownVendorDetail(VendorDetail detail) {
-		this.mUnknowVendorDetailMap.put(detail.getVendor().getId(), detail);
+		if (null != detail)
+			this.mUnknowVendorDetailMap.put(detail.getVendor().getId(), detail);
 	}
 
 	public VendorDetail getUnknownVendorDetail(String id) {
@@ -605,11 +643,11 @@ public class SelfMgr {
 		return context.getString(R.string.zh_unknown);
 	}
 
-	public boolean isLogin() {
+	public synchronized boolean isLogin() {
 		return (this.mIsDriver && null != this.mSelfDriver) || (!this.mIsDriver && null != this.mSelfVendor);
 	}
 
-	public void clearAll() {
+	public synchronized void clearAll() {
 		this.clearFellows();
 		this.clearNearby();
 		this.clearUnknown();
@@ -619,16 +657,24 @@ public class SelfMgr {
 	public void doLogout(Context context) {
 		try {
 			this.clearAll();
-			JPushInterface.setAliasAndTags(context, null, null);
+			JPushInterface.setAlias(context, "a", new TagAliasCallback() {
+
+				@Override
+				public void gotResult(int arg0, String arg1, Set<String> arg2) {
+					// TODO Auto-generated method stub
+
+				}
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public WebCallBaseResult doLogin(String userName, String password, Context context) {
+	public WebCallBaseResult doLogin(String userName, String password, final Context context) {
 		WebCallBaseResult loginResult = null;
 
 		if (this.mIsDriver) {
+
 			try {
 				VehicleWebClient webClient = new VehicleWebClient();
 				loginResult = webClient.DriverLogin(userName, password);
@@ -679,7 +725,8 @@ public class SelfMgr {
 
 		TopMsgerMgr.getInstance().init(context, getId());
 
-		JPushInterface.setAliasAndTags(context, getId(), null);
+		JPushAliasMaker aliasMaker = new JPushAliasMaker(context.getApplicationContext(), getId());
+		aliasMaker.makeAlias();
 
 		IMessageCourier courier = new WakeupMessageCourier(context);
 		courier.dispatch(null);

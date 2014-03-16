@@ -222,6 +222,9 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
+			if (!SelfMgr.getInstance().isLogin())
+				return null;
+
 			try {
 				SelfMgr.getInstance().refreshFellows();
 			} catch (Exception e) {
@@ -248,10 +251,12 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 	}
 
 	public class CommentsViewTask extends AsyncTask<Void, Void, Void> {
-
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
+			if (!SelfMgr.getInstance().isLogin())
+				return null;
+
 			try {
 				SelfMgr.getInstance().refreshComments();
 			} catch (Exception e) {
@@ -280,6 +285,12 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 	}
 
 	private void openMyInfo() {
+		if (!SelfMgr.getInstance().isLogin()) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			this.startActivity(intent);
+			return;
+		}
+		
 		if (SelfMgr.getInstance().isDriver()) {
 			Intent intent = new Intent(this, DriverHomeActivity.class);
 			intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_SELF);
@@ -309,6 +320,12 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 			return;
 		}
 
+		if (!SelfMgr.getInstance().isLogin()) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			this.startActivity(intent);
+			return;
+		}
+
 		if (SelfMgr.getInstance().isDriver()) {
 			this.mTextViewSettingStatus.setText(R.string.status_getfavvendorlist);
 		} else {
@@ -322,6 +339,12 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 
 	private void openMyComments() {
 		if (null != this.mCommentsViewTask) {
+			return;
+		}
+
+		if (!SelfMgr.getInstance().isLogin()) {
+			Intent intent = new Intent(this, LoginActivity.class);
+			this.startActivity(intent);
 			return;
 		}
 
