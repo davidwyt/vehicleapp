@@ -238,6 +238,7 @@ public class SettingHomeActivity extends TemplateActivity implements OnCheckedCh
 		protected void onPostExecute(Void result) {
 			mFellowViewTask = null;
 			ActivityUtil.showProgress(getApplicationContext(), mViewSettingStatus, mSettingMainForm, false);
+			
 			Intent intent = new Intent();
 			intent.setClass(getApplicationContext(), MyFellowListActivity.class);
 			startActivity(intent);

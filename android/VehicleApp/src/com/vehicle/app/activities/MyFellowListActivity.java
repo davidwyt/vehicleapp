@@ -11,6 +11,7 @@ import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.ActivityUtil;
+import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
 import com.vehicle.sdk.client.VehicleWebClient;
@@ -109,10 +110,8 @@ public class MyFellowListActivity extends TemplateActivity {
 
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
 					Driver driver = (Driver) user;
-					Intent intent = new Intent(getApplicationContext(), DriverHomeActivity.class);
-					intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_FELLOW);
-					intent.putExtra(DriverHomeActivity.KEY_DRIVERINFOID, driver.getId());
-					startActivity(intent);
+					if (null != driver)
+						attempViewFellow(driver.getId());
 				}
 			}
 		});
@@ -120,6 +119,13 @@ public class MyFellowListActivity extends TemplateActivity {
 		this.mAdapter = new MyFellowsViewAdapter(this, this.mListFellows);
 		ListView actualListView = mPullRefreshListView.getRefreshableView();
 		actualListView.setAdapter(mAdapter);
+	}
+
+	private void startDriverHome(String id) {
+		Intent intent = new Intent(getApplicationContext(), DriverHomeActivity.class);
+		intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_FELLOW);
+		intent.putExtra(DriverHomeActivity.KEY_DRIVERINFOID, id);
+		startActivity(intent);
 	}
 
 	private void startVendorHome(String id) {
@@ -168,6 +174,7 @@ public class MyFellowListActivity extends TemplateActivity {
 		if (SelfMgr.getInstance().isDriver()) {
 			mMyStatusMessageView.setText(R.string.tip_myfellowvendorstatustext);
 		} else {
+			mMyStatusMessageView.setText(R.string.tip_nearbydriverstatustext);
 		}
 
 		ActivityUtil.showProgress(getApplicationContext(), mMyStatusView, mMyFormView, true);
@@ -198,7 +205,22 @@ public class MyFellowListActivity extends TemplateActivity {
 					}
 
 				} else {
+					VehicleWebClient webClient = new VehicleWebClient();
+					try {
+						result = webClient.CarListView(fellowId);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 
+					if (null != result && result.isSuccess()) {
+						Driver driver = SelfMgr.getInstance().getVendorFellow(fellowId);
+						CarListViewResult carResult = (CarListViewResult) result;
+						if (null != driver && null != carResult.getResult())
+							driver.setCars(carResult.getInfoBean());
+					} else {
+						result = new CarListViewResult();
+						result.setCode(WebCallBaseResult.CODE_SUCCESS);
+					}
 				}
 
 			} catch (Exception e) {
@@ -214,10 +236,20 @@ public class MyFellowListActivity extends TemplateActivity {
 			ActivityUtil.showProgress(getApplicationContext(), mMyStatusView, mMyFormView, false);
 
 			if (null != result && result.isSuccess()) {
-				startVendorHome(fellowId);
+				if (SelfMgr.getInstance().isDriver()) {
+					startVendorHome(fellowId);
+				} else {
+					startDriverHome(fellowId);
+				}
 			} else {
-				Toast.makeText(MyFellowListActivity.this,
-						getResources().getString(R.string.tip_loadvendordetailfailed), Toast.LENGTH_LONG).show();
+				String tip = "";
+				if (SelfMgr.getInstance().isDriver()) {
+					tip = getString(R.string.tip_viewnearbyvendorfailed);
+				} else {
+					tip = getString(R.string.tip_viewnearbydriverfailed);
+				}
+
+				Toast.makeText(MyFellowListActivity.this, tip, Toast.LENGTH_LONG).show();
 			}
 		}
 

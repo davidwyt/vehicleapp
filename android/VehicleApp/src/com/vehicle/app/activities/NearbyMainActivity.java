@@ -93,7 +93,12 @@ public class NearbyMainActivity extends TemplateActivity implements OnCheckedCha
 				.setPositiveButton(getResources().getString(R.string.positive_zh),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								ActivityManager.getInstance().finishAll();
+								try {
+									ActivityManager.getInstance().finishAll();
+									System.exit(0);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
 						})
 				.setNegativeButton(getResources().getString(R.string.negative_zh),

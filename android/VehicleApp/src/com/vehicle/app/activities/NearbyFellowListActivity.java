@@ -18,6 +18,7 @@ import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.msg.bean.SimpleLocation;
 import com.vehicle.app.utils.ActivityUtil;
 import com.vehicle.app.utils.Constants;
+import com.vehicle.app.web.bean.CarListViewResult;
 import com.vehicle.app.web.bean.NearbyDriverListViewResult;
 import com.vehicle.app.web.bean.VendorSpecViewResult;
 import com.vehicle.app.web.bean.WebCallBaseResult;
@@ -122,7 +123,6 @@ public class NearbyFellowListActivity extends TemplateActivity {
 
 		this.mPullRefreshListView.getRefreshableView().setOnItemClickListener(new OnItemClickListener() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
@@ -132,16 +132,7 @@ public class NearbyFellowListActivity extends TemplateActivity {
 					attempViewFellow(vendor.getId());
 				} else if (!SelfMgr.getInstance().isDriver() && user instanceof Driver) {
 					Driver driver = (Driver) user;
-					Intent intent = new Intent(getApplicationContext(), DriverHomeActivity.class);
-					intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_NEARBY);
-					intent.putExtra(DriverHomeActivity.KEY_DRIVERINFOID, driver.getId());
-					ArrayList<String> ids = new ArrayList<String>();
-					for (Driver driver2 : (List<Driver>) mListFellows) {
-						ids.add(driver2.getId());
-					}
-
-					intent.putStringArrayListExtra(DriverHomeActivity.KEY_DRIVERINFO_NEARBYS, ids);
-					startActivity(intent);
+					attempViewFellow(driver.getId());
 				}
 			}
 		});
@@ -234,6 +225,20 @@ public class NearbyFellowListActivity extends TemplateActivity {
 	}
 
 	@SuppressWarnings("unchecked")
+	private void startDriverHome(String id) {
+		Intent intent = new Intent(getApplicationContext(), DriverHomeActivity.class);
+		intent.putExtra(DriverHomeActivity.KEY_PERSPECTIVE, DriverHomeActivity.PERSPECTIVE_NEARBY);
+		intent.putExtra(DriverHomeActivity.KEY_DRIVERINFOID, id);
+		ArrayList<String> ids = new ArrayList<String>();
+		for (Driver driver2 : (List<Driver>) mListFellows) {
+			ids.add(driver2.getId());
+		}
+
+		intent.putStringArrayListExtra(DriverHomeActivity.KEY_DRIVERINFO_NEARBYS, ids);
+		startActivity(intent);
+	}
+
+	@SuppressWarnings("unchecked")
 	private void startVendorHome(String id) {
 		Intent intent = new Intent(getApplicationContext(), VendorHomeActivity.class);
 		intent.putExtra(VendorHomeActivity.KEY_VENDORID, id);
@@ -265,6 +270,7 @@ public class NearbyFellowListActivity extends TemplateActivity {
 		if (SelfMgr.getInstance().isDriver()) {
 			mNearbyStatusMessageView.setText(R.string.nearbyvendorstatustext);
 		} else {
+			mNearbyStatusMessageView.setText(R.string.tip_nearbydriverstatustext);
 		}
 
 		ActivityUtil.showProgress(getApplicationContext(), mNearbyStatusView, mNearbyFormView, true);
@@ -290,10 +296,8 @@ public class NearbyFellowListActivity extends TemplateActivity {
 			try {
 				if (SelfMgr.getInstance().isDriver()) {
 					VehicleWebClient client = new VehicleWebClient();
-
 					return client.NearbyVendorListView(1, pageNum, location.getLongitude(), location.getLatitude(), 6);
 				} else {
-
 					Map<String, Driver> nearbyDrivers = SelfMgr.getInstance().searchNearbyDrivers(
 							location.getLongitude(), location.getLatitude(),
 							Constants.LOCATION_DEFAULT_NEARBYDRIVERDISTANCE);
@@ -376,7 +380,21 @@ public class NearbyFellowListActivity extends TemplateActivity {
 					}
 
 				} else {
+					VehicleWebClient webClient = new VehicleWebClient();
+					try {
+						result = webClient.CarListView(fellowId);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 
+					if (null != result && result.isSuccess()) {
+						Driver driver = SelfMgr.getInstance().getNearbyDriver(fellowId);
+						if (null != driver)
+							driver.setCars(((CarListViewResult) result).getInfoBean());
+					} else {
+						result = new CarListViewResult();
+						result.setCode(WebCallBaseResult.CODE_SUCCESS);
+					}
 				}
 
 			} catch (Exception e) {
@@ -392,10 +410,19 @@ public class NearbyFellowListActivity extends TemplateActivity {
 			ActivityUtil.showProgress(getApplicationContext(), mNearbyStatusView, mNearbyFormView, false);
 
 			if (null != result && result.isSuccess()) {
-				startVendorHome(fellowId);
+				if (SelfMgr.getInstance().isDriver()) {
+					startVendorHome(fellowId);
+				} else {
+					startDriverHome(fellowId);
+				}
 			} else {
-				Toast.makeText(NearbyFellowListActivity.this,
-						getResources().getString(R.string.tip_viewnearbyvendorfailed), Toast.LENGTH_LONG).show();
+				String tip = "";
+				if (SelfMgr.getInstance().isDriver()) {
+					tip = getString(R.string.tip_viewnearbyvendorfailed);
+				} else {
+					tip = getString(R.string.tip_viewnearbydriverfailed);
+				}
+				Toast.makeText(NearbyFellowListActivity.this, tip, Toast.LENGTH_LONG).show();
 			}
 		}
 

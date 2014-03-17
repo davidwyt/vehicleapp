@@ -68,6 +68,7 @@
     <string name="tip_myfellowvendorstatustext">正在获取该商户详细信息&#8230;</string>
     <string name="tip_nearbydriverstatustext">正在获取该车主详细信息&#8230;</string>
     <string name="tip_viewnearbyvendorfailed">获取商户详细信息失败，请检查网络连接并重试</string>
+    <string name="tip_viewnearbydriverfailed">获取车主详细信息失败，请检查网络连接并重试</string>
     <string name="tip_nonextvendor">返回商户列表翻页刷新后可查询更多商户</string>
     <string name="tip_nonextdriver">这已经是最后一个附近车主了</string>
     <string name="tip_favvendorexist">你已经关注了该商户，无需重新关注</string>
@@ -183,4 +184,5 @@
     <string name="tip_ischecking">正在检查更新，请耐心等待</string>
     <string name="tip_imgloading">正在加载图片&#8230;</string>
     <string name="tip_logout">您已退出了"%s"的账号</string>
+
 </resources>

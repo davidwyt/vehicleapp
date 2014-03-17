@@ -414,7 +414,6 @@ public class LoginActivity extends TemplateActivity {
 		@Override
 		protected void onPostExecute(final WebCallBaseResult result) {
 			mAuthTask = null;
-
 			ActivityUtil.showProgress(getApplicationContext(), mLoginStatusView, mLoginFormView, false);
 
 			if (null != result && result.isSuccess()) {
@@ -428,9 +427,6 @@ public class LoginActivity extends TemplateActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
-				//StartUpdateLocThread tt = new StartUpdateLocThread();
-				//tt.start();
 
 				if (!SelfMgr.getInstance().isDriver()) {
 					Intent intent = new Intent();

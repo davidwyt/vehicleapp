@@ -484,6 +484,12 @@ public class ChatActivity extends TemplateActivity implements OnClickListener {
 
 				FileUtil.CopyFile(this.curImgPath, destPath);
 
+				try {
+					file.delete();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 				File destFile = new File(destPath);
 				if (destFile.isFile() && destFile.exists()) {
 					sendFile(destPath, IMessageItem.MESSAGE_TYPE_IMAGE);

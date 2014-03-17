@@ -372,6 +372,11 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 				e.printStackTrace();
 			}
 
+			if (null == result || !result.isSuccess()) {
+				result = new CarListViewResult();
+				result.setCode(WebCallBaseResult.CODE_SUCCESS);
+			}
+
 			return result;
 		}
 
@@ -383,7 +388,14 @@ public class DriverHomeActivity extends TemplateActivity implements OnClickListe
 			if (null != result && result.isSuccess()) {
 				CarListViewResult carListResult = (CarListViewResult) result;
 				Driver driver = SelfMgr.getInstance().getNearbyDriver(driverId);
-				driver.setCars(carListResult.getInfoBean());
+
+				try {
+					if (null != carListResult.getResult())
+						driver.setCars(carListResult.getInfoBean());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 				setViewData(driver);
 				mDriverId = driverId;
 

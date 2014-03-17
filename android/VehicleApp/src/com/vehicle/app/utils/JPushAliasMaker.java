@@ -22,13 +22,11 @@ public class JPushAliasMaker {
 		this.alias = alias;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void makeAlias() {
 
 		if (null != aliasThread) {
 			try {
 				aliasThread.stop = true;
-				aliasThread.stop();
 				aliasThread = null;
 
 				Thread.sleep(1);

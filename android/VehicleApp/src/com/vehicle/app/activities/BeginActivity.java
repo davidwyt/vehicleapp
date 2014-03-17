@@ -49,7 +49,7 @@ public class BeginActivity extends TemplateActivity {
 		this.mBaK.setVisibility(View.VISIBLE);
 
 		startUpdateLocation();
-		
+
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask() {
 
@@ -67,10 +67,10 @@ public class BeginActivity extends TemplateActivity {
 
 		SelfMgr.getInstance().doLogout(getApplicationContext());
 	}
-	
+
 	LocationManagerProxy mAMapLocationManager = null;
 	AMapLocationListener myListener = new MyLocationListener();
-	
+
 	private void startUpdateLocation() {
 
 		if (null != this.mAMapLocationManager) {
@@ -82,7 +82,9 @@ public class BeginActivity extends TemplateActivity {
 				e.printStackTrace();
 			}
 		}
+
 		System.out.println("thread in ..............");
+
 		try {
 			mAMapLocationManager = LocationManagerProxy.getInstance(this);
 			this.mAMapLocationManager.setGpsEnable(true);
@@ -92,7 +94,7 @@ public class BeginActivity extends TemplateActivity {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private class UpdateLocTask extends AsyncTask<Void, Void, Void> {
 
 		private double lnt;
@@ -115,7 +117,7 @@ public class BeginActivity extends TemplateActivity {
 			return null;
 		}
 	}
-	
+
 	private class MyLocationListener implements AMapLocationListener {
 
 		long lastUpdateTime = 0;
@@ -141,6 +143,7 @@ public class BeginActivity extends TemplateActivity {
 
 				if ((!SelfMgr.getInstance().isLogin() && SelfMgr.getInstance().isDriver())
 						|| !SelfMgr.getInstance().isDriver()) {
+					System.out.println(" not login");
 					return;
 				}
 

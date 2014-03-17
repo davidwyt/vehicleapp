@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import cn.edu.sjtu.vehicleapp.R;
 
@@ -154,7 +153,7 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 	 */
 	@Override
 	public void onLocationChanged(Location location) {
-		Toast.makeText(getApplicationContext(), "location changed2222", Toast.LENGTH_LONG).show();
+		locationUpdate(location);
 	}
 
 	@Override
@@ -174,13 +173,17 @@ public class LocationActivity extends TemplateActivity implements LocationSource
 	 */
 	@Override
 	public void onLocationChanged(AMapLocation aLocation) {
-		if (mListener != null && aLocation != null) {
-			mListener.onLocationChanged(aLocation);// 显示系统小蓝点
+		locationUpdate(aLocation);
+	}
+
+	private void locationUpdate(Location location) {
+		if (mListener != null && location != null) {
+			mListener.onLocationChanged(location);// 显示系统小蓝点
 			float bearing = aMap.getCameraPosition().bearing;
 			aMap.setMyLocationRotateAngle(bearing);// 设置小蓝点旋转角度
 
-			location.setLatitude(aLocation.getLatitude());
-			location.setLongitude(aLocation.getLongitude());
+			location.setLatitude(location.getLatitude());
+			location.setLongitude(location.getLongitude());
 
 			this.runOnUiThread(new Runnable() {
 

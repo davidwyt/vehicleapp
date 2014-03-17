@@ -348,7 +348,15 @@ public class SelfMgr {
 				Map<String, Driver> result = this.searchNearbyDrivers(longitude, latitude,
 						Constants.LOCATION_DEFAULT_NEARBYDRIVERDISTANCE);
 				if (null != result) {
-					this.mNearbyDriverMap.putAll(result);
+					Set<String> ids = result.keySet();
+					for (String id : ids) {
+						if (!StringUtil.IsNullOrEmpty(id)) {
+							Driver driver = result.get(id);
+							if (null != driver) {
+								this.mNearbyDriverMap.put(id, driver);
+							}
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -428,9 +436,17 @@ public class SelfMgr {
 					return;
 
 				Map<String, Vendor> vendorMap = vendorResult.getInfoBean();
-				if (null != vendorMap)
-					this.mFavVendorMap.putAll(vendorMap);
-
+				if (null != vendorMap) {
+					Set<String> ids = vendorMap.keySet();
+					for (String id : ids) {
+						if (!StringUtil.IsNullOrEmpty(id)) {
+							Vendor vendor = vendorMap.get(id);
+							if (null != vendor) {
+								this.mFavVendorMap.put(id, vendor);
+							}
+						}
+					}
+				}
 			} else {
 				this.mVendorFellowSimpleVector.clear();
 				this.mVendorFellowMap.clear();
@@ -449,19 +465,15 @@ public class SelfMgr {
 				DriverListViewResult driverResult = webClient.DriverListView(driverIds);
 				if (null != driverResult && driverResult.isSuccess() && null != driverResult.getInfoBean()) {
 					Map<String, Driver> drivers = driverResult.getInfoBean();
-					for (Driver driver : drivers.values()) {
-						try {
+					Set<String> ids = drivers.keySet();
+					for (String id : ids) {
+						if (!StringUtil.IsNullOrEmpty(id)) {
+							Driver driver = drivers.get(id);
 							if (null != driver) {
-								CarListViewResult carResult = webClient.CarListView(driver.getId());
-								if (null != carResult && null != carResult.getInfoBean()) {
-									driver.setCars(carResult.getInfoBean());
-								}
+								this.mVendorFellowMap.put(id, driver);
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
 						}
 					}
-					this.mVendorFellowMap.putAll(driverResult.getInfoBean());
 				}
 			}
 		} catch (Exception e) {
