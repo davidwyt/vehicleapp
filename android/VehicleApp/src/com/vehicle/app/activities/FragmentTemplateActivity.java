@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.baidu.mobstat.StatService;
 import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.AuthUtil;
@@ -22,6 +23,18 @@ public class FragmentTemplateActivity extends FragmentActivity {
 			e.printStackTrace();
 		}
 		ActivityManager.getInstance().pushActivity(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		StatService.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		StatService.onPause(this);
 	}
 
 	@Override

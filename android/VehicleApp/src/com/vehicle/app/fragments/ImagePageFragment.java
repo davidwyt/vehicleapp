@@ -1,5 +1,6 @@
 package com.vehicle.app.fragments;
 
+import com.baidu.mobstat.StatService;
 import com.vehicle.app.activities.ImgViewActivity;
 import com.vehicle.app.mgrs.BitmapCache;
 import com.vehicle.app.utils.ImageUtil;
@@ -25,6 +26,18 @@ public class ImagePageFragment extends Fragment {
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+		StatService.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		StatService.onPause(this);
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		System.out.println("in create view of img page");
@@ -41,7 +54,7 @@ public class ImagePageFragment extends Fragment {
 				if (!BitmapCache.getInstance().contains(url)) {
 					return;
 				}
-				
+
 				Intent intent = new Intent(inflater.getContext(), ImgViewActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.putExtra(ImgViewActivity.KEY_IMGURL, url);

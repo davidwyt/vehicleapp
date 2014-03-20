@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
 
+import com.baidu.mobstat.StatService;
 import com.vehicle.app.activities.ImgViewActivity;
 import com.vehicle.app.bean.VendorDetail;
 import com.vehicle.app.bean.VendorCoupon;
@@ -31,6 +32,18 @@ public class VendorCouponsFragment extends Fragment {
 
 	public VendorCouponsFragment(VendorDetail vendor) {
 		this.vendor = vendor;
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		StatService.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		StatService.onPause(this);
 	}
 
 	@Override

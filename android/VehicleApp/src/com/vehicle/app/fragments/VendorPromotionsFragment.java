@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.edu.sjtu.vehicleapp.R;
 
+import com.baidu.mobstat.StatService;
 import com.vehicle.app.bean.VendorPromotion;
 import com.vehicle.app.bean.VendorDetail;
 
@@ -25,6 +26,18 @@ public class VendorPromotionsFragment extends Fragment {
 
 	public VendorPromotionsFragment(VendorDetail vendor) {
 		this.vendor = vendor;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		StatService.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		StatService.onPause(this);
 	}
 
 	@Override
@@ -74,15 +87,15 @@ public class VendorPromotionsFragment extends Fragment {
 
 				TableRow.LayoutParams dividerLayout = new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
 				dividerLayout.topMargin = 2;
-				
+
 				View divider = new View(getActivity());
 				divider.setLayoutParams(dividerLayout);
 				divider.setBackgroundColor(getResources().getColor(R.color.azure));
-				
+
 				table.addView(divider, 2 * i + 1);
 			}
 		}
-			
+
 		return parent;
 	}
 }

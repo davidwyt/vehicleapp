@@ -2,6 +2,7 @@ package com.vehicle.app.activities;
 
 import java.util.List;
 
+import com.baidu.mobstat.StatService;
 import com.vehicle.app.mgrs.ActivityManager;
 import com.vehicle.app.mgrs.SelfMgr;
 import com.vehicle.app.utils.AuthUtil;
@@ -22,6 +23,18 @@ public class TemplateActivity extends Activity {
 			e.printStackTrace();
 		}
 		ActivityManager.getInstance().pushActivity(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		StatService.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		StatService.onPause(this);
 	}
 
 	@Override

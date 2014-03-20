@@ -2,6 +2,7 @@ package com.vehicle.app.fragments;
 
 import cn.edu.sjtu.vehicleapp.R;
 
+import com.baidu.mobstat.StatService;
 import com.vehicle.app.activities.MapCameraActivity;
 import com.vehicle.app.bean.Vendor;
 import com.vehicle.app.bean.VendorDetail;
@@ -29,6 +30,18 @@ public final class VendorDetailFragment extends Fragment {
 
 	public VendorDetailFragment(VendorDetail vendor) {
 		this.vendorDetail = vendor;
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		StatService.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		StatService.onPause(this);
 	}
 
 	@Override

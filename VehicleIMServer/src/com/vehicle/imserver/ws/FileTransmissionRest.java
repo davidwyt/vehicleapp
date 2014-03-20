@@ -137,7 +137,8 @@ public class FileTransmissionRest {
 
 	@POST
 	@Path("sendtomulti/source={source}&&targets={targets}&&fileName={fileName}&&fileType={fileType}")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Consumes({ MediaType.APPLICATION_OCTET_STREAM,
+			MediaType.MULTIPART_FORM_DATA })
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response TransmitFileToMulti(@Context HttpServletRequest request,
 			InputStream input, @PathParam("source") String source,
@@ -283,7 +284,8 @@ public class FileTransmissionRest {
 
 	@POST
 	@Path("commentfile/fileName={fileName}")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	@Consumes({ MediaType.APPLICATION_OCTET_STREAM,
+			MediaType.MULTIPART_FORM_DATA })
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response TransmitCommentFile(@Context HttpServletRequest request,
 			InputStream input, @PathParam("fileName") String fileName) {
