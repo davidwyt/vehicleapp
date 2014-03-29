@@ -11,4 +11,5 @@ public interface FileTransmissionDao extends BaseDao<FileTransmission>{
 	public void UpdateFileTranmission(FileTransmission fileTransmission);
 	
 	public List<FileTransmission> selectAllNewFiles(String memberid);
+	public void removeOldFiles(Long during);
 }

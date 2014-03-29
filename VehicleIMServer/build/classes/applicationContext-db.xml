@@ -11,10 +11,10 @@
             http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="username" value="root"></property>
-		<property name="password" value="root"></property>
+		<property name="username" value="vehicleimserver"></property>
+		<property name="password" value="nOpPpRbRPo7C"></property>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mysql://localhost:3306/VEHICLEIMSERVER"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/vehicleimserver?useUnicode=true&amp;characterEncoding=UTF-8"></property>
 	</bean>
 
 	<bean id="sessionFactory"

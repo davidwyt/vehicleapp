@@ -26,11 +26,12 @@ public class Contants {
 	public static final String HQL_SELECT_NEWFOLLOWINV = "FROM com.vehicle.imserver.dao.bean.FollowshipInvitation WHERE (target=:target and status=:requested) or (source=:source and (status=:accepted or status=:rejected))";
 	public static final String HQL_UPDATE_NEWREQFOLLOWINV = "UPDATE com.vehicle.imserver.dao.bean.FollowshipInvitation SET status=:received WHERE target=:target and status=:requested";
 	public static final String HQL_UPDATE_NEWDONFOLLOWINV = "UPDATE com.vehicle.imserver.dao.bean.FollowshipInvitation SET status=:done WHERE source=:source and (status=:accepted or status=:rejected)";
-
+	public static final String HQL_DEL_OLDFILES = "DELETE FROM com.vehicle.imserver.dao.bean.FileTransmission WHERE transmissiontime<=:transtime";
+	public static final String HQL_SELECT_OLDFILES = "FROM com.vehicle.imserver.dao.bean.FileTransmission WHERE transmissiontime<=:transtime";
 	public static final String HQL_SELECT_ALLNEWMESSAGE = "FROM com.vehicle.imserver.dao.bean.Message WHERE target=:target and status=:sent";
 	public static final String HQL_SELECT_ALLNEWFILE = "FROM com.vehicle.imserver.dao.bean.FileTransmission WHERE target=:target and status=:sent";
 	public static final String HQL_UPDATE_ALLNEWMESSAGE = "UPDATE com.vehicle.imserver.dao.bean.Message SET status=:received WHERE target=:target and status=:sent";
-
+	public static final String HQL_DEL_OLDMSG = "DELETE from com.vehicle.imserver.dao.bean.Message WHERE senttime<=:senttime";
 	public static final String HQL_SELECT_LATESTVERSION = "FROM com.vehicle.imserver.dao.bean.VersionInfo ORDER BY majorVersion DESC, minorVersion DESC";
 
 	public static final int SMALLIMG_WIDTH = 150;

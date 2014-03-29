@@ -28,6 +28,8 @@ import com.vehicle.imserver.service.interfaces.FileTransmissionService;
 import com.vehicle.imserver.utils.ErrorCodes;
 import com.vehicle.imserver.utils.StringUtil;
 import com.vehicle.service.bean.CommentFileResponse;
+import com.vehicle.service.bean.FileAckRequest;
+import com.vehicle.service.bean.FileAckResponse;
 import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileFetchResponse;
 import com.vehicle.service.bean.FileMultiTransmissionRequest;
@@ -282,6 +284,57 @@ public class FileTransmissionRest {
 		}
 	}
 
+	@GET
+	@Path("ack/{token}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response AckFile(@Context HttpServletRequest request,
+			@PathParam("token") String token) {
+		FileAckResponse resp = new FileAckResponse();
+
+		if (StringUtil.isEmptyOrNull(token)) {
+			resp.setErrorCode(ErrorCodes.FILEFETCH_TOKENNULL_ERRCODE);
+			resp.setErrorMsg(ErrorCodes.FILEFETCH_TOKENNULL_ERRMSG);
+
+			return Response.status(Status.BAD_REQUEST).entity(resp).build();
+		}
+
+		FileAckRequest fileReq = new FileAckRequest();
+		fileReq.setToken(token);
+
+		try {
+			fileTransmissionService.AckFile(fileReq);
+			return Response.status(Status.OK).entity(resp).build();
+		} catch (FileTransmissionNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.FILEFETCH_TOKENINVALID_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.FILEFETCH_TOKENINVALID_ERRMSG, token));
+
+			return Response.status(Status.NOT_FOUND).entity(resp).build();
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.MESSAGE_PERSISTENCE_ERRCODE);
+			resp.setErrorMsg(String.format(
+					ErrorCodes.MESSAGE_PERSISTENCE_ERRMSG, e.getMessage(),
+					"FileTransmission"));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			resp.setErrorCode(ErrorCodes.UNKNOWN_ERROR_ERRCODE);
+			resp.setErrorMsg(String.format(ErrorCodes.UNKNOWN_ERROR_ERRMSG,
+					e.getMessage()));
+
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(resp)
+					.build();
+		}
+	}
+	
 	@POST
 	@Path("commentfile/fileName={fileName}")
 	@Consumes({ MediaType.APPLICATION_OCTET_STREAM,

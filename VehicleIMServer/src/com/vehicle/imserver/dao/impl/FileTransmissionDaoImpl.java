@@ -1,5 +1,6 @@
 package com.vehicle.imserver.dao.impl;
 
+import java.io.File;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -37,5 +38,27 @@ public class FileTransmissionDaoImpl extends BaseDaoImpl<FileTransmission>
 		List<FileTransmission> files = query.list();
 
 		return files;
+	}
+
+	@Override
+	public void removeOldFiles(Long during) {
+		// TODO Auto-generated method stub
+		Long currentTime=System.currentTimeMillis();
+		Session session=this.getSession();
+		Query query=session.createQuery(Contants.HQL_SELECT_OLDFILES);
+		query.setLong("transtime", currentTime-during);
+		List<FileTransmission> files=query.list();
+		
+		Query del=session.createQuery(Contants.HQL_DEL_OLDFILES);
+		del.setLong("transtime", currentTime-during);
+		del.executeUpdate();
+		for(int i=0;i<files.size();i++){
+			FileTransmission f=files.get(i);
+			String path=f.getPath();
+			File file=new File(path);
+			if(file.exists()){
+				file.delete();
+			}
+		}
 	}
 }

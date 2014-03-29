@@ -40,4 +40,13 @@ public class MessageDaoImpl extends BaseDaoImpl<Message> implements MessageDao {
 
 		query.executeUpdate();
 	}
+
+	@Override
+	public void removeOldMessage(Long during) {
+		// TODO Auto-generated method stub
+		Session session=this.getSession();
+		Query query=session.createQuery(Contants.HQL_DEL_OLDMSG);
+		query.setLong("senttime", System.currentTimeMillis()-during);
+		query.executeUpdate();
+	}
 }

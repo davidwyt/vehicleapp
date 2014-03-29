@@ -11,4 +11,6 @@ public interface MessageDao extends BaseDao<Message>{
 	public List<Message> selectAllNewMessage(String memberId);
 	
 	public void updateAllNewMessage(String memberId);
+	
+	public void removeOldMessage(Long during);
 }

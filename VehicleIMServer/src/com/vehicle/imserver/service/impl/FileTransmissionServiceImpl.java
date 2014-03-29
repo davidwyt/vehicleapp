@@ -12,6 +12,8 @@ import java.util.concurrent.Callable;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.scheduling.annotation.Scheduled;
+
 import com.vehicle.imserver.dao.bean.FileTransmission;
 import com.vehicle.imserver.dao.bean.MessageType;
 import com.vehicle.imserver.dao.interfaces.FileTransmissionDao;
@@ -27,6 +29,7 @@ import com.vehicle.imserver.utils.JPushUtil;
 import com.vehicle.imserver.utils.JsonUtil;
 import com.vehicle.imserver.utils.RequestDaoUtil;
 import com.vehicle.imserver.utils.StringUtil;
+import com.vehicle.service.bean.FileAckRequest;
 import com.vehicle.service.bean.FileFetchRequest;
 import com.vehicle.service.bean.FileMultiTransmissionRequest;
 import com.vehicle.service.bean.FileTransmissionRequest;
@@ -301,5 +304,26 @@ public class FileTransmissionServiceImpl implements FileTransmissionService {
 			return null;
 		}
 
+	}
+
+	@Override
+	public void AckFile(FileAckRequest request)
+			throws FileTransmissionNotFoundException,PersistenceException {
+		// TODO Auto-generated method stub
+		String token = request.getToken();
+		FileTransmission fileTran = fileTransmissionDao
+				.GetFileTranmission(token);
+
+		if (null == fileTran) {
+			throw new FileTransmissionNotFoundException(String.format(
+					"file transmission with token %s not found", token));
+		}
+
+		fileTran.setStatus(FileTransmission.STATUS_RECEIVED);
+		try {
+			fileTransmissionDao.UpdateFileTranmission(fileTran);
+		} catch (Exception e) {
+			throw new PersistenceException(e.getMessage(), e);
+		}
 	}
 }
